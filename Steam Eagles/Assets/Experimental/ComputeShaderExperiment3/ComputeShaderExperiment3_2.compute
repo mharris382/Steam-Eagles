@@ -1,0 +1,56 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+
+float resolution;
+float4 solid;
+float4 gas;
+
+int IsSolid(float4 mat)
+{
+    return all(solid == mat);
+}
+int IsGas(float4 mat)
+{
+    return all(mat == gas);
+}
+
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    const float2 uvHere = float2(id.xy);
+    float4 here = Result[uvHere];
+    float3 cHere = float3(here.r, here.g, here.b);
+    float aHere = here.a;
+    if(!any(cHere))
+    {
+        return;
+    }
+    if(here.a)
+    {
+        return;
+    }
+
+    const float2 uvLeft = uvHere + float2(-1.0, 0.0);
+    const float2 uvRight = uvHere + float2(1.0, 0.0);
+    const float2 uvUp = uvHere+float2(0.0, 1.0);
+    const float2 uvDown = uvHere+float2(0.0,-1.0);
+
+    const float4 left = Result[uvLeft];
+    const float4 right = Result[uvRight];
+    const float4 down = Result[uvDown];
+    const float4 up = Result[uvUp];
+    const float4 neighborA = float4(all(right), all(left), all(up), all(down));
+    
+    if(any(neighborA))
+    {
+        Result[id.xy] = gas;
+    }
+    
+}
+

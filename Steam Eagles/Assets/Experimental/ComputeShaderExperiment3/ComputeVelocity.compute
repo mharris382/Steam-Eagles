@@ -1,14 +1,17 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-Texture2D<float4> Initial;
-RWTexture2D<float4> Result;
+// Create a RenderTexture with enableRandomWrite flag and set it
+
+Texture2D<float> CellStates;
+RWTexture2D<float2> VectorField;
 
 float resolution;
+float4 solid;
+float4 gas;
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float x = id.x / resolution;
-    float y = id.y / resolution;
-    Result[id.xy] = Initial[id.xy];
+    
 }
