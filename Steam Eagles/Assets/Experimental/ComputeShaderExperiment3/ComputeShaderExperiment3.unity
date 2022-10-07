@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 777852818}
   m_LocalRotation: {x: 0, y: -0, z: -0.0019833879, w: 0.99999803}
-  m_LocalPosition: {x: -4.62, y: -0.73, z: 0}
+  m_LocalPosition: {x: 1.01, y: -1.01, z: 0}
   m_LocalScale: {x: 5.9997, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -538,6 +538,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   computeShader: {fileID: 7200000, guid: 3a237ea3473cb454b806100336a6851f, type: 3}
+  simulationShader: {fileID: 7200000, guid: 4944eea7af87cc84693d5941d1f5d72e, type: 3}
+  computeVelocityShader: {fileID: 0}
   initialState: {fileID: 2800000, guid: dc5536862e5e7584e951e81d9a1215af, type: 3}
   renderTexture: {fileID: 0}
   targetMaterial: {fileID: 2100000, guid: ff026aa6c892b0e41a74baa95f3d23cd, type: 2}
+  vectorFieldTexture: {fileID: 0}
+  airVelocity: {x: 0, y: 0}
+  updateTime: 0.2
+  simRunning: 1

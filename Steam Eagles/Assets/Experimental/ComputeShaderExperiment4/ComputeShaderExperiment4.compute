@@ -1,0 +1,41 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct Cell
+{
+    int2 velocity;
+    int density;
+    int cellType;
+};
+
+Texture2D<int> densities;
+RWStructuredBuffer<Cell> cells;
+
+int gridSize ;
+
+const int SolidCellType = 3;
+const int AirCellType = 0;
+const int SourceCellType = 2;
+
+const int2 dirUp = int2(0,1);
+const int2 dirDown = int2(0,-1);
+const int2 dirLeft = int2(-1,0);
+const int2 dirRight = int2(1,0);
+
+[numthreads(10,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    Cell cell = cells[id];
+    int2 position = int2(id.x / gridSize, id.x % gridSize);
+    
+    float2 uvHere = id.xy;
+    float2 uvUp = uvHere + float2(0,0);
+    float2 uvDown = uvHere + float2(0,0);
+    float2 uvRight = uvHere + float2(0,0);
+    float2 uvLeft = uvHere + float2(0,0);
+    
+    float dUp = densities[uvUp];
+    float dDown = densities[uvDown];
+    float dRight = densities[uvRight];
+    float dLeft = densities[uvLeft];
+}
