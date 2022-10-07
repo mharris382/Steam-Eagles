@@ -50,7 +50,7 @@ namespace Experimental.ComputeShaderExperiment2
         private void OnGUI()
         {
             var w = 1000;
-            var h = 150;
+            var h = 50;
             Rect buttonRect = new Rect(0, 0, w, h);
             if (!isInited)
             {
@@ -65,8 +65,8 @@ namespace Experimental.ComputeShaderExperiment2
             {
                 foreach (var button in _buttons)
                 {
-                    buttonRect.y += h;
                     button.Draw(buttonRect);
+                    buttonRect.y += h;
                 }
             }
         }

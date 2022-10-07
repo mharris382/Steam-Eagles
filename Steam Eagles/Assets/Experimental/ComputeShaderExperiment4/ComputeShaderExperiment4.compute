@@ -4,25 +4,39 @@
 struct Cell
 {
     float4 color;
+    float3 position;
 };
 
 int gridSize;
 RWStructuredBuffer<Cell> cells;
-
+float3 mousePosition;
+float mouseRadius;
+float time;
 float rand(float2 co)
 {
     return (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 1;
 }
-
+float rand_alt(float coords) {
+    return frac(sin(dot(coords, float2(12.9898,78.233))) * 43758.5453);
+}
 [numthreads(10,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     Cell cell = cells[id.x];
-    float r = rand(float2(cell.color.r, cell.color.g));
-    float g = rand(float2(cell.color.g, cell.color.b));
-    float b = rand(float2(cell.color.b, cell.color.r));
-    cell.color = float4(r, g, b, 1.0);
+    float distanceToMouse = distance(cell.position, mousePosition);
+    if((float)(distanceToMouse <= mouseRadius))
+    {
+        cell.color = float4(1,1,1,0.3);
+    }
+    else
+    {
+        float r = rand_alt(float2(cell.color.r, cell.color.g));
+        float g = rand_alt(float2(cell.color.g, cell.color.b));
+        float b = rand_alt(float2(cell.color.b, cell.color.r));
+        cell.color = float4(r, g, b, 1.0);
+    }
     cells[id.x]=cell;
+    
 }
 // struct Cell
 // {
