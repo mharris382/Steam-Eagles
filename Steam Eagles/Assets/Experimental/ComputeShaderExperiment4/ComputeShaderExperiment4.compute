@@ -3,39 +3,62 @@
 
 struct Cell
 {
-    int2 velocity;
-    int density;
-    int cellType;
+    float4 color;
 };
 
-Texture2D<int> densities;
+int gridSize;
 RWStructuredBuffer<Cell> cells;
 
-int gridSize ;
-
-const int SolidCellType = 3;
-const int AirCellType = 0;
-const int SourceCellType = 2;
-
-const int2 dirUp = int2(0,1);
-const int2 dirDown = int2(0,-1);
-const int2 dirLeft = int2(-1,0);
-const int2 dirRight = int2(1,0);
+float rand(float2 co)
+{
+    return (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 1;
+}
 
 [numthreads(10,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    Cell cell = cells[id];
-    int2 position = int2(id.x / gridSize, id.x % gridSize);
-    
-    float2 uvHere = id.xy;
-    float2 uvUp = uvHere + float2(0,0);
-    float2 uvDown = uvHere + float2(0,0);
-    float2 uvRight = uvHere + float2(0,0);
-    float2 uvLeft = uvHere + float2(0,0);
-    
-    float dUp = densities[uvUp];
-    float dDown = densities[uvDown];
-    float dRight = densities[uvRight];
-    float dLeft = densities[uvLeft];
+    Cell cell = cells[id.x];
+    float r = rand(float2(cell.color.r, cell.color.g));
+    float g = rand(float2(cell.color.g, cell.color.b));
+    float b = rand(float2(cell.color.b, cell.color.r));
+    cell.color = float4(r, g, b, 1.0);
+    cells[id.x]=cell;
 }
+// struct Cell
+// {
+//     int2 velocity;
+//     int density;
+//     int cellType;
+// };
+//
+// Texture2D<int> densities;
+// RWStructuredBuffer<Cell> cells;
+//
+// int gridSize ;
+//
+// const int SolidCellType = 3;
+// const int AirCellType = 0;
+// const int SourceCellType = 2;
+//
+// const int2 dirUp = int2(0,1);
+// const int2 dirDown = int2(0,-1);
+// const int2 dirLeft = int2(-1,0);
+// const int2 dirRight = int2(1,0);
+//
+// [numthreads(10,1,1)]
+// void CSMain (uint3 id : SV_DispatchThreadID)
+// {
+//     Cell cell = cells[id];
+//     int2 position = int2(id.x / gridSize, id.x % gridSize);
+//     
+//     float2 uvHere = id.xy;
+//     float2 uvUp = uvHere + float2(0,0);
+//     float2 uvDown = uvHere + float2(0,0);
+//     float2 uvRight = uvHere + float2(0,0);
+//     float2 uvLeft = uvHere + float2(0,0);
+//     
+//     float dUp = densities[uvUp];
+//     float dDown = densities[uvDown];
+//     float dRight = densities[uvRight];
+//     float dLeft = densities[uvLeft];
+// }
