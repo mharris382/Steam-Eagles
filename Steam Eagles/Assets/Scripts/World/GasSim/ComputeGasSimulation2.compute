@@ -1,6 +1,4 @@
-
 #pragma kernel CSMain
-
 struct cell
 {
     int3 position;
@@ -22,10 +20,8 @@ RWTexture2D<float2> velocity;
 RWStructuredBuffer<cell> cells;
 
 [numthreads(10,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void CSMain(uint3 id : SV_DispatchThreadID)
 {
     cell current = cells[id.x];
-    current.density = max(current.density - 1,0);
-    if(rand(id.xy)<0.1) current.density = min(current.density * 2, 16);
-    cells[id.x] = current;
+    float2 vel = velocity[current.position.xy];
 }

@@ -17,16 +17,21 @@ namespace World.GasSim
         public SharedTiles gasTileLookup;
         
         public ComputeShader simulationComputeShader;
+        public ComputeShader copyBufferToGasTexture;
+        public ComputeShader simulationComputeShader2;
         public SharedRenderTexture solidRenderTexture;
         public SharedRenderTexture velocityFieldTexture;
+        public SharedRenderTexture gasTexture;
         
-
         public bool enableComputeShader = true;
         
         private Dictionary<Vector3Int, int> gasCells = new Dictionary<Vector3Int, int>();
         private Dictionary<Vector3Int, int> nextCells = new Dictionary<Vector3Int, int>();
 
         private GasCell[] data;
+
+        public Vector2Int simulationBoundsMin;
+        public Vector2Int simulationBoundsMax = new Vector2Int(100, 100);
         
         public struct GasCell
         {
@@ -131,20 +136,23 @@ namespace World.GasSim
         private ComputeBuffer _computeBuffer;
         void ExecuteCalculateVelocity()
         {
-            if (enableComputeShader)
+            if (enableComputeShader && data.Length > 0)
             {
+                
                 int v3size = sizeof(int) * 3;
                 int isize = sizeof(int);
                 _computeBuffer = new ComputeBuffer(data.Length, v3size + isize);
                 _computeBuffer.SetData(data);
-                
-                
-                simulationComputeShader.SetBuffer(0, "cells", _computeBuffer);
-                simulationComputeShader.SetTexture(0, "solid", solidRenderTexture.Value);
-                simulationComputeShader.SetTexture(0, "velocity", velocityFieldTexture.Value);
+
+                int kernel = simulationComputeShader.FindKernel("CSMain");
+                simulationComputeShader.SetInts("boundsMin", simulationBoundsMin.x, simulationBoundsMin.y);
+                simulationComputeShader.SetInts("boundsMax", simulationBoundsMax.x, simulationBoundsMax.y);
+                simulationComputeShader.SetBuffer(kernel, "cells", _computeBuffer);
+                simulationComputeShader.SetTexture(kernel, "solid", solidRenderTexture.Value);
+                simulationComputeShader.SetTexture(kernel, "velocity", velocityFieldTexture.Value);
                 simulationComputeShader.SetFloat("time", Time.time);
                 simulationComputeShader.SetFloat("random", Random.value);
-                simulationComputeShader.Dispatch(0, data.Length / 10, 1, 1);
+                simulationComputeShader.Dispatch(kernel, data.Length / 10, 1, 1);
                 _computeBuffer.GetData(data);
                 _computeBuffer.Dispose();
             }
@@ -263,11 +271,82 @@ namespace World.GasSim
 
         private void ApplyVelocityPressure()
         {
+            if (enableComputeShader)
+            {
+                // int v3size = sizeof(int) * 3;
+                // int isize = sizeof(int);
+                // _computeBuffer = new ComputeBuffer(data.Length, v3size + isize);
+                // _computeBuffer.SetData(data);
+                // if (gasTexture.Value == null)
+                // {
+                //     var rt = new RenderTexture(velocityFieldTexture.Value.width, velocityFieldTexture.Value.height,
+                //         velocityFieldTexture.Value.depth);
+                //     rt.enableRandomWrite = true;
+                //     rt.Create();
+                //     gasTexture.Value = rt;
+                // }
+                // //needs to apply the velocity to each cell
+                // //to apply velocity of each cell, basically determine where the cell will be pulling from, which is the opposite direction from velocity
+                // //then determine how much is available and update the density based on that value. if everything works out, each cell will be inside the data list and will update every cell
+                // int kernel = simulationComputeShader2.FindKernel("CSMain");
+                // simulationComputeShader2.SetInts("boundsMin", simulationBoundsMin.x, simulationBoundsMin.y);
+                // simulationComputeShader2.SetInts("boundsMax", simulationBoundsMax.x, simulationBoundsMax.y);
+                // simulationComputeShader2.SetTexture(kernel, "velocity", velocityFieldTexture.Value);
+                // simulationComputeShader2.SetBuffer(kernel, "cells", _computeBuffer);
+                // simulationComputeShader2.Dispatch(kernel, data.Length / 10,1,1);
+                //
+                // _computeBuffer.GetData(data);
+                // _computeBuffer.Dispose();
+            }
             foreach (var gasCell in data)
             {
                 var pos = gasCell.position;
                 var tile = gasCell.density == 0 ? null : gasTileLookup.Value[gasCell.density - 1];
                 gasTilemap.Value.SetTile(pos, tile);
+                if (gasCell.density == 0f) 
+                    gasCells.Remove(gasCell.position);
+            }
+        }
+
+
+        Texture GetGasTexture()
+        {
+            if (gasTexture.Value == null)
+            {
+                var rt = new RenderTexture(velocityFieldTexture.Value.width, velocityFieldTexture.Value.height,
+                    velocityFieldTexture.Value.depth);
+                rt.enableRandomWrite = true;
+                rt.Create();
+                gasTexture.Value = rt;
+            }
+
+            return gasTexture.Value;
+        }
+        private void CopyBufferToGas(ComputeBuffer buffer)
+        {
+            copyBufferToGasTexture.SetTexture(0, "solid", solidRenderTexture.Value);
+            copyBufferToGasTexture.SetInts("sizeSolid", solidRenderTexture.Value.width, solidRenderTexture.Value.height);
+            copyBufferToGasTexture.SetTexture(0, "gas", gasTexture.Value);
+        }
+
+        private void OnDrawGizmos()
+        {
+            var positions = new Vector2Int[]
+            {
+                new Vector2Int(simulationBoundsMin.x, simulationBoundsMin.y),
+                new Vector2Int(simulationBoundsMin.x, simulationBoundsMax.y),
+                new Vector2Int(simulationBoundsMax.x, simulationBoundsMax.y),
+                new Vector2Int(simulationBoundsMax.x, simulationBoundsMin.y),
+                new Vector2Int(simulationBoundsMin.x, simulationBoundsMin.y),
+            };
+            Gizmos.color = Color.red;
+            for (int i = 1; i < positions.Length; i++)
+            {
+                Vector2Int p0 = positions[i - 1];
+                Vector2Int p1 = positions[i];
+                Vector3 p3 = new Vector3(p0.x, p0.y);
+                Vector3 p4 = new Vector3(p1.x, p1.y);
+                Gizmos.DrawLine(p3, p4);
             }
         }
     }

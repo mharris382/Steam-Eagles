@@ -1,0 +1,29 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct Cell
+{
+    int3 position;
+    int density;
+};
+
+int2 sizeSolid;
+
+int3 boundsMin;
+int3 boundsMax;
+
+StructuredBuffer<Cell> cells;
+
+Texture2D<float4> solid;
+RWTexture2D<float4> gas;
+
+[numthreads(10,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    Cell cell = cells[id.x];
+    uint2 solidPos = uint2(cell.position.x / 4, cell.position.y / 4);
+    float4 solidCell = solid[solidPos.xy];
+    gas[cell.position.xy] = float4(1,1,1,cell.density/16.0);
+    
+   // gas[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
