@@ -11,11 +11,15 @@ namespace World.CustomTiles
         public SimulationState simulationState;
         [SerializeField] SimulationConfig simulationConfig;
 
+        public SharedTilemap gasTilemap;
+        
         [Range(1, 16)]
         public int tilePressure = 1;
 
 
+        
         private Color _color;
+        
         private void OnEnable()
         {
             float t = tilePressure / (float)simulationConfig.maxGasDensity;
@@ -25,18 +29,34 @@ namespace World.CustomTiles
 
         public override void RefreshTile(Vector3Int position, ITilemap tilemap)
         {
-                
+
             base.RefreshTile(position, tilemap);
         }
-        
 
+        public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject go)
+        {
+            if (go == null) return false;
+            var tm = go.GetComponent<Tilemap>();
+            Debug.Assert(tm != null);
+            if(gasTilemap.Value == null) gasTilemap.Value = tm;
+            if (gasTilemap.Value == tm)
+            {
+                simulationState.RegisterGasToSim(position, tilePressure);
+                return true;
+            }
+            return false;
+        }
+        
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
-            if (!simulationState.IsPressuredChanged(position, tilePressure))
+            if (simulationState.IsRunning)
             {
-                return;
+                if (simulationState.Stage == SimulationStage.IDLE ||
+                    simulationState.Stage == SimulationStage.UPDATE_PRESSURE)
+                {
+                    simulationState.RegisterGasToSim(position, tilePressure);
+                }
             }
-
             base.GetTileData(position, tilemap, ref tileData);
             tileData.color = _color;
         }

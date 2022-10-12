@@ -1,36 +1,82 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using World.GasSim;
 
 [CreateAssetMenu(menuName = "Gas Sim/Simulation State")]
 public class SimulationState : ScriptableObject
 {
-    private Dictionary<Vector3Int, int> _pressureDictionary = new Dictionary<Vector3Int, int>();
+    [SerializeField] private SimulationConfig config;
+    
+    [Min(0)]
+    public float simulationTimeScale = 1;
 
+    public float Rate => simulationTimeScale * config.updateRate;
+    public UnityEvent updatePressure;
+    public UnityEvent calculateVelocity;
+    public UnityEvent<Vector3Int, int> gasAddedToTilemap;
 
-
-    private void OnDisable()
+    public bool debugSimulation;
+    
+    public SimulationStage Stage
     {
-        _pressureDictionary.Clear();
+        get; 
+        set;
+    }
+    
+    public bool IsRunning
+    {
+        get; 
+        set;
     }
 
-    public bool IsPressuredChanged(Vector3Int position, int tilePressure)
+    private int _totalGas;
+    public int GasOnRecord
     {
-        if (!Application.isPlaying)
+        get => _totalGas;
+        private set
         {
-            
-            return true;
+            if (value == 0)
+            {
+                Stage = SimulationStage.IDLE; //pause the simulation until gas is returned
+            } else if (_totalGas == 0)
+            {
+                Stage = SimulationStage.UPDATE_PRESSURE; //begin the simulation with update pressure
+            }
+            _totalGas = value;
         }
-        if (_pressureDictionary.ContainsKey(position))
+    }
+    
+    public void StartSimulation(MonoBehaviour owner)
+    {
+        IsRunning = true;
+        if (debugSimulation)
         {
-            int lastPressure = _pressureDictionary[position];
-            _pressureDictionary[position] = tilePressure;
-            return lastPressure != tilePressure;
+            updatePressure.AddListener(() => Debug.Log("Simulation State: - Update Pressure"));
+            calculateVelocity.AddListener(() => Debug.Log("Simulation State: - Calculate Velocity"));
         }
-        else
+    }
+    
+    public void Reset()
+    {
+        IsRunning = false;
+        _totalGas = 0;
+        Stage = SimulationStage.IDLE;
+    }
+
+    public void RegisterGasToSim(Vector3Int cellPosition, int gasDensity)
+    {
+        if (gasDensity <= 0) return;
+        if (!IsRunning) IsRunning = true;
+        GasOnRecord += gasDensity;
+        gasDensity = Mathf.Min(config.maxGasDensity, gasDensity);
+
+        if (debugSimulation)
         {
-            _pressureDictionary.Add(position, tilePressure);
-            return true;
+            Debug.Log($"Just Registered {gasDensity}");
         }
+        gasAddedToTilemap?.Invoke(cellPosition, gasDensity);
     }
 }

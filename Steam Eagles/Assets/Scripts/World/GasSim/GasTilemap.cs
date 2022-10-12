@@ -7,11 +7,23 @@ using World;
 
 public class GasTilemap : MonoBehaviour
 {
-    public SharedTilemap gasInitialStateTilemap;
+    public SimulationState simulationState;
+    private Tilemap _tilemap;
     
+
     private void Awake()
     {
+        _tilemap = GetComponent<Tilemap>();
         
     }
 
+    private IEnumerator Start()
+    {
+        while (!simulationState.IsRunning)
+        {
+            Debug.Log("Gas Tilemap is waiting for simulation to start!");
+            yield return null;
+        }
+        _tilemap.RefreshAllTiles();
+    }
 }

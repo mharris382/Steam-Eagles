@@ -6,6 +6,8 @@ public class VelocityFieldRenderTexture : MonoBehaviour
     public SharedRenderTexture solidRenderTexture;
     public SharedRenderTexture velocityFieldTexture;
 
+    public int gasBlockPerSolidBlock = 4;
+    
     private void Awake()
     {
         solidRenderTexture.onValueChanged.AddListener(OnSolidRenderTextureChanged);
@@ -28,6 +30,8 @@ public class VelocityFieldRenderTexture : MonoBehaviour
         {
             int w = solidRenderTexture.width;
             int h = solidRenderTexture.height;
+            int gasTilesW = w * gasBlockPerSolidBlock;
+            int gasTileH = h * gasBlockPerSolidBlock;
             var fieldTexture = new RenderTexture(w, h, 24);
             fieldTexture.enableRandomWrite = true;
             fieldTexture.Create();

@@ -1,14 +1,28 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-// Create a RenderTexture with enableRandomWrite flag and set it
-// with cs.SetTexture
-RWTexture2D<float4> Result;
+struct cell
+{
+    int3 position;
+    int density;
+};
 
-[numthreads(8,8,1)]
+float time;
+float random;
+float rand(float2 co)
+{
+    return  ((frac( time *sin(dot(co.xy, float2(12.9898, 78.233))) *random * 43758.5453)) * 1);
+}
+
+Texture2D<float4> solid;
+RWTexture2D<float2> velocity;
+RWStructuredBuffer<cell> cells;
+
+[numthreads(10,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
-
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    cell current = cells[id.x];
+    current.density = max(current.density - 1,0);
+    if(rand(id.xy)<0.1) current.density = min(current.density * 2, 16);
+    cells[id.x] = current;
 }

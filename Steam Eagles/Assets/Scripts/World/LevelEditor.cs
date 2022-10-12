@@ -55,7 +55,6 @@ namespace World
                 _selectedTileIndex--;
                 if (_selectedTileIndex < 0) _selectedTileIndex = Blocks.Length-1;
             }
-            Debug.Log($"Selected Tile: {currentTile.name}",this);
         }
 
         private void DeleteTile(Vector3Int pos)

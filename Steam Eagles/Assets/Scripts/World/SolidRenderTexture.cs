@@ -8,7 +8,7 @@ using World;
 public class SolidRenderTexture : MonoBehaviour
 {
     public SharedTilemap solidTilemap;
-    public SharedRenderTexture liveRenderTexture;
+    public SharedRenderTexture solidRenderTexture;
     
     public RenderTexture currentRenderTexture;
     public Camera camera;
@@ -53,12 +53,12 @@ public class SolidRenderTexture : MonoBehaviour
             camera.orthographicSize = Mathf.Min(width, height) / 2f;
             camera.backgroundColor = Color.white;
             camera.cullingMask = layerMask;
-            liveRenderTexture.Value = currentRenderTexture;
+            solidRenderTexture.Value = currentRenderTexture;
         }
     }
 
     void ClearRenderTexture()
     {
-        liveRenderTexture.Value = null;
+        solidRenderTexture.Value = null;
     }
 }
