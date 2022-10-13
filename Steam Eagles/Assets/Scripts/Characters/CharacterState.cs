@@ -8,39 +8,39 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterState : MonoBehaviour
 {
-    
+
     #region Public variables
 
     public CharacterConfig config;
 
     public float MoveX { get; set; }
-    
+
     public float MoveY { get; set; }
-    
+
     public bool JumpPressed { get; set; }
 
     public bool AttackPressed { get; set; }
-    
+
     public bool JumpHeld { get; set; }
-    
+
     public Vector2 AnimatorDelta { get; set; }
-    
+
     public bool IsJumping { get; set; }
-    
+
     /// <summary>
     /// is the player currently trying to drop through 1-way platforms 
     /// </summary>
     public bool IsDropping { get; set; }
-    
+
     public bool IsDead { get; set; }
-    
+
     public InteractionPhysicsMode InteractionPhysicsMode { get; set; }
-    
+
     public Rigidbody2D Rigidbody { get; private set; }
-    
+
 
     public Animator Animator { get; set; }
-    
+
 
     public bool IsInteracting
     {
@@ -75,9 +75,9 @@ public class CharacterState : MonoBehaviour
     #endregion
 
     #region Private variables
-    
+
     public bool alwaysGrounded = false;
-    
+
     private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
 
     private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
@@ -94,6 +94,10 @@ public class CharacterState : MonoBehaviour
         Forces = new List<Vector4>();
         Rigidbody = GetComponent<Rigidbody2D>();
         Animator = GetComponentInChildren<Animator>();
+        JumpHeld = false;
+        JumpPressed = false;
+        VelocityX = 0;
+        VelocityY = 0;
     }
 
     #endregion
@@ -114,6 +118,7 @@ public class CharacterState : MonoBehaviour
 
 
     
+
 }
 
 public enum InteractionPhysicsMode

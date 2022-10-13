@@ -1,0 +1,31 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+
+
+
+
+
+int4 bounds;
+float4 globalWind;
+
+Texture2D<float4> solid;
+Texture2D<float4> gas;
+
+RWTexture2D<float4> velocity;
+
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float4 cellVelocity = velocity[id.xy];
+    int cellPressure = int(gas[id.xy].x);
+
+    int uVelocity =0;
+    int dVelocity =0;
+    int rVelocity =0;
+    int lVelocity =0;
+    
+    velocity[id.xy] = float4(rVelocity, lVelocity, uVelocity, dVelocity);
+    
+}

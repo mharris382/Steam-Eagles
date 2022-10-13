@@ -44,12 +44,12 @@ public class GroundCheck : MonoBehaviour
     }
 
     public bool MovingRight { get; set; }
-    
+    public float verticalVelocityThreshold = 1;
     protected virtual void Update()
     {
             Raycast2D mid = null; 
             if (_state == null) return;
-            if (_state.VelocityY > 0)
+            if (_state.VelocityY > verticalVelocityThreshold && _state.JumpHeld)
             {
                 IsGrounded = false;
                 Hit = new RaycastHit2D();

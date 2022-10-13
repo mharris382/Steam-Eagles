@@ -8,6 +8,11 @@
     /// tilemap will be static during this stage, therefore it should be acceptable to have the tiles pass the data
     /// to the simulation directly
     /// </summary>
+    UPDATE_PRESSURE_TILEMAP,
+    /// <summary>
+    /// tilemap will be static during this stage, therefore it should be acceptable to have the tiles pass the data
+    /// to the simulation directly
+    /// </summary>
     UPDATE_PRESSURE,
     /// <summary>
     /// calculate velocity based on current pressure, velocity is stored in a render texture, pressure will be

@@ -52,7 +52,8 @@ namespace World.CustomTiles
             if (simulationState.IsRunning)
             {
                 if (simulationState.Stage == SimulationStage.IDLE ||
-                    simulationState.Stage == SimulationStage.UPDATE_PRESSURE)
+                    simulationState.Stage == SimulationStage.UPDATE_PRESSURE || 
+                    simulationState.Stage == SimulationStage.UPDATE_PRESSURE_TILEMAP)
                 {
                     simulationState.RegisterGasToSim(position, tilePressure);
                 }

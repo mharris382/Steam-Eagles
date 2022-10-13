@@ -12,6 +12,7 @@ namespace CoreLib
         [SerializeField] private bool debugVariable;
         
         public UnityEvent<T> onValueChanged;
+        private bool _hasValue;
         
         public T Value
         {
@@ -20,11 +21,31 @@ namespace CoreLib
             {
                 if (value != this.value)
                 {
+                    
                     this.value = value;
                     onValueChanged?.Invoke(this.value);
                     if (debugVariable) Debug.Log($"SHARED VARIABLE:{name} changed (new value={value}", this);
                 }
+                _hasValue = this.value != null;
             }
+        }
+
+        public bool HasValue
+        {
+            get
+            {
+                return _hasValue;
+            }
+        }
+
+        private void Awake()
+        {
+            Value = value;//this ensures that _hasValue is accurate
+        }
+
+        private void OnEnable()
+        {
+            Value = value;//this ensures that _hasValue is accurate
         }
     }
 
