@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 using World;
@@ -13,7 +12,6 @@ public class VelocityFieldRenderTexture : MonoBehaviour
     public Color airMask;
     [Min(1)]
     public int processedScale = 1;
-    [Title("Environmental Solid Mapping")]
    
     
 
