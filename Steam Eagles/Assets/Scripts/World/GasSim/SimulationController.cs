@@ -14,7 +14,7 @@ namespace World.GasSim
     {
         [Tooltip("Shared Data container for simulation allowing communication between the simulation and external systems")]
         public SimulationState simulationState;
-        
+        public int processedScale;
         [Header("Compute Shaders")] 
         public bool enableComputeShader = true;
         
@@ -65,6 +65,11 @@ namespace World.GasSim
         
         private ComputeBuffer _computeBuffer;
 
+        public SimulationStage Stage
+        {
+            get => simulationState.Stage;
+            set => simulationState.Stage = value;
+        }
         private bool IsSimulationValid
         {
             get
@@ -205,12 +210,12 @@ namespace World.GasSim
                 if (!simulationState.IsRunning)
                     continue;
 
-                if (simulationState.Stage == SimulationStage.IDLE && gasCells.Count > 0)
-                    simulationState.Stage = SimulationStage.UPDATE_PRESSURE;
+                if (Stage == SimulationStage.IDLE && gasCells.Count > 0)
+                    Stage = SimulationStage.UPDATE_PRESSURE;
 
                 yield return new WaitForSeconds(simulationState.Rate);
                 
-                simulationState.Stage = SimulationStage.UPDATE_PRESSURE_TILEMAP;
+                Stage = SimulationStage.UPDATE_PRESSURE_TILEMAP;
                 
                 
                 gasTilemap.Value.RefreshAllTiles();//sync simulation state with the tilemap state
@@ -262,6 +267,8 @@ namespace World.GasSim
         
         private void BufferToTexPass()
         {
+            Stage = SimulationStage.UPDATE_PRESSURE;
+            
             //needed for sure
             SetGasInComputeShader(bufferToTexture);
             SetBufferInComputeShader(bufferToTexture);
@@ -302,7 +309,15 @@ namespace World.GasSim
             {
                 var cell = data[i];
                 cellPositions[i] = cell.position;
-                cellTiles[i]= cell.density == 0 ? null : gasTileLookup.Value[cell.density - 1];
+                try
+                {
+                    cellTiles[i]= cell.density == 0 ? null : gasTileLookup.Value[cell.density - 1];
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Index out of range thrown at index {i} with cell density: {cell.density} at position {cell.position}");
+                    throw;
+                }
             }
             GasTilemap.SetTiles(cellPositions, cellTiles);
         }
@@ -329,12 +344,15 @@ namespace World.GasSim
             var cb = new ComputeBuffer(size, stride);
             cb.SetData(data);
             _computeBuffer = cb;
+            computeShader.SetBuffer(0, "cells", _computeBuffer);
         }
 
+        
         void SetShaderVariables(ComputeShader computeShader)
         {
             computeShader.SetInts("bounds", simulationBoundsMin.x, simulationBoundsMin.y, simulationBoundsMax.x, simulationBoundsMax.y);
             computeShader.SetFloats("globalWind", globalWind.x, globalWind.y, globalWind.z);
+            computeShader.SetInts("gasPerSolid", 4,4);
         }
 
         #endregion
@@ -344,6 +362,7 @@ namespace World.GasSim
 
         #region [Dispatch Helpers]
 
+        
         const int THREADS_TEXTURE_PASSES = 8;
         const int THREADS_BUFFER_PASSES = 10;
         

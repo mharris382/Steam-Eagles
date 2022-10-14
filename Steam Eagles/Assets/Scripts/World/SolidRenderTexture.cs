@@ -9,6 +9,8 @@ public class SolidRenderTexture : MonoBehaviour
 {
     public SharedTilemap solidTilemap;
     public SharedRenderTexture solidRenderTexture;
+
+    public bool useSquareTexture = true;
     
     public RenderTexture currentRenderTexture;
     public Camera camera;
@@ -38,6 +40,10 @@ public class SolidRenderTexture : MonoBehaviour
             var bounds = tilemap.cellBounds;
             int width = bounds.size.x;
             int height = bounds.size.y;
+            if (useSquareTexture)
+            {
+                width = height = Mathf.Max(width, height);
+            }
             var pos = new Vector3(bounds.center.x, bounds.center.y, -10);
             currentRenderTexture = new RenderTexture(width, height, 24);
             currentRenderTexture.enableRandomWrite = true;

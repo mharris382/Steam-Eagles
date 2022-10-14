@@ -8,9 +8,10 @@
 
 int4 bounds;
 float4 globalWind;
+int2 gasPerSolid;
 
-Texture2D<float4> solid;
-Texture2D<float4> gas;
+Texture2D<float> solid;
+Texture2D<float> gas;
 
 RWTexture2D<float4> velocity;
 
@@ -25,7 +26,28 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int dVelocity =0;
     int rVelocity =0;
     int lVelocity =0;
-    
-    velocity[id.xy] = float4(rVelocity, lVelocity, uVelocity, dVelocity);
+    int2 uvSolid =  id.xy/gasPerSolid;
+    if(all(uvSolid % gasPerSolid == 1)||all(uvSolid % gasPerSolid == 2))
+    {
+        float4(globalWind.x, globalWind.y, globalWind.z,1);
+        return;
+    }
+    int2 uvSolidU = uvSolid + int2(0,1);
+    int2 uvSolidD = uvSolid + int2(0,-1);
+    int2 uvSolidR = uvSolid + int2(1,0);
+    int2 uvSolidL = uvSolid + int2(-1,0);
+    bool isSolid = all(solid[uvSolid]==0);
+    if(isSolid)
+    {
+        velocity[id.xy] = float4(0,0,1,1);
+        return;
+    }
+    float solidU = all(solid[uvSolidU]==0);
+    float solidD = all(solid[uvSolidD]==0);
+    float solidR = all(solid[uvSolidR]==0);
+    float solidL = all(solid[uvSolidL]==0);
+    float yComponent = solidU - solidD;
+    float xComponent = solidR - solidL;
+    velocity[id.xy] = float4(xComponent, yComponent, 0,1);
     
 }

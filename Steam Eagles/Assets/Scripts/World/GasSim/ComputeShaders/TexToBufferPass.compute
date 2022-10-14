@@ -8,9 +8,10 @@ struct Cell
 
 int4 bounds;
 float4 globalWind;
+int2 gasPerSolid;
 
-Texture2D<float4> solid;
-Texture2D<float4> gas;
+Texture2D<float> solid;
+Texture2D<float> gas;
 
 RWStructuredBuffer<Cell> cells;
 
@@ -18,7 +19,10 @@ RWStructuredBuffer<Cell> cells;
 [numthreads(10,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    Cell cell = cells[id.x];
-    cell.pressure = int(gas[cell.position.xy].x);
-    cells[id.x] = cell;
+   Cell cell = cells[id.x];
+   int2 uvGas = cell.position;
+   int2 uvSolid = cell.position/gasPerSolid;
+   cell.pressure = gas[cell.position.xy] ;
+   
+   cells[id.x] = cell;
 }

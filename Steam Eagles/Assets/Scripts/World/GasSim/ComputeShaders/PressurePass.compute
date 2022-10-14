@@ -8,23 +8,42 @@
 
 int4 bounds;
 float4 globalWind;
+int2 gasPerSolid;
 
-Texture2D<float4> solid;
-Texture2D<float4> velocity;
+Texture2D<float> solid;
+Texture2D<float> velocity;
 
-RWTexture2D<float4> gas;
+RWTexture2D<float> gas;
 
+float Rand(float2 co)
+{
+    return (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 1;
+}
+
+float4 GetPressure(int2 uv, int pressure)
+{
+    float chanceToIncrease = (16 - pressure)/16.0;
+    float chanceToDecrease = (pressure)/16.0;
+    chanceToDecrease = chanceToDecrease * chanceToDecrease;
+    chanceToIncrease = chanceToIncrease * chanceToIncrease;
+
+    float rand = Rand(uv);
+    if(rand > chanceToDecrease && pressure > 0)
+    {
+        pressure = pressure-1;
+    }
+    if(rand > chanceToIncrease && pressure < 16)
+    {
+        pressure = pressure+1;
+    }
+    return float4(pressure, 1, 1,1);
+}
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float4 cellVelocity = velocity[id.xy];
     int cellPressure = int(gas[id.xy].x);
-    
-    int rVelocity = cellVelocity.x;
-    int lVelocity = cellVelocity.y;
-    int uVelocity = cellVelocity.z;
-    int dVelocity = cellVelocity.w;
-
-    gas[id.xy] = float4(cellPressure, 1, 1, 1);
+   //// cellPressure = max(cellPressure - 1,0);
+   //// if(rand(id.xy)<0.1) cellPressure = min(cellPressure * 2, 16);
+    gas[id.xy] = cellPressure;
 }

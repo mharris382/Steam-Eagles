@@ -1,7 +1,7 @@
 #pragma kernel CSMain
 
 RWTexture2D<float> raw;
-RWTexture2D<float> solid;
+RWTexture2D<float4> solid;
 
 float4 airMask;
 int processedScale = 1;
@@ -16,6 +16,17 @@ float4 GetProcessedPixel(const float4 color_raw)
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    solid[id.xy] = step(raw[id.xy], 0.5);
+    float v =step(raw[id.xy], 0.5);
+    v = 1-v;
+    const int2 uvRaw = id.xy;
+    int2 uvProcessed = uvRaw * processedScale;
+    for (int x = uvProcessed.x; x < uvProcessed.x + processedScale; x++)
+    {
+        for (int y = uvProcessed.y; y < uvProcessed.y + processedScale; y++)
+        {
+            int2 uv = int2(x,y);
+            solid[uv] = float4(v,v,v,1);
+        }
+    }
      //=  id.x%2==0;
 }

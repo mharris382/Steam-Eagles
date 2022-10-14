@@ -108,7 +108,7 @@ public class VelocityFieldRenderTexture : MonoBehaviour
         {
             enableRandomWrite = true,
             filterMode = FilterMode.Point,
-            depth = 0
+            depth = 16
         };
         fieldTexture.Create();
         variable.Value = fieldTexture;
