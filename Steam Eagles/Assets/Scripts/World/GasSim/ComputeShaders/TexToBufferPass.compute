@@ -20,9 +20,6 @@ RWStructuredBuffer<Cell> cells;
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
    Cell cell = cells[id.x];
-   int2 uvGas = cell.position;
-   int2 uvSolid = cell.position/gasPerSolid;
-   cell.pressure = gas[cell.position.xy] ;
-   
+   cell.pressure = floor(gas[cell.position.xy] * 16.0);
    cells[id.x] = cell;
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
@@ -299,7 +300,15 @@ namespace World.GasSim
 
         #region [CPU Communication helpers]
 
-        private void CellDictionaryToCellData() => data = gasCells.Select(t => new GasCell(t.Key, t.Value)).ToArray();
+        private int _count = 0;
+
+        private void CellDictionaryToCellData()
+        {
+            if (_count == 0)
+            {
+                data = gasCells.Select(t => new GasCell(t.Key, t.Value)).ToArray();
+            }
+        }
 
         private void CellDataToTilemapData()
         {
@@ -320,6 +329,7 @@ namespace World.GasSim
                 }
             }
             GasTilemap.SetTiles(cellPositions, cellTiles);
+            
         }
         
 
@@ -402,7 +412,7 @@ namespace World.GasSim
             
             int xThreadGroups = GasTexture.width / THREADS_TEXTURE_PASSES;
             int yThreadGroups = GasTexture.height / THREADS_TEXTURE_PASSES;
-            velocityPass.Dispatch(0, xThreadGroups, yThreadGroups, 1);
+            pressurePass.Dispatch(0, xThreadGroups, yThreadGroups, 1);
         }
         
         

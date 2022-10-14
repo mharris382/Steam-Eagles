@@ -19,5 +19,5 @@ RWTexture2D<float> gas;
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     Cell cell = cells[id.x];
-    gas[cell.position.xy] = cell.pressure;
+    gas[cell.position.xy] = cell.pressure/16.0;
 }

@@ -20,30 +20,20 @@ float Rand(float2 co)
     return (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 1;
 }
 
-float4 GetPressure(int2 uv, int pressure)
+int GetPressure(float pressurePercent)
 {
-    float chanceToIncrease = (16 - pressure)/16.0;
-    float chanceToDecrease = (pressure)/16.0;
-    chanceToDecrease = chanceToDecrease * chanceToDecrease;
-    chanceToIncrease = chanceToIncrease * chanceToIncrease;
-
-    float rand = Rand(uv);
-    if(rand > chanceToDecrease && pressure > 0)
-    {
-        pressure = pressure-1;
-    }
-    if(rand > chanceToIncrease && pressure < 16)
-    {
-        pressure = pressure+1;
-    }
-    return float4(pressure, 1, 1,1);
+    return floor(pressurePercent * 16.0);
+}
+float GetPressurePercent(int pressure)
+{
+    return pressure / 16.0;
 }
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    int cellPressure = int(gas[id.xy].x);
-   //// cellPressure = max(cellPressure - 1,0);
-   //// if(rand(id.xy)<0.1) cellPressure = min(cellPressure * 2, 16);
-    gas[id.xy] = cellPressure;
+
+    float pressure = gas[id.xy];
+    pressure -= 1.0/16.0;
+    gas[id.xy] = 1;
 }
