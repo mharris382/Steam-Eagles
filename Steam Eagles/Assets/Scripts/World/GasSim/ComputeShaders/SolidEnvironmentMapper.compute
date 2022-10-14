@@ -1,23 +1,21 @@
 #pragma kernel CSMain
 
-struct Cell
+RWTexture2D<float> raw;
+RWTexture2D<float> solid;
+
+float4 airMask;
+int processedScale = 1;
+int2 size;
+float4 GetProcessedPixel(const float4 color_raw)
 {
-    int3 position;
-    int pressure;
-};
+    
+    float r = min(color_raw.x, color_raw.y);
+    return color_raw;
+}
 
-int4 bounds;
-float4 globalWind;
-
-Texture2D<float4> solid;
-StructuredBuffer<Cell> cells;
-
-RWTexture2D<float4> gas;
-
-
-[numthreads(10,1,1)]
+[numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    Cell cell = cells[id.x];
-    gas[cell.position.xy] = float4(float(cell.pressure), 1,1,1);
+    solid[id.xy] = step(raw[id.xy], 0.5);
+     //=  id.x%2==0;
 }

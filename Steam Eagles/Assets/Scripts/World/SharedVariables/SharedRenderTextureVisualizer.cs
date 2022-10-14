@@ -2,19 +2,22 @@
 
 namespace World
 {
+    [RequireComponent(typeof(Renderer))]
     public class SharedRenderTextureVisualizer : MonoBehaviour
     {
         public Material visualizerMaterial;
-        public Camera camera;
-        public Renderer targetRenderer;
         public SharedRenderTexture visualizer;
 
-        private Material _localMaterial;
         
-        private Material LocalMaterial => _localMaterial == null ? (_localMaterial = new Material(visualizerMaterial)) : _localMaterial;
+        private Material _localMaterial;
+        private Renderer _targetRenderer;
+
+        private Renderer Renderer => _targetRenderer != null ? _targetRenderer : (_targetRenderer = GetComponent<Renderer>());
+        private Material LocalMaterial => _localMaterial != null ? _localMaterial : (_localMaterial = new Material(visualizerMaterial));
 
         private void Awake()
         {
+            _targetRenderer = GetComponent<Renderer>();
             _localMaterial = new Material(visualizerMaterial);
             visualizer.onValueChanged.AddListener(UpdateMaterial);
         }
@@ -29,31 +32,32 @@ namespace World
             
             if (visualizer.Value == null)
             {
-                targetRenderer.enabled = false;
+                Renderer.enabled = false;
             }
             else
             {
-                targetRenderer.enabled = true;
-                
+                Renderer.enabled = true;
+                UpdateMaterial(visualizer.Value);
             }
-            targetRenderer.material = _localMaterial;
+            Renderer.material = _localMaterial;
         }
 
         private void OnDisable()
         {
-            targetRenderer.enabled = false;
+            Renderer.enabled = false;
         }
 
         void UpdateMaterial(RenderTexture renderTexture)
         {
             if (renderTexture == null)
             {
-                targetRenderer.enabled = enabled;
+                Renderer.enabled = enabled;
             }
             else
             {
-                targetRenderer.enabled = enabled;
-                LocalMaterial.SetTexture("renderTexture", renderTexture);
+                Renderer.enabled = enabled;
+                LocalMaterial.SetTexture("_RenderTexture", renderTexture);
+                Renderer.material = LocalMaterial;
             }
          
         }

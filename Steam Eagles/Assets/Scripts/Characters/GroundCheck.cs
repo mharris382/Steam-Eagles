@@ -49,12 +49,12 @@ public class GroundCheck : MonoBehaviour
     {
             Raycast2D mid = null; 
             if (_state == null) return;
-            if (_state.VelocityY > verticalVelocityThreshold && _state.JumpHeld)
-            {
-                IsGrounded = false;
-                Hit = new RaycastHit2D();
-                return;
-            }
+            //if (_state.VelocityY > verticalVelocityThreshold && _state.JumpHeld)
+            //{
+            //    IsGrounded = false;
+            //    Hit = new RaycastHit2D();
+            //    return;
+            //}
             string order = "";
             foreach (var pnt in _points)
             {

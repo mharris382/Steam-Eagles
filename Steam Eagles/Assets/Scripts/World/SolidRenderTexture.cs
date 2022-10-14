@@ -41,6 +41,7 @@ public class SolidRenderTexture : MonoBehaviour
             var pos = new Vector3(bounds.center.x, bounds.center.y, -10);
             currentRenderTexture = new RenderTexture(width, height, 24);
             currentRenderTexture.enableRandomWrite = true;
+            currentRenderTexture.filterMode = FilterMode.Point;
             currentRenderTexture.Create();
             if (camera == null)
             {
