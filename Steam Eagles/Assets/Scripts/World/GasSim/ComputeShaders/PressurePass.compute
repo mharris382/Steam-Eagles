@@ -29,11 +29,39 @@ float GetPressurePercent(int pressure)
     return pressure / 16.0;
 }
 
+float GetPressure(int2 uv)
+{
+    return gas[uv];
+}
+
+float GetSolid(int2 uv)
+{
+    return solid[uv];
+}
+
+float2 GetVelocity(int2 uv)
+{
+    return velocity[uv];
+}
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 
     float pressure = gas[id.xy];
+    int2 uvCurrent = id.xy;
+    
+    int2 uvUp = uvCurrent + int2(0, -1), uvDown = uvCurrent + int2(0, -1), uvRight = uvCurrent + int2(1, 0), uvLeft = uvCurrent +  int2(-1, 0);
+    float pCurrent = gas[uvCurrent];
+    float pUp = GetPressure(uvUp), pDown = GetPressure(uvDown), pLeft = GetPressure(uvLeft), pRight = GetPressure(uvRight);
+
+    float2 vCurrent = GetVelocity(uvCurrent);
+    //float2 vUp = GetVelocity(uvUp), vDown = GetVelocity(uvDown), vLeft = GetVelocity(uvLeft), vRight = GetVelocity(uvRight);
+    
+    // int2 uvSolid = uvCurrent * gasPerSolid;
+    // int2 uvSolidUp = uvSolid + int2(0, -1), uvSolidDown = uvSolid + int2(0, -1), uvSolidRight = uvSolid + int2(1, 0), uvSolidLeft = uvSolid +  int2(-1, 0);
+    
+    
     pressure -= 1.0/16.0;
-    gas[id.xy] = 1;
+    gas[id.xy] = pressure;
 }

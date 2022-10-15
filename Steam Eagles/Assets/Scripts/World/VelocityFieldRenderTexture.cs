@@ -85,8 +85,8 @@ public class VelocityFieldRenderTexture : MonoBehaviour
 
         if (initializeVelocityTexture)
         {
-            int wVel = (w * gasBlockPerSolidBlock)-1;
-            int hVel = (h * gasBlockPerSolidBlock)-1;
+            int wVel = (w * gasBlockPerSolidBlock);
+            int hVel = (h * gasBlockPerSolidBlock);
             CreateDynamicRenderTexture(wVel, hVel, velocityFieldTexture);
         }
     }

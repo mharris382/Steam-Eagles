@@ -16,22 +16,32 @@ Texture2D<float> gas;
 RWTexture2D<float4> velocity;
 
 
+
+float GetSolid(int2 uv)
+{
+    return all(solid[uv]==0);
+}
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     float4 cellVelocity = velocity[id.xy];
     int cellPressure = int(gas[id.xy].x);
 
-    int uVelocity =0;
-    int dVelocity =0;
-    int rVelocity =0;
-    int lVelocity =0;
+    int2 offsetUp =  int2(0, -1), offsetDown = int2(0,1), offsetLeft = int2(1,0), offsetRight = int2(1,0);
+    
+    int2 uvCurrent = id.xy;
+    
+
+    
+    int2 uvUp = uvCurrent + int2(0, -1), uvDown = uvCurrent + int2(0, 1), uvRight = uvCurrent + int2(1, 0), uvLeft = uvCurrent +  int2(-1, 0);
     int2 uvSolid =  id.xy/gasPerSolid;
-    if(all(uvSolid % gasPerSolid == 1)||all(uvSolid % gasPerSolid == 2))
-    {
-        float4(globalWind.x, globalWind.y, globalWind.z,1);
-        return;
-    }
+    int2 uvSolidUp = uvSolid + int2(0, -1), uvSolidDown = uvSolid + int2(0, 1), uvSolidRight = uvSolid + int2(1, 0), uvSolidLeft = uvSolid +  int2(-1, 0);
+    float solidCurrent = solid[uvSolid];
+    float solidUp = GetSolid(uvSolidUp), solidDown =GetSolid(uvSolidDown), solidRight = GetSolid(uvSolidRight),  solidLeft = solid[uvSolidLeft];
+    
+    
+    
     int2 uvSolidU = uvSolid + int2(0,1);
     int2 uvSolidD = uvSolid + int2(0,-1);
     int2 uvSolidR = uvSolid + int2(1,0);
@@ -48,6 +58,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float solidL = all(solid[uvSolidL]==0);
     float yComponent = solidU - solidD;
     float xComponent = solidR - solidL;
+    
     velocity[id.xy] = float4(xComponent, yComponent, 0,1);
     
 }
