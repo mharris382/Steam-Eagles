@@ -14,10 +14,22 @@ Texture2D<float> solid;
 Texture2D<float> velocity;
 
 RWTexture2D<float> gas;
-
+int2 RIGHT = int2(1,0);
+int2 LEFT = int2(-1,0);
+int2 UP = int2(0,-1);
+int2 DOWN = int2(0,1);
+float BIAS_UP = 0.5;
+float BIAS_DOWN = 0.1;
+float BIAS_LEFT = 0.2;
+float BIAS_RIGHT = 0.2;
+float time = 0;
 float Rand(float2 co)
 {
     return (frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453)) * 1;
+}
+// Random number generator.
+float rand(float time, float2 coords) {
+    return frac(sin(dot(coords - 0.1, float2(12.9898,78.233)) + time) * 43758.5453);
 }
 
 int GetPressure(float pressurePercent)
@@ -44,24 +56,193 @@ float2 GetVelocity(int2 uv)
     return velocity[uv];
 }
 
+int GetGas(int2 uv)
+{
+    return gas[uv] * 16.0f;
+}
+
+int GetPressureAbsolute(int gasDensity, float isSolid)
+{
+    return ((1-isSolid.x) * gasDensity.x) + (isSolid.x * 17);
+}
+
+int GetPressureDelta(int gasSelf, int gasNeighbor, float isSolid)
+{
+    return gasSelf-GetPressureAbsolute(gasNeighbor, isSolid) ;//difference from gas self to target
+}
+
+
+int4 GetNeighborPressure(uint3 id)
+{
+    return int4(
+        GetPressure(id + RIGHT),
+        GetPressure(id + UP),
+        GetPressure(id + LEFT),
+        GetPressure(id + DOWN));
+}
+float4 GetNeighborSolids(uint3 id)
+{
+    return float4(
+        GetSolid((id*gasPerSolid) + RIGHT),
+        GetSolid((id*gasPerSolid) + UP),
+        GetSolid((id*gasPerSolid) + LEFT),
+        GetSolid((id*gasPerSolid) + DOWN));
+}
+int4 GetPressureDeltas(int gasSelf, int4 gasNeighbors, float4 solidNeighbors)
+{
+    return int4(GetPressureDelta(gasSelf, gasNeighbors.x, solidNeighbors.x),
+        GetPressureDelta(gasSelf, gasNeighbors.y, solidNeighbors.y),
+        GetPressureDelta(gasSelf, gasNeighbors.z, solidNeighbors.z),
+        GetPressureDelta(gasSelf, gasNeighbors.a, solidNeighbors.a));
+}
+
+int CountNonZeros(float4 values)
+{
+    int result = 0;
+    result += values.x != 0;
+    result += values.y != 0;
+    result += values.z != 0;
+    result += values.w != 0;
+    return result;
+}
+
+int CountValidNeighbors(int4 deltas, int4 gas, float4 solids)
+{
+    int result = 0;
+    result += (deltas.x > 0) && (solids.x!=0) && (gas.x < 16);
+    result += (deltas.y > 0) && (solids.y!=0) && (gas.y < 16);
+    result += (deltas.z > 0) && (solids.z!=0) && (gas.z < 16);
+    result += (deltas.w > 0) && (solids.w!=0) && (gas.w < 16);
+    return result;
+}
+
+int Sum(int4 value)
+{
+    return value.x + value.y + value.z + value.w;
+}
+
+
+float GetRandom(uint2 src, uint2 dest)
+{
+    return Rand(dest);
+}
+
+
+
+bool WillTake(uint2 uvSource,uint2 uvDest, float bias)
+{
+    if(GetRandom(uvSource, uvDest) > bias)
+    {
+        return true;
+    }
+    return false;
+}
+bool WillGiveToNeighbor(uint2 uvSelf, uint2 uvNeighbor, float bias)
+{
+    return WillTake(uvSelf, uvNeighbor, bias);
+}
+bool WillTakeFromNeighbor(uint2 uvSelf, uint2 uvNeighbor, float bias)
+{
+    return WillTake(uvNeighbor, uvSelf, bias);
+}
+
+
+
+int TryTakeGas(uint3 id, bool4 neighborsCanGiveGas)
+{
+    int amt = 0;
+    amt += (amt==0)*(neighborsCanGiveGas.w * WillTakeFromNeighbor(id, id + DOWN, BIAS_UP));
+    amt += (amt==0)*(neighborsCanGiveGas.x * WillTakeFromNeighbor(id, id + RIGHT, BIAS_RIGHT));
+    amt += (amt==0)*(neighborsCanGiveGas.z * WillTakeFromNeighbor(id, id + LEFT, BIAS_LEFT));
+    amt += (amt==0)*(neighborsCanGiveGas.y * WillTakeFromNeighbor(id, id + UP, BIAS_DOWN));
+    return amt;
+}
+int TryGiveGas(uint3 id, bool4 neighborsCanReceiveGas)
+{
+    int amt = 0;
+    amt += (amt==0)*(neighborsCanReceiveGas.y * WillGiveToNeighbor(id, id +UP, BIAS_UP));
+    amt += (amt==0)*(neighborsCanReceiveGas.x * WillGiveToNeighbor(id, id +RIGHT, BIAS_RIGHT));
+    amt += (amt==0)*(neighborsCanReceiveGas.z * WillGiveToNeighbor(id, id +LEFT, BIAS_LEFT));
+    amt += (amt==0)*(neighborsCanReceiveGas.w * WillGiveToNeighbor(id, id +DOWN, BIAS_DOWN));
+    return amt;
+}
+
+int GetUpdatedGas(uint3 id)
+{
+    int currentGas = gas[id.xy];
+    float4 neighborSolids = GetNeighborSolids(id);
+    int4 neighborPressure = GetNeighborPressure(id);
+    
+    bool4 neighbors_can_receive_gas = bool4(
+        (neighborSolids.x!=0) && (neighborPressure.x < currentGas),
+        (neighborSolids.y!=0) && (neighborPressure.y < currentGas),
+        (neighborSolids.z!=0) && (neighborPressure.z < currentGas),
+        (neighborSolids.w!=0) && (neighborPressure.w < currentGas));
+
+    const bool4 neighbors_can_give_gas = bool4(
+    (neighborSolids.x!=0) && (!neighbors_can_receive_gas.x),
+    (neighborSolids.y!=0) && (!neighbors_can_receive_gas.y),
+    (neighborSolids.z!=0) && (!neighbors_can_receive_gas.z),
+    (neighborSolids.w!=0) && (!neighbors_can_receive_gas.w));
+    return currentGas - TryGiveGas(id, neighbors_can_receive_gas) + TryTakeGas(id, neighbors_can_give_gas) ;
+    
+}
+bool TryTransfer(bool canReceive, int2 uvSelf, int2 uvDest,float bias)
+{
+    if(canReceive )//&& rand(uvDest, time) > bias)
+    {
+        int gasSelf = GetGas(uvSelf);
+        int gasDest = GetGas(uvDest);
+        gasDest++;
+        gasSelf++;
+        gas[uvDest] = gasDest /16.0;
+        gas[uvSelf] = gasSelf / 16.0;
+        return true;
+    }
+    return false;
+}
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-
-    float pressure = gas[id.xy];
-    int2 uvCurrent = id.xy;
+    int g = GetGas(id.xy);
+    int give = (g > 0) ;
+    float4 neighborSolids = GetNeighborSolids(id);
+    int4 neighborPressure = GetNeighborPressure(id);
     
-    int2 uvUp = uvCurrent + int2(0, -1), uvDown = uvCurrent + int2(0, -1), uvRight = uvCurrent + int2(1, 0), uvLeft = uvCurrent +  int2(-1, 0);
-    float pCurrent = gas[uvCurrent];
-    float pUp = GetPressure(uvUp), pDown = GetPressure(uvDown), pLeft = GetPressure(uvLeft), pRight = GetPressure(uvRight);
-
-    float2 vCurrent = GetVelocity(uvCurrent);
-    //float2 vUp = GetVelocity(uvUp), vDown = GetVelocity(uvDown), vLeft = GetVelocity(uvLeft), vRight = GetVelocity(uvRight);
-    
-    // int2 uvSolid = uvCurrent * gasPerSolid;
-    // int2 uvSolidUp = uvSolid + int2(0, -1), uvSolidDown = uvSolid + int2(0, -1), uvSolidRight = uvSolid + int2(1, 0), uvSolidLeft = uvSolid +  int2(-1, 0);
-    
-    
-    pressure -= 1.0/16.0;
-    gas[id.xy] = pressure;
+    bool4 neighbors_can_receive_gas = bool4(
+        (neighborSolids.x!=0) && (neighborPressure.x < g),
+        (neighborSolids.y!=0) && (neighborPressure.y < g),
+        (neighborSolids.z!=0) && (neighborPressure.z < g),
+        (neighborSolids.w!=0) && (neighborPressure.w < g));
+    if(TryTransfer(true, id.xy, id.xy+DOWN, BIAS_UP))
+    {
+        return;
+    }
+    if(TryTransfer(neighbors_can_receive_gas.x, id.xy, id.xy+RIGHT, BIAS_RIGHT))
+    {
+        return;
+    }
+    if(TryTransfer(neighbors_can_receive_gas.z, id.xy, id.xy+LEFT, 0.7))
+    {
+        return;
+    }
+    if(TryTransfer(neighbors_can_receive_gas.w, id.xy, id.xy+DOWN, 1))
+    {
+        return;
+    }
 }
+
+
+
+//
+// int2 uvUp = uvCurrent + int2(0, -1), uvDown = uvCurrent + int2(0, -1), uvRight = uvCurrent + int2(1, 0), uvLeft = uvCurrent +  int2(-1, 0);
+//
+// float pCurrent = gas[uvCurrent];
+// float pUp = GetPressure(uvUp), pDown = GetPressure(uvDown), pLeft = GetPressure(uvLeft), pRight = GetPressure(uvRight);
+
+//float2 vUp = GetVelocity(uvUp), vDown = GetVelocity(uvDown), vLeft = GetVelocity(uvLeft), vRight = GetVelocity(uvRight);
+    
+// int2 uvSolid = uvCurrent * gasPerSolid;
+// int2 uvSolidUp = uvSolid + int2(0, -1), uvSolidDown = uvSolid + int2(0, -1), uvSolidRight = uvSolid + int2(1, 0), uvSolidLeft = uvSolid +  int2(-1, 0);
+    

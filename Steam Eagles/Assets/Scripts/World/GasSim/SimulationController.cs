@@ -48,7 +48,7 @@ namespace World.GasSim
         
         [Tooltip("shared reference to velocity field texture which will be written to during the velocity pass and read from during the pressure pass")]
         public SharedRenderTexture velocityFieldTexture;
-        
+        public SharedRenderTexture previousVelocityFieldTexture;
         [Tooltip("only used by the simulation compute shaders.  This is the texture that will be copied to/from the buffer")]
         public SharedRenderTexture gasTexture;
         
@@ -99,6 +99,20 @@ namespace World.GasSim
                     throw new NotImplementedException("TODO: initialize velocity field rt");
                 }
                 return velocityFieldTexture.Value;
+            }
+        }
+
+        private RenderTexture PreviousVelocityTexture
+        {
+            get
+            {
+                if (!previousVelocityFieldTexture.HasValue)
+                {
+                    //TODO: initialize prev velocity field rt
+                    throw new NotImplementedException("TODO: initialize velocity field rt");
+                }
+
+                return previousVelocityFieldTexture.Value;
             }
         }
         private RenderTexture SolidTexture
@@ -247,6 +261,7 @@ namespace World.GasSim
             
             SetGasInComputeShader(velocityPass);
             SetVelocityInComputeShader(velocityPass);
+            SetPrevVelocityInComputeShader(velocityPass);
             SetSolidInComputeShader(velocityPass);
             SetShaderVariables(velocityPass);
             
@@ -338,7 +353,7 @@ namespace World.GasSim
         #region [CPU to GPU communication helpers]
 
         void SetVelocityInComputeShader(ComputeShader computeShader) => computeShader.SetTexture(0, "velocity", VelocityTexture);
-
+        void SetPrevVelocityInComputeShader(ComputeShader computeShader) => computeShader.SetTexture(0, "previousVelocity", PreviousVelocityTexture);
         void SetSolidInComputeShader(ComputeShader computeShader) => computeShader.SetTexture(0, "solid", SolidTexture);
 
         void SetGasInComputeShader(ComputeShader computeShader) => computeShader.SetTexture(0, "gas", GasTexture);
@@ -409,7 +424,7 @@ namespace World.GasSim
         /// </summary>
         void DispatchPressurePass()
         {
-            
+            pressurePass.SetFloat("time", Time.realtimeSinceStartup);
             int xThreadGroups = GasTexture.width / THREADS_TEXTURE_PASSES;
             int yThreadGroups = GasTexture.height / THREADS_TEXTURE_PASSES;
             pressurePass.Dispatch(0, xThreadGroups, yThreadGroups, 1);

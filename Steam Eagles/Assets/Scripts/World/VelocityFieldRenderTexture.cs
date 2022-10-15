@@ -33,7 +33,7 @@ public class VelocityFieldRenderTexture : MonoBehaviour
     public bool initializeVelocityTexture= true;
     [Tooltip("texture reference which will be created and store the solid environment map")]
     public SharedRenderTexture velocityFieldTexture;
-
+    public SharedRenderTexture previousVelocityTexture;
     public int gasBlockPerSolidBlock = 4;
     
 
@@ -88,6 +88,7 @@ public class VelocityFieldRenderTexture : MonoBehaviour
             int wVel = (w * gasBlockPerSolidBlock);
             int hVel = (h * gasBlockPerSolidBlock);
             CreateDynamicRenderTexture(wVel, hVel, velocityFieldTexture);
+            CreateDynamicRenderTexture(wVel, hVel, previousVelocityTexture);
         }
     }
     void ProcessSolidTexture()
