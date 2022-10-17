@@ -768,11 +768,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2217395085411386904, guid: 69f4e62056282e44b9811eec1956ca0d, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
-      value: 2.5444794
+      value: 16.141409
       objectReference: {fileID: 0}
     - target: {fileID: 2217395085411386904, guid: 69f4e62056282e44b9811eec1956ca0d, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.y
-      value: 29.564423
+      value: 31.29939
       objectReference: {fileID: 0}
     - target: {fileID: 2217395085411386906, guid: 69f4e62056282e44b9811eec1956ca0d, type: 3}
       propertyPath: m_Size.x
@@ -983,6 +983,7 @@ GameObject:
   - component: {fileID: 516721977}
   - component: {fileID: 516721976}
   - component: {fileID: 516721975}
+  - component: {fileID: 516721978}
   m_Layer: 12
   m_Name: Static Sprite
   m_TagString: Untagged
@@ -1104,6 +1105,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &516721978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516721973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34d5628bc57a4223a88bcc6ddde87bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  searchColliderForTargets: 1
+  searchRigidbodyForTargets: 1
+  debug: 1
+  matchTags:
+  - Builder
+  - Transporter
 --- !u!1 &530766914
 GameObject:
   m_ObjectHideFlags: 0
@@ -135388,6 +135407,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5973531505062858504, guid: 47b6341e9cbe7924ab63ea250079b3ae, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 63.447666
+      objectReference: {fileID: 0}
     - target: {fileID: 5973531505062858506, guid: 47b6341e9cbe7924ab63ea250079b3ae, type: 3}
       propertyPath: m_Name
       value: Platform Ground Rect
@@ -136021,6 +136044,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Transporter
       objectReference: {fileID: 0}
+    - target: {fileID: 8672804246156482745, guid: 2ec4c18e537a7db47a00266c46a5c140, type: 3}
+      propertyPath: m_TagString
+      value: Transporter
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ec4c18e537a7db47a00266c46a5c140, type: 3}
 --- !u!4 &5703571361133940495 stripped
@@ -136270,6 +136297,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7549296378537232731, guid: 43b7b8c7c50716c4aa9c437984b1d7c1, type: 3}
       propertyPath: m_Name
+      value: Builder
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549296378537232731, guid: 43b7b8c7c50716c4aa9c437984b1d7c1, type: 3}
+      propertyPath: m_TagString
       value: Builder
       objectReference: {fileID: 0}
     - target: {fileID: 7846602507155150821, guid: 43b7b8c7c50716c4aa9c437984b1d7c1, type: 3}
