@@ -1,18 +1,51 @@
 ﻿using System;
+using System.Collections;
+using CoreLib;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(menuName = "Steam Eagles/Static Block")]
 public class StaticBlock : ScriptableObject
 {
-    public BlockMapType targetMap;
-    
+    [FormerlySerializedAs("targetMap")] public MapType targetMapType;
+    public DynamicBlock dynamicBlock;
     public TileBase tile;
     public Color color;
     public Sprite sprite;
 
-    public static implicit operator TileBase(StaticBlock block)
+
+    [Tooltip("How many blocks can currently be placed?  If null, blocks can always be placed")]
+    public SharedInt remainingBlocks;
+
+
+    private Tilemap GetBuildingTargetTilemap()
     {
-        return block.tile;
+        throw new NotImplementedException();
     }
+    
+    /// <summary>
+    /// places a static block tile into the world (provided there is a valid active tilemap)
+    /// </summary>
+    /// <param name="cellCoord">tilemap cell space coordinate at which to place the block</param>
+    /// <exception cref="NotImplementedException"></exception>
+    public IEnumerator PlaceBlock(Vector3Int cellCoord)
+    {
+        var tm = GetBuildingTargetTilemap();
+        
+        throw new NotImplementedException();
+    }
+
+    
+    /// <summary>
+    /// detaches a block from the world.  Removes a static block and spawns the corresponding dynamic block
+    /// </summary>
+    /// <param name="cellCoord"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    public IEnumerator RemoveBlock(Vector3Int cellCoord)
+    {
+        throw new NotImplementedException();
+    }
+    
+    
 }
