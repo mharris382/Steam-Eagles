@@ -1,10 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = UnityEngine.Object;
 
 namespace CoreLib
 {
-    
     public abstract class SharedVariable<T> : ScriptableObject where T : class
     {
         
@@ -34,6 +34,10 @@ namespace CoreLib
         {
             get
             {
+                if (value is Object o)
+                {
+                    return o != null;
+                }
                 return _hasValue;
             }
         }

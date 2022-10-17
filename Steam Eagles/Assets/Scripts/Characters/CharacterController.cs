@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -186,6 +187,12 @@ public class CharacterController : MonoBehaviour
 
     private void HandleJump()
     {
+        if (Time.time - lastDropTime < 0.5f) return;
+        if (JumpHeld && State.MoveY < 0)
+        {
+            StartCoroutine(DropThroughPlatform());
+            return;
+        }
         if (IsGrounded && JumpPressed) {
             IsJumping = true;
             _jumpTimeCounter = jumpTime;
@@ -201,6 +208,17 @@ public class CharacterController : MonoBehaviour
                 IsJumping = false;
             }
         }
+    }
+
+    private float lastDropTime;
+    IEnumerator DropThroughPlatform()
+    {
+        var collider = GetComponent<Collider2D>();
+        lastDropTime = Time.time;
+        collider.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        
+        collider.enabled = true;
     }
 
     private bool HasGroundedMovement()
