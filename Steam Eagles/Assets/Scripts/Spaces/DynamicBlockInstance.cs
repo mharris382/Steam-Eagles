@@ -16,22 +16,11 @@ public class DynamicBlockInstance : MonoBehaviour
         set
         {
             _block = value;
-            Sr.sprite = value.linkedStaticBlock.sprite;
-            sr.color = value.linkedStaticBlock.color * Color.gray;
-            Sprite sprite= sr.sprite;
-            AddCollision(sprite);
+            
+           
         }
     }
 
-    private static void AddCollision(Sprite sprite)
-    {
-        Debug.Assert(sprite.GetPhysicsShapeCount() > 0, "Sprite Missing physics shapes", sprite);
-        var pointCount = sprite.GetPhysicsShapePointCount(0);
-        var points = new List<Vector2>(pointCount);
-        sprite.GetPhysicsShape(0, points);
-    }
+  
 
-    private SpriteRenderer sr;
-
-    public SpriteRenderer Sr => sr != null ? sr : (sr = new GameObject("Block Renderer").AddComponent<SpriteRenderer>());
 }
