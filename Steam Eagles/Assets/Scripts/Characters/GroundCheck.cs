@@ -22,68 +22,68 @@ public class GroundCheck : MonoBehaviour
 
     public Transform groundCheckParent;
 
+    public float GroundPercent
+    {
+        get;
+        private set;
+    }
+
+    public float TimeSinceGrounded => Time.time - _lastGroundedTime;
+    
+
     [SerializeField]
     protected Raycast2D[] _points ;//=> groundCheckParent.GetComponentsInChildren<Raycast2D>();
 
 
     public RaycastHit2D Hit { get; private set; }
 
+    protected RaycastHit2D?[] hits;
 
-    protected Dictionary<Transform, Raycast2D> _checkPoints = new Dictionary<Transform, Raycast2D>();
-
+    public bool MovingRight { get; set; }
+    public float verticalVelocityThreshold = 1;
+    private float _lastGroundedTime;
     private CharacterState _state;
+    
+    
     private void Awake()
     {
         _state = GetComponent<CharacterState>();
         _isGroundedProperty.Subscribe(gnded => OnGroundedStateChanged?.Invoke(gnded));
         var pnts = _points;
-        foreach (var groundCheckPoint in pnts)
-        {
-            _checkPoints.Add(groundCheckPoint.transform, groundCheckPoint);
-        }
+        hits = new RaycastHit2D?[_points.Length];
     }
 
-    public bool MovingRight { get; set; }
-    public float verticalVelocityThreshold = 1;
+ 
     protected virtual void Update()
     {
-            Raycast2D mid = null; 
             if (_state == null) return;
-            //if (_state.VelocityY > verticalVelocityThreshold && _state.JumpHeld)
-            //{
-            //    IsGrounded = false;
-            //    Hit = new RaycastHit2D();
-            //    return;
-            //}
-            string order = "";
-            foreach (var pnt in _points)
+            
+            
+            int hitCount = 0;
+            for (int i = 0; i < _points.Length; i++)
             {
+                var pnt = _points[i];
                 if (pnt.CheckForHit())
                 {
                     IsGrounded = true;
                     Hit = pnt.Hit2D;
-                    return;
+                    hitCount++;
+                    hits[i] = Hit;
+                }
+                else
+                {
+                    hits[i] = null;
                 }
             }
-            IsGrounded = false;
+
+            GroundPercent = hitCount / (float)_points.Length;
+            IsGrounded = hitCount > 0;
+            if (IsGrounded)
+            {
+                _lastGroundedTime = Time.time;
+            }
             
-        return;
+            
    }
-
-    public void FixedUpdate()
-    {
-        if (_state == null) return;
-        if (_state.VelocityY > 0)
-        {
-            
-        }
-    }
-
-    private bool GetPoint(int i, out Raycast2D point)
-    {
-        point = null;
-        if (_checkPoints.ContainsKey(groundCheckParent.GetChild(i)) == false) return false;
-        point = _checkPoints[groundCheckParent.GetChild(i)];
-        return true;
-    }
+    
 }
