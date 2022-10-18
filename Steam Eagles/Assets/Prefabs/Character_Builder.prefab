@@ -96,11 +96,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1453e878e4739c479f6d84178c4b65b, type: 3}
---- !u!212 &130481557827111833 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3980944923643747704, guid: a1453e878e4739c479f6d84178c4b65b, type: 3}
-  m_PrefabInstance: {fileID: 3958866494068643553}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4093585599203205532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,7 +153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5767751469578299591, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_Name
-      value: Builder
+      value: Character_Builder
       objectReference: {fileID: 0}
     - target: {fileID: 5767751469578299591, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_TagString
@@ -264,6 +259,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.71200067
       objectReference: {fileID: 0}
+    - target: {fileID: 6692567777541361376, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: sharedVariable
+      value: 
+      objectReference: {fileID: 11400000, guid: e800450e5f690a645ac404e0707809cb, type: 2}
     - target: {fileID: 6923055510081587504, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: distance
       value: 0.5
@@ -287,6 +286,10 @@ PrefabInstance:
     - target: {fileID: 9027329201862857739, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: distance
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9066338902897491009, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
@@ -313,14 +316,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editableTilemap: {fileID: 11400000, guid: 2c808834ed1720e42a85ed3df9cdc0ef, type: 2}
-  characterCamera: {fileID: 11400000, guid: 2f987ad0040850043a318a0687ae46d0, type: 2}
-  previewObj: {fileID: 130481557827111833}
-  validColor: {r: 0, g: 1, b: 0, a: 1}
-  invalidColor: {r: 1, g: 0, b: 0, a: 1}
-  outOfBounds: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  editTriggerLayer:
-    serializedVersion: 2
-    m_Bits: 4096
+  characterTransform: {fileID: 0}
+  characterAimPosition: {fileID: 0}
+  sharedInputs:
+    characterCanEdit: {fileID: 0}
+    characterPreviewing: {fileID: 0}
+    executingCharacterAction: {fileID: 0}
 --- !u!114 &9204865196430736109
 MonoBehaviour:
   m_ObjectHideFlags: 0

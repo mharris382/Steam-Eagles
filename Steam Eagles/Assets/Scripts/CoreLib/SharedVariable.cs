@@ -14,7 +14,7 @@ namespace CoreLib
         public UnityEvent<T> onValueChanged;
         private bool _hasValue;
         
-        public T Value
+        public virtual T Value
         {
             get => value;
             set

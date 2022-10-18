@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Collections;
 using CoreLib;
+using StateMachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+using World;
+
 
 [CreateAssetMenu(menuName = "Steam Eagles/Static Block")]
 public class StaticBlock : ScriptableObject
 {
-    [FormerlySerializedAs("targetMap")] public MapType targetMapType;
+    
+    public SharedTilemap sharedTilemap;
+    public SharedTilemap[] blockingTilemaps;
+    
+    [Header("Dynamic Block")]
     public DynamicBlock dynamicBlock;
+    
+    [Header("Static Block")]
     public TileBase tile;
     public Color color;
     public Sprite sprite;

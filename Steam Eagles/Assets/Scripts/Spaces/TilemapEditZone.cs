@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using World;
 
+
+[Obsolete("Use TilemapEditTrigger instead")]
 public class TilemapEditZone : TagTriggerArea
 {
     public BoxCollider2D boxCollider;
@@ -54,3 +56,5 @@ public class TilemapEditZone : TagTriggerArea
         }
     }
 }
+
+

@@ -10,6 +10,5 @@ using UnityEditor;
 [CreateAssetMenu(menuName = "Steam Eagles/Block Database")]
 public class BlockDatabase : ScriptableObject
 {
-    public List<BlockMapType> mapTypes;
     public List<BlockData> blocks;
 }

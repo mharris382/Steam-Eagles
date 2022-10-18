@@ -50,7 +50,7 @@ namespace World
 
             public Shape brushShape
             {
-                get => _brushShape;
+                get => Shape.Square;
                 set
                 {
                     _brushShape = value;

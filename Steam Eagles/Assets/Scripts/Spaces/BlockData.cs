@@ -6,7 +6,6 @@ namespace Spaces
     [CreateAssetMenu(menuName = "Steam Eagles/Block Data")]
     public class BlockData : ScriptableObject
     {
-        [SerializeField] internal BlockMapType blockType;
         [SerializeField] internal StaticBlock staticBlock;
         [SerializeField] internal DynamicBlock dynamicBlock;
 
