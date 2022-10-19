@@ -2,7 +2,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CoreLib
 {
     public abstract class SharedVariable<T> : ScriptableObject where T : class
@@ -121,4 +123,28 @@ namespace CoreLib
 
         private void OnEnable() => sharedVariable.Value = GetVariableAssignment();
     }
+    
+    
+#if UNITY_EDITOR
+    
+    public class SharedVariableEditor<T, TShared> : Editor 
+        where T : UnityEngine.Object where TShared : SharedVariable<T>
+    {
+        public override void OnInspectorGUI()
+        {
+            OnVariableGUI(target as TShared);
+            base.OnInspectorGUI();
+        }
+
+        protected virtual void OnVariableGUI( TShared t)
+        {
+            if (t.HasValue)
+            {
+                string label = $"<b>{t.Value.name}</b>";
+                GUILayout.Box(new GUIContent(label));
+                EditorGUILayout.ObjectField("Shared Reference:", t.Value, t.Value.GetType());
+            }
+        }
+    }
+#endif
 }
