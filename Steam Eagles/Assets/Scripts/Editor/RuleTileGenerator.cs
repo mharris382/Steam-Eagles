@@ -1,7 +1,9 @@
 ﻿//This tool is a part of the VinTools Unity Package: https://vinarkgames.itch.io/vintools
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Spaces;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
@@ -290,7 +292,7 @@ public class RuleTileGenerator : EditorWindow
     
     public RuleTile GenerateRuleTile()
     {
-        RuleTile tile = ScriptableObject.CreateInstance("PipeTile") as RuleTile;
+        RuleTile tile = ScriptableObject.CreateInstance<RuleTile>();
 
         //set default tile
         tile.m_DefaultSprite = defaultSprite;
@@ -320,6 +322,93 @@ public class RuleTileGenerator : EditorWindow
         EditorUtility.FocusProjectWindow();
 
         Selection.activeObject = tile;
+    }
+}
+
+
+public class RuleTileCopier : EditorWindow
+{
+    
+    [MenuItem("Tools/Rule Tile Copier")]
+    public static void ShowWindow()
+    {
+        GetWindow<RuleTileCopier>("Rule Tile Generator");
+    }
+
+    public GameObject overrideDefaultGameobject;
+    public RuleTile original;
+    public Sprite[] sprites = new Sprite[0];
+    
+    private void OnGUI()
+    {
+        if (original == null)
+        {
+            EditorGUILayout.Space();
+            GUILayout.Label("Select Original Rule Tile to Copy", EditorStyles.boldLabel);
+            EditorGUILayout.Space();
+            
+            ScriptableObject target = this;
+            SerializedObject so = new SerializedObject(target);
+            SerializedProperty prp = so.FindProperty("original");
+            EditorGUILayout.PropertyField(prp, true);
+            so.ApplyModifiedProperties();
+        }
+        else
+        {
+            ScriptableObject target = this;
+            SerializedObject so = new SerializedObject(target);
+            SerializedProperty prp = so.FindProperty("sprites");
+            EditorGUILayout.PropertyField(prp, true);
+            so.ApplyModifiedProperties();
+            DoOverrideGOField(so);
+            if (original.m_TilingRules.Count == sprites.Length)
+            {
+                if (GUILayout.Button("Copy Rule Tile"))
+                {
+                    var newTileName = $"{original.name} (COPY)";
+                    SaveTile(CopyRuleTile(original),newTileName);
+                }
+            }
+        }
+    }
+    public static void SaveTile(RuleTile tile, string name)
+    {
+        AssetDatabase.CreateAsset(tile, $"Assets/{name}.asset");
+        AssetDatabase.SaveAssets();
+
+        EditorUtility.FocusProjectWindow();
+
+        Selection.activeObject = tile;
+    }
+    private void DoOverrideGOField(SerializedObject so)
+    {
+        SerializedProperty prp = so.FindProperty("overrideDefaultGameobject");
+        EditorGUILayout.PropertyField(prp,true);
+        so.ApplyModifiedProperties();
+    }
+
+    private PipeTile CopyRuleTile(RuleTile ruleTile)
+    {
+        var tile = ScriptableObject.CreateInstance<PipeTile>();
+        tile.m_DefaultSprite = ruleTile.m_DefaultSprite;
+        tile.m_DefaultColliderType = ruleTile.m_DefaultColliderType;
+        tile.m_DefaultGameObject = overrideDefaultGameobject == null ? ruleTile.m_DefaultGameObject : overrideDefaultGameobject;
+        RuleTile.TilingRule[] ruleTiles = new RuleTile.TilingRule[ruleTile.m_TilingRules.Count];
+        for (int i = 0; i < ruleTile.m_TilingRules.Count; i++)
+        {
+            var originalRule = ruleTile.m_TilingRules[i];
+            var rule = new RuleTile.TilingRule();
+
+            rule.m_Sprites[0] = sprites[i];
+            rule.m_Neighbors = originalRule.m_Neighbors;
+            rule.m_GameObject = overrideDefaultGameobject == null
+                ? originalRule.m_GameObject
+                : overrideDefaultGameobject;
+            rule.m_ColliderType = originalRule.m_ColliderType;
+            tile.m_TilingRules.Add(rule);
+        }
+
+        return tile;
     }
 }
 #endif
