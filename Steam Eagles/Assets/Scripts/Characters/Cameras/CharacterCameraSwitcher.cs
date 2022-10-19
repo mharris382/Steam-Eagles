@@ -3,6 +3,7 @@ using System.Collections;
 using CoreLib;
 using DG.Tweening;
 using StateMachine;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -15,8 +16,16 @@ public class CharacterCameraSwitcher : MonoBehaviour
     [SerializeField] private CameraRects cameraRects;
     
     [Header("Shared Cameras")]
+    [Tooltip("This is the actual camera which is specifically focusing on player 1.")]
     public SharedCamera p1;
+    [Tooltip("This is the actual camera which is specifically focusing on player 2.")]
     public SharedCamera p2;
+    
+    
+
+    
+    public SharedCamera currentCameraPlayer1;
+    public SharedCamera currentCameraPlayer2;
     
     [Header("Shared Transforms")]
     public SharedTransform p1Transform;
@@ -29,12 +38,13 @@ public class CharacterCameraSwitcher : MonoBehaviour
     public UnityEvent onSwitchingToSplitScreen;
     public UnityEvent onSwitchedToSplitScreen;
 
-    
+
+    public bool forceSingleCameraMode = false;
 
     bool HasValues() => p1.HasValue && p2.HasValue && p1Transform.HasValue && p2Transform.HasValue;
 
 
-    
+    public SharedCamera SingleScreenCamera => p2;
 
 
     private Vector2 P1Position => HasValues() ? p1Transform.Value.position : Vector2.zero;
@@ -48,10 +58,13 @@ public class CharacterCameraSwitcher : MonoBehaviour
     [Serializable]
     private class CameraRects
     {
+        [Header("Camera 1")]
         public Rect splitScreenRectCamera1 = new Rect(0, 0, 0.5f, 1f);
-        public Rect splitScreenRectCamera2 = new Rect(0.5f, 0, 0.5f, 1f);
-        
+        [Space(5)]
         public Rect singleScreenRectCamera1 = new Rect(0, 0, 1, 1f);
+        [Header("Camera 2")]
+        public Rect splitScreenRectCamera2 = new Rect(0.5f, 0, 0.5f, 1f);
+        [Space(5)]
         public Rect singleScreenRectCamera2 = new Rect(1, 0, 0.5f, 1f);
         
     }
@@ -83,28 +96,48 @@ public class CharacterCameraSwitcher : MonoBehaviour
         {
             yield return null;
         }
+        onSwitchingToSplitScreen.AddListener(() =>
+        {
+            if(currentCameraPlayer1!=null)
+                currentCameraPlayer1.Value = p1.Value;
+            if(currentCameraPlayer2!=null)
+                currentCameraPlayer2.Value = p2.Value;
+        });
+        
+        onSwitchingToSingleScreen.AddListener(() =>
+        {
+            if(currentCameraPlayer1!=null)
+                currentCameraPlayer1.Value = SingleScreenCamera.Value;
+            if(currentCameraPlayer2!=null)
+                currentCameraPlayer2.Value = SingleScreenCamera.Value;
+        });
+        
         this._switchSequence = DOTween.Sequence();
         Cam1.rect = cameraRects.singleScreenRectCamera1;
         Cam2.rect = cameraRects.singleScreenRectCamera2;
         _switchSequence.SetAutoKill(false);
+        
         _switchSequence.Insert(0, Cam1.DORect(cameraRects.splitScreenRectCamera1, transitionDuration));
         _switchSequence.Insert(0, Cam2.DORect(cameraRects.splitScreenRectCamera2, transitionDuration));
+        
         _switchSequence.OnRewind(() => onSwitchingToSingleScreen?.Invoke());
-        _switchSequence.OnPlay(() => onSwitchingToSingleScreen?.Invoke());
+        _switchSequence.OnPlay(() => onSwitchingToSplitScreen?.Invoke());
+        
         _switchSequence.OnComplete(() => onSwitchedToSplitScreen?.Invoke());
         
         Vector2 diff = P1Position - P2Position;
-        bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance);
-        if (inSplitScreenMode)
-        {
-            Debug.Log("Starting Camera in Split Screen Mode");
-            
-        }
+        bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance) && !forceSingleCameraMode;
+        
+        if(inSplitScreenMode) onSwitchingToSplitScreen?.Invoke();
+        else onSwitchingToSingleScreen?.Invoke();
+        
         _switchSequence.Goto((inSplitScreenMode ? 1 : 0)*transitionDuration);
         if (_switchSequence.IsPlaying())
         {
             _switchSequence.Pause();
         }
+        
+       
     }
 
     private void Update()

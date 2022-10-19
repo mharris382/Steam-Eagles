@@ -1,18 +1,19 @@
 ﻿using System;
 using CoreLib;
 using StateMachine;
+using UniRx;
 using UnityEngine;
 using World;
+
+
+
 
 public class CharacterTilemapEditor : MonoBehaviour
 {
     public SharedTilemap editableTilemap;
-    
-    public SharedTransform characterTransform;
-    public SharedTransform characterAimPosition;
 
     [SerializeField] private SharedInputs sharedInputs;
-    
+
     
 
     [Serializable]
@@ -28,13 +29,11 @@ public class CharacterTilemapEditor : MonoBehaviour
 
         public bool ExecutingCharacterAction() =>
             executingCharacterAction != null && executingCharacterAction.Value;
+
+        
     }
 
-   private bool HasAllReferences()
-   {
-       return characterTransform.HasValue && characterAimPosition.HasValue;
-   }
-    
+  
     
 
     private void Awake()

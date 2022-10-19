@@ -26,6 +26,8 @@ public class RuleTileGenerator : EditorWindow
         new Vector3Int(1, -1, 0),
     };
 
+
+
     [MenuItem("VinTools/Editor Windows/Rule Tile Generator")]
     public static void ShowWindow()
     {
@@ -285,9 +287,10 @@ public class RuleTileGenerator : EditorWindow
     public GameObject defaultGameobject;
     public bool addGameobjectsToRules;
 
+    
     public RuleTile GenerateRuleTile()
     {
-        RuleTile tile = ScriptableObject.CreateInstance<RuleTile>();
+        RuleTile tile = ScriptableObject.CreateInstance("PipeTile") as RuleTile;
 
         //set default tile
         tile.m_DefaultSprite = defaultSprite;

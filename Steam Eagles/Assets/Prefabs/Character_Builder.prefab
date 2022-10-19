@@ -40,7 +40,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3980944923643747704, guid: a1453e878e4739c479f6d84178c4b65b, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3980944923643747704, guid: a1453e878e4739c479f6d84178c4b65b, type: 3}
       propertyPath: m_SortingLayerID
@@ -115,6 +115,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 2723127738269754888, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: targetTilemap
+      value: 
+      objectReference: {fileID: 11400000, guid: 2c808834ed1720e42a85ed3df9cdc0ef, type: 2}
+    - target: {fileID: 2723127738269754888, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: blockingTilemap
+      value: 
+      objectReference: {fileID: 11400000, guid: 065e470c41d2a9041bfdc6ee9b002259, type: 2}
+    - target: {fileID: 2825324248862800532, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: useCursor
+      value: 
+      objectReference: {fileID: 11400000, guid: 0712e14ed5da0ab4985a01c7c0c06fde, type: 2}
+    - target: {fileID: 2825324248862800532, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: cellSelector.selectedCell
+      value: 
+      objectReference: {fileID: 11400000, guid: e800450e5f690a645ac404e0707809cb, type: 2}
+    - target: {fileID: 2825324248862800532, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: mouseSelector.playerCamera
+      value: 
+      objectReference: {fileID: 11400000, guid: 4a05fc985cb3ae745ad4741680fa272e, type: 2}
     - target: {fileID: 2882233641245735731, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.7980007
@@ -271,6 +291,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.8960007
       objectReference: {fileID: 0}
+    - target: {fileID: 7627967441288498735, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7947405589697243963, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: fallSpeedToTriggerEffect
       value: 20
@@ -303,25 +327,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5767751469578299591, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
   m_PrefabInstance: {fileID: 4093585599203205532}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1928904246397340716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549296378537232731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acca04cc837c465e823ce873ec47c8c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  editableTilemap: {fileID: 11400000, guid: 2c808834ed1720e42a85ed3df9cdc0ef, type: 2}
-  characterTransform: {fileID: 0}
-  characterAimPosition: {fileID: 0}
-  sharedInputs:
-    characterCanEdit: {fileID: 0}
-    characterPreviewing: {fileID: 0}
-    executingCharacterAction: {fileID: 0}
 --- !u!114 &9204865196430736109
 MonoBehaviour:
   m_ObjectHideFlags: 0

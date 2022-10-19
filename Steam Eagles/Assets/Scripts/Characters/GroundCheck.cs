@@ -11,6 +11,7 @@ public class GroundCheck : MonoBehaviour
     [SerializeField]
     private UnityEvent<bool> OnGroundedStateChanged;
 
+    
     BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(true);
     public bool IsGrounded
     {
@@ -57,8 +58,13 @@ public class GroundCheck : MonoBehaviour
     protected virtual void Update()
     {
             if (_state == null) return;
-            
-            
+
+            if (_state.IsJumping && _state.VelocityY > verticalVelocityThreshold)
+            {
+                IsGrounded = false;
+                GroundPercent = 0;
+                return;
+            }
             int hitCount = 0;
             for (int i = 0; i < _points.Length; i++)
             {
