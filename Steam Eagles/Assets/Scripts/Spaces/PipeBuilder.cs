@@ -26,22 +26,7 @@ namespace Spaces
         private ICellSelector selector;
         
 
-        private void Start()
-        {
-            this.selector = GetComponent<ICellSelector>();
-        }
-
-        private void Update()
-        {
-            UpdatePreview(selector.GetSelectedCell());
-        }
-
-        private void UpdatePreview(Vector3Int selectedCell)
-        {
-            var selectedCellWp = targetTilemap.Value.GetCellCenterWorld(selectedCell);
-            
-            previewObject.position = selectedCellWp;
-        }
+        
     }
 
     
@@ -64,6 +49,7 @@ namespace Spaces
         public bool IsCellInRange { get; set; }
     }
 
+    [System.Obsolete("Use Characters.ICellSelector")]
     public interface ICellSelector
     {
         Vector3Int GetSelectedCell();
