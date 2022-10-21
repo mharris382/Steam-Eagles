@@ -146,5 +146,62 @@ namespace CoreLib
             }
         }
     }
+    
+    // public class SharedComponentEditor<T, TShared> : Editor 
+    //     where T : UnityEngine.Component where TShared : SharedComponent<T>
+    // {
+    //     public override void OnInspectorGUI()
+    //     {
+    //         OnVariableGUI(target as TShared);
+    //         base.OnInspectorGUI();
+    //     }
+    //
+    //     protected virtual void OnVariableGUI( TShared t)
+    //     {
+    //         if (t.HasValue)
+    //         {
+    //             string label = $"<b>{t.Value.name}</b>";
+    //             GUILayout.Box(new GUIContent(label));
+    //             EditorGUILayout.ObjectField("Shared Reference:", t.Value, t.Value.GetType());
+    //             
+    //             EditorGUILayout.ObjectField("Component Reference", t.)
+    //         }
+    //     }
+    // }
 #endif
+
+    // public class SharedGameObject : SharedVariable<GameObject>
+    // {
+    //     
+    // }
+    //
+    // public class SharedComponent<T> : SharedGameObject where T: Component
+    // {
+    //     [SerializeField] private T component;
+    //     
+    //     public override GameObject Value
+    //     {
+    //         get => base.Value;
+    //         set
+    //         {
+    //             base.Value = value;
+    //             if (base.Value != null)
+    //             {
+    //                 component = value.GetComponent<T>();
+    //                 if (component == null)
+    //                 {
+    //                     throw new MissingComponentException($"");
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     public T ComponentValue
+    //     {
+    //         get
+    //         {
+    //             return component;
+    //         }
+    //     }
+    // }
 }

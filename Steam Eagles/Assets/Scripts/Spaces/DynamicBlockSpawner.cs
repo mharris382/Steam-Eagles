@@ -18,7 +18,7 @@ public class DynamicBlockSpawner : MonoBehaviour
         SpawnBlock(transform.position);
     }
 
-    private void SpawnBlock(Vector3 position)
+    public void SpawnBlock(Vector3 position)
     {
         var pos = position;
         if (spawnRadius > 0)
@@ -31,20 +31,19 @@ public class DynamicBlockSpawner : MonoBehaviour
        var blockInst = block.SpawnDynamicBlockInstance(pos, Random.Range(spawnRotation.x, spawnRotation.y));
        if (hide)
        {
-       blockInst.gameObject.hideFlags = HideFlags.HideInHierarchy;
-           
+        blockInst.gameObject.hideFlags = HideFlags.HideInHierarchy;
        }
     }
 
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            var cam = Camera.main;
-            var wp = cam.ScreenToWorldPoint(Input.mousePosition);
-            wp.z = 0;
-            SpawnBlock(wp);
-        }
-    }
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         var cam = Camera.main;
+    //         var wp = cam.ScreenToWorldPoint(Input.mousePosition);
+    //         wp.z = 0;
+    //         SpawnBlock(wp);
+    //     }
+    // }
 }
