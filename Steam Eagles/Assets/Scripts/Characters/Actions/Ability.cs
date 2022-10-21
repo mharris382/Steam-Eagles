@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Characters.Actions;
 using UnityEngine;
@@ -8,12 +9,20 @@ public class Ability : MonoBehaviour
     public CellSelector selector;
     public CellAbility cellAbility;
 
-    public GameObject previewGameObject;
-    public SpriteRenderer previewObject;
-
+  
+    public AbilityPreview abilityPreview;
     private List<Vector3Int> selectedCells;
-
+    public bool previewingMouse = false;
     public bool showPreview = true;
+    
+    public Comparison<Vector3Int> CustomSortFunction { get; set; }
+
+    private void Awake()
+    {
+        selectedCells = new List<Vector3Int>();
+        
+    }
+
     private void Update()
     {
         if (selector.Ready == false)
@@ -22,7 +31,8 @@ public class Ability : MonoBehaviour
         }
 
         selectedCells = selector.GetSelectedCells().ToList();
-        selectedCells.Sort((c1, c2) => cellAbility.SortCellLocationsByPreference(c1, c2));
+        selectedCells.Sort(Sort);
+        if (previewingMouse) return;
         if (selectedCells.Count > 0)
         {
             foreach (var selectedCell in selectedCells)
@@ -37,28 +47,130 @@ public class Ability : MonoBehaviour
         HideAbilityPreview();
         
     }
+    
+    public bool TryAbility()
+    {
+        if (selector.Ready == false) return false;
+        if (selectedCells == null || selectedCells.Count == 0) return false;
+        if (cellAbility.Tilemap == null) return false;
+        foreach (var selectedCell in selectedCells)
+        {
+            if (cellAbility.CanPerformAbilityOnCell(selectedCell))
+            {
+                cellAbility.PerformAbilityOnCell(selectedCell);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int Sort(Vector3Int c1, Vector3Int c2)
+    {
+        if (CustomSortFunction != null)
+        {
+            return CustomSortFunction.Invoke(c1, c2);
+        }
+        return cellAbility.SortCellLocationsByPreference(c1, c2);
+    }
+
+    public bool TryAbility(Vector3 center, Vector3 direction, float dot = 0)
+    {
+        float Dot(Vector3Int t)
+        {
+            var wp = cellAbility.Tilemap.GetCellCenterWorld(t);
+            return Vector2.Dot((wp - center).normalized, direction.normalized);
+        }
+
+        dot = Mathf.Clamp(dot, -1, 1);
+        foreach (var selectedCell in selectedCells
+                     .Where(t => cellAbility.CanPerformAbilityOnCell(t))
+                     .OrderByDescending(Dot))
+        {
+            var d = Dot(selectedCell);
+            if (d < dot)
+                continue;
+            cellAbility.PerformAbilityOnCell(selectedCell);
+            return true;
+        }
+        
+        return false;
+    }
+    public bool TryAbility(Vector3 tPos, float maxDistance = 0)
+    {
+        float CompareDist(Vector3Int t)
+        {
+            var wp = cellAbility.Tilemap.GetCellCenterWorld(t);
+            return (wp - tPos).sqrMagnitude;
+        }
+
+      
+        foreach (var selectedCell in selectedCells
+                     .Where(t => cellAbility.CanPerformAbilityOnCell(t))
+                     .OrderByDescending(CompareDist))
+        {
+            var d = CompareDist(selectedCell);
+            if (maxDistance > 0 && CompareDist(selectedCell)< Mathf.Pow(maxDistance, 2))
+                continue;
+            cellAbility.PerformAbilityOnCell(selectedCell);
+            return true;
+        }
+        
+        return false;
+    }
+
+    IEnumerable<(Vector3Int cell, Vector3 wp)> GetCellsFromMousePosition(Vector3 mp)
+    {
+        float CompareDist(Vector3Int t)
+        {
+            var wp = cellAbility.Tilemap.GetCellCenterWorld(t);
+            return (wp - mp).sqrMagnitude;
+        }
+
+        return selectedCells.Where(cellAbility.CanPerformAbilityOnCell)
+            .OrderByDescending(CompareDist).Select(t => (t, cellAbility.Tilemap.GetCellCenterWorld(t)));
+    }
+
+    #region Preview Helpers
 
     private void HideAbilityPreview()
     {
-        if (previewObject == null) return;
-        if(previewGameObject!=null)previewGameObject.SetActive(false);
-        previewObject.enabled = false;
+        if (abilityPreview == null) return;
+        abilityPreview.HideAbilityPreview();
     }
 
-    private void ShowAbilityPreview(Vector2 wp)
+    public void ShowAbilityPreview(Vector2 wp)
     {
-        if (previewObject == null) return;
-        if (!showPreview)
+        if (abilityPreview == null) return;
+        
+        abilityPreview.ShowAbilityPreview(wp);
+    }
+    public void ShowAbilityPreviewFromMouse(Vector3 wp)
+    {
+        if (abilityPreview == null) return;
+        previewingMouse = true;
+        var cells = GetCellsFromMousePosition(wp).ToArray();
+        if (cells == null || cells.Length == 0)
         {
             HideAbilityPreview();
-            return;
         }
-        if(previewGameObject!=null)previewGameObject.SetActive(true);
-        previewObject.enabled = true;
-        previewObject.transform.position = wp;
+        else
+        {
+            try
+            {
+                var best = cells.First();
+                ShowAbilityPreview(best.wp);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Cells failed: {e}");
+            }
+            
+        }
     }
+    #endregion
 
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (selector.Ready == false) return;
@@ -79,20 +191,8 @@ public class Ability : MonoBehaviour
             Gizmos.DrawSphere(wp, r);
         }
     }
+#endif
 
-    public bool TryAbility()
-    {
-        if (selector.Ready == false) return false;
-        if (selectedCells == null || selectedCells.Count == 0) return false;
-        if (cellAbility.Tilemap == null) return false;
-        foreach (var selectedCell in selectedCells)
-        {
-            if (cellAbility.CanPerformAbilityOnCell(selectedCell))
-            {
-                cellAbility.PerformAbilityOnCell(selectedCell);
-                return true;
-            }
-        }
-        return false;
-    }
+
+   
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Characters;
 using Characters.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,12 +12,26 @@ public class AbilityInputHandler : MonoBehaviour
     public Ability rightAbility;
     public Ability upAbility;
     public Ability downAbility;
+    
+    [Header("Legacy Keyboard Input")]
     public bool useLegacyInput = false;
+    
     public KeyCode keyUp = KeyCode.Alpha2;
     public KeyCode keyDown = KeyCode.X;
     public KeyCode keyRight = KeyCode.E;
     public KeyCode keyLeft = KeyCode.Q;
     
+    [Header("Legacy Mouse Input")]
+    public bool useMouseInput = false;
+
+    private MouseAbilityInputHandler mouseInput;
+
+    private void Awake()
+    {
+        this.mouseInput = GetComponent<MouseAbilityInputHandler>();
+        this.mouseInput.enabled = useMouseInput;
+    }
+
     public void OnActionLeft(InputAction.CallbackContext context)
     {
         leftAbility.TryAbility();
@@ -39,8 +54,14 @@ public class AbilityInputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (!useLegacyInput) return;
+        if (useLegacyInput) 
+            LegacyInputKeyboard();
+        
+        this.mouseInput.enabled = useMouseInput;
+    }
 
+    private void LegacyInputKeyboard()
+    {
         if (Input.GetKeyDown(keyUp))
         {
             upAbility.TryAbility();
@@ -57,5 +78,5 @@ public class AbilityInputHandler : MonoBehaviour
         {
             rightAbility.TryAbility();
         }
-}
+    }
 }

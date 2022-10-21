@@ -160,7 +160,7 @@ public class CharacterCameraSwitcher : MonoBehaviour
     void SwitchToSplitScreen(bool instantSwitch = false)
     {
         if (!HasValues()) return;
-        if (inSplitScreen.HasValue && inSplitScreen.Value) return;
+        //if (inSplitScreen.HasValue && inSplitScreen.Value) return;
         inSplitScreen = true;
         _switchSequence.PlayForward();
         if (instantSwitch)
@@ -172,7 +172,7 @@ public class CharacterCameraSwitcher : MonoBehaviour
     void SwitchToSingleScreen(bool instantSwitch = false)
     {
         if (!HasValues()) return;
-        if (inSplitScreen.HasValue && !inSplitScreen.Value) return;
+        //if (inSplitScreen.HasValue && !inSplitScreen.Value) return;
         inSplitScreen = false;
         _switchSequence.PlayBackwards();
         if (instantSwitch)
