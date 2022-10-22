@@ -75,6 +75,30 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.500002
       objectReference: {fileID: 0}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 34d2c6c96b968b548995320b0d7be01e, type: 2}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b7d5ba5bb54ef8479053210bf0a6fe2, type: 2}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 34d2c6c96b968b548995320b0d7be01e, type: 2}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b7d5ba5bb54ef8479053210bf0a6fe2, type: 2}
+    - target: {fileID: 1168447966410340676, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 34d2c6c96b968b548995320b0d7be01e, type: 2}
     - target: {fileID: 1452240127997804060, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: cellAbility
       value: 
@@ -99,14 +123,26 @@ PrefabInstance:
       propertyPath: mouseSelector.playerCamera
       value: 
       objectReference: {fileID: 11400000, guid: 27751b098aeea0d40a68e80eed6e376a, type: 2}
-    - target: {fileID: 3439187029941390942, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
-      propertyPath: size.y
-      value: 9
+    - target: {fileID: 3261457133200578820, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: bodySkinName
+      value: Transporter Skin/Transporter-body
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261457133200578820, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: jumpHandsSkin
+      value: Transporter Skin/Hands/Transporter-Hands-Open
+      objectReference: {fileID: 0}
+    - target: {fileID: 3261457133200578820, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: closedHandsSkin
+      value: Transporter Skin/Hands/Transporter-Hands-Closed
       objectReference: {fileID: 0}
     - target: {fileID: 3699851344678731974, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: cellAbility
       value: 
       objectReference: {fileID: 7030688864629384837}
+    - target: {fileID: 3966706727296839112, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4190748190860738533, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_Controller
       value: 
@@ -115,6 +151,14 @@ PrefabInstance:
       propertyPath: cellAbility
       value: 
       objectReference: {fileID: 6315031227954435410}
+    - target: {fileID: 5434733502955217994, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: animIdle
+      value: mk 1/transporter/transporter-idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434733502955217994, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: animJump
+      value: mk 1/transporter/transporter-jump
+      objectReference: {fileID: 0}
     - target: {fileID: 5533972271505065588, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.74
@@ -279,13 +323,21 @@ PrefabInstance:
       propertyPath: fallSpeedToTriggerEffect
       value: 20
       objectReference: {fileID: 0}
-    - target: {fileID: 8659441313591300925, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.45605326
+    - target: {fileID: 8404895377648301285, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: _animationName
+      value: mk 1/transporter/transporter-idle
       objectReference: {fileID: 0}
-    - target: {fileID: 8659441313591300925, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.50001
+    - target: {fileID: 8404895377648301285, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: initialSkinName
+      value: Transporter Skin/Transporter-body
+      objectReference: {fileID: 0}
+    - target: {fileID: 8404895377648301285, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: skeletonDataAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: b92b1f4c29ef9b54fa52f08f5f48af2d, type: 2}
+    - target: {fileID: 8404895377648301285, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: separatorSlotNames.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8926599222480448061, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: m_DefaultControlScheme
