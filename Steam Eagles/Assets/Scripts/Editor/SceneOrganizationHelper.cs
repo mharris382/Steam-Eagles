@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using UnityEditor;
+#if UNITY_EDITOR
+
 using UnityEngine;
 
 namespace Editor
@@ -62,3 +64,4 @@ namespace Editor
         }
     }
 }
+#endif

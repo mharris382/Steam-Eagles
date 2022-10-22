@@ -23,15 +23,16 @@ public class Ability : MonoBehaviour
         
     }
 
+   
+
     private void Update()
     {
         if (selector.Ready == false)
         {
             HideAbilityPreview();
         }
-
+        
         selectedCells = selector.GetSelectedCells().ToList();
-        selectedCells.Sort(Sort);
         if (previewingMouse) return;
         if (selectedCells.Count > 0)
         {
@@ -66,6 +67,9 @@ public class Ability : MonoBehaviour
 
     private int Sort(Vector3Int c1, Vector3Int c2)
     {
+        var diff = c1 - c2;
+        if (diff.sqrMagnitude == 0) return 0;
+        return diff.sqrMagnitude > 0 ? -1 : 1;
         if (CustomSortFunction != null)
         {
             return CustomSortFunction.Invoke(c1, c2);

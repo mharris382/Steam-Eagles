@@ -67,6 +67,51 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Quick Action Up",
+                    "type": "Button",
+                    "id": "57a869a3-e6a5-4622-b787-cc5cec51a5e4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quick Action Right",
+                    "type": "Button",
+                    "id": "02825b74-9779-4ed8-b057-ee6b4be9bf48",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quick Action Left",
+                    "type": "Button",
+                    "id": "9dd8f629-b2e8-47e5-bf11-42d235f11b91",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quick Action Down",
+                    "type": "Button",
+                    "id": "6cfc191e-66c1-4d03-948a-c798a169773d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Special Ability",
+                    "type": "Button",
+                    "id": "7ceb1cf0-2bc8-493e-8866-bcdba9ad181c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -237,6 +282,17 @@
                 },
                 {
                     "name": "",
+                    "id": "8ed37060-7b90-4b4d-a5f2-f101d5a34d4c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "26ab001a-9a26-4d6e-9842-028020d1fdba",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
@@ -253,6 +309,17 @@
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Keyboard",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5b1482b5-be70-4594-9fa4-7f70ffa333ed",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -281,8 +348,19 @@
                 },
                 {
                     "name": "",
+                    "id": "d9f50f42-a41c-4f04-b45c-f90ab8dadcb8",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "15c75c02-c3db-41c5-9c02-790eadb1c53b",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller 1",
@@ -297,6 +375,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
+                    "action": "Pickup",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c55d9061-9aa4-464d-bbac-b71c04c90076",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
                     "action": "Pickup",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -366,184 +455,245 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5b11396c-7db0-4e2b-b4e1-57d5896663eb",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b029de64-403b-413c-9bf1-a7ea4c46abc8",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1",
+                    "action": "Quick Action Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "58b768d2-0c3b-4df5-8dde-e6b84eba142a",
+                    "path": "<Keyboard>/numpad5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2",
+                    "action": "Quick Action Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f06fb3a-1909-4723-b185-b7e91eba562a",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Quick Action Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6b25f7e-98ff-4ca1-887f-4bf23a2e09e1",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Quick Action Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c7b85c6f-08ac-4f8d-bbc0-bf85c3e80b0d",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1",
+                    "action": "Quick Action Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aae2fe17-7cfd-452c-ba4d-95af66739a5b",
+                    "path": "<Keyboard>/numpad3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2",
+                    "action": "Quick Action Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "08738742-6785-4783-912a-5ab2d9783ace",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Quick Action Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2acdbfe1-c900-4d50-b4e9-cc8bcf7cbde4",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Quick Action Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "edd3d983-ba5b-4e0d-bc22-575066de8dfe",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1",
+                    "action": "Quick Action Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "986f1bf8-f51e-4be2-a661-803677e36b5f",
+                    "path": "<Keyboard>/numpad1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2",
+                    "action": "Quick Action Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07ebab1e-5143-4d75-9258-2d04ce439e8b",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Quick Action Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae90eaa6-049a-420e-b736-db1b5709e51c",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Quick Action Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "512fe052-f1aa-4ab8-8a84-e857f229cc36",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1",
+                    "action": "Quick Action Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "27bb826d-12f6-4bb6-a08a-64b6941328cb",
+                    "path": "<Keyboard>/rightCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2",
+                    "action": "Quick Action Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aff316b5-bc9f-4315-b669-9ce00e950cb4",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Quick Action Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "58bbc609-970e-40fe-8dc7-e7adae7e0e25",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Quick Action Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae9e5d12-5746-4eef-a9a8-19633b7bbbc3",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Special Ability",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e488235a-1a90-4bb4-a1f3-4bf1ee6a9572",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Special Ability",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d155282-9bcd-4761-9fbd-00b41bd4c331",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1",
+                    "action": "Special Ability",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "556bec77-a653-45a4-9269-260e7e3e3157",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2",
+                    "action": "Special Ability",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
         {
             "name": "Actions",
             "id": "78480e5c-d19d-4112-b394-3738baa07878",
-            "actions": [
-                {
-                    "name": "Action Up",
-                    "type": "Button",
-                    "id": "400f4769-f8c3-4fdf-a718-048e35c73032",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Action Right",
-                    "type": "Button",
-                    "id": "9c3d5c1a-c1bc-4467-a453-597e138f58de",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Action Left",
-                    "type": "Button",
-                    "id": "a5e8aebd-213c-4f65-8412-70ad774176c9",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Action Down",
-                    "type": "Button",
-                    "id": "296f928d-a5e4-4abe-a03b-13f952328fb0",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "779d2c55-af64-493f-98d8-ccf18fd303de",
-                    "path": "<Gamepad>/dpad/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Action Up",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ac858c32-b3ee-4a7a-99b9-d7ce52f01f4f",
-                    "path": "<Keyboard>/numpad5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard 2",
-                    "action": "Action Up",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "20151147-349f-4545-bb2b-bb21cd38fb8a",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Action Up",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0d4a7765-7c73-4c75-b5a7-542b39da807a",
-                    "path": "<Gamepad>/leftStick/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Action Right",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "25702a3c-c4b7-4525-9dbd-b615d6f15b98",
-                    "path": "<Keyboard>/numpad3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard 2",
-                    "action": "Action Right",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "adad7535-a2b7-431c-9c7b-ba8a20bb25bf",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Action Right",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "18f1115a-da88-46f5-bcf6-04b907af7f61",
-                    "path": "<Gamepad>/dpad/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Action Left",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "79aadd7b-c48c-4b07-81c2-db35adc32aae",
-                    "path": "<Keyboard>/numpad1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard 2",
-                    "action": "Action Left",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3952657b-54c9-4826-a380-4e6364148315",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Action Left",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0742ad39-0410-4112-b7a7-386c29ed46f0",
-                    "path": "<Gamepad>/dpad/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Action Down",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9c287065-274b-4385-9c6e-4801783e7275",
-                    "path": "<Keyboard>/rightCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard 2",
-                    "action": "Action Down",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ae2c84c3-b862-4b28-9ffe-7692f692ac56",
-                    "path": "<Keyboard>/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Action Down",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
+            "actions": [],
+            "bindings": []
         },
         {
             "name": "Depricated",
@@ -715,6 +865,17 @@
                 },
                 {
                     "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Controller 2",
+            "bindingGroup": "Controller 2",
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
                     "isOptional": false,
                     "isOR": false
                 }

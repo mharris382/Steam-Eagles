@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GasSim.SimCore.DataStructures;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,8 +17,11 @@ namespace Characters.Actions
         public Vector3 centerOffset = Vector3.zero;
         private CellHelper _cellHelperPrefab;
         private List<CellHelper> _cellHelpers;
+
         private bool doneSetup = false;
+        
         public bool Ready => doneSetup;
+        
         private IEnumerator Start()
         {
             var loadOp = Addressables.LoadAssetAsync<GameObject>("CellHelper");
@@ -29,14 +33,22 @@ namespace Characters.Actions
             var prefab = loadOp.Result;
 
             _cellHelpers = new List<CellHelper>(size.x * size.y);
-            foreach (var localSpacePosition in GetLocalSpacePositions())
+            var positions = GetLocalSpacePositions().ToArray();
+            PriorityQueue<CellHelper> sortedHelpers= new PriorityQueue<CellHelper>(positions.Length);
+            
+            
+            foreach (var localSpacePosition in positions)
             {
                 var inst = Instantiate(prefab, transform);
                 inst.transform.localPosition = localSpacePosition;
-                var ce = inst.GetComponent<CellHelper>();
-                _cellHelpers.Add(ce);
+                sortedHelpers.Enqueue(inst.GetComponent<CellHelper>(), localSpacePosition.sqrMagnitude);
             }
 
+            while (!sortedHelpers.IsEmpty)
+            {
+                _cellHelpers.Add(sortedHelpers.ExtractMin());
+            }
+            
             doneSetup = true;
         }
 
