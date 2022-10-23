@@ -997,7 +997,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 10
+  m_Priority: 993
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 1912036283}
   m_Follow: {fileID: 1912036283}
@@ -1027,7 +1027,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 606000894}
   m_LocalRotation: {x: 7.0521896e-15, y: -0.12218336, z: 8.681649e-16, w: 0.9925076}
-  m_LocalPosition: {x: 30.153229, y: 1.1073425, z: -14.40614}
+  m_LocalPosition: {x: 30.395761, y: 1.1073425, z: -15.376284}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5949,7 +5949,7 @@ PrefabInstance:
       objectReference: {fileID: 1621804475}
     - target: {fileID: 3759285013130425718, guid: 371806d72af466246897e6afc86fafba, type: 3}
       propertyPath: m_Priority
-      value: 11
+      value: 1748
       objectReference: {fileID: 0}
     - target: {fileID: 4283001434813486315, guid: 371806d72af466246897e6afc86fafba, type: 3}
       propertyPath: m_RootOrder
@@ -6086,6 +6086,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4283001434813486315, guid: 99c475485e55ace458409eeb5f30e215, type: 3}
   m_PrefabInstance: {fileID: 785229927}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &856668998 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3759285013130425718, guid: 371806d72af466246897e6afc86fafba, type: 3}
+  m_PrefabInstance: {fileID: 784440977}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &863787058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6142,13 +6153,85 @@ PrefabInstance:
       value: CameraController_SplitScreen_Horizontal
       objectReference: {fileID: 0}
     - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: builderCamera
+      value: 
+      objectReference: {fileID: 11400000, guid: a3fa6a7d0c1a20449b6f01c1537e32dd, type: 2}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: transporterCamera
+      value: 
+      objectReference: {fileID: 11400000, guid: 2f987ad0040850043a318a0687ae46d0, type: 2}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
       propertyPath: activeBuilderCamera
       value: 
-      objectReference: {fileID: 11400000, guid: 4a05fc985cb3ae745ad4741680fa272e, type: 2}
+      objectReference: {fileID: 11400000, guid: 27751b098aeea0d40a68e80eed6e376a, type: 2}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: splitScreenDistance
+      value: 43.2
+      objectReference: {fileID: 0}
     - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
       propertyPath: activeTransporterCamera
       value: 
       objectReference: {fileID: 11400000, guid: 4a05fc985cb3ae745ad4741680fa272e, type: 2}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 856668998}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 856668998}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Behaviour, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Behaviour, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSplitScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 275336594986606535, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
+      propertyPath: onSwitchingToSingleScreen.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a256a0a936d434e4e8cbe0ddc66817b9, type: 3}
 --- !u!4 &863787059 stripped
@@ -12367,6 +12450,10 @@ PrefabInstance:
       propertyPath: m_RenderPostProcessing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 30153094754203338, guid: 73e27a287e2da4c4b8793a999bb905d5, type: 3}
+      propertyPath: m_CustomBlends
+      value: 
+      objectReference: {fileID: 11400000, guid: 43adb8529c3f18d4eb47683ea4e9ceb5, type: 2}
     - target: {fileID: 30153094754203339, guid: 73e27a287e2da4c4b8793a999bb905d5, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -12698,10 +12785,10 @@ MonoBehaviour:
   m_Targets:
   - target: {fileID: 1427964750}
     weight: 1
-    radius: 0
+    radius: 1
   - target: {fileID: 1621804475}
     weight: 1
-    radius: 0
+    radius: 1
 --- !u!4 &1912036283
 Transform:
   m_ObjectHideFlags: 0
@@ -12710,7 +12797,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1912036281}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.542747, y: 1.1073425, z: 0.0357714}
+  m_LocalPosition: {x: 26.05544, y: 1.0831549, z: 0.0357714}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
