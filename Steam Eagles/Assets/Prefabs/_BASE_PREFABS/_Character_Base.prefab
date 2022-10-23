@@ -396,9 +396,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3893240568537367312}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.01258412, y: 3.0956936, z: 0}
+  m_LocalScale: {x: 1.258412, y: 1.258412, z: 1.258412}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5767751469578299608}
@@ -1091,22 +1091,6 @@ MonoBehaviour:
     m_ActionName: Gameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 400f4769-f8c3-4fdf-a718-048e35c73032
-    m_ActionName: Actions/Action Up
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 9c3d5c1a-c1bc-4467-a453-597e138f58de
-    m_ActionName: Actions/Action Right
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a5e8aebd-213c-4f65-8412-70ad774176c9
-    m_ActionName: Actions/Action Left
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 296f928d-a5e4-4abe-a03b-13f952328fb0
-    m_ActionName: Actions/Action Down
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 54efaa8b-c45a-4a08-a043-e62ea40c5a20
     m_ActionName: Depricated/New action
   - m_PersistentCalls:
@@ -1125,6 +1109,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 2cb2afed-83bd-4a1d-a5af-5278f2e9c944
     m_ActionName: Depricated/Queue Conect[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 57a869a3-e6a5-4622-b787-cc5cec51a5e4
+    m_ActionName: Gameplay/Quick Action Up[/Keyboard/numpad5,/Keyboard/2]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 02825b74-9779-4ed8-b057-ee6b4be9bf48
+    m_ActionName: Gameplay/Quick Action Right[/Keyboard/numpad3,/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9dd8f629-b2e8-47e5-bf11-42d235f11b91
+    m_ActionName: Gameplay/Quick Action Left[/Keyboard/numpad1,/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6cfc191e-66c1-4d03-948a-c798a169773d
+    m_ActionName: Gameplay/Quick Action Down[/Keyboard/rightCtrl,/Keyboard/x]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7ceb1cf0-2bc8-493e-8866-bcdba9ad181c
+    m_ActionName: Gameplay/Special Ability[/Mouse/leftButton,/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: Keyboard
   m_DefaultActionMap: Gameplay
@@ -1425,7 +1429,8 @@ Transform:
   m_LocalPosition: {x: 0.01, y: -0.96, z: 0}
   m_LocalScale: {x: 0.7946523, y: 0.7946523, z: 0.7946523}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5375074829898805575}
   m_Father: {fileID: 5767751469578299608}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1983,7 +1988,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 6289392891954768941}
+    m_TransformParent: {fileID: 5878537600127342730}
     m_Modifications:
     - target: {fileID: 94656431562339558, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1993,17 +1998,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1729770094798254189, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
+      propertyPath: m_Color.a
+      value: 0.15686275
+      objectReference: {fileID: 0}
     - target: {fileID: 1954308005924751733, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1954308005924751733, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.5000458
+      value: 2.5321198
       objectReference: {fileID: 0}
     - target: {fileID: 1954308005924751733, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.000021
+      value: 1.0203915
       objectReference: {fileID: 0}
     - target: {fileID: 1954308005924751733, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2149,6 +2158,10 @@ PrefabInstance:
     - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_Name
       value: PreviewObject R
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4572995675291829878, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2364,6 +2377,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PreviewObject L
       objectReference: {fileID: 0}
+    - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4572995675291829878, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2473,6 +2490,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PreviewObject D
       objectReference: {fileID: 0}
+    - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4572995675291829878, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2581,6 +2602,10 @@ PrefabInstance:
     - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_Name
       value: PreviewObject U
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144031406541996525, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4572995675291829878, guid: a6bf6cb11ce411e47b18af91de1ab183, type: 3}
       propertyPath: m_LocalPosition.x

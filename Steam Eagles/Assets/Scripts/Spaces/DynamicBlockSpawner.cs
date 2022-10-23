@@ -12,12 +12,7 @@ public class DynamicBlockSpawner : MonoBehaviour
     
     
     
-    private void OnEnable()
-    {
-        
-        SpawnBlock(transform.position);
-    }
-
+    
     public void SpawnBlock(Vector3 position)
     {
         var pos = position;

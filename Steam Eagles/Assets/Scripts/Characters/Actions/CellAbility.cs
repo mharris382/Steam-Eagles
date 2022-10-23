@@ -24,6 +24,9 @@ public abstract class CellAbility : MonoBehaviour
 
     public virtual int SortCellLocationsByPreference(Vector3Int cell1, Vector3Int cell2)
     {
+        var diff = cell2 - cell1;
+        if (diff.sqrMagnitude == 0) return 0;
+        return diff.sqrMagnitude > 0 ? -1 : 1;
         bool cValid1 = CanPerformAbilityOnCell(cell1) && !IsCellBlocked(cell1);
         bool cValid2 = CanPerformAbilityOnCell(cell2) && !IsCellBlocked(cell2);
         if (!cValid1) return -1;

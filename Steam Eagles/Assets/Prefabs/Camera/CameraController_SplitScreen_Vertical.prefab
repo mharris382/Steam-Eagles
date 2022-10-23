@@ -1,0 +1,201 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7681411844394455156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7681411844394455146}
+  - component: {fileID: 7681411844394455147}
+  m_Layer: 0
+  m_Name: CameraController_SplitScreen_Vertical
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7681411844394455146
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681411844394455156}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17.50007, y: -4.750019, z: 0}
+  m_LocalScale: {x: 38.024998, y: 13, z: 13}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8682765030012786606}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7681411844394455147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681411844394455156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0d1ea160d449629d246aa7f5b86f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splitScreenDistance: 10
+  transitionDuration: 0.5
+  cameraRects:
+    splitScreenRectCamera1:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 0.5
+    singleScreenRectCamera1:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+    splitScreenRectCamera2:
+      serializedVersion: 2
+      x: 0
+      y: 0.5
+      width: 1
+      height: 0.5
+    singleScreenRectCamera2:
+      serializedVersion: 2
+      x: 0
+      y: 1
+      width: 1
+      height: 0.5
+    hideGizmos: 0
+    showSplitScreenLayout: 0
+    camera1Color: {r: 1, g: 0, b: 0, a: 0.49411765}
+    camera2Color: {r: 0, g: 1, b: 0, a: 0.4392157}
+  tpCamera: {fileID: 0}
+  bdCamera: {fileID: 0}
+  transporterCamera: {fileID: 11400000, guid: a3fa6a7d0c1a20449b6f01c1537e32dd, type: 2}
+  builderCamera: {fileID: 11400000, guid: 2f987ad0040850043a318a0687ae46d0, type: 2}
+  activeTransporterCamera: {fileID: 11400000, guid: 27751b098aeea0d40a68e80eed6e376a, type: 2}
+  activeBuilderCamera: {fileID: 11400000, guid: 4a05fc985cb3ae745ad4741680fa272e, type: 2}
+  transformerTransform: {fileID: 11400000, guid: 3660ec6625eb0ec498fbffd0c03034e8, type: 2}
+  builderTransform: {fileID: 11400000, guid: 23aa225e6cb7a8e46837ac9bc7a23f0d, type: 2}
+  onSwitchingToSingleScreen:
+    m_PersistentCalls:
+      m_Calls: []
+  onSwitchedToSingleScreen:
+    m_PersistentCalls:
+      m_Calls: []
+  onSwitchingToSplitScreen:
+    m_PersistentCalls:
+      m_Calls: []
+  onSwitchedToSplitScreen:
+    m_PersistentCalls:
+      m_Calls: []
+  forceSingleCameraMode: 0
+--- !u!1001 &7681411844442322715
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7681411844394455146}
+    m_Modifications:
+    - target: {fileID: 1361982187216232585, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_Name
+      value: HUD_Splitscreen_Vertical
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+--- !u!224 &8682765030012786606 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1361982187216232629, guid: bac58791ebbacca478b40a43f2abcd30, type: 3}
+  m_PrefabInstance: {fileID: 7681411844442322715}
+  m_PrefabAsset: {fileID: 0}
