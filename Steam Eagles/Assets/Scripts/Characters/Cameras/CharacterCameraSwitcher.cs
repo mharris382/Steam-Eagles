@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Characters.Cameras;
 using CoreLib;
 using DG.Tweening;
 using StateMachine;
@@ -178,6 +179,14 @@ public class CharacterCameraSwitcher : MonoBehaviour
         _switchSequence.OnPlay(() => onSwitchingToSplitScreen?.Invoke());
         
         _switchSequence.OnComplete(() => onSwitchedToSplitScreen?.Invoke());
+
+        var tweens = this.GetComponentsInChildren<ISplitScreenTween>();
+        foreach (var splitScreenTween in tweens)
+        {
+            float atPosition = 0;
+            var tween = splitScreenTween.ToSplitScreenTween(transitionDuration, ref atPosition);
+            _switchSequence.Insert(atPosition, tween);
+        }
         
         Vector2 diff = P1Position - P2Position;
         bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance) && !forceSingleCameraMode;

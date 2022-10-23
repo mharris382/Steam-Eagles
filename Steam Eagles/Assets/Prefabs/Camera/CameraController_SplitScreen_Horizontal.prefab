@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 275336594986606532}
   - component: {fileID: 275336594986606535}
+  - component: {fileID: 3145208318060776393}
   m_Layer: 0
   m_Name: CameraController_SplitScreen_Horizontal
   m_TagString: Untagged
@@ -97,6 +98,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   forceSingleCameraMode: 0
+--- !u!114 &3145208318060776393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275336594986606534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c488e59c7394b3cb91ec4fb44f09118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 6569622044736983090}
 --- !u!1001 &4778874129897699190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -194,6 +208,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c575bd407196f440963d5d629858be4, type: 3}
+--- !u!1 &6569622044736983090 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1835785032191747908, guid: 5c575bd407196f440963d5d629858be4, type: 3}
+  m_PrefabInstance: {fileID: 4778874129897699190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6569622045667952004 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1835785033374642930, guid: 5c575bd407196f440963d5d629858be4, type: 3}

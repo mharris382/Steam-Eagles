@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using CoreLib;
+using UniRx;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class DisconnectCellAbility : CellAbility
@@ -17,5 +19,6 @@ public class DisconnectCellAbility : CellAbility
     {
         Tilemap.SetTile(cell, null);
         onDisconnectedBlock?.Invoke(Tilemap.GetCellCenterWorld(cell));
+        MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cell));
     }
 }

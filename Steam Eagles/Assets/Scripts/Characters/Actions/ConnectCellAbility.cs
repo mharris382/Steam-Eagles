@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using CoreLib;
+using UniRx;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class ConnectCellAbility : CellAbility
@@ -14,5 +16,6 @@ public class ConnectCellAbility : CellAbility
     public override void PerformAbilityOnCell(Vector3Int cell)
     {
         Tilemap.SetTile(cell, tileToPlace);
+        MessageBroker.Default.Publish(new BuildActionInfo(Tilemap, cell));
     }
 }
