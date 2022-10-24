@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using StateMachine;
 using UnityEngine;
 
+/// <summary>
+/// used as a workaround for 
+/// </summary>
 public class PositionTracker : MonoBehaviour
 {
     public SharedTransform tpTransform;
