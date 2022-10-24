@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CoreLib
@@ -71,6 +73,63 @@ namespace CoreLib
                 }
             }
             return best;
+        }
+
+        /// <summary>
+        /// returns a set of points corresponding to the corners of the rect in world space.  Iterates CW around the rect, starting at the min point.
+        /// <para>By default, The rect is assumed to be a world space rect, however if a transform is provided it will instead be assumed in local space. </para>
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="transform">optional parameter</param>
+        /// <returns></returns>
+        public static IEnumerable<Vector2> GetPoints(this Rect rect, Transform transform = null)
+        {
+            if (transform == null)
+            {
+                yield return new Vector2(rect.min.x, rect.min.y);
+                yield return new Vector2(rect.max.x, rect.min.y);
+                yield return new Vector2(rect.max.x, rect.max.y);
+                yield return new Vector2(rect.min.x, rect.max.y);
+            }
+            else
+            {
+                    yield return transform.TransformPoint(new Vector2(rect.min.x, rect.min.y));
+                    yield return transform.TransformPoint(new Vector2(rect.max.x, rect.min.y));
+                    yield return transform.TransformPoint(new Vector2(rect.max.x, rect.max.y));
+                    yield return transform.TransformPoint(new Vector2(rect.min.x, rect.max.y));
+            }
+        }
+       
+        /// <summary>
+        /// draws the rect, should be called in OnDrawGizmos or OnDrawGizmosSelected.
+        ///
+        /// <para>By default, The rect is assumed to be a world space rect, however if a transform is provided it will instead be assumed in local space. </para>
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="transform"></param>
+        public static void DrawGizmos(this Rect rect, Transform transform =null)
+        {
+            var points = new Vector2[5]
+            {
+                new Vector2(rect.min.x, rect.min.y),
+                new Vector2(rect.max.x, rect.min.y),
+                new Vector2(rect.max.x, rect.max.y),
+                new Vector2(rect.min.x, rect.max.y),
+                new Vector2(rect.min.x, rect.min.y)
+            };
+            for (int i = 1; i < points.Length; i++)
+            {
+                var p0 = points[i - 1];
+                var p1 = points[i];
+                if (transform != null)
+                {
+                    Gizmos.DrawLine(transform.TransformPoint(p0), transform.TransformPoint(p1));
+                }
+                else
+                {
+                    Gizmos.DrawLine(p0, p1);
+                }
+            }
         }
     }
 }

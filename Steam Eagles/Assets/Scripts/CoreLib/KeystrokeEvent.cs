@@ -20,7 +20,7 @@ namespace CoreLib
 
             if (Input.GetKeyUp(key))
             {
-                onButtonPressed?.Invoke();
+                onButtonReleased?.Invoke();
             }
         }
     }
