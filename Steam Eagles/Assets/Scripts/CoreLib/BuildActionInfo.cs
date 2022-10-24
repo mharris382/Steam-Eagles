@@ -30,5 +30,15 @@ namespace CoreLib
 
         public override string ToString() => $"Removed cell at {cellPosition} on Tilemap:{tilemap.name}";
     }
+
+    public struct SpawnedDynamicObjectInfo
+    {
+        public GameObject dynamicBlock;
+
+        public SpawnedDynamicObjectInfo(GameObject dynamicBlock)
+        {
+            this.dynamicBlock = dynamicBlock;
+        }
+    }
     
 }

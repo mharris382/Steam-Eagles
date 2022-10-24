@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoreLib;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -93,7 +95,7 @@ public class DynamicBlock : ScriptableObject
         
         
         inst.Block = this;
-        
+        MessageBroker.Default.Publish(new SpawnedDynamicObjectInfo(inst.gameObject));
         return inst;
     }
 
