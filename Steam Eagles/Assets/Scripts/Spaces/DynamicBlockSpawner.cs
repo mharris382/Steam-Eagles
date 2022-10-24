@@ -22,8 +22,7 @@ public class DynamicBlockSpawner : MonoBehaviour
             var offset = q * (Vector3.right * spawnRadius);
             pos += offset;
         }
-        
-       var blockInst = block.SpawnDynamicBlockInstance(pos, Random.Range(spawnRotation.x, spawnRotation.y));
+        var blockInst = block.SpawnDynamicBlockInstance(pos, Random.Range(spawnRotation.x, spawnRotation.y));
        if (hide)
        {
         blockInst.gameObject.hideFlags = HideFlags.HideInHierarchy;

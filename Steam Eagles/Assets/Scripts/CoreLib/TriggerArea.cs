@@ -34,7 +34,7 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
     {
         if (debug)
         {
-        Debug.Log($"Added: <b>{target}</b>\t Total Count = {totalNumberOfTargets}");
+            Debug.Log($"Added: <b>{target}</b>\t Total Count = {totalNumberOfTargets}");
             
         }
     }

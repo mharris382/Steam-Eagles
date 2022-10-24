@@ -319,6 +319,14 @@ PrefabInstance:
       propertyPath: centerOffset.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7595861072167678330, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Radius
+      value: 2.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595861072167678330, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7947405589697243963, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
       propertyPath: fallSpeedToTriggerEffect
       value: 20
@@ -458,6 +466,59 @@ MonoBehaviour:
 --- !u!4 &3629048394150435900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1876926463195900994, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+  m_PrefabInstance: {fileID: 2905058042755919998}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4065333555282635253 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1169284100205533579, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
+  m_PrefabInstance: {fileID: 2905058042755919998}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1042706742065014207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4065333555282635253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c4bf6cee6254f7b9243cd43b0bdd48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 304
+  onButtonPressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4699855321061785860}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onButtonReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4699855321061785860}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!58 &4699855321061785860 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 7595861072167678330, guid: 8f7449a76714ec74488558fbdb9923fc, type: 3}
   m_PrefabInstance: {fileID: 2905058042755919998}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4762783173367749831 stripped
