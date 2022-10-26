@@ -158,3 +158,67 @@ public class CellHelper : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+public static class PipeCells
+{
+    // /// <summary>
+    // /// just to make the code a little bit more explicit 
+    // /// </summary>
+    // public enum Direction
+    // {
+    //     RIGHT, LEFT, UP, DOWN
+    // }
+    //
+    // internal static Dictionary<Direction, Vector3Int> _enumToDirection;// = new Dictionary<Direction, Vector3Int>();
+    //
+    //
+    // public static Vector3Int ToVec(this Direction direction) => _enumToDirection[direction];
+    //
+    // public static Vector3Int Get(this Vector3Int vector3Int, Direction dir) => vector3Int + dir.ToVec();
+
+    // static PipeCells()
+    // {
+    //     _enumToDirection = new Dictionary<Direction, Vector3Int>();
+    //     _enumToDirection.Add(Direction.RIGHT, Vector3Int.right);
+    //     _enumToDirection.Add(Direction.UP, Vector3Int.up);
+    //     _enumToDirection.Add(Direction.LEFT, Vector3Int.left);
+    //     _enumToDirection.Add(Direction.DOWN, Vector3Int.down);
+    // }
+    // public class PipeSwitch
+    // {
+    //     public Tilemap tilemap;
+    //     public Vector3Int position;
+    //     public Vector3Int[] outputDirections;
+    //     public int currentDirection;
+    //
+    //     public PipeSwitch(Tilemap tilemap, Vector3Int position)
+    //     {
+    //         
+    //     }
+    // }
+    public class PipePathway
+    {
+        public readonly Vector3Int startPosition;
+        
+        public PipePathway(Tilemap tilemap, List<Vector3Int> path)
+        {
+            startPosition = path[0];
+        }
+    }
+    public struct PipeCell
+    {
+        public int index;
+        public Vector3Int position;
+
+        public PipeCell(int index, Vector3Int position)
+        {
+            this.index = index;
+            this.position = position;
+        }
+    
+    }
+}
