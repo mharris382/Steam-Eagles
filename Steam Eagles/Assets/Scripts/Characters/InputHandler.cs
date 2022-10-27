@@ -11,8 +11,9 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private string verticalAxisName = "Vertical";
 
     [SerializeField] private string jumpButtonName = "Jump";
-    
-    
+
+    [SerializeField] private bool useAdditionalJumpInput;
+    [SerializeField] private KeyCode additionalJumpInput = KeyCode.Space;
     private void Awake()
     {
         _state = GetComponent<CharacterState>();
@@ -80,8 +81,8 @@ public class InputHandler : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         if (useLegacyInput)
         {
-            _state.JumpPressed = Input.GetButtonDown(jumpButtonName);
-            _state.JumpHeld = Input.GetButton(jumpButtonName);
+            _state.JumpPressed = IsJumpPressed();
+            _state.JumpHeld = IsJumpHeld();
             _state.MoveX = Input.GetAxis(horizontalAxisName);
             _state.MoveY = Input.GetAxis(verticalAxisName);
         }
@@ -91,6 +92,20 @@ public class InputHandler : MonoBehaviour
             _state.JumpHeld = _playerInput.actions["Jump"].IsPressed();
         }
         
+    }
+
+    private bool IsJumpHeld()
+    {
+        if (useAdditionalJumpInput && Input.GetKey(additionalJumpInput))
+            return true;
+        return Input.GetButton(jumpButtonName);
+    }
+
+    private bool IsJumpPressed()
+    {
+        if (useAdditionalJumpInput && Input.GetKeyDown(additionalJumpInput))
+            return true;
+        return Input.GetButtonDown(jumpButtonName);
     }
 }
 
