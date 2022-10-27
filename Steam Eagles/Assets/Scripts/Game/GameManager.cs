@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game
 {
     public class GameManager : MonoBehaviour
     {
-        public SharedGameState gameState;
+        public void OnQuitButton()
+        {
+            Application.Quit();
+        }
 
-        [SerializeField]
-        private GameState startState;
-        
-        
+        public void OnReloadSceneButton()
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

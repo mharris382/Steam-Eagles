@@ -17,7 +17,7 @@ public class CellHelper : MonoBehaviour
     /// </summary>
     public Vector3Int CellCoordinate
     {
-        get => tilemap.Value.WorldToCell(transform.position);
+        get => Tilemap.WorldToCell(transform.position);
     }
 
     /// <summary>
@@ -25,10 +25,35 @@ public class CellHelper : MonoBehaviour
     /// </summary>
     public Vector3 CellCenter
     {
-        get => tilemap.Value.GetCellCenterWorld(CellCoordinate);
+        get => Tilemap.GetCellCenterWorld(CellCoordinate);
     }
 
-    public bool HasTilemap => tilemap.HasValue;
+    private Tilemap _fallback;
+
+    private Tilemap Tilemap
+    {
+        get
+        {
+            if (tilemap == null)
+            {
+                FindFallback();
+            }
+
+            if (tilemap.HasValue == false)
+            {
+                FindFallback();
+            }
+
+            return tilemap.HasValue ? tilemap.Value : _fallback;
+        }
+    }
+
+    private void FindFallback()
+    {
+        _fallback = GameObject.FindWithTag("Pipe Tilemap").GetComponent<Tilemap>();
+    }
+
+    public bool HasTilemap => Tilemap != null ;
     
     
     private void Awake()
