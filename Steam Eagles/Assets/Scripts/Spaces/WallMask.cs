@@ -43,6 +43,8 @@ namespace Spaces
                     go.transform.localScale = Vector3.zero;
                     mask = go.GetComponent<SpriteMask>();
                 }
+
+                mask.hideFlags = hideMaskInHeirarchy ? HideFlags.HideInHierarchy : HideFlags.None;
                 return mask;
             }
         }
