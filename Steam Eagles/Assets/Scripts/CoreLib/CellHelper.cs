@@ -30,7 +30,7 @@ public class CellHelper : MonoBehaviour
 
     private Tilemap _fallback;
 
-    private Tilemap Tilemap
+    protected Tilemap Tilemap
     {
         get
         {
