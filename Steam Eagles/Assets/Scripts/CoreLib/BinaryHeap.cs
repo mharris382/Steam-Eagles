@@ -4,6 +4,7 @@ using Godot;
 using UnityEngine;
 #endif
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,8 +14,10 @@ namespace GasSim.SimCore.DataStructures
     /// binary MIN heap data structure has O(n log n) for insertion/removal on a sorted set of data.  
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BinaryHeap<T>
+    public class BinaryHeap<T> : IEnumerable<T>, IEnumerable
     {
+        #region [FIELDS]
+
         /// <summary>
         /// internal array of (item,weight) tuple
         /// </summary>
@@ -33,7 +36,11 @@ namespace GasSim.SimCore.DataStructures
         /// lookup table so the index of any given element can be found in O(1) time
         /// </summary>
         private Dictionary<T, int> _indexLookup; 
-        
+
+        #endregion
+
+        #region [PROPERTIES]
+
         /// <summary>
         /// the maximum number of items that can be stored, not the size of the array <seealso cref="Count"/>
         /// </summary>
@@ -49,6 +56,9 @@ namespace GasSim.SimCore.DataStructures
         /// </summary>
         public T Root => FindMin();
 
+        #endregion
+
+        #region [STATIC METHODS]
 
         public static BinaryHeap<T> Clone(BinaryHeap<T> original)
         {
@@ -60,72 +70,23 @@ namespace GasSim.SimCore.DataStructures
             }
             return bh;
         }
+        
+
+        #endregion
 
 
-        /// <summary>
-        /// moves an element located at the specified index upwards in the heap to correctly reposition an element
-        /// whose value is less than the value of its parent.
-        /// This condition may result from removing an element or from changing an element’s value.
-        /// This method is described on pages 60-61 of the text, and pseudocode is provided on page 61.
-        /// </summary>
-        /// <param name="index"></param>
-        void HeapifyUp(int index)
+
+        #region [PUBLIC METHODS]
+
+        public bool Contains(T item) => _indexLookup.ContainsKey(item);
+
+        public bool Remove(T item)
         {
-            
-            int curIndex = index;
-            float key = _items[curIndex].key;
-            
-           
-            while (curIndex != 0 && key < ParentKey())
-            {
-                SwapCurrentWithParent();
-                void SwapCurrentWithParent()
-                {
-                    int parentIndex = GetParentIndex(curIndex);
-                    Swap(curIndex, parentIndex);
-                    curIndex = parentIndex;
-                }
-            }
-            float ParentKey() => _items[GetParentIndex(curIndex)].key;
+            if (!Contains(item)) return false;
+            Delete(item);
+            return true;
         }
-
-        /// <summary>
-        /// moves an element located at the specified index downwards in the heap to correctly reposition an element whose value is
-        /// greater than the value of either of its children. This condition may result from removing an element or from changing an
-        /// element’s value.
-        /// </summary>
-        /// <param name="index"></param>
-        void HeapifyDown(int index)
-        {
-            
-            int n = _count;
-            int j, lIndex, rIndex;
-
-            lIndex =  GetLeftChild(index);
-            rIndex = GetRightChild(index);
-            
-            
-            float key = GetKey(index);
-            int smallestIndex = index;
-            float smallestKey = key;
-            if (lIndex < _count &&  GetKey(lIndex) < smallestKey)
-            {
-                smallestKey = GetKey(lIndex);
-                smallestIndex = lIndex;
-            }
-            if (rIndex < _count &&  GetKey(rIndex) < smallestKey)
-            {
-                smallestIndex = rIndex;
-            }
-
-            if (index != smallestIndex)
-            {
-                Swap(index, smallestIndex);
-                HeapifyDown(smallestIndex);
-            }
-        }
-
-
+        
         /// <summary>
         /// initializes an empty heap that is set up to store at most N elements.
         /// This operation takes O(N) time, as it involves initializing the array that will hold the heap
@@ -145,7 +106,7 @@ namespace GasSim.SimCore.DataStructures
         /// If the heap currently has n elements, this takes O(log n) time.
         /// </summary>
         /// <param name="item"></param>
-        /// <param name="value">ordering value</param>
+        /// <param name="key">ordering value</param>
         public bool Insert(T item, float key)
         {
             if (IsAtCapacity())
@@ -255,52 +216,7 @@ namespace GasSim.SimCore.DataStructures
             else // key was decreased
                 HeapifyUp(curIndex);
         }
-
-
-        void Swap(int i, int j)
-        {
-            (_items[i], _items[j]) = (_items[j], _items[i]);
-            _indexLookup[_items[i].item] = i;
-            _indexLookup[_items[j].item] = j;
-        }
-
-        void Swap(T a, T b)
-        {
-            int index1 = _indexLookup[a];
-            int index2 = _indexLookup[b];
-            Swap(index1, index2);
-        }
-
-        int GetParentIndex(int index)
-        {
-            if (index < 0 || index > _count - 1)
-                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
-            else if (index == 0)
-                throw new InvalidOperationException("root node has no parent");
-    
-            return (index - 1) / 2;
-        }
-
-        int GetLeftChild(int index)
-        {
-            if (index < 0 || index > _count - 1)
-                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
-            return (2 * index) + 1;
-        }
-
-        int GetRightChild(int index)
-        {
-            if (index < 0 || index > _count - 1)
-                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
-            return (2 * index) + 2;
-        }
-
-        float GetKey(int index) => _items[index].key;
-        float GetParentKey(int index) => GetKey(GetParentIndex(index));
-        float GetLeftKey(int index) => GetKey(GetLeftChild(index));
-        float GetRightKey(int index) => GetKey(GetRightChild(index));
-
-
+        
         public bool IsAtCapacity() => _count >= _capacity;
 
         public bool GetRightChild(T item, out T child)
@@ -347,6 +263,125 @@ namespace GasSim.SimCore.DataStructures
             return false;
         }
 
+        #endregion
+
+
+        #region [PRIVATE METHODS]
+
+        /// <summary>
+        /// moves an element located at the specified index upwards in the heap to correctly reposition an element
+        /// whose value is less than the value of its parent.
+        /// This condition may result from removing an element or from changing an element’s value.
+        /// This method is described on pages 60-61 of the text, and pseudocode is provided on page 61.
+        /// </summary>
+        /// <param name="index"></param>
+        void HeapifyUp(int index)
+        {
+            
+            int curIndex = index;
+            float key = _items[curIndex].key;
+            
+           
+            while (curIndex != 0 && key < ParentKey())
+            {
+                SwapCurrentWithParent();
+                void SwapCurrentWithParent()
+                {
+                    int parentIndex = GetParentIndex(curIndex);
+                    Swap(curIndex, parentIndex);
+                    curIndex = parentIndex;
+                }
+            }
+            float ParentKey() => _items[GetParentIndex(curIndex)].key;
+        }
+
+        
+        /// <summary>
+        /// moves an element located at the specified index downwards in the heap to correctly reposition an element whose value is
+        /// greater than the value of either of its children. This condition may result from removing an element or from changing an
+        /// element’s value.
+        /// </summary>
+        /// <param name="index"></param>
+        void HeapifyDown(int index)
+        {
+            
+            int n = _count;
+            int j, lIndex, rIndex;
+
+            lIndex =  GetLeftChild(index);
+            rIndex = GetRightChild(index);
+            
+            
+            float key = GetKey(index);
+            int smallestIndex = index;
+            float smallestKey = key;
+            if (lIndex < _count &&  GetKey(lIndex) < smallestKey)
+            {
+                smallestKey = GetKey(lIndex);
+                smallestIndex = lIndex;
+            }
+            if (rIndex < _count &&  GetKey(rIndex) < smallestKey)
+            {
+                smallestIndex = rIndex;
+            }
+
+            if (index != smallestIndex)
+            {
+                Swap(index, smallestIndex);
+                HeapifyDown(smallestIndex);
+            }
+        }
+        
+        
+        void Swap(int i, int j)
+        {
+            (_items[i], _items[j]) = (_items[j], _items[i]);
+            _indexLookup[_items[i].item] = i;
+            _indexLookup[_items[j].item] = j;
+        }
+
+        void Swap(T a, T b)
+        {
+            int index1 = _indexLookup[a];
+            int index2 = _indexLookup[b];
+            Swap(index1, index2);
+        }
+
+        
+        int GetParentIndex(int index)
+        {
+            if (index < 0 || index > _count - 1)
+                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
+            else if (index == 0)
+                throw new InvalidOperationException("root node has no parent");
+    
+            return (index - 1) / 2;
+        }
+
+        
+        int GetLeftChild(int index)
+        {
+            if (index < 0 || index > _count - 1)
+                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
+            return (2 * index) + 1;
+        }
+
+        
+        int GetRightChild(int index)
+        {
+            if (index < 0 || index > _count - 1)
+                throw new IndexOutOfRangeException($"Must index between 0,{_count}");
+            return (2 * index) + 2;
+        }
+
+        float GetKey(int index) => _items[index].key;
+        
+        float GetParentKey(int index) => GetKey(GetParentIndex(index));
+        
+        float GetLeftKey(int index) => GetKey(GetLeftChild(index));
+        
+        float GetRightKey(int index) => GetKey(GetRightChild(index));
+
         private void PrintDictionary()
         {
             StringBuilder sb = new StringBuilder();
@@ -358,6 +393,9 @@ namespace GasSim.SimCore.DataStructures
             Debug.Log(sb.ToString());
         }
 
+        #endregion
+
+       
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -374,6 +412,148 @@ namespace GasSim.SimCore.DataStructures
             }
 
             return sb.ToString();
+        }
+        
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (this.Count == 0)
+                yield break;
+            foreach (var item in InOrder(Root))
+            {
+                yield return item;
+            }
+        }
+
+        public IEnumerable<T> InOrder() => InOrder(Root);
+        public IEnumerable<(T,int)> InOrderWithDepth() => InOrder(Root, 0);
+
+        private IEnumerable<T> InOrder(T item)
+        {
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in InOrder(leftChild))
+                {
+                    yield return child;
+                }
+            }
+            yield return item;
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in InOrder(rightChild))
+                {
+                    yield return child;
+                }
+            }
+        }
+
+        private IEnumerable<(T, int)> InOrder(T item, int depth)
+        {
+            yield return (item,depth);
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in InOrder(leftChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in InOrder(rightChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+        }
+        public IEnumerable<T> DepthFirst() => DepthFirst(Root);
+        public IEnumerable<(T,int)> DepthFirstWithDepth() => DepthFirst(Root, 0);
+        private IEnumerable<T> DepthFirst(T item)
+        {
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in DepthFirst(leftChild))
+                {
+                    yield return child;
+                }
+            }
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in DepthFirst(rightChild))
+                {
+                    yield return child;
+                }
+            }
+            yield return item;
+        }
+        public IEnumerable<(T, int)> DepthFirst(T item, int depth)
+        {
+            yield return (item,depth);
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in DepthFirst(leftChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in DepthFirst(rightChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+        }
+        public IEnumerable<(T,int)> BreadthFirstWithDepth() => BreadthFirst(Root, 0);
+        public IEnumerable<T> BreadthFirst() => BreadthFirst(Root);
+
+        private IEnumerable<T> BreadthFirst(T item)
+        {
+            yield return item;
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in BreadthFirst(leftChild))
+                {
+                    yield return child;
+                }
+            }
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in BreadthFirst(rightChild))
+                {
+                    yield return child;
+                }
+            }
+        }
+        public IEnumerable<(T, int)> BreadthFirst(T item, int depth)
+        {
+            yield return (item,depth);
+            if(GetLeftChild(item, out var leftChild))
+            {
+                foreach (var child in BreadthFirst(leftChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+            if(GetRightChild(item, out var rightChild))
+            {
+                foreach (var child in BreadthFirst(rightChild, depth+1))
+                {
+                    yield return child;
+                }
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            foreach (var i in _indexLookup)
+            {
+                _items[i.Value] = default;
+            }
+            _indexLookup.Clear();
+            _count = 0;
         }
     }
 }
