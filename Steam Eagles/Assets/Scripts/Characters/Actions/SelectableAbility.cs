@@ -1,10 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
 public class SelectableAbility : CellAbility
 {
+    [Serializable]
+    private class Events
+    {
+        public UnityEvent<int> onSelectedAbilityIndexChanged;
+        public UnityEvent<CellAbility> onSelectedAbilityChanged;
+    }
+    
+    [Header("Selectable Abilities")]
+    public CellAbility[] abilities;
+    [SerializeField] private Events events;
     [SerializeField] int selectedAbility = 0;
+    
     public bool debug;
+    
     public int SelectedAbility
     {
         get => selectedAbility;
@@ -12,12 +26,17 @@ public class SelectableAbility : CellAbility
         {
             if(debug)Debug.Log($"{name} Selected Ability Changed:{selectedAbility}");
             selectedAbility = value % abilities.Length;
+            events.onSelectedAbilityIndexChanged?.Invoke(selectedAbility);
+            events.onSelectedAbilityChanged?.Invoke(abilities[selectedAbility]);
         }
     }
 
     public override Tilemap Tilemap => abilities[SelectedAbility].Tilemap;
 
-    public CellAbility[] abilities;
+ 
+    
+   
+    
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
         return abilities[selectedAbility].CanPerformAbilityOnCell(abilityUser, cellPosition);
