@@ -207,7 +207,7 @@ public class CharacterCameraSwitcher : MonoBehaviour
     {
         if (!HasValues()) return;
         Vector2 diff = P1Position - P2Position;
-        bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance);
+        bool inSplitScreenMode = !forceSingleCameraMode && (diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance));
 
         if (inSplitScreenMode)
         {
