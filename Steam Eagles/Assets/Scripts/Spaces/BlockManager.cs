@@ -21,6 +21,8 @@ namespace World
             }
         }
 
+        public bool IsLoaded => _blocksLoaded || blockDatabase != null;
+
 
         private void Awake()
         {
