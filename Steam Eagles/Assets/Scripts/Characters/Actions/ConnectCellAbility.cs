@@ -8,7 +8,7 @@ public class ConnectCellAbility : CellAbility
     [SerializeField]
     private TileBase tileToPlace;
     
-    public override bool CanPerformAbilityOnCell(Vector3Int cellPosition)
+    public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
         return !IsCellBlocked(cellPosition) && !Tilemap.HasTile(cellPosition);
     }

@@ -8,7 +8,7 @@ public class Ability : MonoBehaviour
 {
     public CellSelector selector;
     public CellAbility cellAbility;
-
+    
   
     public AbilityPreview abilityPreview;
     private List<Vector3Int> selectedCells;
@@ -17,13 +17,23 @@ public class Ability : MonoBehaviour
     
     public Comparison<Vector3Int> CustomSortFunction { get; set; }
 
+    private AbilityUser _user;
+    public AbilityUser User
+    {
+        get
+        {
+            if (_user == null)
+            {
+                _user = GetComponentInParent<AbilityUser>();
+            }
+            return _user;
+        }
+    }
+    
     private void Awake()
     {
         selectedCells = new List<Vector3Int>();
-        
     }
-
-   
 
     private void Update()
     {
@@ -38,7 +48,7 @@ public class Ability : MonoBehaviour
         {
             foreach (var selectedCell in selectedCells)
             {
-                if (cellAbility.CanPerformAbilityOnCell(selectedCell))
+                if (cellAbility.CanPerformAbilityOnCell(User,selectedCell))
                 {
                     ShowAbilityPreview(cellAbility.Tilemap.GetCellCenterWorld(selectedCell));
                     return;
@@ -46,7 +56,6 @@ public class Ability : MonoBehaviour
             }
         }
         HideAbilityPreview();
-        
     }
     
     public bool TryAbility()
@@ -56,7 +65,7 @@ public class Ability : MonoBehaviour
         if (cellAbility.Tilemap == null) return false;
         foreach (var selectedCell in selectedCells)
         {
-            if (cellAbility.CanPerformAbilityOnCell(selectedCell))
+            if (cellAbility.CanPerformAbilityOnCell(User, selectedCell))
             {
                 cellAbility.PerformAbilityOnCell(selectedCell);
                 return true;
@@ -87,7 +96,7 @@ public class Ability : MonoBehaviour
 
         dot = Mathf.Clamp(dot, -1, 1);
         foreach (var selectedCell in selectedCells
-                     .Where(t => cellAbility.CanPerformAbilityOnCell(t))
+                     .Where(t => cellAbility.CanPerformAbilityOnCell(User,t))
                      .OrderByDescending(Dot))
         {
             var d = Dot(selectedCell);
@@ -109,7 +118,7 @@ public class Ability : MonoBehaviour
 
       
         foreach (var selectedCell in selectedCells
-                     .Where(t => cellAbility.CanPerformAbilityOnCell(t))
+                     .Where(t => cellAbility.CanPerformAbilityOnCell(User,t))
                      .OrderByDescending(CompareDist))
         {
             var d = CompareDist(selectedCell);
@@ -130,12 +139,12 @@ public class Ability : MonoBehaviour
             return (wp - mp).sqrMagnitude;
         }
 
-        return selectedCells.Where(cellAbility.CanPerformAbilityOnCell)
+        return selectedCells.Where(cellPosition => cellAbility.CanPerformAbilityOnCell(User,cellPosition))
             .OrderByDescending(CompareDist).Select(t => (t, cellAbility.Tilemap.GetCellCenterWorld(t)));
     }
 
     #region Preview Helpers
-
+    
     private void HideAbilityPreview()
     {
         if (abilityPreview == null) return;
@@ -171,6 +180,7 @@ public class Ability : MonoBehaviour
             
         }
     }
+    
     #endregion
 
 
@@ -184,11 +194,11 @@ public class Ability : MonoBehaviour
         bool isFirst = true;
         var validColor = Color.Lerp(Color.clear, Color.green, 0.8f);
         var invalidColor = Color.Lerp(Color.clear, Color.red, 0.2f);
-        foreach (var cell in selectedCells.Where(t => cellAbility.CanPerformAbilityOnCell(t)))
+        foreach (var cell in selectedCells.Where(t => cellAbility.CanPerformAbilityOnCell(User,t)))
         {
             var wp = cellAbility.Tilemap.GetCellCenterWorld(cell);
             
-            var color = cellAbility.CanPerformAbilityOnCell(cell) ? validColor : invalidColor;
+            var color = cellAbility.CanPerformAbilityOnCell(User,cell) ? validColor : invalidColor;
             Gizmos.color =Color.Lerp(Color.clear, Color.green,  isFirst ? 1 : 0.4f);
             isFirst = false;
             float r = 0.5f;

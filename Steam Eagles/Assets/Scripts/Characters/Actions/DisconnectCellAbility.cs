@@ -7,7 +7,7 @@ public class DisconnectCellAbility : CellAbility
 {
 
     public UnityEvent<Vector3> onDisconnectedBlock;
-    public override bool CanPerformAbilityOnCell(Vector3Int cellPosition)
+    public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
         //var wp = Tilemap.GetCellCenterWorld(cellPosition);
         //var tp = transform.position;
