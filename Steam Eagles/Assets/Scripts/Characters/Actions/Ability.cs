@@ -67,7 +67,7 @@ public class Ability : MonoBehaviour
         {
             if (cellAbility.CanPerformAbilityOnCell(User, selectedCell))
             {
-                cellAbility.PerformAbilityOnCell(selectedCell);
+                cellAbility.PerformAbilityOnCell(User, selectedCell);
                 return true;
             }
         }
@@ -102,7 +102,7 @@ public class Ability : MonoBehaviour
             var d = Dot(selectedCell);
             if (d < dot)
                 continue;
-            cellAbility.PerformAbilityOnCell(selectedCell);
+            cellAbility.PerformAbilityOnCell(User, selectedCell);
             return true;
         }
         
@@ -124,7 +124,7 @@ public class Ability : MonoBehaviour
             var d = CompareDist(selectedCell);
             if (maxDistance > 0 && CompareDist(selectedCell)< Mathf.Pow(maxDistance, 2))
                 continue;
-            cellAbility.PerformAbilityOnCell(selectedCell);
+            cellAbility.PerformAbilityOnCell(User, selectedCell);
             return true;
         }
         
@@ -210,3 +210,4 @@ public class Ability : MonoBehaviour
 
    
 }
+

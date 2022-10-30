@@ -13,7 +13,7 @@ public class ConnectCellAbility : CellAbility
         return !IsCellBlocked(cellPosition) && !Tilemap.HasTile(cellPosition);
     }
 
-    public override void PerformAbilityOnCell(Vector3Int cell)
+    public override void PerformAbilityOnCell(AbilityUser abilityUser,Vector3Int cell)
     {
         Tilemap.SetTile(cell, tileToPlace);
         MessageBroker.Default.Publish(new BuildActionInfo(Tilemap, cell));

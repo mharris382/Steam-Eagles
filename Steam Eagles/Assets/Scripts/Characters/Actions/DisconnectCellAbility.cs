@@ -15,10 +15,10 @@ public class DisconnectCellAbility : CellAbility
         throw new System.NotImplementedException();
     }
 
-    public override void PerformAbilityOnCell(Vector3Int cell)
+    public override void PerformAbilityOnCell(AbilityUser abilityUser,Vector3Int cell)
     {
+        MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cell));
         Tilemap.SetTile(cell, null);
         onDisconnectedBlock?.Invoke(Tilemap.GetCellCenterWorld(cell));
-        MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cell));
     }
 }

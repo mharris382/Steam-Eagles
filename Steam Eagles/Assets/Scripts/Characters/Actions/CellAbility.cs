@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using World;
 
@@ -17,7 +18,7 @@ public abstract class CellAbility : MonoBehaviour
     }
     public abstract bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition);
 
-    public abstract void PerformAbilityOnCell(Vector3Int cell);
+    public abstract void PerformAbilityOnCell(AbilityUser user, Vector3Int cell);
 
     public virtual int SortCellLocationsByPreference(Vector3Int cell1, Vector3Int cell2)
     {
