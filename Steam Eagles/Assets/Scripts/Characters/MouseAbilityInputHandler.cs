@@ -12,18 +12,26 @@ namespace Characters
         public CellSelector selector;
         
         public Ability leftMouseButton;
-
+        public Ability righttMouseButton;
         public Camera ActiveCam => camera == null ? sharedCamera.Value : camera;
 
         private void Update()
         {
            
             var wp = ActiveCam.ScreenToWorldPoint(Input.mousePosition);
-            selector.transform.position = wp;
+            leftMouseButton.selector.transform.position = wp;
+            righttMouseButton.selector.transform.position = wp;
             leftMouseButton.ShowAbilityPreviewFromMouse(wp);
             if (Input.GetMouseButton(0))
             {
                 leftMouseButton.TryAbility(wp);
+            }
+
+            if (righttMouseButton == null) return;
+            righttMouseButton.ShowAbilityPreviewFromMouse(wp);
+            if (Input.GetMouseButton(1))
+            {
+                righttMouseButton.TryAbility(wp);
             }
         }
     }
