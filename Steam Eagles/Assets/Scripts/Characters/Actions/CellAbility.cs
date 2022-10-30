@@ -4,11 +4,8 @@ using World;
 
 public abstract class CellAbility : MonoBehaviour
 {
-    [SerializeField]
-    private SharedTilemap tilemap;
-    [SerializeField]
-    public SharedTilemap blockingMap;
-    
+    [SerializeField] private SharedTilemap tilemap;
+    [SerializeField] public SharedTilemap blockingMap;
     
     public virtual Tilemap Tilemap => tilemap.Value;
 
