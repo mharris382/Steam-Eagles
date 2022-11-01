@@ -44,7 +44,7 @@ public class GroundCheck : MonoBehaviour
     public float verticalVelocityThreshold = 1;
     private float _lastGroundedTime;
     private CharacterState _state;
-    
+    private float TimeInAir => Time.time - _lastGroundedTime;
     
     private void Awake()
     {
@@ -59,7 +59,7 @@ public class GroundCheck : MonoBehaviour
     {
             if (_state == null) return;
 
-            if (_state.IsJumping && _state.VelocityY > verticalVelocityThreshold)
+            if ((_state.IsJumping && (_state.VelocityY > verticalVelocityThreshold)) || _state.IsDropping)
             {
                 IsGrounded = false;
                 GroundPercent = 0;

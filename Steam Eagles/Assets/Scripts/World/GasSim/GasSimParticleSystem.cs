@@ -2,19 +2,54 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using CoreLib;
 using GasSim.SimCore.DataStructures;
+using JetBrains.Annotations;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 using Rand = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 
 #endif
+
+public interface IGasSource
+{
+    IEnumerable<(Vector2Int coord, int amount)> GetSourceCells();
+}
+public interface IGasSim
+{
+    enum GridResolution
+    {
+        FULL,
+        HALF,
+        QUART,
+        EIGHTH,
+        X16,
+        X32
+    }
+
+    
+    Grid Grid { get; }
+    
+    RectInt SimulationRect {get;}
+
+    void SetStateOfMatter(Vector2Int coord, StateOfMatter stateOfMatter);
+
+    bool TryAddGasToCell(Vector2Int coord, int amount);
+}
+
+public interface IPressureGrid
+{
+    
+}
+
 [RequireComponent(typeof(ParticleSystem))]
-public class GasSimParticleSystem : MonoBehaviour
+public class GasSimParticleSystem : MonoBehaviour, IGasSim
 {
     #region [INNER CLASSES]
 
@@ -61,15 +96,20 @@ public class GasSimParticleSystem : MonoBehaviour
         }
     }
 
-
-    internal class PressureGrid
+    internal class PressureGrid : IPressureGrid
     {
         private readonly byte[,] _grid;
-        private readonly GridHelper _gridHelper;
+        private readonly StateOfMatter[,] _stateGrid;
+        internal  readonly GridHelper _gridHelper;
+        
+        [System.Obsolete("_usedCells instead")]
         private readonly BinaryHeap<Vector2Int> _nonEmptyPositions;
+        
+        private Dictionary<Vector2Int, float> _usedCells = new Dictionary<Vector2Int, float>();
+        
         private int _totalPressureInGrid;
         public int TotalPressureInGrid => _totalPressureInGrid;
-        public int NumberOfCellsUsed => _nonEmptyPositions.Count;
+        public int NumberOfCellsUsed => _usedCells.Count;
         
         public float TotalCellDensity
         {
@@ -136,20 +176,36 @@ public class GasSimParticleSystem : MonoBehaviour
                 {
                     return;
                 }
+
+                
+                //cannot put non-zero gas into a solid block
+                if (newPressure != 0 && _stateGrid[coord.x, coord.y] == StateOfMatter.SOLID)
+                    return;
+                
                 if (CellWasEmpty())
                 {
                     _totalPressureInGrid += newPressure;
-                    _nonEmptyPositions.Insert(coord, PressureToWeight(newPressure));
+                    if (!_usedCells.ContainsKey(coord))//_nonEmptyPositions.Contains(coord))
+                    {
+                        _usedCells.Add(coord, PressureToWeight(newPressure));
+                        //_nonEmptyPositions.Insert(coord, PressureToWeight(newPressure));
+                    }
+                    else
+                    {
+                        _usedCells[coord] = newPressure;
+                       // _nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
+                    }
                 }
                 else if (CellIsEmpty())
                 {
                     _totalPressureInGrid -= previousPressure;
-                    _nonEmptyPositions.Remove(coord);
+                    if (_usedCells.ContainsKey(coord)) _usedCells.Remove(coord);
                 }
                 else
                 {
                     _totalPressureInGrid += newPressure - previousPressure;
-                    _nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
+                    _usedCells[coord] = PressureToWeight(newPressure);
+                    //_nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
                 }
                 
                 bool PressureIsUnchanged() => previousPressure == newPressure;
@@ -159,28 +215,49 @@ public class GasSimParticleSystem : MonoBehaviour
                 _grid[coord.x, coord.y] = newPressure;
             }
         }
-        
-        
-        public PressureGrid(int sizeX, int sizeY)
+
+        public void SetState(Vector2Int coord, StateOfMatter stateOfMatter)
+        {
+            _stateGrid[coord.x, coord.y] = stateOfMatter;
+            if (stateOfMatter == StateOfMatter.SOLID)
+            {
+                this[coord] = 0;
+            }
+        }
+
+        public StateOfMatter GetState(Vector2Int coord)
+        {
+            return _stateGrid[coord.x, coord.y];
+        }
+        public PressureGrid(GameObject owner, int sizeX, int sizeY)
         {
             const int BOUNDS_Z = 100;
             _grid = new byte[sizeX, sizeY];
-            _gridHelper = new GridHelper(sizeX, sizeY);
+            _stateGrid = new StateOfMatter[sizeX, sizeY];
+            _gridHelper = new GridHelper(owner, sizeX, sizeY);
             var heapCapacity = sizeX * sizeY;
             Debug.Log($"Number of Cells on Grid = {(heapCapacity).ToString().Bolded()}");
             _nonEmptyPositions = new BinaryHeap<Vector2Int>();
             _nonEmptyPositions.StartHeap(heapCapacity);
         }
 
-        public int UsedCellsCount => _nonEmptyPositions.Count;
+        public int UsedCellsCount => _usedCells.Count;
 
         public IEnumerable<(Vector2Int coord, int pressure)> GetAllNonEmptyCells()
         {
+#if USE_HEAP
             foreach (var cell in _nonEmptyPositions.DepthFirst())
             {
                 yield return (cell, this[cell]);
             }
+#else
+            foreach (var usedCell in _usedCells)
+            {
+                yield return (usedCell.Key, this[usedCell.Key]);
+            }
+#endif
         }
+        
         private float PressureToWeight(int pressure)
         {
             return pressure / 16f;
@@ -231,18 +308,66 @@ public class GasSimParticleSystem : MonoBehaviour
             _totalPressureInGrid = 0;
             _nonEmptyPositions.Clear();
         }
-        private class InvalidPressureGridOperation : InvalidOperationException
+
+        public IEnumerable<Vector2Int> GetEmptyNeighbors(Vector2Int cell)
         {
-            public InvalidPressureGridOperation(Vector2Int coord, int valueToSet) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}") { }
-            public InvalidPressureGridOperation(Vector2Int coord, int valueToSet, string message) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}\n{message.InItalics()}") { }
-            public InvalidPressureGridOperation(Vector2Int coord) : base($"Invalid Pressure Operation Occured getting value at {coord}") { }
+            return _gridHelper.GetNeighbors(cell).Where(t => this[t] == 0 && _stateGrid[t.x, t.y] == StateOfMatter.AIR);
         }
+
+        public int GetAvailableSpaceInCell(Vector2Int cell)
+        {
+            return 16 - this[cell];
+        }
+         
+        public IEnumerable<Vector2Int> GetLowerDensityNeighbors(Vector2Int cell)
+        {
+            int pressure = this[cell];
+            return _gridHelper.GetNeighbors(cell).Where(t => this[t] < pressure && _stateGrid[t.x, t.y] == StateOfMatter.AIR);
+        }
+        
+        public struct CellChange
+        {
+            public Vector2Int coord;
+            public int newPressure;
+
+            public override int GetHashCode()
+            {
+                return coord.GetHashCode();
+            }
+        }
+
+        public int GetMaxTransferAmount(Vector2Int from, Vector2Int to, int amount)
+        {
+            int current = this[from];
+            int available = GetAvailableSpaceInCell(to);
+            int maxTransferAmount = Mathf.Min(amount, 15);
+            return Mathf.Min(current, maxTransferAmount, available);
+        }   
+        
+        
+
+        public void Transfer(Vector2Int from, Vector2Int to, int amount)
+        {
+            amount = GetMaxTransferAmount(from, to, amount);
+            int f0 = this[from];
+            int f1 = f0 - amount;
+            int t0 = this[to];
+            int t1 = t0 + amount;
+            this[from] = f1;
+            this[to] = t1;
+        }
+
+        
+        
     }
     
-    private class GridHelper
+    
+    internal class GridHelper
     {
         private BoundsInt _bounds;
-        
+        private readonly Vector2Int[] _neighborDirs;
+        public BoundsInt Bounds => _bounds;
+        public RectInt Rect => new RectInt(Bounds.xMin, Bounds.yMin, Bounds.size.x, Bounds.size.y);
         public Vector2Int Clamp(Vector2Int position)
         {
             position.x = Mathf.Clamp(position.x,_bounds.min.x, _bounds.max.x);
@@ -265,36 +390,94 @@ public class GasSimParticleSystem : MonoBehaviour
 
         public bool IsPositionOnGrid(Vector2Int position) =>
             IsPositionOnGrid(new Vector3Int(position.x, position.y, 0));
-        public GridHelper(int sizeX, int sizeY)
+        
+        
+        
+        public GridHelper(GameObject owner, int sizeX, int sizeY)
         {
             const int BOUNDS_Z = 100;
             var _min = new Vector2Int(0, 0);
             _bounds = new BoundsInt(_min.x, _min.y, -BOUNDS_Z, sizeX, sizeY, BOUNDS_Z);
+            _neighborDirs = new Vector2Int[4]
+            {
+                Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down
+            };
+        }
+
+
+
+        public IEnumerable<Vector2Int> GetNeighbors(Vector2Int cell)
+        {
+            //do this check once here since it will usually be true instead of same check 4 times   
+            if (cell.x > _bounds.xMin+1 && cell.x < _bounds.xMax-1 &&
+                cell.y > _bounds.yMin+1 && cell.y < _bounds.yMax-1)
+            {
+                return _neighborDirs.Select(t => t + cell);
+            }
+
+            return _neighborDirs.Select(t => t + cell).Where(IsPositionOnGrid);
+        }
+        
+        public int GetNeighborCount(Vector2Int cell)
+        {
+            //do this check once here since it will usually be true instead of same check 4 times   
+            if (cell.x > _bounds.xMin && cell.x < _bounds.xMax &&
+                cell.y > _bounds.yMin && cell.y < _bounds.yMax)
+            {
+                return 4;
+            }
+
+            if (cell == (Vector2Int)_bounds.max ||
+                cell == (Vector2Int)_bounds.min ||
+                cell == new Vector2Int(_bounds.xMin, _bounds.yMax) ||
+                cell == new Vector2Int(_bounds.xMax, _bounds.yMin))
+            {
+                return 2;
+            }
+            else
+            {
+                return 3;
+            }
+        }
+
+        public void DrawGizmos(float cellSizeX,float cellSizeY)
+        {
+            var rect = new Rect(_bounds.xMin*cellSizeX, _bounds.yMin*cellSizeX, _bounds.size.x*cellSizeY, _bounds.size.y*cellSizeY);
+            rect.DrawGizmos();
         }
     }
 
-    #endregion
+    
+    
+    private class InvalidPressureGridOperation : InvalidOperationException
+    {
+        public InvalidPressureGridOperation(Vector2Int coord, int valueToSet) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}") { }
+        public InvalidPressureGridOperation(Vector2Int coord, int valueToSet, string message) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}\n{message.InItalics()}") { }
+        public InvalidPressureGridOperation(Vector2Int coord) : base($"Invalid Pressure Operation Occured getting value at {coord}") { }
+    }
 
     
     #region [ENUM DECLARATIONS]
 
-
-    private enum GridResolution
+    private enum TestingMode
     {
-        FULL,
-        HALF,
-        QUART,
-        EIGHTH,
-        X16,
-        X32
+        DISABLE_TESTS,
+        RANDOM_PARTICLES,
+        GRID_TO_PARTICLES,
+        PARTICLES_TO_GRID,
+        GRID_MOVEMENTS,
     }
-
     #endregion
+    
+    #endregion
+
+    
+   
 
 
     #region [FIELDS]
 
-    [SerializeField] private GridResolution resolution =GridResolution.HALF;
+    [SerializeField] private IGasSim.GridResolution resolution =IGasSim.GridResolution.HALF;
     [SerializeField] internal PressureColor pressureColor;
     [SerializeField] private Vector2Int gridSize = new Vector2Int(100, 100);
     [SerializeField] private float pressureToLifetime = 0.125f;
@@ -302,21 +485,45 @@ public class GasSimParticleSystem : MonoBehaviour
     [SerializeField] bool useZOffset = true;
 
     [SerializeField] private float pressureToZ = 1;
+    [SerializeField] private float updateRate = 1;
     [SerializeField] private bool skipInternalGrid = true;
+    [FormerlySerializedAs("copyGridToParticles")] [SerializeField] private bool enableGridToParticles = false;
+    [SerializeField] private TestingMode testingMode;
     [SerializeField] private float particleSizeMultiplier = 2f;
     [SerializeField] private int randomSeed = 100;
     [SerializeField] private RectInt spawnRect = new RectInt(4, 4, 10, 10);
+
+    [SerializeField] private bool runAsParallel = false;
+    [Header("Sources")] [SerializeField,Range(0, 1)] private float sourceUpdateRate = 0.2f;
+    [SerializeField] private GameObject[] sceneSources;
+    private bool updateParticlesOnSourceUpdate = false;
     private Grid _cellGrid;
     private ParticleSystem _ps;
     private Vector2 _cellSize;
     private PressureGrid _pressureGrid;
+    private GridHelper _gridHelper;
+    private List<IGasSource> _registeredSources = new List<IGasSource>();
     
     #endregion
+
+    public void AddGasSourceToSimulation(IGasSource source)
+    {
+        
+    }
+
+    public void RemoveGasSourceFromSimulation(IGasSource source)
+    {
+        if (_registeredSources.Contains(source))
+        {
+
+            _registeredSources.Remove(source);
+        }
+    }
 
     
     #region [PROPERTIES]
 
-    private Vector2 CellSize
+    public Vector2 CellSize
     {
         get
         {
@@ -328,7 +535,8 @@ public class GasSimParticleSystem : MonoBehaviour
     {
         get =>_ps == null ? (_ps = GetComponent<ParticleSystem>()) : _ps;
     }
-    private Grid Grid
+
+    public Grid Grid
     {
         get
         {
@@ -346,7 +554,12 @@ public class GasSimParticleSystem : MonoBehaviour
         }
     }
 
-    internal PressureGrid InternalPressureGrid => _pressureGrid ?? (_pressureGrid = new PressureGrid(gridSize.x, gridSize.y));
+    internal PressureGrid InternalPressureGrid => _pressureGrid ??= new PressureGrid(gameObject,gridSize.x, gridSize.y);
+
+    private GridHelper gridHelper => _gridHelper ??= new GridHelper(gameObject, gridSize.x, gridSize.y);
+
+    public RectInt SimulationRect => gridHelper.Rect;
+    
 
     #endregion
 
@@ -356,12 +569,12 @@ public class GasSimParticleSystem : MonoBehaviour
     {
         _cellSize = resolution switch
         {
-            GridResolution.FULL => Vector2.one,
-            GridResolution.HALF => Vector2.one / 2f,
-            GridResolution.QUART => Vector2.one / 4f,
-            GridResolution.EIGHTH => Vector2.one / 8f,
-            GridResolution.X16 => Vector2.one / 16f,
-            GridResolution.X32 => Vector2.one / 32f,
+            IGasSim.GridResolution.FULL => Vector2.one,
+            IGasSim.GridResolution.HALF => Vector2.one / 2f,
+            IGasSim.GridResolution.QUART => Vector2.one / 4f,
+            IGasSim.GridResolution.EIGHTH => Vector2.one / 8f,
+            IGasSim.GridResolution.X16 => Vector2.one / 16f,
+            IGasSim.GridResolution.X32 => Vector2.one / 32f,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -378,6 +591,7 @@ public class GasSimParticleSystem : MonoBehaviour
         int sizeX = spawnRect.width; int sizeY = spawnRect.height;
         bool skipInternalUpdate = this.skipInternalGrid;
         int count = sizeX * sizeY;
+        ParticleSystem.Clear(false);
         this.ParticleSystem.Emit(count);
         ParticleSystem.Particle[] particles = new ParticleSystem.Particle[count];
         int index = 0;
@@ -392,6 +606,19 @@ public class GasSimParticleSystem : MonoBehaviour
                 
                 Vector3 size3D = ParticleGetSize3D();
                 float size = size3D.x;
+                float lifetime = 1;
+                if (!skipInternalUpdate)
+                {
+                    if (InternalPressureGrid.GetState(cellCoord) == StateOfMatter.SOLID)
+                    {
+                        lifetime = 0;
+                        pressure = 0;
+                    }
+                    else
+                    {
+                        InternalPressureGrid[cellCoord] = pressure;
+                    }
+                }
                 
                 uint seed = (uint)ParticleGetRandomSeed(cellCoord);
                 try
@@ -400,8 +627,8 @@ public class GasSimParticleSystem : MonoBehaviour
                     {
                         startColor = ParticleGetColor(pressure),
                         position = ParticleGetPosition(cellCoord, pressure),
-                        startLifetime = 1,
-                        remainingLifetime = 1,
+                        startLifetime = lifetime,
+                        remainingLifetime = lifetime,
                         randomSeed = seed,
                         startSize3D = size3D,
                         startSize = size,
@@ -409,14 +636,20 @@ public class GasSimParticleSystem : MonoBehaviour
                         angularVelocity = 0,
                         velocity = Vector3.zero
                     };
-                    if(!skipInternalUpdate)
-                        InternalPressureGrid[cellCoord] = pressure;
+
                 }
                 catch (IndexOutOfRangeException e)
                 {
-                    Debug.LogWarning($"IndexOutOfRangeException Occured At: {index} pos: ({x},{y})\nCount={count}");
+                    Debug.LogWarning($"IndexOutOfRangeException Occured At: {index} pos: ({x},{y})\nCount={count}\n\n {e.StackTrace}");
+                    
                     break;
                 }
+                catch (InvalidPressureGridOperation e)
+                {
+                    throw;
+                }
+                if(!skipInternalUpdate)
+                    InternalPressureGrid[cellCoord] = pressure;
                 index++;
             }
         }
@@ -451,7 +684,8 @@ public class GasSimParticleSystem : MonoBehaviour
     }
     private float ParticleGetStartLifetime(int gasCellPressure)
     {
-        return gasCellPressure * pressureToLifetime;
+        //return enableGridToParticles ? updateRate : gasCellPressure * pressureToLifetime;
+        return updateRate + 0.1f;
     }
 
     #endregion
@@ -484,7 +718,7 @@ public class GasSimParticleSystem : MonoBehaviour
             i++;
         }
         //
-        // ParticleSystem.SetParticles(particles);
+        ParticleSystem.SetParticles(particles);
     }
 
     
@@ -492,7 +726,18 @@ public class GasSimParticleSystem : MonoBehaviour
     {
         NativeArray<ParticleSystem.Particle> particles =
             new NativeArray<ParticleSystem.Particle>(ParticleSystem.particleCount, Allocator.Temp);
-        
+        int count = ParticleSystem.GetParticles(particles);
+        Dictionary<Vector2Int, int> _amountAdded = new Dictionary<Vector2Int, int>();
+        foreach (var particle in particles)
+        {
+            var coord = WorldToCell(particle.position);
+            int pressureInParticle = pressureColor.ColorToPressure(particle.GetCurrentColor(ParticleSystem));
+            int pressureInGrid = InternalPressureGrid[coord];
+            if (!_amountAdded.TryAdd(coord, pressureInGrid))//the grid already 
+            {
+                
+            }
+        }
         particles.Dispose();
     }
 
@@ -510,6 +755,7 @@ public class GasSimParticleSystem : MonoBehaviour
         pos.z = (pressure / 16f)*pressureToZ;
         return pos;
     }
+    private Vector2Int WorldToCell(Vector3 world) => (Vector2Int)Grid.WorldToCell(world);
 
     #endregion
 
@@ -520,10 +766,19 @@ public class GasSimParticleSystem : MonoBehaviour
         this.TimerStart();
 
         _ps = GetComponent<ParticleSystem>();
-        _pressureGrid = new PressureGrid(gridSize.x, gridSize.y);
+        _pressureGrid = new PressureGrid(gameObject, gridSize.x, gridSize.y);
         SetGridSize();
         Grid.cellSize = CellSize;
-       
+        
+        var childSources = GetComponentsInChildren<IGasSource>();
+        _registeredSources.AddRange(childSources);
+        
+        foreach (var sceneSource in sceneSources.Where(t=>t!=null))
+        {
+            childSources = sceneSource.GetComponentsInChildren<IGasSource>();
+            _registeredSources.AddRange(childSources);
+        }
+
        this.TimerStop("Awake");
     }
 
@@ -531,7 +786,7 @@ public class GasSimParticleSystem : MonoBehaviour
     {
         this.TimerStart();
         
-        SetupInitialGasState();
+        //SetupInitialGasState();
         this.TimerPrintout("Setup Initial Gas State");
         
         int count = this.ParticleSystem.particleCount;
@@ -540,38 +795,165 @@ public class GasSimParticleSystem : MonoBehaviour
         
         this.TimerStop("Start");
         
-        InvokeRepeating(nameof(UpdateParticlesFromGrid), 1, 1);
+        Invoke(nameof(UpdateSim), updateRate);
+        InvokeRepeating(nameof(DoGridSources), 1, sourceUpdateRate);
     }
 
-    IEnumerator GasSim()
+    
+    
+    
+    void UpdateSim()
     {
-        while (enabled)
+        switch (testingMode)
         {
-            SetupInitialGasState();
-            yield return new WaitForSeconds(1);
+            case TestingMode.DISABLE_TESTS:
+                break;
+            case TestingMode.RANDOM_PARTICLES:
+                SetupInitialGasState();
+                break;
+            case TestingMode.GRID_TO_PARTICLES:
+                UpdateParticlesFromGrid();
+                break;
+            case TestingMode.PARTICLES_TO_GRID:
+                UpdateGridFromParticles();
+                Invoke(nameof(UpdateSimStep2), updateRate/2f);
+                return;
+            case TestingMode.GRID_MOVEMENTS:
+                DoGridMovements();
+                UpdateParticlesFromGrid();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+        Invoke(nameof(UpdateSim), updateRate);
     }
+    
 
-    private void Update()
+
+    private void OnDrawGizmos()
     {
-        NativeArray<ParticleSystem.Particle> arrayParticles =
-            new NativeArray<ParticleSystem.Particle>(ParticleSystem.particleCount, Allocator.Temp);
-
-        int cnt = ParticleSystem.GetParticles(arrayParticles);
-
-        
-        
-        arrayParticles.Dispose();
-    }
-
-    private void OnParticleUpdateJobScheduled()
-    {
-        Debug.Log("OnParticleUpdateJobScheduled".Bolded());
+        Gizmos.color = Color.blue;
+        InternalPressureGrid._gridHelper.DrawGizmos(CellSize.x, CellSize.y);
     }
 
     #endregion
 
+    private void DoGridMovements()
+    {
+        bool ChooseRandom() => Rand.Range(1, 5) <= 2;
+        var nonEmpty = InternalPressureGrid.GetAllNonEmptyCells().ToArray();
+        try
+        {
+            foreach (var cell in nonEmpty)
+            {
 
+                Vector2Int from, to;
+                var emptyNeighbors = InternalPressureGrid.GetEmptyNeighbors(cell.coord).ToArray();
+                if (emptyNeighbors.Length > 0)
+                {
+                    from = cell.coord;
+                    to = ChooseRandom() ? emptyNeighbors[Rand.Range(0, emptyNeighbors.Length)] : emptyNeighbors[0];
+                    InternalPressureGrid.Transfer(from, to, 1);
+                    continue;
+                }
+
+                var validNeighbors = InternalPressureGrid.GetLowerDensityNeighbors(cell.coord).ToArray();
+                if (validNeighbors.Length > 0)
+                {
+                    from = cell.coord;
+                    to = ChooseRandom() ? validNeighbors[Rand.Range(0, validNeighbors.Length)] : validNeighbors[0];
+                    InternalPressureGrid.Transfer(from, to, 1);
+                    continue;
+                }
+
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(e.Message);
+        }
+    }
+
+    private void DoGridSources()
+    {
+        if (_registeredSources.Count == 0) 
+            return;
+        
+        if (runAsParallel)
+        {
+            foreach (var sourceCell in _registeredSources.SelectMany(t => t.GetSourceCells().AsParallel()))
+            {
+                TryAddGasToCell(sourceCell.coord, sourceCell.amount);
+            }
+        }
+        else
+        {
+            foreach (var sourceCell in _registeredSources.SelectMany(t => t.GetSourceCells()))
+            {
+                TryAddGasToCell(sourceCell.coord, sourceCell.amount);
+            }
+            
+        }
+
+        if (updateParticlesOnSourceUpdate)
+        {
+            CancelInvoke(nameof(UpdateSim));
+            UpdateSim();
+        }
+    }
+    void UpdateSimStep2()
+    {
+        UpdateParticlesFromGrid();
+        Invoke(nameof(UpdateSim), updateRate/2f);
+    }
+    public void SetStateOfMatter(Vector2Int coord, StateOfMatter stateOfMatter)
+    {
+        if (gridHelper.IsPositionOnGrid(coord) == false)
+        {
+            Debug.LogError($"Coordinate: {coord} is not on grid!");
+            return;
+        }
+
+        var size = CellSize;
+        Vector2 pos = CellToWorldSpace(coord);
+        Rect rect = new Rect(pos - size / 2f, size);
+        Vector3[] pnts = new Vector3[5]
+        {
+            new Vector3(rect.xMin, rect.yMin),
+            new Vector3(rect.xMin, rect.yMax),
+            new Vector3(rect.xMax, rect.yMax),
+            new Vector3(rect.xMax, rect.yMin),
+            new Vector3(rect.xMin, rect.yMin)
+        };
+        for (int i = 1; i < pnts.Length; i++)
+        {
+            var p0 = pnts[i - 1];
+            var p1 = pnts[i];
+            Debug.DrawLine(p0, p1, Color.magenta, 2);
+        }
+        InternalPressureGrid.SetState(coord, stateOfMatter);
+    }
+
+    public int GetPressureThatCanBeAdded(Vector2Int coord)
+    {
+        return 15 - InternalPressureGrid[coord];
+    }
+    public bool CanAddGasToCell(Vector2Int coord, ref int amount)
+    {
+        return Mathf.Min(amount, GetPressureThatCanBeAdded(coord)) > 0;
+    }
+    public bool TryAddGasToCell(Vector2Int coord, int amount)
+    {
+        if (CanAddGasToCell(coord, ref amount))
+        {
+            InternalPressureGrid[coord] += amount;
+            return true;
+        }
+
+        return false;
+    }
+    
+    
 }
 
 
@@ -638,3 +1020,8 @@ public class GasSimParticleSystemEditor : Editor
 
 #endif
 
+public enum StateOfMatter
+{
+    AIR,
+    SOLID
+}

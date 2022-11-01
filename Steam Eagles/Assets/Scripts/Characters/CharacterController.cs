@@ -213,13 +213,26 @@ public class CharacterController : MonoBehaviour
     private float lastDropTime;
     IEnumerator DropThroughPlatform()
     {
+        
         var collider = GetComponent<Collider2D>();
+        var coll = _groundCheck.Hit.collider;
+        if (coll == null)
+        {
+            Debug.LogError("HIT FOUND NO COLLIDER");
+            yield break;
+        }
+
         lastDropTime = Time.time;
-        collider.enabled = false;
+        State.VelocityY = -5;
         
-        yield return new WaitForSeconds(0.5f);
         
-        collider.enabled = true;
+        Physics2D.IgnoreCollision(collider, coll, true);
+        State.IsDropping = true;
+        yield return new WaitForSeconds(0.25f);
+        State.IsDropping = false;
+        Physics2D.IgnoreCollision(collider, coll, false);
+        
+        
     }
 
     private bool HasGroundedMovement()

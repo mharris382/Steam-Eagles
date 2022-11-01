@@ -11,13 +11,14 @@ public class CellHelper : MonoBehaviour
     [SerializeField]
     private SharedTilemap tilemap;
 
+    public Grid grid;
     
     /// <summary>
     /// get nearest cell coordinate in tilemap grid space
     /// </summary>
     public Vector3Int CellCoordinate
     {
-        get => Tilemap.WorldToCell(transform.position);
+        get => grid != null ? grid.WorldToCell(transform.position) : Tilemap.WorldToCell(transform.position);
     }
 
     /// <summary>
@@ -25,7 +26,7 @@ public class CellHelper : MonoBehaviour
     /// </summary>
     public Vector3 CellCenter
     {
-        get => Tilemap.GetCellCenterWorld(CellCoordinate);
+        get => grid != null ? grid.WorldToCell(transform.position) : Tilemap.GetCellCenterWorld(CellCoordinate);
     }
 
     private Tilemap _fallback;
@@ -58,15 +59,20 @@ public class CellHelper : MonoBehaviour
     
     private void Awake()
     {
-        tilemap.onValueChanged.AddListener(tm =>
+        if (grid == null || tilemap != null)
         {
-            enabled = tm != null;
-        });
-        enabled = tilemap.HasValue;
+            tilemap.onValueChanged.AddListener(tm =>
+            {
+                enabled = tm != null;
+            });
+            enabled = tilemap.HasValue;
+        }
     }
 
     private void Update()
     {
+        
+        if (tilemap == null) return;
         if (!tilemap.HasValue)
         {
             enabled = false;

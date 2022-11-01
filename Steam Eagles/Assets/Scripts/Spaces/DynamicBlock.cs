@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "Steam Eagles/Dynamic Block")]
 public class DynamicBlock : ScriptableObject
 {
-    [Header("Logic")]
+    [HideInInspector, Obsolete("Unnecessary coupling between systems")]
     public StaticBlock linkedStaticBlock;
     
     [Header("Rendering")]
@@ -101,6 +101,12 @@ public class DynamicBlock : ScriptableObject
 
     public Color GetDynamicBlockColor()
     {
+        if (linkedStaticBlock == null)
+        {
+            var c = color;
+            c.a = 1;
+            return c;
+        }
         return color == Color.clear ? linkedStaticBlock.color : color;
     }
     
@@ -111,6 +117,7 @@ public class DynamicBlock : ScriptableObject
             var index =UnityEngine.Random.Range(0, overrideSprites.Length - 1);
             return overrideSprites[index];
         }
+        
         return linkedStaticBlock.sprite;
     }
 

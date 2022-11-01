@@ -11,7 +11,13 @@ using UnityEngine.Serialization;
 
 public class CharacterCameraSwitcher : MonoBehaviour
 {
-
+    public enum CameraMode
+    {
+        SPLIT_SCREEN,
+        SHARED_SCREEN,
+        DYNAMIC_SCREEN,
+        MULTI_DISPLAY
+    }
     public float splitScreenDistance = 10;
     [SerializeField] private float transitionDuration = 0.5f; 
     [SerializeField] private CameraRects cameraRects;
@@ -47,6 +53,9 @@ public class CharacterCameraSwitcher : MonoBehaviour
 
     public bool forceSingleCameraMode = false;
 
+    public CameraMode mode = CameraMode.DYNAMIC_SCREEN;
+    
+    
     bool HasValues() => transporterCamera.HasValue && builderCamera.HasValue && transformerTransform.HasValue && builderTransform.HasValue;
 
 
@@ -151,63 +160,62 @@ public class CharacterCameraSwitcher : MonoBehaviour
         {
             yield return null;
         }
-        onSwitchingToSplitScreen.AddListener(() =>
-        {
+
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+        //notifies other systems which camera is currently being used by changing the shared reference 
+        onSwitchedToSingleScreen.AsObservable().Subscribe(_ => {
             if(activeTransporterCamera!=null)
                 activeTransporterCamera.Value = transporterCamera.Value;
             if(activeBuilderCamera!=null)
                 activeBuilderCamera.Value = builderCamera.Value;
-        });
-        
-        onSwitchingToSingleScreen.AddListener(() =>
-        {
+        }).AddTo(compositeDisposable);
+        onSwitchingToSingleScreen.AsObservable().Subscribe(_ => {
             if(activeTransporterCamera!=null)
                 activeTransporterCamera.Value = SingleScreenCamera.Value;
             if(activeBuilderCamera!=null)
                 activeBuilderCamera.Value = SingleScreenCamera.Value;
-        });
+        }).AddTo(compositeDisposable);
         
-        this._switchSequence = DOTween.Sequence();
-        Cam1.rect = cameraRects.singleScreenRectCamera1;
-        Cam2.rect = cameraRects.singleScreenRectCamera2;
-        _switchSequence.SetAutoKill(false);
-        
-        _switchSequence.Insert(0, Cam1.DORect(cameraRects.splitScreenRectCamera1, transitionDuration));
-        _switchSequence.Insert(0, Cam2.DORect(cameraRects.splitScreenRectCamera2, transitionDuration));
-        
-        _switchSequence.OnRewind(() => onSwitchingToSingleScreen?.Invoke());
-        _switchSequence.OnPlay(() => onSwitchingToSplitScreen?.Invoke());
-        
-        _switchSequence.OnComplete(() => onSwitchedToSplitScreen?.Invoke());
+        if (_switchSequence == null)
+        {
+            this._switchSequence = DOTween.Sequence();
+            Cam1.rect = cameraRects.singleScreenRectCamera1;
+            Cam2.rect = cameraRects.singleScreenRectCamera2;
+            _switchSequence.SetAutoKill(false);
+            _switchSequence.Insert(0, Cam1.DORect(cameraRects.splitScreenRectCamera1, transitionDuration));
+            _switchSequence.Insert(0, Cam2.DORect(cameraRects.splitScreenRectCamera2, transitionDuration));
+            _switchSequence.OnRewind(() => onSwitchingToSingleScreen?.Invoke());
+            _switchSequence.OnPlay(() => onSwitchingToSplitScreen?.Invoke());
+            _switchSequence.OnComplete(() => onSwitchedToSplitScreen?.Invoke());
 
-        var tweens = this.GetComponentsInChildren<ISplitScreenTween>();
-        foreach (var splitScreenTween in tweens)
-        {
-            float atPosition = 0;
-            var tween = splitScreenTween.ToSplitScreenTween(transitionDuration, ref atPosition);
-            _switchSequence.Insert(atPosition, tween);
+            var tweens = this.GetComponentsInChildren<ISplitScreenTween>();
+            foreach (var splitScreenTween in tweens)
+            {
+                float atPosition = 0;
+                var tween = splitScreenTween.ToSplitScreenTween(transitionDuration, ref atPosition);
+                _switchSequence.Insert(atPosition, tween);
+            }
+        
+            Vector2 diff = P1Position - P2Position;
+            bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance) && !forceSingleCameraMode;
+        
+            if(inSplitScreenMode) onSwitchingToSplitScreen?.Invoke();
+            else onSwitchingToSingleScreen?.Invoke();
+        
+            _switchSequence.Goto((inSplitScreenMode ? 1 : 0)*transitionDuration);
+            if (_switchSequence.IsPlaying())
+            {
+                _switchSequence.Pause();
+            }
         }
-        
-        Vector2 diff = P1Position - P2Position;
-        bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance) && !forceSingleCameraMode;
-        
-        if(inSplitScreenMode) onSwitchingToSplitScreen?.Invoke();
-        else onSwitchingToSingleScreen?.Invoke();
-        
-        _switchSequence.Goto((inSplitScreenMode ? 1 : 0)*transitionDuration);
-        if (_switchSequence.IsPlaying())
-        {
-            _switchSequence.Pause();
-        }
-        
-       
     }
 
     private void Update()
     {
         if (!HasValues()) return;
         Vector2 diff = P1Position - P2Position;
-        bool inSplitScreenMode = diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance);
+        bool inSplitScreenMode = !forceSingleCameraMode && (diff.sqrMagnitude > (splitScreenDistance * splitScreenDistance));
 
         if (inSplitScreenMode)
         {

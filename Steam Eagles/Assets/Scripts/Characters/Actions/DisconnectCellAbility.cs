@@ -7,7 +7,7 @@ public class DisconnectCellAbility : CellAbility
 {
 
     public UnityEvent<Vector3> onDisconnectedBlock;
-    public override bool CanPerformAbilityOnCell(Vector3Int cellPosition)
+    public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
         //var wp = Tilemap.GetCellCenterWorld(cellPosition);
         //var tp = transform.position;
@@ -15,10 +15,10 @@ public class DisconnectCellAbility : CellAbility
         throw new System.NotImplementedException();
     }
 
-    public override void PerformAbilityOnCell(Vector3Int cell)
+    public override void PerformAbilityOnCell(AbilityUser abilityUser,Vector3Int cell)
     {
+        MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cell));
         Tilemap.SetTile(cell, null);
         onDisconnectedBlock?.Invoke(Tilemap.GetCellCenterWorld(cell));
-        MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cell));
     }
 }

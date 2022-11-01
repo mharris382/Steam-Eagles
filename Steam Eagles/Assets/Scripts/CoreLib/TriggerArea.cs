@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO: feature request - allow TriggerAreaBase to buffer the messages so that if for example a player were to jump back and forth between a trigger, it would not constantly trigger the event until a min time passes.  it should also bias the most recent state
 public abstract class TriggerAreaBase<T> : MonoBehaviour
 {
 
@@ -54,7 +54,7 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
             _targetsInArea.Add(col, value);
             AddTarget(value);
         }
-        if (searchRigidbodyForTargets && col.attachedRigidbody != null && HasTarget(col.attachedRigidbody, out var valu2))
+        if (searchRigidbodyForTargets && col.attachedRigidbody != null && !_rbTargetsInArea.ContainsKey(col.attachedRigidbody) && HasTarget(col.attachedRigidbody, out var valu2))
         {
             _rbTargetsInArea.Add(col.attachedRigidbody, valu2);
             AddTarget(valu2);
@@ -97,6 +97,3 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
         OnTargetRemoved(target, _targets.Count);
     }
 }
-
-
-
