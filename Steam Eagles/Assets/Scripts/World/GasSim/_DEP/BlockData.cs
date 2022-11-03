@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(menuName = "Block Data", fileName = "New Block")]
+[Obsolete("use spaces.BlockDatabase")]
 public class BlockData : ScriptableObject
 {
     public string id;

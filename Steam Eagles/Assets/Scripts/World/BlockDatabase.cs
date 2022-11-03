@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace World
 {
-    [CreateAssetMenu(fileName = "BlockDatabase", menuName = "BlockDatabase", order = 0)]
+    [Obsolete("use spaces.BlockDatabase")]
     public class BlockDatabase : ScriptableObject
     {
         

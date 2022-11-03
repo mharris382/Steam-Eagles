@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Spaces
 {
-    [CreateAssetMenu(menuName = "Steam Eagles/Block Data")]
+    [Obsolete("use Spaces.BlockDatabase")]
+    
     public class BlockData : ScriptableObject
     {
         [SerializeField] internal StaticBlock staticBlock;

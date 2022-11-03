@@ -166,7 +166,6 @@ public class CharacterController : MonoBehaviour
         }
     }
 
-
     private void HandleInteractionUpdate(float dt)
     {
         IsJumping = false;
@@ -213,6 +212,7 @@ public class CharacterController : MonoBehaviour
     }
 
     private float lastDropTime;
+    
     IEnumerator DropThroughPlatform()
     {
         
@@ -241,6 +241,6 @@ public class CharacterController : MonoBehaviour
     {
         return IsGrounded && !IsJumping;
     }
-
+    
     #endregion
 }
