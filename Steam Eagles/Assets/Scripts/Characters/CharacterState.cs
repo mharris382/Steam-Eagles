@@ -25,14 +25,30 @@ public class CharacterState : MonoBehaviour
 
     public Vector2 AnimatorDelta { get; set; }
 
-    public bool IsJumping { get; set; }
+    private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
+
+    public BoolReactiveProperty IsJumpingProperty => _isJumping ??= new BoolReactiveProperty(false);
+    
+    public bool IsJumping
+    {
+        get => IsJumpingProperty.Value;
+        set => IsJumpingProperty.Value = value;
+    }
 
     /// <summary>
     /// is the player currently trying to drop through 1-way platforms 
     /// </summary>
-    public bool IsDropping { get; set; }
+    public bool IsDropping
+    {
+        get;
+        set;
+    }
 
-    public bool IsDead { get; set; }
+    public bool IsDead
+    {
+        get; 
+        set;
+    }
 
     public InteractionPhysicsMode InteractionPhysicsMode { get; set; }
 
@@ -60,6 +76,7 @@ public class CharacterState : MonoBehaviour
     public IObservable<bool> IsGroundedEventStream => !alwaysGrounded ? _isGroundedProperty : Observable.Return(true);
 
 
+
     public float VelocityX
     {
         get => Rigidbody.velocity.x;
@@ -71,10 +88,10 @@ public class CharacterState : MonoBehaviour
         get => Rigidbody.velocity.y;
         set => Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, value);
     }
-
+    
     #endregion
 
-    #region Private variables
+    #region [Private variables]
 
     public bool alwaysGrounded = false;
 
@@ -116,9 +133,62 @@ public class CharacterState : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// extends the duration that the player is allowed to 
+    /// </summary>
+    public float ExtraJumpTime { get; set; }
 
-    
+    /// <summary>
+    /// increases the character's jump force (allowing them to rise more quickly and jump higher)
+    /// </summary>
+    public float ExtraJumpForce
+    {
+        get => extraJumpForce;
+        set => extraJumpForce = value;
+    }
 
+    [NonSerialized,SerializeField] private float extraJumpForce = 0;
+     
+    public float ExtraJumpForceConsumed
+    {
+        get => extraJumpConsumedValue.ConsumeValue();
+        set => extraJumpConsumedValue.Amount = value;
+    }
+
+
+    [SerializeField]
+    internal ConsumedValue extraJumpConsumedValue;
+
+    [Serializable]
+    public class ConsumedValue
+    {
+        [SerializeField] private float amount = 10;
+        public float consumptionRate = 4;
+        public float consumptionRateAccel = 1;
+        
+        public float Amount
+        {
+            set => amount = value;
+        }
+
+        private float _currentRate;
+        private float _lastConsumptionTime;
+        public float ConsumeValue()
+        {
+            float maxRate = consumptionRate;
+            float delta = Time.time - _lastConsumptionTime;
+            
+            _currentRate = 
+                consumptionRateAccel > 0 
+                ? Mathf.MoveTowards(_currentRate, maxRate, delta * consumptionRateAccel) 
+                : consumptionRate;
+            
+            _lastConsumptionTime = Time.time;
+            var amountToConsume = Mathf.Min(_currentRate, amount);
+            amount -= amountToConsume;
+            return amountToConsume;
+        }
+    }
 }
 
 public enum InteractionPhysicsMode

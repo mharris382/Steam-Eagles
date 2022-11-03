@@ -201,8 +201,10 @@ public class CharacterController : MonoBehaviour
 
         if (IsJumping) {
             if (JumpHeld && _jumpTimeCounter > 0.0f) {
-                rb.velocity = Vector2.up * jumpForce;
+                rb.velocity = Vector2.up * (jumpForce + State.ExtraJumpForce);
                 _jumpTimeCounter -= Time.deltaTime;
+                if (State.ExtraJumpTime > 0) State.ExtraJumpTime = Mathf.Max(0, State.ExtraJumpTime - Time.deltaTime);
+                
             }
             else {
                 IsJumping = false;
