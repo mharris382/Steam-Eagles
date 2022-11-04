@@ -6,6 +6,7 @@ using Rand = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
 namespace GasSim
 {
     [AddComponentMenu("SteamEagles/Gas/GasSource")]
@@ -13,28 +14,25 @@ namespace GasSim
     {
         public Vector2Int size = new Vector2Int(4, 4);
 
-        [Tooltip("Slower numbers are faster")]
-        [Range(16, 1)]
-        [SerializeField] private int slowdown = 1;
+        [Tooltip("Slower numbers are faster")] [Range(16, 1)] [SerializeField]
+        private int slowdown = 1;
 
 
         [SerializeField] private bool useConstantAmount;
-        [Range(0, 16)] 
-        [SerializeField] private int constantAmount = 1;
-        
+        [Range(0, 16)] [SerializeField] private int constantAmount = 1;
+
         [Range(0, 16)] public int amountMin = 1;
         [Range(1, 16)] public int amountMax = 1;
 
-        [HideInInspector]
-        public UnityEvent<int> onGasEvent;
+        [HideInInspector] public UnityEvent<int> onGasEvent;
 
         private int _count;
-        
+
         public IEnumerable<(Vector2Int coord, int amount)> GetSourceCells()
         {
             _count++;
             if ((_count % slowdown) != 0) yield break;
-            
+
             Vector2Int c0 = (Vector2Int)CellCoordinate;
             for (int x = 0; x < size.x; x++)
             {
@@ -55,7 +53,8 @@ namespace GasSim
             onGasEvent?.Invoke(amountTaken);
         }
     }
-    
+
+
     // #if UNITY_EDITOR
     // public abstract class GasIOEditor : Editor
     // {

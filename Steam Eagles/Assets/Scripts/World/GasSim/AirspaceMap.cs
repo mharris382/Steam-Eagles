@@ -92,10 +92,10 @@ public class AirspaceMap : MonoBehaviour
                 switch (mode)
                 {
                     case DrawMode.WorldSpace:
-                        pos = tilemap.layoutGrid.CellToWorld(vector3Int);
+                        pos = tilemap.CellToWorld(vector3Int);
                         break;
                     case DrawMode.LocalSpace:
-                        pos = tilemap.layoutGrid.CellToLocal(vector3Int);
+                        pos = tilemap.CellToLocal(vector3Int);
                         break;
                 }
                 if(!isSolid)
