@@ -52,23 +52,23 @@ namespace GasSim
         }
     }
     
-    #if UNITY_EDITOR
-    [CustomEditor(typeof(GasSimIO))]
-    public class GasSimIOEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            var simIO = target as GasSimIO;
-            simIO.sources.RemoveAll(t => t == null);
-            simIO.sinks.RemoveAll(t => t == null);
-            var gasSources = simIO.sources.SelectMany(t => t.GetComponentsInChildren<GasSource>()).ToArray();
-            var gasSinks = simIO.sinks.SelectMany(t => t.GetComponentsInChildren<GasSink>()).ToArray();
-            string labelSinks = $"<b>{gasSinks.Length} Sinks</b>";
-            string labelSource = $"<b>{gasSources.Length} Sources</b>";
-            base.OnInspectorGUI();
-            
-            GUILayout.Box($"{labelSource}\n{labelSinks}", EditorStyles.helpBox, GUILayout.ExpandHeight(false), GUILayout.ExpandHeight(true));
-        }
-    }
-    #endif
+    // #if UNITY_EDITOR
+    // [CustomEditor(typeof(GasSimIO))]
+    // public class GasSimIOEditor : Editor
+    // {
+    //     public override void OnInspectorGUI()
+    //     {
+    //         var simIO = target as GasSimIO;
+    //         simIO.sources.RemoveAll(t => t == null);
+    //         simIO.sinks.RemoveAll(t => t == null);
+    //         var gasSources = simIO.sources.SelectMany(t => t.GetComponentsInChildren<GasSource>()).ToArray();
+    //         var gasSinks = simIO.sinks.SelectMany(t => t.GetComponentsInChildren<GasSink>()).ToArray();
+    //         string labelSinks = $"<b>{gasSinks.Length} Sinks</b>";
+    //         string labelSource = $"<b>{gasSources.Length} Sources</b>";
+    //         base.OnInspectorGUI();
+    //         
+    //         GUILayout.Box($"{labelSource}\n{labelSinks}", EditorStyles.helpBox, GUILayout.ExpandHeight(false), GUILayout.ExpandHeight(true));
+    //     }
+    // }
+    // #endif
 }

@@ -56,67 +56,67 @@ namespace GasSim
         }
     }
     
-    #if UNITY_EDITOR
-    public abstract class GasIOEditor : Editor
-    {
-        private SerializedProperty onGasEvent;
-        private SerializedProperty size;
-        private SerializedProperty slowdown;
-        private SerializedProperty useConstantAmount;
-        private SerializedProperty constantAmount;
-        private SerializedProperty amountMax;
-        private SerializedProperty amountMin;
-
-        private void OnEnable()
-        {
-            this.onGasEvent = serializedObject.FindProperty("onGasEvent");
-            this.size = serializedObject.FindProperty("slowdown");
-            this.slowdown = serializedObject.FindProperty("slowdown");
-            this.useConstantAmount = serializedObject.FindProperty("useConstantAmount");
-            this.constantAmount = serializedObject.FindProperty("constantAmount");
-            this.amountMin = serializedObject.FindProperty("amountMin");
-            this.amountMax = serializedObject.FindProperty("amountMax");
-            
-        }
-
-        public override void OnInspectorGUI()
-        {
-
-            EditorGUILayout.PropertyField(size);
-            EditorGUILayout.PropertyField(slowdown);
-            EditorGUILayout.PropertyField(useConstantAmount);
-            if (useConstantAmount.boolValue)
-            {
-                EditorGUILayout.PropertyField(constantAmount);
-            }
-            else
-            {
-                EditorGUILayout.PropertyField(amountMin);
-                EditorGUILayout.PropertyField(amountMax);
-            }
-            
-            EditorGUILayout.PropertyField(onGasEvent, new GUIContent(GetEventLabel()));
-        }
-
-        protected abstract string GetEventLabel();
-    }
-    [CanEditMultipleObjects()]
-    [CustomEditor(typeof(GasSource))]
-    public class GasSourceEditor : GasIOEditor
-    {
-        protected override string GetEventLabel()
-        {
-            return "On Gas taken from source";
-        }
-    }
-    [CanEditMultipleObjects()]
-    [CustomEditor(typeof(GasSink))]
-    public class GasSinkEditor : GasIOEditor
-    {
-        protected override string GetEventLabel()
-        {
-            return "On Gas given to Sink";
-        }
-    }
-    #endif
+    // #if UNITY_EDITOR
+    // public abstract class GasIOEditor : Editor
+    // {
+    //     private SerializedProperty onGasEvent;
+    //     private SerializedProperty size;
+    //     private SerializedProperty slowdown;
+    //     private SerializedProperty useConstantAmount;
+    //     private SerializedProperty constantAmount;
+    //     private SerializedProperty amountMax;
+    //     private SerializedProperty amountMin;
+    //
+    //     private void OnEnable()
+    //     {
+    //         this.onGasEvent = serializedObject.FindProperty("onGasEvent");
+    //         this.size = serializedObject.FindProperty("slowdown");
+    //         this.slowdown = serializedObject.FindProperty("slowdown");
+    //         this.useConstantAmount = serializedObject.FindProperty("useConstantAmount");
+    //         this.constantAmount = serializedObject.FindProperty("constantAmount");
+    //         this.amountMin = serializedObject.FindProperty("amountMin");
+    //         this.amountMax = serializedObject.FindProperty("amountMax");
+    //         
+    //     }
+    //
+    //     public override void OnInspectorGUI()
+    //     {
+    //
+    //         EditorGUILayout.PropertyField(size);
+    //         EditorGUILayout.PropertyField(slowdown);
+    //         EditorGUILayout.PropertyField(useConstantAmount);
+    //         if (useConstantAmount.boolValue)
+    //         {
+    //             EditorGUILayout.PropertyField(constantAmount);
+    //         }
+    //         else
+    //         {
+    //             EditorGUILayout.PropertyField(amountMin);
+    //             EditorGUILayout.PropertyField(amountMax);
+    //         }
+    //         
+    //         EditorGUILayout.PropertyField(onGasEvent, new GUIContent(GetEventLabel()));
+    //     }
+    //
+    //     protected abstract string GetEventLabel();
+    // }
+    // [CanEditMultipleObjects()]
+    // [CustomEditor(typeof(GasSource))]
+    // public class GasSourceEditor : GasIOEditor
+    // {
+    //     protected override string GetEventLabel()
+    //     {
+    //         return "On Gas taken from source";
+    //     }
+    // }
+    // [CanEditMultipleObjects()]
+    // [CustomEditor(typeof(GasSink))]
+    // public class GasSinkEditor : GasIOEditor
+    // {
+    //     protected override string GetEventLabel()
+    //     {
+    //         return "On Gas given to Sink";
+    //     }
+    // }
+    // #endif
 }

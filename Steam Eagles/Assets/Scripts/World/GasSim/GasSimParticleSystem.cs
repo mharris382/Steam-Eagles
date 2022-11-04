@@ -71,6 +71,7 @@ namespace GasSim
                 }
                 set
                 {
+                    value = Mathf.Clamp(value, 0, 15);
                     //the reason I'm throwing an exception here because read/write access to this grid must be precise to ensure conservation of mass
                     if (!IsValidPressure(value) || !_gridHelper.IsPositionOnGrid(coord))
                         throw new InvalidPressureGridOperation(coord, value, $"Is PRESSURE VALID?{IsValidPressure(value)}\nIS POS VALID?{_gridHelper.IsPositionOnGrid(coord)}");
@@ -855,7 +856,11 @@ namespace GasSim
                 {
                     TryAddGasToCell(sourceCell.coord, sourceCell.amount);
                 }
-            
+                foreach (var sinkCells in _registeredSinks.SelectMany(t => t.GetSourceCells()))
+                {
+                    TryRemoveGasFromCell(sinkCells.coord, sinkCells.amount);
+                }
+
             }
 
             if (updateParticlesOnSourceUpdate)
@@ -915,8 +920,20 @@ namespace GasSim
 
             return false;
         }
-    
-    
+        public bool CanRemoveGasFromCell(Vector2Int coord, ref int amount)
+        {
+            return Mathf.Max(amount, InternalPressureGrid[coord]) > 0;
+        }
+        public bool TryRemoveGasFromCell(Vector2Int coord, int amount)
+        {
+            if (CanRemoveGasFromCell(coord, ref amount))
+            {
+                InternalPressureGrid[coord] -= amount;
+                return true;
+            }
+
+            return false;
+        }
     }
 
 
