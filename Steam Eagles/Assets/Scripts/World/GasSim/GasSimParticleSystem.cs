@@ -746,21 +746,7 @@ namespace GasSim
 
             this.TimerStop("Awake");
         }
-        protected override void BuildComponent(Grid componentToBeAssigned)
-        {
-            if (componentToBeAssigned == null) return;
-            Vector3 cellSize = resolution switch
-            {
-                IGasSim.GridResolution.FULL => Vector2.one,
-                IGasSim.GridResolution.HALF => Vector2.one / 2f,
-                IGasSim.GridResolution.QUART => Vector2.one / 4f,
-                IGasSim.GridResolution.EIGHTH => Vector2.one / 8f,
-                IGasSim.GridResolution.X16 => Vector2.one / 16f,
-                IGasSim.GridResolution.X32 => Vector2.one / 32f,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            componentToBeAssigned.cellSize = cellSize;
-        }
+        
         private void Start()
         {
             this.TimerStart();
