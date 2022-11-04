@@ -131,5 +131,31 @@ namespace CoreLib
                 }
             }
         }
+
+        public static void Debug(this Rect rect, Transform transform = null)
+        {
+            var points = new Vector2[5]
+            {
+                new Vector2(rect.min.x, rect.min.y),
+                new Vector2(rect.max.x, rect.min.y),
+                new Vector2(rect.max.x, rect.max.y),
+                new Vector2(rect.min.x, rect.max.y),
+                new Vector2(rect.min.x, rect.min.y)
+            };
+            for (int i = 1; i < points.Length; i++)
+            {
+                var p0 = points[i - 1];
+                var p1 = points[i];
+                if (transform != null)
+                {
+                    
+                    UnityEngine.Debug.DrawLine(transform.TransformPoint(p0), transform.TransformPoint(p1));
+                }
+                else
+                {
+                    UnityEngine.Debug.DrawLine(p0, p1);
+                }
+            }
+        }
     }
 }
