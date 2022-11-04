@@ -96,6 +96,30 @@ namespace CoreLib
         }
     }
 
+    public abstract class SharedComponentBuilder<T, TShared> : SharedComponentAssigner<T, TShared>
+        where T : UnityEngine.Component
+        where TShared : SharedVariable<T>
+    {
+        protected override T GetVariableAssignment()
+        {
+            var existingComponent =base.GetVariableAssignment();
+            _BuildComponent(ref existingComponent);
+            return existingComponent;
+        }
+        
+        void _BuildComponent(ref T existingComponent)
+        {
+            if (existingComponent == null)
+            {
+                existingComponent = gameObject.AddComponent<T>();
+            }
+        }
+        
+        protected abstract void BuildComponent(T componentToBeAssigned);
+    }
+    
+    
+
     public class SharedComponentsAssigner<T, TShared> : SharedArrayAssigner<T, TShared>
         where T :  Component
         where TShared : SharedArray<T>

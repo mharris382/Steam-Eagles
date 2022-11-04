@@ -7,6 +7,7 @@ namespace CoreLib
     {
         public Vector3Int cellPosition;
         public Tilemap tilemap;
+        
 
         public BuildActionInfo(Tilemap tilemap, Vector3Int cellPosition)
         {
