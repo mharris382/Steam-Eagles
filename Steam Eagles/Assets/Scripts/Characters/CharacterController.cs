@@ -196,6 +196,7 @@ public class CharacterController : MonoBehaviour
             IsJumping = true;
             _jumpTimeCounter = jumpTime;
             rb.velocity = Vector2.up * jumpForce;
+            State.onJumped.OnNext(Unit.Default);
         }
 
         if (IsJumping) {

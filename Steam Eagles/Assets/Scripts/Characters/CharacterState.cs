@@ -189,6 +189,14 @@ public class CharacterState : MonoBehaviour
             return amountToConsume;
         }
     }
+    
+    
+    
+    internal Subject<Unit> onLanded = new Subject<Unit>();
+    public IObservable<Unit> OnCharacterLanded => onJumped;
+    
+    internal Subject<Unit> onJumped = new Subject<Unit>();
+    public IObservable<Unit> OnCharacterJumped => onJumped;
 }
 
 public enum InteractionPhysicsMode
