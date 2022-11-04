@@ -65,8 +65,8 @@ namespace GasSim
                 get
                 {
                     //the reason I'm throwing an exception here because access to this grid must be precise to ensure conservation of mass
-                    if(!_gridHelper.IsPositionOnGrid(coord))
-                        throw new InvalidPressureGridOperation(coord);
+                    if (!_gridHelper.IsPositionOnGrid(coord))
+                        return 0;
                 
                     return _grid[coord.x, coord.y];
                 }
@@ -836,30 +836,57 @@ namespace GasSim
             }
         }
 
+        Dictionary<IGasSource, int> _gasTakenFromSources = new Dictionary<IGasSource, int>();
+        Dictionary<IGasSink, int> _gasAddedToSinks = new Dictionary<IGasSink, int>();
+        
         private void DoGridIO()
         {
             if (_registeredSources.Count == 0) 
                 return;
             
-            if (runAsParallel)
+            
+            foreach (var source in _registeredSources)
             {
-                foreach (var sourceCell in _registeredSources.SelectMany(t => t.GetSourceCells().AsParallel()))
+                int totalAmount = 0;
+                _gasTakenFromSources.TryAdd(source, 0);
+                _gasTakenFromSources[source] = 0;  
+                foreach (var sourceCell in source.GetSourceCells())
                 {
-                    TryAddGasToCell(sourceCell.coord, sourceCell.amount);
-                }
-            }
-            else
-            {
-                foreach (var sourceCell in _registeredSources.SelectMany(t => t.GetSourceCells()))
-                {
-                    TryAddGasToCell(sourceCell.coord, sourceCell.amount);
-                }
-                foreach (var sinkCells in _registeredSinks.SelectMany(t => t.GetSourceCells()))
-                {
-                    TryRemoveGasFromCell(sinkCells.coord, sinkCells.amount);
+                    int amount = sourceCell.amount;
+                    if (TryAddGasToCell(sourceCell.coord, ref amount)) 
+                        totalAmount += amount;
                 }
 
+                if (totalAmount > 0)
+                {
+                    _gasTakenFromSources[source] = totalAmount;
+                }
             }
+
+            foreach (var registeredSink in _registeredSinks)
+            {
+                int totalAmount = 0;
+                _gasAddedToSinks.TryAdd(registeredSink, 0);
+                _gasAddedToSinks[registeredSink] = 0;
+                foreach (var sourceCell in registeredSink.GetSourceCells())
+                {
+                    int amount = sourceCell.amount;
+                    if(TryRemoveGasFromCell(sourceCell.coord,ref amount))
+                        totalAmount += amount;
+                }
+                
+                if(totalAmount > 0)
+                    _gasAddedToSinks[registeredSink] = totalAmount;
+            }
+
+            foreach (var sink in _gasAddedToSinks)
+                sink.Key.GasAddedToSink(sink.Value);
+
+            foreach (var source in _gasTakenFromSources) 
+                source.Key.GasTakenFromSource(source.Value);
+
+
+
 
             if (updateParticlesOnSourceUpdate)
             {
@@ -907,7 +934,10 @@ namespace GasSim
         {
             return Mathf.Min(amount, GetPressureThatCanBeAdded(coord)) > 0;
         }
-        public bool TryAddGasToCell(Vector2Int coord, int amount)
+
+        public bool CanAddGasToCell(Vector2Int coord, int amount) => CanAddGasToCell(coord, amount);
+        public bool CanRemoveGasFromCell(Vector2Int coord, int amount) => CanRemoveGasFromCell(coord, amount);
+        public bool TryAddGasToCell(Vector2Int coord, ref int amount)
         {
             if (CanAddGasToCell(coord, ref amount))
             {
@@ -917,11 +947,15 @@ namespace GasSim
 
             return false;
         }
+        public bool TryAddGasToCell(Vector2Int coord, int amount) => TryAddGasToCell(coord, ref amount);
+
+        public bool TryRemoveGasFromCell(Vector2Int coord,int amount) => TryRemoveGasFromCell(coord, amount);
+
         public bool CanRemoveGasFromCell(Vector2Int coord, ref int amount)
         {
             return Mathf.Max(amount, InternalPressureGrid[coord]) > 0;
         }
-        public bool TryRemoveGasFromCell(Vector2Int coord, int amount)
+        public bool TryRemoveGasFromCell(Vector2Int coord, ref int amount)
         {
             if (CanRemoveGasFromCell(coord, ref amount))
             {

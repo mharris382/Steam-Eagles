@@ -28,7 +28,7 @@ namespace GasSim
 
         private int _count;
 
-        public IEnumerable<(Vector2Int coord, int amount)> GetSourceCells()
+        public virtual IEnumerable<(Vector2Int coord, int amount)> GetSourceCells()
         {
             _count++;
             if ((_count % slowdown) != 0) yield break;
@@ -38,7 +38,7 @@ namespace GasSim
             {
                 for (int y = 0; y < size.y; y++)
                 {
-                    int amt = useConstantAmount ? constantAmount : Rand.Range(amountMin, amountMax);
+                    int amt = GetSupplyAmount();
                     if (amt > 0)
                     {
                         Vector2Int offset = new Vector2Int(x, y);
@@ -48,7 +48,12 @@ namespace GasSim
             }
         }
 
-        public void GasTakenFromSource(int amountTaken)
+        public virtual int GetSupplyAmount()
+        {
+            return useConstantAmount ? constantAmount : Rand.Range(amountMin, amountMax);
+        }
+
+        public virtual void GasTakenFromSource(int amountTaken)
         {
             onGasEvent?.Invoke(amountTaken);
         }
