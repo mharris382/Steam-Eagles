@@ -11,6 +11,17 @@ public class CharacterEvents : MonoBehaviour
 
      public UnityEvent OnCharacterJumped;
      
+     [Serializable]
+     public class CollisionEvents
+     {
+        public class LandingEvents
+        {
+            
+            public UnityEvent landedOnPipe;
+            public UnityEvent landedOnSolid;
+        }
+     }
+     
     void Awake()
     {
         if (characterState == null)
@@ -22,5 +33,10 @@ public class CharacterEvents : MonoBehaviour
     private void Start()
     {
         characterState.OnCharacterJumped.TakeUntilDisable(this).Subscribe(_ => OnCharacterJumped?.Invoke());
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        
     }
 }
