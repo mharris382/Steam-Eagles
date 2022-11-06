@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using World;
@@ -8,17 +10,31 @@ public abstract class CellAbility : MonoBehaviour
     [SerializeField] private SharedTilemap tilemap;
     [SerializeField] public SharedTilemap blockingMap;
     
+    [SerializeField] public List<SharedTilemap> blockingMaps;
+    [SerializeField] public List<Tilemap> sceneBlockingMaps;
     public virtual Tilemap Tilemap => tilemap.Value;
 
     protected virtual bool IsCellBlocked(Vector3Int cell)
     {
-        if (blockingMap == null || !blockingMap.HasValue)
+        foreach (var sharedTilemap in blockingMaps.Where(t=> t.HasValue).Select(t => t.Value).Concat(sceneBlockingMaps.Where(t=>t!=null)))
+        {
+            if (sharedTilemap.HasTile(cell))
+            {
+                return true;
+            }
+        }
+        if (blockingMap == null)
             return false;
         return blockingMap.Value.HasTile(cell);
     }
     public abstract bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition);
 
     public abstract void PerformAbilityOnCell(AbilityUser user, Vector3Int cell);
+
+    private void Awake()
+    {
+        
+    }
 
     public virtual int SortCellLocationsByPreference(Vector3Int cell1, Vector3Int cell2)
     {

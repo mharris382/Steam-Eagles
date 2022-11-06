@@ -140,13 +140,38 @@ public class CharacterController : MonoBehaviour
     {
         State.VelocityX = State.MoveX * moveSpeed * Time.fixedDeltaTime;
     }
-
+    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
+    private Collider2D _collider;
+    private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
     private void DoGroundedMovement()
     {
+        Vector2 DoExternalForces(Vector2 vector2)
+        {
+            var count = collider.GetContacts(contactPoint2Ds);
+            for (int i = 0; i < count; i++)
+            {
+                var contactPoint = contactPoint2Ds[i];
+                if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.attachedRigidbody.gameObject.CompareTag("Moving Platform"))
+                {
+                    var contactPointNormal = contactPoint.normal;
+                    if (Vector2.Dot(contactPointNormal, Vector2.up) > 0.1f)
+                    {
+                        var movingPlatformVelocity = contactPoint.collider.attachedRigidbody.velocity;
+                        vector2 += movingPlatformVelocity * Time.fixedDeltaTime;
+                    }
+                }
+            }
+
+            return vector2;
+        }
+
+        Vector3 externalForces=Vector2.zero; 
+        
+        externalForces = DoExternalForces(externalForces);
         var normal = Vector2.up;
         var tangent = Vector3.Cross(normal, Vector3.forward);
         var newVelocity = State.MoveX * moveSpeed * Time.fixedDeltaTime * tangent.normalized;
-        rb.velocity = newVelocity;
+        rb.velocity = newVelocity + externalForces;
     }
 
     private void HandleInteractionFixedUpdate(float dt)

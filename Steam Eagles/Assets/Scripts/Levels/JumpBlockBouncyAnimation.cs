@@ -21,8 +21,8 @@ public class JumpBlockBouncyAnimation : MonoBehaviour
 
     public void OnBounce(GameObject character)
     {
-        transform.DOKill();
-        transform.localScale = targetScale - (Vector3.one + Vector3.up * 0.01f);
+        //transform.DOKill();
+       // transform.localScale = targetScale - (Vector3.one + Vector3.up * 0.01f);
         
         
     }
