@@ -125,6 +125,8 @@ namespace Characters
 
         void OnCharacterDestroyed((CharacterInputState obj, CharacterAssignment prefab) destroyedCharacter)
         {
+            //check if assigned character exists in dictionary
+            if(!_assignedCharacters.ContainsKey(destroyedCharacter.obj)) return;
             var player = _assignedCharacters[destroyedCharacter.obj];
             UnAssignCharacterToPlayer(player);
             
@@ -239,6 +241,15 @@ namespace Characters
             }
 
             return characterInput;
+        }
+        
+        
+        public void OnDrawGizmos()
+        {
+            foreach (var characterAssignment in characterAssignments)
+            {
+                characterAssignment.OnDrawGizmos();
+            }
         }
     }   
 }
