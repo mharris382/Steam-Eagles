@@ -9569,7 +9569,7 @@ MonoBehaviour:
     prefab: {fileID: 8672804245435915240}
     playerCamera: {fileID: 11400000, guid: a3fa6a7d0c1a20449b6f01c1537e32dd, type: 2}
     spawnPoint: {fileID: 0}
-    defaultPosition: {x: 7.96, y: 8.66, z: 0}
+    defaultPosition: {x: 24.88, y: 3.55, z: 0}
     characterColor: {r: 1, g: 0.44950724, b: 0, a: 1}
     hideTransformInEditor: 0
 --- !u!114 &657822349
@@ -16322,6 +16322,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1261776253}
   - component: {fileID: 1261776254}
+  - component: {fileID: 1261776255}
   m_Layer: 0
   m_Name: CM vcam3
   m_TagString: Untagged
@@ -16383,6 +16384,34 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1819732964}
+--- !u!114 &1261776255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261776252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd6261ee512481a90fdfe09d020e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedVariable: {fileID: 11400000, guid: 23aa225e6cb7a8e46837ac9bc7a23f0d, type: 2}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1261776254}
+        m_TargetAssemblyTypeName: Cinemachine.CinemachineVirtualCamera, Cinemachine
+        m_MethodName: set_Follow
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &1266122285 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4474689652657866504, guid: c5b6f32f55315024e802256622b2643a, type: 3}
