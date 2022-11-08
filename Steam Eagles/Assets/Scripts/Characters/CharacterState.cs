@@ -13,15 +13,38 @@ public class CharacterState : MonoBehaviour
 
     public CharacterConfig config;
 
-    public float MoveX { get; set; }
+    private Vector2 _moveInput;
 
-    public float MoveY { get; set; }
+    public Vector2 MoveInput
+    {
+        get => _moveInput;
+        set => _moveInput = value;
+    }
+    public float MoveX
+    {
+        get => _moveInput.x;
+        set => _moveInput.x = value;
+    }
 
-    public bool JumpPressed { get; set; }
+    public float MoveY
+    {
+        get=> _moveInput.y;
+        set=>   _moveInput.y = value;
+    }
+
+    public bool JumpPressed
+    {
+        get; 
+        set;
+    }
 
     public bool AttackPressed { get; set; }
 
-    public bool JumpHeld { get; set; }
+    public bool JumpHeld
+    {
+        get;
+        set;
+    }
 
     public Vector2 AnimatorDelta { get; set; }
 
@@ -44,16 +67,17 @@ public class CharacterState : MonoBehaviour
         set;
     }
 
+    
     public bool IsDead
     {
         get; 
         set;
     }
 
+    
     public InteractionPhysicsMode InteractionPhysicsMode { get; set; }
 
     public Rigidbody2D Rigidbody { get; private set; }
-
 
     public Animator Animator { get; set; }
 

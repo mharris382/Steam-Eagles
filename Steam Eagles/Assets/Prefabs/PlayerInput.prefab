@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3734753825138336127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3734753825138336114}
+  - component: {fileID: 3734753825138336113}
+  - component: {fileID: 3734753825138336112}
+  m_Layer: 0
+  m_Name: PlayerInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3734753825138336114
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734753825138336127}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3734753825138336113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734753825138336127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b5e5548f-12a2-4900-bd23-6dea16f1e4dc
+    m_ActionName: Gameplay/Move Horizontal[/Keyboard/d,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9649f4a1-6efe-4877-b27d-f6291ceb6c43
+    m_ActionName: Gameplay/Move Vertical[/Keyboard/w,/Keyboard/s,/Keyboard/downArrow,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3734753825138336112}
+        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
+        m_MethodName: OnJump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 9fd45dda-ed7e-46a6-8fa0-accf09788a31
+    m_ActionName: Gameplay/Jump[/Keyboard/space,/XInputControllerWindows/buttonSouth,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cb9324df-afb0-4936-9740-34d057b95a53
+    m_ActionName: Gameplay/Aim[/XInputControllerWindows/rightStick,/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a825108f-e2fa-4bf3-b189-0d864cf207d7
+    m_ActionName: Gameplay/Interact[/Keyboard/e,/XInputControllerWindows/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ed01768b-a645-44c7-a2be-a0b11a1c40a6
+    m_ActionName: Gameplay/Pickup[/XInputControllerWindows/buttonNorth,/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 21450a97-089b-4980-842f-eeef4389e67c
+    m_ActionName: Gameplay/Move[/XInputControllerWindows/leftStick,/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 57a869a3-e6a5-4622-b787-cc5cec51a5e4
+    m_ActionName: Gameplay/Quick Action Up[/XInputControllerWindows/dpad/up,/Keyboard/numpad5,/Keyboard/2]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 02825b74-9779-4ed8-b057-ee6b4be9bf48
+    m_ActionName: Gameplay/Quick Action Right[/XInputControllerWindows/leftStick/right,/Keyboard/numpad3,/Keyboard/e,/XInputControllerWindows/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9dd8f629-b2e8-47e5-bf11-42d235f11b91
+    m_ActionName: Gameplay/Quick Action Left[/XInputControllerWindows/dpad/left,/Keyboard/numpad1,/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6cfc191e-66c1-4d03-948a-c798a169773d
+    m_ActionName: Gameplay/Quick Action Down[/XInputControllerWindows/dpad/down,/Keyboard/rightCtrl,/Keyboard/x]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7ceb1cf0-2bc8-493e-8866-bcdba9ad181c
+    m_ActionName: Gameplay/Special Ability[/Mouse/leftButton,/Mouse/rightButton,/XInputControllerWindows/buttonWest]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 54efaa8b-c45a-4a08-a043-e62ea40c5a20
+    m_ActionName: Depricated/New action
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f97b9131-a538-41db-b4bf-c22417e72f61
+    m_ActionName: Depricated/Preview[/XInputControllerWindows/rightStick/left,/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 61301bf3-678e-4aab-83a8-893f99db9ae1
+    m_ActionName: Depricated/Queue Action Smart[/XInputControllerWindows/buttonWest,/Mouse/forwardButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 55d609ab-8a45-48cd-bf1c-dad6bf11bb3e
+    m_ActionName: Depricated/Queue Disconnect[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2cb2afed-83bd-4a1d-a5af-5278f2e9c944
+    m_ActionName: Depricated/Queue Conect[/Mouse/leftButton]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gameplay
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &3734753825138336112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734753825138336127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eedf11f650a4a2783a0784dabf2ad5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useEventsForJump: 0

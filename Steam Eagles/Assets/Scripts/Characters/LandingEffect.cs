@@ -16,7 +16,7 @@ public class LandingEffect : MonoBehaviour
     public float fallSpeedToTriggerEffect = 0.2f;
 
     private float _timeEnteredAir = float.MaxValue;
-
+    public float timeInAirToTrigger = 1;
     
     private float maxRecordedFallSpeed;
     
@@ -37,7 +37,37 @@ public class LandingEffect : MonoBehaviour
     private void Awake()
     {
         _timeEnteredAir = Time.time;
-        characterState.IsGroundedEventStream.Subscribe(isGrounded =>
+        characterState.IsGroundedEventStream
+            .Select(t => t ? Observable.EveryUpdate().AsUnitObservable() : Observable.Never<Unit>())
+            .Switch()
+            .TakeUntilDestroy(this)
+            .Subscribe(
+                _ =>
+                {
+                    bool falling = characterState.VelocityY < 0;
+                    if (!falling) return;
+                    float fallSpeed = Mathf.Abs(characterState.VelocityY);
+                    if (maxRecordedFallSpeed < fallSpeed)
+                    {
+                        maxRecordedFallSpeed = fallSpeed;
+                    }
+                });
+        characterState.IsGroundedEventStream
+            .Where(t => t)
+            .Select(t => Observable.EveryUpdate().AsUnitObservable())
+            .Take(TimeSpan.FromSeconds(timeInAirToTrigger))
+            .TakeUntil(characterState.IsGroundedEventStream)
+            .Subscribe(_ =>
+            {
+                Debug.Log("Updating stuffs.0..");
+            }, () =>
+            {
+                if(characterState.IsGrounded)
+                    Debug.Log($"Character Spent {timeInAirToTrigger} time in air");
+                return;
+            });
+
+    characterState.IsGroundedEventStream.Subscribe(isGrounded =>
         {
             if (isGrounded)
             {

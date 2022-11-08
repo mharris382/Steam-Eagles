@@ -73,87 +73,37 @@ namespace GasSim
                 set
                 {
                     value = Mathf.Clamp(value, 0, 15);
-                    //the reason I'm throwing an exception here because read/write access to this grid must be precise to ensure conservation of mass
-                    if (!IsValidPressure(value) || !_gridHelper.IsPositionOnGrid(coord))
-                        throw new InvalidPressureGridOperation(coord, value, $"Is PRESSURE VALID?{IsValidPressure(value)}\nIS POS VALID?{_gridHelper.IsPositionOnGrid(coord)}");
-                
-                
-                
-#if false
-                var previousPressure = (byte)this[coord];
-                var newPressure = (byte)Mathf.Clamp(value, 0, 15);
+                    
+                    if (!_gridHelper.IsPositionOnGrid(coord) || (GetState(coord) == StateOfMatter.SOLID && value > 0))
+                        return;
 
-                //case 0: cell pressure did not change
-                if (previousPressure == newPressure)
-                {
-                    return;
-                }
-                
-                //case 1: previously empty cell became non-empty
-                if (previousPressure == 0)
-                {
-                    _totalPressureInGrid += newPressure;
-                    _nonEmptyPositions.Insert(coord, PressureToWeight(newPressure));
-                }
-                
-                //case 2: previously non-empty cell became empty
-                else if (newPressure == 0)
-                {
-                    _totalPressureInGrid -= previousPressure;
-                    _nonEmptyPositions.Remove(coord);
-                }
-                
-                else//case 3: cell pressure state, increased or decreased 
-                {
-                    _totalPressureInGrid += newPressure - previousPressure;
-                    _nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
-                }
-#else
                     var previousPressure = (byte)this[coord];
-                    var newPressure = (byte)Mathf.Clamp(value, 0, 15);
-
-                    if (PressureIsUnchanged())
+                    var newPressure = (byte)value;
+                    //case 0: cell pressure did not change
+                    if (previousPressure == newPressure)
                     {
                         return;
                     }
-
-                
-                    //cannot put non-zero gas into a solid block
-                    if (newPressure != 0 && _stateGrid[coord.x, coord.y] == StateOfMatter.SOLID)
-                        return;
-                
-                    if (CellWasEmpty())
+                  
+                    //case 1: previously empty cell became non-empty
+                    if (previousPressure == 0)
                     {
                         _totalPressureInGrid += newPressure;
-                        if (!_usedCells.ContainsKey(coord))//_nonEmptyPositions.Contains(coord))
-                        {
-                            _usedCells.Add(coord, PressureToWeight(newPressure));
-                            //_nonEmptyPositions.Insert(coord, PressureToWeight(newPressure));
-                        }
-                        else
-                        {
-                            _usedCells[coord] = newPressure;
-                            // _nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
-                        }
+                        _usedCells.Add(coord, newPressure);
                     }
-                    else if (CellIsEmpty())
+                    //case 2: previously non-empty cell became empty
+                    else if (newPressure == 0)
                     {
                         _totalPressureInGrid -= previousPressure;
-                        if (_usedCells.ContainsKey(coord)) _usedCells.Remove(coord);
+                        _usedCells.Remove(coord);
                     }
-                    else
+                    else//case 3: cell pressure state, increased or decreased 
                     {
                         _totalPressureInGrid += newPressure - previousPressure;
-                        _usedCells[coord] = PressureToWeight(newPressure);
-                        //_nonEmptyPositions.ChangeKey(coord, PressureToWeight(newPressure));
+                        _usedCells[coord] = newPressure;
                     }
-                
-                    bool PressureIsUnchanged() => previousPressure == newPressure;
-                    bool CellWasEmpty() => previousPressure == 0;
-                    bool CellIsEmpty() => newPressure == 0;
-#endif
                     _grid[coord.x, coord.y] = newPressure;
-                }
+                    }
             }
 
             public void SetState(Vector2Int coord, StateOfMatter stateOfMatter)
@@ -440,7 +390,7 @@ namespace GasSim
         [SerializeField] private bool runAsParallel = false;
         [Header("Sources")] [SerializeField,Range(0, 1)] private float sourceUpdateRate = 0.2f;
         [SerializeField] private GameObject[] sceneSources;
-        private bool updateParticlesOnSourceUpdate = false;
+        [SerializeField]private bool updateParticlesOnSourceUpdate = false;
         private Grid _cellGrid;
         private ParticleSystem _ps;
         private Vector2 _cellSize;
@@ -749,21 +699,12 @@ namespace GasSim
         
         private void Start()
         {
-            this.TimerStart();
-        
-            //SetupInitialGasState();
-            this.TimerPrintout("Setup Initial Gas State");
-        
-            int count = this.ParticleSystem.particleCount;
-            ParticleSystem.Particle[] particles = new ParticleSystem.Particle[count];
-            ParticleSystem.GetParticles(particles);
-        
-            this.TimerStop("Start");
-        
-            Invoke(nameof(UpdateSim), updateRate);
+            Invoke(nameof(DoSimulationStep1), updateRate);
             InvokeRepeating(nameof(DoGridIO), 1, sourceUpdateRate);
         }
 
+        #endregion
+        [System.Obsolete]
         void UpdateSim()
         {
             switch (testingMode)
@@ -789,7 +730,22 @@ namespace GasSim
             }
             Invoke(nameof(UpdateSim), updateRate);
         }
-    
+
+
+        private int lastSimulationStep = -1;
+        void DoSimulationStep1()
+        {
+            lastSimulationStep = 1;
+            DoGridMovements();
+            Invoke(nameof(DoSimulationStep2), updateRate/2f);
+        }
+
+        void DoSimulationStep2()
+        {
+            lastSimulationStep = 2;
+            UpdateParticlesFromGrid();
+            Invoke(nameof(DoSimulationStep1), updateRate/2f);
+        }
 
 
         private void OnDrawGizmos()
@@ -798,7 +754,6 @@ namespace GasSim
             InternalPressureGrid._gridHelper.DrawGizmos(CellSize.x, CellSize.y);
         }
 
-        #endregion
 
         private void DoGridMovements()
         {
@@ -819,7 +774,7 @@ namespace GasSim
                         continue;
                     }
 
-                    var validNeighbors = InternalPressureGrid.GetLowerDensityNeighbors(cell.coord).ToArray();
+                    var validNeighbors = InternalPressureGrid.GetLowerDensityNeighbors(cell.coord).OrderByDescending(t => InternalPressureGrid[t]).ToArray();
                     if (validNeighbors.Length > 0)
                     {
                         from = cell.coord;
@@ -844,40 +799,8 @@ namespace GasSim
             if (_registeredSources.Count == 0) 
                 return;
             
-            
-            foreach (var source in _registeredSources)
-            {
-                int totalAmount = 0;
-                _gasTakenFromSources.TryAdd(source, 0);
-                _gasTakenFromSources[source] = 0;  
-                foreach (var sourceCell in source.GetSourceCells())
-                {
-                    int amount = sourceCell.amount;
-                    if (TryAddGasToCell(sourceCell.coord, ref amount)) 
-                        totalAmount += amount;
-                }
-
-                if (totalAmount > 0)
-                {
-                    _gasTakenFromSources[source] = totalAmount;
-                }
-            }
-
-            foreach (var registeredSink in _registeredSinks)
-            {
-                int totalAmount = 0;
-                _gasAddedToSinks.TryAdd(registeredSink, 0);
-                _gasAddedToSinks[registeredSink] = 0;
-                foreach (var sourceCell in registeredSink.GetSourceCells())
-                {
-                    int amount = sourceCell.amount;
-                    if(TryRemoveGasFromCell(sourceCell.coord,ref amount))
-                        totalAmount += amount;
-                }
-                
-                if(totalAmount > 0)
-                    _gasAddedToSinks[registeredSink] = totalAmount;
-            }
+            DoGridSources();
+            DoGridSinks();
 
             foreach (var sink in _gasAddedToSinks)
                 sink.Key.GasAddedToSink(sink.Value);
@@ -890,10 +813,51 @@ namespace GasSim
 
             if (updateParticlesOnSourceUpdate)
             {
-                CancelInvoke(nameof(UpdateSim));
-                UpdateSim();
+                CancelInvoke(lastSimulationStep == 1 ? nameof(DoSimulationStep2) : nameof(DoSimulationStep1));
+                DoSimulationStep1();
             }
         }
+
+        private void DoGridSinks()
+        {
+            foreach (var registeredSink in _registeredSinks)
+            {
+                int totalAmount = 0;
+                _gasAddedToSinks.TryAdd(registeredSink, 0);
+                _gasAddedToSinks[registeredSink] = 0;
+                foreach (var sourceCell in registeredSink.GetSourceCells())
+                {
+                    int amount = sourceCell.amount;
+                    if (TryRemoveGasFromCell(sourceCell.coord, ref amount))
+                        totalAmount += amount;
+                }
+
+                if (totalAmount > 0)
+                    _gasAddedToSinks[registeredSink] = totalAmount;
+            }
+        }
+
+        private void DoGridSources()
+        {
+            foreach (var source in _registeredSources)
+            {
+                int totalAmount = 0;
+                _gasTakenFromSources.TryAdd(source, 0);
+                _gasTakenFromSources[source] = 0;
+                foreach (var sourceCell in source.GetSourceCells())
+                {
+                    int amount = sourceCell.amount;
+                    if (TryAddGasToCell(sourceCell.coord, ref amount))
+                        totalAmount += amount;
+                }
+
+                if (totalAmount > 0)
+                {
+                    _gasTakenFromSources[source] = totalAmount;
+                }
+            }
+        }
+
         void UpdateSimStep2()
         {
             UpdateParticlesFromGrid();
