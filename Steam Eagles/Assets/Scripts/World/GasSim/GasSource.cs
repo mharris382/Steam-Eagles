@@ -17,6 +17,8 @@ namespace GasSim
         [Tooltip("Slower numbers are faster")] [Range(16, 1)] [SerializeField]
         private int slowdown = 1;
 
+        public bool useTexture;
+        public Texture2D sourceShape;
 
         [SerializeField] private bool useConstantAmount;
         [Range(0, 16)] [SerializeField] private int constantAmount = 1;
@@ -30,6 +32,7 @@ namespace GasSim
 
         public virtual IEnumerable<(Vector2Int coord, int amount)> GetSourceCells()
         {
+            if (!enabled) yield break;
             _count++;
             if ((_count % slowdown) != 0) yield break;
 
@@ -48,8 +51,24 @@ namespace GasSim
             }
         }
 
+        IEnumerable<(Vector2Int pixelCoordinate, int gasAmount)> GetSourceCellsFromTexture()
+        {
+            if (!useTexture) yield break;
+            for (int x = 0; x < sourceShape.width; x++)
+            {
+                for (int y = 0; y < sourceShape.height; y++)
+                {
+                    Color c = sourceShape.GetPixel(x, y);
+                    var bw = c.r;
+                    int gas = Mathf.RoundToInt(bw * 15);
+                    yield return (new Vector2Int(x, y), gas);
+                }
+            }
+        }
+
         public virtual int GetSupplyAmount()
         {
+            
             return useConstantAmount ? constantAmount : Rand.Range(amountMin, amountMax);
         }
 
