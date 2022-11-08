@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CoreLib;
 using UniRx;
 using UnityEngine;
@@ -18,40 +19,38 @@ public class ConnectCellAbility : CellAbility
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
         bool blockedByNeighbor = false;
-        return !IsCellBlocked(cellPosition) 
-               && !Tilemap.HasTile(cellPosition) 
-               && (!limitAdjacentNeighbors 
-                   ||(GetAdjacentNeighborCount(cellPosition, true, ref blockedByNeighbor) < maxAdjacentNeighbors  
-                      && !blockedByNeighbor));
-    }
-    
-    int GetAdjacentNeighborCount(Vector3Int cellPosition, bool checkNeighborsRecursively, ref bool blockedByNeighbor)
-    {
-        int neighborCount = 0;
-        foreach (var vector3Int in neighbors)
+        if (limitAdjacentNeighbors)
         {
-            var neighborPosition = cellPosition + vector3Int;
-            if (checkNeighborsRecursively)
+            int cnt = 0;
+            foreach (var neighbor in neighbors.Select(t=> cellPosition+t))
             {
-                int neighborNeighborCount = GetAdjacentNeighborCount(cellPosition, false, ref blockedByNeighbor);
-                if (neighborNeighborCount > (maxAdjacentNeighbors -1))
+                if (Tilemap.HasTile(neighbor))
                 {
-                    blockedByNeighbor = true;
-                    return int.MaxValue;
+                    cnt++;
+                    if(cnt >= maxAdjacentNeighbors)
+                    {
+                        blockedByNeighbor = true;
+                        break;
+                    }
+                    else if (GetNeighbors(neighbor) >= maxAdjacentNeighbors)
+                    {
+                        blockedByNeighbor = true;
+                        break;
+                    }
                 }
-                neighborCount += neighborNeighborCount;
-            }
-            if (Tilemap.HasTile(neighborPosition))
-            {
-                neighborCount++;
-            }
-            {
-                neighborCount++;
             }
         }
-
-        return neighborCount;
+        return !blockedByNeighbor && !IsCellBlocked(cellPosition)
+               && !Tilemap.HasTile(cellPosition);
     }
+
+    int GetNeighbors(Vector3Int cellPosition)
+    {
+        int cnt = 0;
+        return neighbors.Select(t=> cellPosition+t).Select(t=> Tilemap.HasTile(t)  ? 1 : 0).Sum();
+    }
+   
+    
 
     public override void PerformAbilityOnCell(AbilityUser abilityUser,Vector3Int cell)
     {
