@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294170665459500}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Upper Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294170676505048}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Upper Text_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,13 +84,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1184294170721087791}
   - component: {fileID: 1184294170721087776}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: gas tank guage v2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1184294170721087791
 Transform:
   m_ObjectHideFlags: 0
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 1184294170907627075}
   - component: {fileID: 1184294170907627077}
   - component: {fileID: 1184294170907627076}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text (TMP)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 1184294170958063264}
   - component: {fileID: 1184294170958063266}
   - component: {fileID: 1184294170958063265}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text (TMP)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 1184294171079715145}
   - component: {fileID: 1184294171079715147}
   - component: {fileID: 1184294171079715146}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text (TMP)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -574,8 +574,8 @@ GameObject:
   - component: {fileID: 1184294171153018527}
   - component: {fileID: 1184294171153018513}
   - component: {fileID: 1184294171153018512}
-  m_Layer: 0
-  m_Name: Canvas
+  m_Layer: 16
+  m_Name: Guage Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -620,8 +620,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 1869477667
-  m_SortingOrder: 7
+  m_SortingLayerID: -1507656175
+  m_SortingOrder: 35
   m_TargetDisplay: 0
 --- !u!114 &1184294171153018512
 MonoBehaviour:
@@ -655,7 +655,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294171290564977}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Lower text_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -695,7 +695,9 @@ GameObject:
   - component: {fileID: 1184294171480265310}
   - component: {fileID: 1184294171480265309}
   - component: {fileID: 1184294171480265308}
-  m_Layer: 0
+  - component: {fileID: 849037369}
+  - component: {fileID: 849037368}
+  m_Layer: 16
   m_Name: Gas Tank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -759,7 +761,7 @@ SpriteRenderer:
   m_SortingLayerID: 1869477667
   m_SortingLayer: -1
   m_SortingOrder: -9
-  m_Sprite: {fileID: 21300000, guid: cda18c2b38b60e74ebf1ae388f546ac7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a04add2e3ad88064dbc90018166cef7f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -807,8 +809,8 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.23949805}
-    oldSize: {x: 2, y: 3.4444444}
+    pivot: {x: 0.5, y: 0.3199672}
+    oldSize: {x: 1.4537038, y: 2}
     newSize: {x: 2, y: 3.4444444}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -863,6 +865,118 @@ PolygonCollider2D:
       - {x: 0.7277778, y: -0.6619747}
       - {x: 0.7277778, y: -0.5193822}
       - {x: 0.83518517, y: -0.47123402}
+--- !u!114 &849037369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184294171480265307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e82c8efecd594317987557fe7effbd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPickedUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropped:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &849037368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184294171480265307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de28e7de3bac44b9902a2aaf21ff25d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isConnected:
+    value: 0
+  events:
+    onBecameConnected:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1184294171480265310}
+          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Hypergas Generator
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1184294171652633401}
+          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Hypergas Generator
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1184294171153018513}
+          m_TargetAssemblyTypeName: UnityEngine.Canvas, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Hypergas Generator
+            m_BoolArgument: 0
+          m_CallState: 2
+    onBecameDisconnected:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1184294171480265310}
+          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Dynamic
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1184294171652633401}
+          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Dynamic
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1184294171153018513}
+          m_TargetAssemblyTypeName: UnityEngine.Canvas, UnityEngine
+          m_MethodName: set_sortingLayerName
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Dynamic
+            m_BoolArgument: 0
+          m_CallState: 2
+  debugConnected: 0
 --- !u!1 &1184294171652633383
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,7 +987,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1184294171652633400}
   - component: {fileID: 1184294171652633401}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Guage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -888,8 +1002,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184294171652633383}
   m_LocalRotation: {x: -0, y: -0, z: -0.26111993, w: 0.9653064}
-  m_LocalPosition: {x: -0.01, y: 1.23, z: 0}
-  m_LocalScale: {x: 0.52890724, y: 0.52890724, z: 0.5289073}
+  m_LocalPosition: {x: -0.01, y: 0.977, z: 0}
+  m_LocalScale: {x: 0.45878473, y: 0.45878473, z: 0.4587848}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1184294170721087791}
@@ -935,9 +1049,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1869477667
-  m_SortingLayer: -1
-  m_SortingOrder: 0
+  m_SortingLayerID: -1507656175
+  m_SortingLayer: 1
+  m_SortingOrder: 9
   m_Sprite: {fileID: 21300000, guid: ceee95bf5252d6749aec67597ba0cbc9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -958,7 +1072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294171768596935}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Lower text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -997,7 +1111,7 @@ GameObject:
   - component: {fileID: 1184294172010168802}
   - component: {fileID: 1184294172010168804}
   - component: {fileID: 1184294172010168803}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text (TMP)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1130,7 +1244,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294172027168244}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: GuageSpinner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1175,7 +1289,7 @@ GameObject:
   - component: {fileID: 1184294172218213057}
   - component: {fileID: 1184294172218213056}
   - component: {fileID: 1184294172218213059}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text based Meter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1278,7 +1392,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1184294172260200791}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Middle Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1317,7 +1431,7 @@ GameObject:
   - component: {fileID: 1184294172339041106}
   - component: {fileID: 1184294172339041108}
   - component: {fileID: 1184294172339041107}
-  m_Layer: 5
+  m_Layer: 16
   m_Name: Text (TMP)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1448,9 +1562,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1184294171153018527}
     m_Modifications:
+    - target: {fileID: 6907427425798509687, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427425958373192, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427426639739419, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427426925365718, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427427180240818, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427427188507466, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 6907427427227395456, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
       propertyPath: m_Name
       value: UI Pressure Guage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6907427427227395456, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 6907427427227395471, guid: e8eb8b3b697f42949ae3adc987dbb37b, type: 3}
       propertyPath: m_Pivot.x
