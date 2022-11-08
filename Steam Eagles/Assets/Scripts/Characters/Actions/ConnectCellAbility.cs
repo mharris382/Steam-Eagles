@@ -27,7 +27,7 @@ public class ConnectCellAbility : CellAbility
                 if (Tilemap.HasTile(neighbor))
                 {
                     cnt++;
-                    if(cnt >= maxAdjacentNeighbors)
+                    if(cnt > maxAdjacentNeighbors)
                     {
                         blockedByNeighbor = true;
                         break;
