@@ -20,7 +20,15 @@ namespace Characters
         public bool useEventsForJump;
         
         private CharacterInputState _characterInput;
-        
+
+        private void Awake()
+        {
+            PlayerInput.onDeviceLost += input =>
+            {
+                Debug.Log("Device Lost");
+            };
+        }
+
         public void Assign(CharacterInputState characterInputState)
         {
             if (characterInputState == null) return;

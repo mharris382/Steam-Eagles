@@ -53,22 +53,12 @@ namespace Characters
         
         private void OnPlayerLeft(PlayerInput obj)
         {
+            Debug.Log($"Player left, {obj.playerIndex}");
             var characterInput = GetCharacterInput(obj);
             if (characterInput == null) return;
             
             PlayerCharacterInput playerCharacterInput = GetCharacterInput(obj);
             
-            //if the player is spectating, remove them from the queue
-            if (IsPlayerSpectating(playerCharacterInput))
-            {
-                for (int i = 0; i < _unassignedPlayers.Count; i++)
-                {
-                    var p = _unassignedPlayers.Dequeue();
-                    if(p == playerCharacterInput)continue;
-                    _unassignedPlayers.Enqueue(p);
-                }
-                return;
-            }
             
             //if the player is assigned to a character, remove them from the dictionary
             UnAssignCharacterToPlayer(playerCharacterInput);
