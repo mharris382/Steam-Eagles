@@ -212,11 +212,7 @@ public class CharacterController : MonoBehaviour
     private void HandleJump()
     {
         if (Time.time - lastDropTime < 0.5f) return;
-        if (JumpHeld && State.MoveY < 0)
-        {
-            StartCoroutine(DropThroughPlatform());
-            return;
-        }
+        if (CheckForDropThroughPlatform()) return;
         if (IsGrounded && JumpPressed) {
             IsJumping = true;
             _jumpTimeCounter = jumpTime;
@@ -235,6 +231,21 @@ public class CharacterController : MonoBehaviour
                 IsJumping = false;
             }
         }
+    }
+    private bool CheckForDropThroughPlatform()
+    {
+        if (JumpHeld && (State.MoveY < 0 && Mathf.Abs(State.MoveY) > Mathf.Abs(State.MoveX)))
+        {
+            Debug.DrawRay(transform.position, Vector3.down * 2f, Color.green, 1);
+
+            if (Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.GetMask("Pipes", "Platforms")))
+            {
+                StartCoroutine(DropThroughPlatform());
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private float lastDropTime;
