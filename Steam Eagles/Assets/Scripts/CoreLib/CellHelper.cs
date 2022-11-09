@@ -31,6 +31,10 @@ public class CellHelper : MonoBehaviour
 
     private Tilemap _fallback;
 
+    private Vector3 CellSize
+    {
+        get => grid != null ? grid.cellSize : (tilemap.HasValue ? tilemap.Value.cellSize : Vector3.zero);
+    }
     protected Tilemap Tilemap
     {
         get
@@ -187,6 +191,22 @@ public class CellHelper : MonoBehaviour
         {
             yield return d;
         }
+    }
+
+    public Rect GetWorldSpaceRectFromSize(Vector2Int cellSize) => GetWorldSpaceRectFromSize((Vector3Int) cellSize);
+    public Rect GetWorldSpaceRectFromSize(Vector3Int size)
+    {
+        var cellMin = this.CellCoordinate;
+        var cellMax = cellMin + size;
+
+        Vector3 CellToWorld(Vector3Int cell)
+        {
+            return this.grid == null ? this.tilemap.Value.CellToWorld(cell) : this.grid.CellToWorld(cell);
+        }
+
+        var worldMin = CellToWorld(cellMin);
+        var worldMax = CellToWorld(cellMax);
+        return new Rect(worldMin, worldMax - worldMin);
     }
 }
 

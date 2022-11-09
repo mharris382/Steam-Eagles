@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoreLib;
 using UnityEngine;
 using UnityEngine.Events;
 using Rand = UnityEngine.Random;
@@ -76,8 +77,15 @@ namespace GasSim
         {
             onGasEvent?.Invoke(amountTaken);
         }
-    }
 
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = this is IGasSink ? Color.red : Color.green;
+            GetWorldSpaceRectFromSize(this.size).DrawGizmos();
+            
+        }
+    }
 
     // #if UNITY_EDITOR
     // public abstract class GasIOEditor : Editor
