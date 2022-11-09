@@ -2,10 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class TriggerArea : TriggerAreaBase<Rigidbody2D>
+{
+    protected override bool HasTarget(Rigidbody2D rbTarget, out Rigidbody2D value)
+    {
+        value = rbTarget;
+        return true;
+    }
+
+    protected override bool HasTarget(Collider2D target, out Rigidbody2D value)
+    {
+        value = null;
+        if (target.attachedRigidbody == null) return false;
+        value = target.attachedRigidbody;
+        return true;
+    }
+}
+
 //TODO: feature request - allow TriggerAreaBase to buffer the messages so that if for example a player were to jump back and forth between a trigger, it would not constantly trigger the event until a min time passes.  it should also bias the most recent state
 public abstract class TriggerAreaBase<T> : MonoBehaviour
 {
-
     private Dictionary<Collider2D, T> _targetsInArea = new Dictionary<Collider2D, T>();
     private Dictionary<Rigidbody2D, T> _rbTargetsInArea = new Dictionary<Rigidbody2D, T>();
     private List<T> _targets = new List<T>();
@@ -13,9 +29,80 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
     public bool searchColliderForTargets = true;
     public bool searchRigidbodyForTargets = true;
     public bool debug = true;
-    public T GetEarliestTarget() => _targets.Count == 0 ? default  : _targets[^1];
+    public T GetEarliestTarget() => _targets.Count == 0 ? default : _targets[^1];
 
     public T GetLatestTarget() => _targets.Count == 0 ? default : _targets[0];
+
+    public T GetNearestTarget()
+    {
+        Vector2 pos = transform.position;
+        float minDist = float.MaxValue;
+        T nearest = default;
+        foreach (var rb in _rbTargetsInArea)
+        {
+            var distSqr = (rb.Key.position - pos).sqrMagnitude;
+            if (distSqr < minDist)
+            {
+                minDist = distSqr;
+                nearest = rb.Value;
+            }
+        }
+
+        return nearest;
+    }
+    
+    public T GetNearestTarget(float angle, float tolerance = 5)
+    {
+        Vector2 pos = transform.position;
+        
+        float minAngleDiff = float.MaxValue;
+        float minDist = float.MaxValue;
+        //convert angle to vector
+        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
+        
+        T nearest = default;
+        foreach (var rb in _rbTargetsInArea)
+        {
+            var diff = (rb.Key.position - pos);
+            var angleDiff = Vector2.Angle(dir, diff.normalized);
+            if (angleDiff - minAngleDiff < tolerance)
+            {
+                if(diff.sqrMagnitude < minDist)
+                {
+                    minDist = diff.sqrMagnitude;
+                    minAngleDiff = angleDiff;
+                    nearest = rb.Value;
+                }
+            }   
+        }
+        return nearest;
+    }
+
+    public T GetNearestTarget(float angle)
+    {
+        Vector2 pos = transform.position;
+        
+        float minAngleDiff = float.MaxValue;
+        
+        //convert angle to vector
+        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
+        
+        T nearest = default;
+        foreach (var rb in _rbTargetsInArea)
+        {
+            var angleDiff = Vector2.Angle(dir, (rb.Key.position - pos).normalized);
+            if (angleDiff < minAngleDiff)
+            {
+                minAngleDiff = angleDiff;
+                nearest = rb.Value;
+            }      
+        }
+        return nearest;
+    }
+    
+    public int GetTargetCount() => _targets.Count;
+    
+    public T GetTarget(int index) => _targets[index];
 
     private void Awake()
     {
@@ -35,7 +122,6 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
         if (debug)
         {
             Debug.Log($"Added: <b>{target}</b>\t Total Count = {totalNumberOfTargets}");
-            
         }
     }
 
@@ -46,7 +132,7 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
             Debug.Log($"Removed: <b>{target}</b>\t Total Count = {totalNumberOfTargets}");
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (searchColliderForTargets && HasTarget(col, out var value))
@@ -54,13 +140,15 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
             _targetsInArea.Add(col, value);
             AddTarget(value);
         }
-        if (searchRigidbodyForTargets && col.attachedRigidbody != null && !_rbTargetsInArea.ContainsKey(col.attachedRigidbody) && HasTarget(col.attachedRigidbody, out var valu2))
+
+        if (searchRigidbodyForTargets && col.attachedRigidbody != null &&
+            !_rbTargetsInArea.ContainsKey(col.attachedRigidbody) && HasTarget(col.attachedRigidbody, out var valu2))
         {
             _rbTargetsInArea.Add(col.attachedRigidbody, valu2);
             AddTarget(valu2);
         }
     }
-    
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (_targets.Count == 0) return;
@@ -81,7 +169,7 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
 
     private void AddTarget(T target)
     {
-        if(_targets.Contains(target))
+        if (_targets.Contains(target))
             return;
         _targets.Add(target);
         OnTargetAdded(target, _targets.Count);
@@ -93,6 +181,7 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
         {
             return;
         }
+
         _targets.Remove(target);
         OnTargetRemoved(target, _targets.Count);
     }
