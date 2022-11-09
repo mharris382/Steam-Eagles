@@ -24,7 +24,7 @@ public class ConnectCellAbility : CellAbility
             int cnt = 0;
             foreach (var neighbor in neighbors.Select(t=> cellPosition+t))
             {
-                if (Tilemap.HasTile(neighbor))
+                if (HasTile(neighbor))
                 {
                     cnt++;
                     if(cnt > maxAdjacentNeighbors)
@@ -44,10 +44,15 @@ public class ConnectCellAbility : CellAbility
                && !Tilemap.HasTile(cellPosition);
     }
 
+    private bool HasTile(Vector3Int neighbor)
+    {
+        return Tilemap.GetTile(neighbor) == tileToPlace;
+    }
+
     int GetNeighbors(Vector3Int cellPosition)
     {
         int cnt = 0;
-        return neighbors.Select(t=> cellPosition+t).Select(t=> Tilemap.HasTile(t)  ? 1 : 0).Sum();
+        return neighbors.Select(t=> cellPosition+t).Select(t=> HasTile(t)  ? 1 : 0).Sum();
     }
    
     
