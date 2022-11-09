@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using CoreLib;
 using GasSim.SimCore.DataStructures;
 using Puzzles;
+using Puzzles.PipeSystem;
 using UniRx;
 using UnityEngine;
 
+[RequireComponent(typeof(ConnectorPoint))]
 public class StartPoint : CellHelper
 {
 
@@ -15,30 +17,23 @@ public class StartPoint : CellHelper
         get;
         set;
     }
-
-
-    private LinkedList<Vector3Int> pipePath = new LinkedList<Vector3Int>();
-
-    public Gradient connectedColor = new Gradient()
+    void OnDisconnect(DisconnectActionInfo disconnectActionInfo)
     {
-        alphaKeys = new[] { new GradientAlphaKey(1, 1), new GradientAlphaKey(0, 1) },
-        colorKeys = new[] { new GradientColorKey(Color.black, 0), new GradientColorKey(Color.black, 1) }
-    };
-    public Gradient disconnectedColor = new Gradient()
+        UpdatePath();
+    }
+
+    void OnConnect(BuildActionInfo buildActionInfo)
     {
-        alphaKeys = new[] { new GradientAlphaKey(1, 1), new GradientAlphaKey(0, 1) },
-        colorKeys = new[] { new GradientColorKey(Color.black, 0), new GradientColorKey(Color.black, 1) }
-    };
-    public LineRenderer lineRenderer;
+        UpdatePath();
+    }
+
+    
+    
     public Vector2 gridScale = new Vector2(2, 2);
     private Graph<Vector3Int> _graph;
     private HashSet<Vector3Int> _relaventNeighbors = new HashSet<Vector3Int>();
-    public IEnumerable<Vector3Int> GetPath() => pipePath;
-    public bool IsFullyConnected()
-    {
-        return _connectedEndPoint != null;
-    }
-
+  
+   
     private EndPoint _connectedEndPoint;
 
     private EndPoint connectedEndPoint
@@ -57,13 +52,43 @@ public class StartPoint : CellHelper
     }
     
     
+    
+    
+    
+    private LinkedList<Vector3Int> pipePath = new LinkedList<Vector3Int>();
+
+    public Gradient connectedColor = new Gradient()
+    {
+        alphaKeys = new[] { new GradientAlphaKey(1, 1), new GradientAlphaKey(0, 1) },
+        colorKeys = new[] { new GradientColorKey(Color.black, 0), new GradientColorKey(Color.black, 1) }
+    };
+    public Gradient disconnectedColor = new Gradient()
+    {
+        alphaKeys = new[] { new GradientAlphaKey(1, 1), new GradientAlphaKey(0, 1) },
+        colorKeys = new[] { new GradientColorKey(Color.black, 0), new GradientColorKey(Color.black, 1) }
+    };
+    public LineRenderer lineRenderer;
+
+    public IEnumerable<Vector3Int> GetPath() => pipePath;
+
+    
+    [System.Obsolete("Move this to PipeSystem")]
     private void Start()
     {
         MessageBroker.Default.Receive<BuildActionInfo>().TakeUntilDestroy(this).Subscribe(OnConnect);
         MessageBroker.Default.Receive<DisconnectActionInfo>().TakeUntilDestroy(this).Subscribe(OnDisconnect);
        UpdatePath();
     }
+    
+ 
+    [System.Obsolete("Move this to PipeSystem")]
+    public bool IsFullyConnected()
+    {
+        return _connectedEndPoint != null;
+    }
 
+    
+    [System.Obsolete("Move this to PipeSystem")]
     void UpdatePath()
     {
         var current = this.CellCoordinate;
@@ -91,6 +116,7 @@ public class StartPoint : CellHelper
         DrawPath();
     }
 
+    [System.Obsolete("Move this to PipeSystem")]
     void DrawPath()
     {
         List<Vector3> points = new List<Vector3>();
@@ -105,13 +131,6 @@ public class StartPoint : CellHelper
         lineRenderer.colorGradient = IsFullyConnected() ? connectedColor : disconnectedColor;
     }
 
-    void OnDisconnect(DisconnectActionInfo disconnectActionInfo)
-    {
-        UpdatePath();
-    }
+    
 
-    void OnConnect(BuildActionInfo buildActionInfo)
-    {
-        UpdatePath();
-    }
 }

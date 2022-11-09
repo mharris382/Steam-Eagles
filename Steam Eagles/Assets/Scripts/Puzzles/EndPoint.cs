@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Puzzles.PipeSystem;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Puzzles
 {
+    [RequireComponent(typeof(ConnectorPoint))]
     public class EndPoint : CellHelper
     {
         public static Dictionary<Vector3Int, EndPoint> registeredEndpoints = new Dictionary<Vector3Int, EndPoint>();
