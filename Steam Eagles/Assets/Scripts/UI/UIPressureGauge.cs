@@ -13,6 +13,8 @@ public class UIPressureGauge : MonoBehaviour
     public float speed = 10;
     private float _targetAngle = 0;
 
+    private float _startAngle = 0;
+
     private float CurrentAngle
     {
         get=> needle.localEulerAngles.z;
@@ -27,6 +29,7 @@ public class UIPressureGauge : MonoBehaviour
 
     public void SetPressure(int pressure)
     {
+        
         _targetAngle = Mathf.Lerp(minAngle, maxAngle, (float)pressure / maxPressure);
         if (_smoothingCoroutine != null)
         {
@@ -47,5 +50,14 @@ public class UIPressureGauge : MonoBehaviour
             yield return null;
         }
         _smoothingCoroutine = null;
+    }
+
+
+    public float AmountFilled
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
     }
 }

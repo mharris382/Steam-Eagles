@@ -50,6 +50,8 @@ namespace Characters
         {
             if (_characterInput == null) return;
             _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+            _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
             if (useEventsForJump) return;
             _characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             _characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();

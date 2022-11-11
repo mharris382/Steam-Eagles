@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TriggerArea : TriggerAreaBase<Rigidbody2D>
 {
+    public UnityEvent<Rigidbody2D> onTargetAdded;
+    public UnityEvent<Rigidbody2D> onTargetRemoved;
+    public UnityEvent<int> onTargetCountChanged;
     protected override bool HasTarget(Rigidbody2D rbTarget, out Rigidbody2D value)
     {
         value = rbTarget;
@@ -16,6 +20,20 @@ public class TriggerArea : TriggerAreaBase<Rigidbody2D>
         if (target.attachedRigidbody == null) return false;
         value = target.attachedRigidbody;
         return true;
+    }
+
+    protected override void OnTargetAdded(Rigidbody2D target, int totalNumberOfTargets)
+    {
+        onTargetAdded?.Invoke(target);
+        onTargetCountChanged?.Invoke(totalNumberOfTargets);
+        base.OnTargetAdded(target, totalNumberOfTargets);
+    }
+
+    protected override void OnTargetRemoved(Rigidbody2D target, int totalNumberOfTargets)
+    {
+        onTargetRemoved?.Invoke(target);
+        onTargetCountChanged?.Invoke(totalNumberOfTargets);
+        base.OnTargetRemoved(target, totalNumberOfTargets);
     }
 }
 

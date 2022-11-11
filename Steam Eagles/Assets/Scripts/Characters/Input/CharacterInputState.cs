@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Characters
 {
@@ -42,6 +43,18 @@ namespace Characters
             get => CharacterState.MoveInput;
             set => CharacterState.MoveInput = value;
         }
-        
+
+
+        public bool DropHeldItem
+        {
+            get;
+            set;
+        }
+
+        public Vector2 AimInput
+        {
+            get;
+            set;
+        }
     }
 }
