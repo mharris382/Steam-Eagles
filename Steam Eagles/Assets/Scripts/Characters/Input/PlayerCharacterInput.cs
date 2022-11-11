@@ -14,11 +14,11 @@ namespace Characters
     {
         
         
-        private PlayerInput _playerInput;
         public PlayerInput PlayerInput => _playerInput == null ? (_playerInput = GetComponent<PlayerInput>()) : _playerInput;
 
         public bool useEventsForJump;
         
+        private PlayerInput _playerInput;
         private CharacterInputState _characterInput;
 
         private void Awake()

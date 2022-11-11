@@ -1,4 +1,5 @@
 ﻿using System;
+using StateMachine;
 using UnityEngine;
 
 /// <summary>
@@ -7,33 +8,66 @@ using UnityEngine;
 /// </summary>
 public class AbilityUser : MonoBehaviour
 {
-    public bool infiniteResources;
-    public int initialPipes = 10;
-    public int initialBlocks = 10;
     
-    int _storedPipes;
-    public int StoredPipes
+    [Serializable]
+    public class BlockInventory
     {
-        get {
-            if(infiniteResources)return int.MaxValue;
-            return _storedPipes;
+        public bool infiniteResources;
+        public int initialPipes = 10;
+        public int initialBlocks = 10;
+    
+        int _storedPipes;
+        public int StoredPipes
+        {
+            get {
+                if(infiniteResources)return int.MaxValue;
+                return _storedPipes;
+            }
+            set => _storedPipes =value;
         }
-        set => _storedPipes =value;
+
+        int _storedBlocks;
+        public int StoredBlocks
+        {
+            get {
+                if(infiniteResources)return int.MaxValue;
+                return _storedBlocks;
+            }
+            set => _storedBlocks =value;
+        }
+
+        public void Awake()
+        {
+            _storedBlocks = initialBlocks;
+            _storedPipes = initialPipes;
+        }
     }
 
-    int _storedBlocks;
-    public int StoredBlocks
-    {
-        get {
-            if(infiniteResources)return int.MaxValue;
-            return _storedBlocks;
-        }
-        set => _storedBlocks =value;
-    }
+    [SerializeField]  private CharacterState characterState;
+    [SerializeField] private SharedTransform characterTransform;
+    public BlockInventory blockInventory = new BlockInventory();
 
+   
+    
     private void Awake()
     {
-        _storedBlocks = initialBlocks;
-        _storedPipes = initialPipes;
+       blockInventory.Awake();
+       if (characterTransform != null)
+       {
+           if (characterTransform.HasValue) TryGetStateFromTransform(characterTransform.Value);
+           characterTransform.onValueChanged.AddListener(TryGetStateFromTransform);
+           
+           void TryGetStateFromTransform(Transform t)
+           {
+               var characterState = t.GetComponent<CharacterState>();
+               if (characterState != null)
+               {
+                   this.characterState = characterState;
+                   Debug.Log($"Ability user found character state {characterState.name}");
+               }
+           }
+       }
+
+       if (characterState == null) characterState = GetComponentInParent<CharacterState>();
     }
 }

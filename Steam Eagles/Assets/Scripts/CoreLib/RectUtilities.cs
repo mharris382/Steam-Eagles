@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CoreLib
@@ -109,14 +110,9 @@ namespace CoreLib
         /// <param name="transform"></param>
         public static void DrawGizmos(this Rect rect, Transform transform =null)
         {
-            var points = new Vector2[5]
-            {
-                new Vector2(rect.min.x, rect.min.y),
-                new Vector2(rect.max.x, rect.min.y),
-                new Vector2(rect.max.x, rect.max.y),
-                new Vector2(rect.min.x, rect.max.y),
-                new Vector2(rect.min.x, rect.min.y)
-            };
+            var pointsE =  rect.GetPoints(true);
+            if(transform != null) pointsE = pointsE.Select(p => (Vector2) transform.TransformPoint(p));
+            var points = pointsE.ToArray();
             for (int i = 1; i < points.Length; i++)
             {
                 var p0 = points[i - 1];
@@ -132,16 +128,28 @@ namespace CoreLib
             }
         }
 
+        public static IEnumerable<Vector2> GetPoints(this Rect rect, bool looping)
+        {
+           yield return new Vector2(rect.min.x, rect.min.y);
+           yield return new Vector2(rect.max.x, rect.min.y);
+           yield return new Vector2(rect.max.x, rect.max.y);
+           yield return new Vector2(rect.min.x, rect.max.y);
+           if(looping) yield return new Vector2(rect.min.x, rect.min.y);
+        }
+        public static IEnumerable<Vector2Int> GetPoints(this RectInt rect, bool looping)
+        {
+           yield return new Vector2Int(rect.min.x, rect.min.y);
+           yield return new Vector2Int(rect.max.x, rect.min.y);
+           yield return new Vector2Int(rect.max.x, rect.max.y);
+           yield return new Vector2Int(rect.min.x, rect.max.y);
+           if(looping) yield return new Vector2Int(rect.min.x, rect.min.y);
+        }
+        
+        
+        
         public static void Debug(this Rect rect, Transform transform = null)
         {
-            var points = new Vector2[5]
-            {
-                new Vector2(rect.min.x, rect.min.y),
-                new Vector2(rect.max.x, rect.min.y),
-                new Vector2(rect.max.x, rect.max.y),
-                new Vector2(rect.min.x, rect.max.y),
-                new Vector2(rect.min.x, rect.min.y)
-            };
+            var points = rect.GetPoints().ToArray();
             for (int i = 1; i < points.Length; i++)
             {
                 var p0 = points[i - 1];

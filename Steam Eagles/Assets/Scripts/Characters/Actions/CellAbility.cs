@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using World;
 
+
 public abstract class CellAbility : MonoBehaviour
 {
+    [SerializeField] private AbilityUser abilityUser;
     [SerializeField] private SharedTilemap tilemap;
     [SerializeField] public SharedTilemap blockingMap;
     
@@ -33,7 +36,10 @@ public abstract class CellAbility : MonoBehaviour
 
     private void Awake()
     {
-        
+        if (abilityUser == null)
+        {
+            abilityUser = GetComponentInParent<AbilityUser>();
+        }
     }
 
     public virtual int SortCellLocationsByPreference(Vector3Int cell1, Vector3Int cell2)
