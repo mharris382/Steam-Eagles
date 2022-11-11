@@ -538,7 +538,7 @@ namespace GasSim
                 new Vector3(rect.xMax, rect.yMax),
                 new Vector3(rect.xMax, rect.yMin),
                 new Vector3(rect.xMin, rect.yMin)
-            };rect.DrawGizmos();
+            };
             for (int i = 1; i < pnts.Length; i++)
             {
                 var p0 = pnts[i - 1];

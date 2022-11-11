@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2885835730257512641}
   - component: {fileID: 2885835730257512642}
   - component: {fileID: 2885835730257512643}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Hold Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 2885835730732566390}
   - component: {fileID: 2885835730732566391}
   - component: {fileID: 2885835730732566344}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Pickup Controller Transporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd6261ee512481a90fdfe09d020e943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedVariable: {fileID: 11400000, guid: a55190ffd28e4024898e7628d315dfec, type: 2}
+  sharedVariable: {fileID: 11400000, guid: 4a90080395af924479b9ce482e93df68, type: 2}
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -162,10 +162,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HoldTrigger: {fileID: 2885835732028055649}
-  CharacterTransform: {fileID: 0}
+  CharacterTransform: {fileID: 11400000, guid: 8e268bffb7fcb8b4697abf6e13dc32d7, type: 2}
   holdPoint: {fileID: 2885835730257512643}
   heldObject: {fileID: 0}
-  pickupDist: 0
   OnHeld:
     m_PersistentCalls:
       m_Calls:
@@ -207,6 +206,7 @@ MonoBehaviour:
         m_CallState: 2
   minHoldDistance: 0.1
   holdResetTime: 1
+  tag: Transporter
 --- !u!50 &2885835730732566344
 Rigidbody2D:
   serializedVersion: 4

@@ -59,14 +59,6 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b5e5548f-12a2-4900-bd23-6dea16f1e4dc
-    m_ActionName: Gameplay/Move Horizontal[/Keyboard/d,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 9649f4a1-6efe-4877-b27d-f6291ceb6c43
-    m_ActionName: Gameplay/Move Vertical[/Keyboard/w,/Keyboard/s,/Keyboard/downArrow,/Keyboard/upArrow]
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3734753825138336112}
         m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
@@ -83,49 +75,41 @@ MonoBehaviour:
     m_ActionId: 9fd45dda-ed7e-46a6-8fa0-accf09788a31
     m_ActionName: Gameplay/Jump[/Keyboard/space,/XInputControllerWindows/buttonSouth,/Keyboard/upArrow]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: cb9324df-afb0-4936-9740-34d057b95a53
-    m_ActionName: Gameplay/Aim[/XInputControllerWindows/rightStick,/Mouse/delta]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a825108f-e2fa-4bf3-b189-0d864cf207d7
-    m_ActionName: Gameplay/Interact[/Keyboard/e,/XInputControllerWindows/buttonEast]
-  - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3734753825138336112}
+        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
+        m_MethodName: OnPickup
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: ed01768b-a645-44c7-a2be-a0b11a1c40a6
     m_ActionName: Gameplay/Pickup[/XInputControllerWindows/buttonNorth,/Keyboard/shift]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3734753825138336112}
+        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 21450a97-089b-4980-842f-eeef4389e67c
     m_ActionName: Gameplay/Move[/XInputControllerWindows/leftStick,/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 57a869a3-e6a5-4622-b787-cc5cec51a5e4
-    m_ActionName: Gameplay/Quick Action Up[/XInputControllerWindows/dpad/up,/Keyboard/numpad5,/Keyboard/2]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 02825b74-9779-4ed8-b057-ee6b4be9bf48
-    m_ActionName: Gameplay/Quick Action Right[/XInputControllerWindows/leftStick/right,/Keyboard/numpad3,/Keyboard/e,/XInputControllerWindows/dpad/right]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 9dd8f629-b2e8-47e5-bf11-42d235f11b91
-    m_ActionName: Gameplay/Quick Action Left[/XInputControllerWindows/dpad/left,/Keyboard/numpad1,/Keyboard/q]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 6cfc191e-66c1-4d03-948a-c798a169773d
-    m_ActionName: Gameplay/Quick Action Down[/XInputControllerWindows/dpad/down,/Keyboard/rightCtrl,/Keyboard/x]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7ceb1cf0-2bc8-493e-8866-bcdba9ad181c
-    m_ActionName: Gameplay/Special Ability[/Mouse/leftButton,/Mouse/rightButton,/XInputControllerWindows/buttonWest]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 54efaa8b-c45a-4a08-a043-e62ea40c5a20
     m_ActionName: Depricated/New action
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: f97b9131-a538-41db-b4bf-c22417e72f61
-    m_ActionName: Depricated/Preview[/XInputControllerWindows/rightStick/left,/Mouse/middleButton]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 61301bf3-678e-4aab-83a8-893f99db9ae1
@@ -138,6 +122,70 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 2cb2afed-83bd-4a1d-a5af-5278f2e9c944
     m_ActionName: Depricated/Queue Conect[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3734753825138336112}
+        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
+        m_MethodName: OnAim
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: cf5fa369-6b6e-46d8-b8c4-899ad36196dd
+    m_ActionName: Actions/Aim[/XInputControllerWindows/rightStick,/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3734753825138336112}
+        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5d593e6a-6ac0-4536-905c-f4208a8599a3
+    m_ActionName: Actions/Interact[/Keyboard/e,/XInputControllerWindows/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bd844a4e-c4f0-45a2-83b3-0f5d66596826
+    m_ActionName: Actions/Preview[/XInputControllerWindows/rightStick/left,/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bafedb93-d280-47cd-9b38-31f462045669
+    m_ActionName: Depricated/Move Horizontal[/Keyboard/d,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c364ae75-a117-4c7d-b2d3-1e3ccc793ca4
+    m_ActionName: Depricated/Move Vertical[/Keyboard/w,/Keyboard/s,/Keyboard/downArrow,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7a6b4d73-8033-4f58-a35b-46ac4e2efdf7
+    m_ActionName: Depricated/Quick Action Up[/XInputControllerWindows/dpad/up,/Keyboard/numpad5,/Keyboard/2]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 21ba2f21-3736-43ad-8852-ffbc1c924bc1
+    m_ActionName: Depricated/Quick Action Right[/XInputControllerWindows/leftStick/right,/Keyboard/numpad3,/Keyboard/e,/XInputControllerWindows/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0e5cff36-45c7-4c65-93b5-ede65f2ebef7
+    m_ActionName: Depricated/Quick Action Left[/XInputControllerWindows/dpad/left,/Keyboard/numpad1,/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f7476fdd-6702-4c0c-ab66-c9c6c4d958ca
+    m_ActionName: Depricated/Quick Action Down[/XInputControllerWindows/dpad/down,/Keyboard/rightCtrl,/Keyboard/x]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9f802a8e-7200-43a7-b7b6-d21ed1843fde
+    m_ActionName: Depricated/Special Ability[/Mouse/leftButton,/Mouse/rightButton,/XInputControllerWindows/buttonWest]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay

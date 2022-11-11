@@ -8,6 +8,7 @@ public class TriggerArea : TriggerAreaBase<Rigidbody2D>
     public UnityEvent<Rigidbody2D> onTargetAdded;
     public UnityEvent<Rigidbody2D> onTargetRemoved;
     public UnityEvent<int> onTargetCountChanged;
+    
     protected override bool HasTarget(Rigidbody2D rbTarget, out Rigidbody2D value)
     {
         value = rbTarget;

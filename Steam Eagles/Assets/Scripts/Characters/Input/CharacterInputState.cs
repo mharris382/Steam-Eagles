@@ -1,5 +1,8 @@
 ﻿using System;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace Characters
 {
@@ -50,11 +53,57 @@ namespace Characters
             get;
             set;
         }
+        
+
+        public UnityEvent<InputAction.CallbackContext> onJump = new UnityEvent<InputAction.CallbackContext>();
+        public UnityEvent<InputAction.CallbackContext> onInteract= new UnityEvent<InputAction.CallbackContext>();
+        public UnityEvent<InputAction.CallbackContext> onPickup= new UnityEvent<InputAction.CallbackContext>();
 
         public Vector2 AimInput
         {
             get;
             set;
+        }
+
+        private void Awake()
+        {
+            if(onJump == null)onJump = new UnityEvent<InputAction.CallbackContext>();
+            if(onInteract == null)onInteract = new UnityEvent<InputAction.CallbackContext>();
+            if(onPickup == null)onPickup = new UnityEvent<InputAction.CallbackContext>();
+            onJump.AddListener(OnJump);
+            onInteract.AddListener(OnInteract);
+            onPickup.AddListener(OnPickup);
+        }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            MessageBroker.Default.Publish(new JumpActionEvent()
+            {
+                tag = this.gameObject.tag,
+                context = context,
+                transform = transform
+            });
+        }
+        
+        public void OnInteract(InputAction.CallbackContext context)
+        {
+            MessageBroker.Default.Publish(new InteractActionEvent()
+            {
+                tag = this.gameObject.tag,
+                context = context,
+                transform = transform
+            });
+        }
+        
+        
+        public void OnPickup(InputAction.CallbackContext context)
+        {
+            MessageBroker.Default.Publish(new PickupActionEvent()
+            {
+                tag = this.gameObject.tag,
+                context = context,
+                transform = transform
+            });
         }
     }
 }
