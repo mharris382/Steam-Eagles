@@ -7,6 +7,7 @@ using System.Text;
 using CoreLib;
 using GasSim.SimCore.DataStructures;
 using JetBrains.Annotations;
+using UniRx;
 using Unity.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -685,9 +686,14 @@ namespace GasSim
             SetGridSize();
             Grid.cellSize = CellSize;
         
+          
+            MessageBroker.Default.Receive<IGasSource>().Where(t => _registeredSources.Contains(t)).TakeUntilDestroy(this).Subscribe(RemoveGasSourceFromSimulation);
+            MessageBroker.Default.Receive<IGasSource>().Where(t => !_registeredSources.Contains(t)).TakeUntilDestroy(this).Subscribe(AddGasSourceToSimulation);
+            MessageBroker.Default.Receive<IGasSink>().Where(t => _registeredSinks.Contains(t)).TakeUntilDestroy(this).Subscribe(RemoveGasSinkFromSimulation);
+            MessageBroker.Default.Receive<IGasSink>().Where(t => !_registeredSinks.Contains(t)).TakeUntilDestroy(this).Subscribe(AddGasSinkToSimulation);
+            
             var childSources = GetComponentsInChildren<IGasSource>();
             _registeredSources.AddRange(childSources);
-        
             foreach (var sceneSource in sceneSources.Where(t=>t!=null))
             {
                 childSources = sceneSource.GetComponentsInChildren<IGasSource>();
@@ -699,6 +705,7 @@ namespace GasSim
         
         private void Start()
         {
+          
             Invoke(nameof(DoSimulationStep1), updateRate);
             InvokeRepeating(nameof(DoGridIO), 1, sourceUpdateRate);
         }
@@ -751,6 +758,19 @@ namespace GasSim
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;
+            if (!Application.isPlaying)
+            {
+                var size = gridSize;
+
+                Vector2Int min = (Vector2Int)this.Grid.WorldToCell(transform.position);
+                var max = size + min;
+
+                var maxWS = this.Grid.CellToWorld((Vector3Int)max);
+                var minWS = this.Grid.CellToWorld((Vector3Int)min);
+                Rect rect = new Rect(minWS, maxWS - minWS);
+                rect.DrawGizmos();
+                return;
+            }
             InternalPressureGrid._gridHelper.DrawGizmos(CellSize.x, CellSize.y);
         }
 
@@ -766,11 +786,18 @@ namespace GasSim
 
                     Vector2Int from, to;
                     var emptyNeighbors = InternalPressureGrid.GetEmptyNeighbors(cell.coord).ToArray();
+                    int pressureDiff = 0;
+
+                    int GetAmountToTransfer()
+                    {
+                        return Mathf.Max(1, Mathf.FloorToInt(pressureDiff / 2f));
+                    }
                     if (emptyNeighbors.Length > 0)
                     {
                         from = cell.coord;
                         to = ChooseRandom() ? emptyNeighbors[Random.Range(0, emptyNeighbors.Length)] : emptyNeighbors[0];
-                        InternalPressureGrid.Transfer(from, to, 1);
+                        pressureDiff = cell.pressure;
+                        InternalPressureGrid.Transfer(from, to, GetAmountToTransfer() );
                         continue;
                     }
 
@@ -779,7 +806,10 @@ namespace GasSim
                     {
                         from = cell.coord;
                         to = ChooseRandom() ? validNeighbors[Random.Range(0, validNeighbors.Length)] : validNeighbors[0];
-                        InternalPressureGrid.Transfer(from, to, 1);
+                        var pressureFrom = InternalPressureGrid[from];
+                        var pressureTo = InternalPressureGrid[to];
+                        pressureDiff = pressureFrom - pressureTo;
+                        InternalPressureGrid.Transfer(from, to, GetAmountToTransfer());
                         continue;
                     }
 

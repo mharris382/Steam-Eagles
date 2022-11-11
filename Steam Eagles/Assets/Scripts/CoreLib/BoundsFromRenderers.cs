@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace CoreLib
 {
@@ -48,7 +49,22 @@ namespace CoreLib
             Vector2 size = new Vector2(0, 0);
             foreach (var renderer1 in renderers)
             {
+                TilemapRenderer tmr;
+                
                 var bounds = renderer1.bounds;
+                if (renderer1 is TilemapRenderer tilemapRenderer)
+                {
+                    bounds = tilemapRenderer.bounds ;
+                    var tm = tilemapRenderer.GetComponent<Tilemap>();
+                    var cellBounds = tm.cellBounds;
+                    var min = tm.CellToWorld(cellBounds.min);
+                    var max = tm.CellToWorld(cellBounds.max);
+                    bounds.SetMinMax(min, max);
+                }
+                else if (renderer1 is SpriteRenderer spriteRenderer)
+                {
+                    bounds = spriteRenderer.bounds;
+                }
                 var w = bounds.size.x;
                 var h = bounds.size.y;
                 var x = bounds.min.x;

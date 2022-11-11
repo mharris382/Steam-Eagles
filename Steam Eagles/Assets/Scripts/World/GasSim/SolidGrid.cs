@@ -3,12 +3,13 @@ using GasSim;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using World;
 
 public class SolidGrid : MonoBehaviour
 {
     private IGasSim _gasSim;
     public Tilemap solidTilemap;
-
+    public SharedTilemap sharedTilemap;
 
     private IGasSim GasSim => _gasSim == null ? (_gasSim = GetComponent<IGasSim>()) : _gasSim;
     private Grid Grid => _gasSim.Grid;
@@ -16,6 +17,8 @@ public class SolidGrid : MonoBehaviour
     private void Awake()
     {
         _gasSim = GetComponent<IGasSim>();
+        if (sharedTilemap.HasValue) solidTilemap = sharedTilemap.Value;
+        sharedTilemap.onValueChanged.AsObservable().TakeUntilDestroy(this).Subscribe(tm => solidTilemap = tm);
     }
 
     private Vector2 GasCellsPerSolid => new(solidTilemap.cellSize.x / Grid.cellSize.x, solidTilemap.cellSize.y / Grid.cellSize.y );
