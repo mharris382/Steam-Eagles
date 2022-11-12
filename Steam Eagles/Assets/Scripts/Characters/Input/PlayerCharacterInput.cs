@@ -14,11 +14,11 @@ namespace Characters
     {
         
         
-        private PlayerInput _playerInput;
         public PlayerInput PlayerInput => _playerInput == null ? (_playerInput = GetComponent<PlayerInput>()) : _playerInput;
 
         public bool useEventsForJump;
         
+        private PlayerInput _playerInput;
         private CharacterInputState _characterInput;
 
         private void Awake()
@@ -34,6 +34,7 @@ namespace Characters
             if (characterInputState == null) return;
             _characterInput = characterInputState;
             enabled = true;
+            this.name = $"PlayerInput {characterInputState.name}";
         }
 
         public void UnAssign(CharacterInputState characterInputState)
@@ -42,6 +43,7 @@ namespace Characters
             {
                 _characterInput = null;
                 enabled = false;
+                this.name = $"PlayerInput (Unassigned)";
             }
         }
 
@@ -50,6 +52,8 @@ namespace Characters
         {
             if (_characterInput == null) return;
             _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+           // _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
             if (useEventsForJump) return;
             _characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             _characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();
@@ -59,6 +63,30 @@ namespace Characters
             if (_characterInput == null || !useEventsForJump) return;
             _characterInput.JumpPressed = context.performed;
             _characterInput.JumpHeld = context.started;
+        }
+        
+        public void OnAim(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            _characterInput.AimInput = context.ReadValue<Vector2>();
+        }
+        
+        public void OnMove(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            _characterInput.MoveInput = context.ReadValue<Vector2>();
+        }
+        
+        public void OnInteract(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            _characterInput.onInteract?.Invoke(context);
+        }
+        
+        public void OnPickup(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            _characterInput.onPickup?.Invoke(context);
         }
     }
 }

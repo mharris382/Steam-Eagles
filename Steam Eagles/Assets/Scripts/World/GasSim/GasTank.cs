@@ -2,31 +2,20 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public interface IGasSupplier
-{
-    bool enabled { get; }
-    int GetUnclaimedSupply();
-    void ClaimSupply(int amount);
-}
-public interface IGasConsumer
-{
-    bool enabled { get; }
-    int GetRequestedSupply();
-    void ReceiveSupply(int amount);
-}
-
 public class GasTank : MonoBehaviour
 {
+    
     public int capacity = 100;
     [Range(0, 1)]
     public float initialAmount = 1;
     
     public UnityEvent onEmpty;
     public UnityEvent<int> onAmountChanged;
+    public UnityEvent<float> onAmountNormalizedChanged;
     public int generatedAmount = 0;
     
     
-    
+    [SerializeField]
     private int _storedAmount;
     public int StoredAmount
     {
@@ -34,10 +23,16 @@ public class GasTank : MonoBehaviour
         private set => _storedAmount = Mathf.Clamp(value, 0, capacity);
     }
     
+    public float StoredAmountNormalized => (float)StoredAmount / capacity;
+    
     private void Start()
     {
+          
+        //add listerenr to amount changed and invoke amount changed normalized
+        onAmountChanged.AddListener(_ => onAmountNormalizedChanged?.Invoke(StoredAmountNormalized));
         StoredAmount = (int)(capacity * initialAmount);
         onAmountChanged.Invoke(StoredAmount);
+      
         if(generatedAmount > 0)
             StartCoroutine(GenerateGas());
     }

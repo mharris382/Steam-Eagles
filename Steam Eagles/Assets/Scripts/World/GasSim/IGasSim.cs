@@ -22,5 +22,8 @@ namespace GasSim
         void SetStateOfMatter(Vector2Int coord, StateOfMatter stateOfMatter);
 
         bool TryAddGasToCell(Vector2Int coord, int amount);
+        
+        
+        
     }
 }

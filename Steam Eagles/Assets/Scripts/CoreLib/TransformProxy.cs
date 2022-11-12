@@ -16,9 +16,19 @@ namespace CoreLib
             }
         }
 
+        private Rigidbody2D _rigidbody;
+
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
+
         private void Update()
         {
-            transform.position = Target.position;
+            if(_rigidbody==null)
+                transform.position = Target.position;
+            else
+                _rigidbody.MovePosition(Target.position);
         }
     }
 }

@@ -15,7 +15,8 @@ public class GasTankIO : MonoBehaviour
     
     void Start()
     {
-        _tank = GetComponent<GasTank>();
+        _tank = GetComponentInParent<GasTank>();
+        Debug.Assert(_tank != null);
         suppliersObjects.RemoveAll(t => t==null);
         _suppliers = suppliersObjects.Select(t => t.GetComponent<IGasSupplier>()).Where(t => t != null).ToArray();
         _consumers = consumerObjects.Select(t => t.GetComponent<IGasConsumer>()).Where(t => t != null).ToArray();
