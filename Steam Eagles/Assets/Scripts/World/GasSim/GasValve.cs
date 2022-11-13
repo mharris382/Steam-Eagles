@@ -107,64 +107,74 @@ namespace GasSim
             IObservable<int> desiredFlowRateChanged;
             IObservable<bool> valveIsSink;
             IObservable<bool> valveIsSource;
-            if (gasTank != null)
-            {
-                var amountInTankChanged = gasTank.onAmountChanged.AsObservable();
-                desiredFlowRateChanged =
-                    onFlowChanged.AsObservable().Merge(amountInTankChanged.Select(t => CurrentFlow));
-                valveIsSink = desiredFlowRateChanged.Select(t => t < 0 && gasTank.StoredAmount < gasTank.capacity);
-                valveIsSource = desiredFlowRateChanged.Select(t => t > 0 && gasTank.StoredAmount > 0);
-            }
-            else
-            {
-                desiredFlowRateChanged = onFlowChanged.AsObservable();
-                valveIsSink = desiredFlowRateChanged.Select(t => t < 0 && gasTank.StoredAmount < gasTank.capacity);
-                valveIsSource = desiredFlowRateChanged.Select(t => t > 0 && gasTank.StoredAmount > 0);
-            }
-
-            valveIsSink.Subscribe(isSinkActive =>
-            {
-                if (isSinkActive)
-                {
-                    Debug.Log("Sink active");
-                    targetGasSim.AddGasSinkToSimulation(_sink);
-                    targetGasSim.RemoveGasSourceFromSimulation(_source);
-                }
-                else
-                {
-                    targetGasSim.RemoveGasSinkFromSimulation(_sink);
-                }
-            });
-            valveIsSource.Subscribe(isSourceActive =>
-            {
-                if (isSourceActive)
-                {
-                    Debug.Log("Source active");
-                    targetGasSim.AddGasSourceToSimulation(_source);
-                    targetGasSim.RemoveGasSinkFromSimulation(_sink);
-                }
-                else
-                {
-                    targetGasSim.RemoveGasSourceFromSimulation(_source);
-                }
-            });
-            if (gasTank != null)
-            {
-                onGasAddedToTank.AddListener(gasTank.AddGas);
-                onGasRemovedFromTank.AddListener(gasTank.RemoveGas);
-            }
+          
+            
             
             InvokeRepeating(nameof(GasSimDirectIO), 0.125f, 0.125f);
         }
 
+        private GasTank _tank;
+        private GasTank tank => (_tank == null) ? (_tank = GetComponent<GasTank>()) : _tank;
         void GasSimDirectIO()
         {
             if (targetGasSim == null) return;
+
+                int total = 0;
+                foreach (var cell in  GetSourceCells())
+                {
+                    int amt = cell.amount;
+                    var color = Color.green;
+                    if (CurrentFlow > 0)
+                    {
+                        amt = Mathf.Min(tank.StoredAmount, cell.amount);
+                        if (targetGasSim.CanAddGasToCell(cell.coord, ref amt))
+                        {
+                            DrawTarget(cell.coord, Color.blue);
+                            tank.StoredAmount -= amt;
+                            targetGasSim.InternalPressureGrid[cell.coord] += amt;
+                            total += amt;
+                        }
+                        if (total > sourceMax) return;
+                    }
+                    else if (CurrentFlow < 0)
+                    {
+                        amt = Mathf.Min(tank.capacity - tank.StoredAmount, cell.amount);
+                        if (targetGasSim.CanRemoveGasFromCell(cell.coord, ref amt))
+                        {
+                            DrawTarget(cell.coord, Color.red);
+                            tank.StoredAmount += amt;
+                            targetGasSim.InternalPressureGrid[cell.coord] -= amt;
+                            total += amt;
+                        }
+                        if(total > sinkMax)return;
+                    }
+                }
             
+
+            void DrawTarget(Vector2Int cell, Color color)
+            {
+                var wsCenter = targetGasSim.Grid.GetCellCenterWorld((Vector3Int)cell);
+                var offset = (targetGasSim.CellSize / 2f) - new Vector2(0.01f, 0.01f);
+                Vector2[] positions = new Vector2[]
+                {
+                    wsCenter + new Vector3(offset.x, offset.y),
+                    wsCenter + new Vector3(offset.x, -offset.y),
+                    wsCenter + new Vector3(-offset.x, -offset.y),
+                    wsCenter + new Vector3(-offset.x, offset.y),
+                    wsCenter + new Vector3(offset.x, offset.y)
+                };
+                for (int i = 1; i < positions.Length; i++)
+                {
+                    var p0 = positions[i - 1];
+                    var p1 = positions[i];
+                    Debug.DrawLine(p0, p1, color, 0.1f);
+                }
+            }
         }
 
         public bool diamond = false;
         public int sourceMax = 100;
+        public int sinkMax = 100;
         
         public virtual IEnumerable<(Vector2Int coord, int amount)> GetSourceCells()
         {
@@ -267,13 +277,13 @@ namespace GasSim
 
         public virtual void GasTakenFromSource(int amountTaken)
         {
-            Debug.Log("Gas Taken From Source");
+            Debug.Log($"Gas Taken From Source {amountTaken}");
             onGasRemovedFromTank?.Invoke(amountTaken);
         }
 
         public void GasAddedToSink(int amountAdded)
         {
-            Debug.Log("Gas Added to Sink");
+            Debug.Log($"Gas Added to Sink: {amountAdded}");
             onGasAddedToTank?.Invoke(amountAdded);
         }
     }
