@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreLib;
 using StateMachine;
 using UniRx;
@@ -15,10 +16,10 @@ namespace Characters
     public class PlayerCharacterManager : MonoBehaviour
     {
 
-        
 
-        
-        
+
+
+        [SerializeField] private List<SharedTransform> playerInputs;
         [SerializeField] List<CharacterAssignment> characterAssignments;
         
         private PlayerInputManager _inputManager;
@@ -143,6 +144,14 @@ namespace Characters
             {
                 characterInput = playerInput.gameObject.AddComponent<PlayerCharacterInput>();
             }
+
+            var player = playerInputs.FirstOrDefault(t => !t.HasValue || t.Value == playerInput.transform);
+            if (player == null)
+            {
+                player = playerInputs[0];
+            }
+
+            player.Value = playerInput.transform;
 
             return characterInput;
         }

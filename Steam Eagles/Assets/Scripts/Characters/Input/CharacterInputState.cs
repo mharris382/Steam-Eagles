@@ -19,6 +19,7 @@ namespace Characters
         public UnityEvent<InputAction.CallbackContext> onJump = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onInteract = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onPickup = new UnityEvent<InputAction.CallbackContext>();
+        public UnityEvent<InputAction.CallbackContext> onValve = new UnityEvent<InputAction.CallbackContext>();
 
         public CharacterState CharacterState => _characterState == null
             ? (_characterState = GetComponent<CharacterState>())
@@ -79,6 +80,7 @@ namespace Characters
 
         public void AssignPlayer(PlayerInput playerInput)
         {
+            Debug.Assert(playerInput!=null, "assigned null player input");
             this._playerInput = playerInput;
             enabled = true;
             foreach (var characterInput in GetComponentsInChildren<ICharacterInput>())

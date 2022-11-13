@@ -2,7 +2,7 @@
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
-using Observable = UnityEngine.InputSystem.Utilities.Observable;
+
 
 namespace Characters
 {

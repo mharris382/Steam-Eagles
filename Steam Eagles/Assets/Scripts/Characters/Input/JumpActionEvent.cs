@@ -35,16 +35,17 @@ namespace Characters
         public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
-
-
+    
     /// <summary>
-    /// called for the valve input
+    /// called when pickup input is pressed
     /// </summary>
-    public struct ValveInputEvent
+    public struct ValveActionEvent
     {
         public string tag;
         public Transform transform;
         public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
+
+    
 }

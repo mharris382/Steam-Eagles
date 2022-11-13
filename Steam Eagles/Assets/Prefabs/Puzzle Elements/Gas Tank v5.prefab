@@ -1626,6 +1626,7 @@ GameObject:
   - component: {fileID: 769624621357987836}
   - component: {fileID: 769624621357987839}
   - component: {fileID: 6501490886251924210}
+  - component: {fileID: 9185735969216170953}
   m_Layer: 16
   m_Name: Gas Tank v5
   m_TagString: Untagged
@@ -1640,13 +1641,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 769624621357987833}
-  m_LocalRotation: {x: -0, y: -0, z: -0.00021937906, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.00021815034, w: 1}
   m_LocalPosition: {x: -18.909998, y: 2.1400003, z: 0}
-  m_LocalScale: {x: 1.4850928, y: 1.4850928, z: 1.4850925}
+  m_LocalScale: {x: 1.485093, y: 1.485093, z: 1.4850925}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 769624621127409763}
   - {fileID: 769624620183141684}
+  - {fileID: 35718812201635475}
+  - {fileID: 1701642147796059777}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.025}
@@ -1911,7 +1914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfba00e6fa53a494d9b57d1ca8d61c23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 100
+  capacity: 25
   initialAmount: 0
   onEmpty:
     m_PersistentCalls:
@@ -1956,20 +1959,354 @@ MonoBehaviour:
         m_Calls: []
     onValvePushAmountChanged:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_PercentOutflow
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
     onValvePullAmountChanged:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_PercentInflow
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0
     onValvePulling:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 7722648142679194317}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 8993634611038614239}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Stop
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_CurrentFlow
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: -15
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_PercentInflow
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 1
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 0
     onValvePushing:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 7722648142679194317}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Stop
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 8993634611038614239}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_CurrentFlow
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 15
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
     onValveClosed:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 7722648142679194317}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Stop
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 8993634611038614239}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Stop
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
   discreteSteps: 5
   clampToSteps: 1
   _valveStep: 0
   _valvePercentOpen: 0
+--- !u!114 &9185735969216170953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769624621357987833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1f2f2e5743b4480b3f4180b361db754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilemap: {fileID: 0}
+  grid: {fileID: 0}
+  gasSimObject: {fileID: 0}
+  targetGasSim: {fileID: 0}
+  size: {x: 4, y: 4}
+  slowdown: 1
+  useConstantAmount: 0
+  constantAmount: 1
+  amountMin: 16
+  amountMax: 16
+  onGasAddedToTank:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 769624621357987836}
+        m_TargetAssemblyTypeName: GasTank, SteamEagles.World
+        m_MethodName: AddGas
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onGasRemovedFromTank:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 769624621357987836}
+        m_TargetAssemblyTypeName: GasTank, SteamEagles.World
+        m_MethodName: RemoveGas
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  currentFlow: 0
+  inFlow:
+    valueInMin: 0
+    valueInMax: 1
+    valueOutMax: 16
+  outFlow:
+    valueInMin: 0
+    valueInMax: -1
+    valueOutMax: 16
+  onFlowChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1001 &2209010707038463934
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 769624621357987838}
+    m_Modifications:
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3234228221657224311, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_Name
+      value: Gas Vac Particles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+--- !u!4 &35718812201635475 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2222840441753839917, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+  m_PrefabInstance: {fileID: 2209010707038463934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7722648142679194317 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+  m_PrefabInstance: {fileID: 2209010707038463934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6579023290288309429
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 769624621357987838}
+    m_Modifications:
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9145478937758908270, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_Name
+      value: Gas Push Particles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de6334278e253024a96a77a37825d0db, type: 3}
+--- !u!4 &1701642147796059777 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+  m_PrefabInstance: {fileID: 6579023290288309429}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8993634611038614239 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2847029040701077098, guid: de6334278e253024a96a77a37825d0db, type: 3}
+  m_PrefabInstance: {fileID: 6579023290288309429}
+  m_PrefabAsset: {fileID: 0}

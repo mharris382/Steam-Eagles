@@ -1,18 +1,24 @@
-﻿using UnityEngine;
+﻿using CoreLib;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Puzzles
 {
     public class HoldableItem : MonoBehaviour
     {
-        public UnityEvent<GameObject> onPickedUp;
-        public UnityEvent<GameObject> onDropped;
+        [SerializeField] private UnityEvent<GameObject> onPickedUp;
+        [SerializeField] private UnityEvent<GameObject> onDropped;
         
-        
-        public bool IsHeld
+        public virtual void Dropped(GameObject droppedBy)
         {
-            get;
-            set;
+            onDropped?.Invoke(droppedBy);
+            Debug.Log($"{name.Bolded()} was dropped by {droppedBy.name.Bolded()}");
+        }
+        
+        public virtual void PickedUp(GameObject pickedUpBy)
+        {
+            onPickedUp?.Invoke(pickedUpBy);
+            Debug.Log($"{name.Bolded()} was Picked Up by {pickedUpBy.name.Bolded()}");
         }
     }
 }

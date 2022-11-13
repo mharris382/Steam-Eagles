@@ -65,8 +65,8 @@ namespace Characters
                 {
                     var prev = _held;
                     _held = value;
-                    if(prev!=null)prev.onDropped?.Invoke(Holder);
-                    if(_held!=null)_held.onPickedUp?.Invoke(Holder);
+                    if(prev!=null)prev.Dropped(Holder);
+                    if(_held!=null)_held.PickedUp(Holder);
                 }
 
             }
@@ -130,35 +130,40 @@ namespace Characters
                 ReleaseObject();
             }
         }
-        
-        private bool CanGrab(Rigidbody2D rb)
-        {
-            if(Time.time- _lastGrabTime < holdResetTime)
-                return false;
-            if (HeldRigidBody != null)
-                return false;
-            if (rb.GetComponent<HoldableItem>() == null) 
-                return false;
-            return true;
-        }
 
-        private void HoldTarget(Rigidbody2D rb)
-        {
-            if (CanGrab(rb))
-            {
-                Grab(rb);
-            }
-        }
 
         private void ReleaseObject()
         {
             if(HeldRigidBody == null)
                 return;
-            Release(HeldRigidBody, Vector2.zero, Rand.Range(- 15f, 15f));
+            
+            var heldBy = Holder.GetComponent<Rigidbody2D>();
+            Release(HeldRigidBody, heldBy , GetThrowForce(heldBy), GetThrowTorque());
         }
 
+        private float GetThrowTorque()
+        {
+            return Rand.Range(-15f, 15f);
+        }
+        
+        
+        private Vector2 GetThrowForce(Rigidbody2D heldBy)
+        {
+            if (_characterInputState != null)
+            {
+                var force = _characterInputState.MoveInput * throwMultiplier;
+                    
+                if (heldBy != null)
+                {
+                    force += heldBy.velocity;
+                }
+                return force;
+            }
+            return Vector2.zero;
+        }
+        
 
-        private void Release(Rigidbody2D rb, Vector2 releaseForce, float releaseTorque)
+        private void Release(Rigidbody2D rb, Rigidbody2D heldBy, Vector2 releaseForce, float releaseTorque)
         {
             if(rb == null)
                 return;
@@ -167,25 +172,22 @@ namespace Characters
             holdPoint.connectedBody = null;
             _characterInputState.SetHeldItem(null);
            
-            GetComponent<HoldableItem>()?.onPickedUp?.Invoke(_characterInputState.gameObject);
-
-            var force = releaseForce + (_characterInputState.MoveInput * throwMultiplier);
-            var heldBy = _characterInputState.GetComponent<Rigidbody2D>();
-            if (heldBy != null)
-            {
-                force +=heldBy.velocity;
-                SetCollidersEnabled(rb, true);
-                StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
-            }
-            else
-            {
-                SetCollidersEnabled(rb, true);
-            }
+            //GetComponent<HoldableItem>()?.onDropped?.Invoke(_characterInputState.gameObject);
             
-            if(force != Vector2.zero) rb.AddForce(force, ForceMode2D.Impulse);
+            StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
+            SetCollidersEnabled(rb, true);
+            
+            
+            if(releaseForce != Vector2.zero) rb.AddForce(releaseForce, ForceMode2D.Impulse);
             if(releaseTorque != 0) rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
         }
 
+        /// <summary>
+        /// this coroutine is necessary to prevent the thrown object from colliding with the player
+        /// </summary>
+        /// <param name="rb">thrown object</param>
+        /// <param name="player">throwing character</param>
+        /// <returns></returns>
         private IEnumerator PassthroughPlayerOnThrow(Rigidbody2D rb, Rigidbody2D player)
         {
             if (rb == null || player == null)
@@ -200,8 +202,35 @@ namespace Characters
             for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], true);
 
             yield return new WaitForSeconds(0.75f);
-            
-            for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], false);
+
+            try
+            {
+                for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], false);
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Debug.LogWarning(e.Message);
+            }
+        }
+
+
+        private void HoldTarget(Rigidbody2D rb)
+        {
+            if (CanGrab(rb))
+            {
+                Grab(rb);
+            }
+        }
+
+        private bool CanGrab(Rigidbody2D rb)
+        {
+            if(Time.time- _lastGrabTime < holdResetTime)
+                return false;
+            if (HeldRigidBody != null)
+                return false;
+            if (rb.GetComponent<HoldableItem>() == null) 
+                return false;
+            return true;
         }
 
         private void Grab(Rigidbody2D rb)
@@ -212,7 +241,7 @@ namespace Characters
             HeldRigidBody = rb;
             SetCollidersEnabled(rb, false);
             _characterInputState.SetHeldItem(HeldRigidBody);
-            GetComponent<HoldableItem>()?.onPickedUp?.Invoke(_characterInputState.gameObject);
+            
             onHeld?.Invoke(rb);
         }
 
