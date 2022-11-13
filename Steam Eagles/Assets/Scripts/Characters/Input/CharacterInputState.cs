@@ -9,13 +9,24 @@ namespace Characters
     /// <summary>
     /// acts as a proxy for passing input to the player character
     /// </summary>
-     [RequireComponent(typeof(CharacterState))]
+    [RequireComponent(typeof(CharacterState))]
     public class CharacterInputState : MonoBehaviour
     {
+        [SerializeField] private bool useEventsForJump;
         private CharacterState _characterState;
-        private CharacterState CharacterState => _characterState == null ? (_characterState = GetComponent<CharacterState>()) : _characterState;
+        private PlayerInput _playerInput;
+
+        public UnityEvent<InputAction.CallbackContext> onJump = new UnityEvent<InputAction.CallbackContext>();
+        public UnityEvent<InputAction.CallbackContext> onInteract = new UnityEvent<InputAction.CallbackContext>();
+        public UnityEvent<InputAction.CallbackContext> onPickup = new UnityEvent<InputAction.CallbackContext>();
+
+        public CharacterState CharacterState => _characterState == null
+            ? (_characterState = GetComponent<CharacterState>())
+            : _characterState;
 
 
+        private PlayerInput PlayerInput => _playerInput;
+        
         public bool JumpPressed
         {
             get => CharacterState.JumpPressed;
@@ -48,31 +59,55 @@ namespace Characters
         }
 
 
-        public bool DropHeldItem
-        {
-            get;
-            set;
-        }
+        public bool DropHeldItem { get; set; }
+
+
+        public Vector2 AimInput { get; set; }
+
+
         
-
-        public UnityEvent<InputAction.CallbackContext> onJump = new UnityEvent<InputAction.CallbackContext>();
-        public UnityEvent<InputAction.CallbackContext> onInteract= new UnityEvent<InputAction.CallbackContext>();
-        public UnityEvent<InputAction.CallbackContext> onPickup= new UnityEvent<InputAction.CallbackContext>();
-
-        public Vector2 AimInput
-        {
-            get;
-            set;
-        }
 
         private void Awake()
         {
-            if(onJump == null)onJump = new UnityEvent<InputAction.CallbackContext>();
-            if(onInteract == null)onInteract = new UnityEvent<InputAction.CallbackContext>();
-            if(onPickup == null)onPickup = new UnityEvent<InputAction.CallbackContext>();
+            if (onJump == null) onJump = new UnityEvent<InputAction.CallbackContext>();
+            if (onInteract == null) onInteract = new UnityEvent<InputAction.CallbackContext>();
+            if (onPickup == null) onPickup = new UnityEvent<InputAction.CallbackContext>();
             onJump.AddListener(OnJump);
             onInteract.AddListener(OnInteract);
             onPickup.AddListener(OnPickup);
+        }
+
+        public void AssignPlayer(PlayerInput playerInput)
+        {
+            this._playerInput = playerInput;
+            enabled = true;
+            foreach (var characterInput in GetComponentsInChildren<ICharacterInput>())
+            {
+                characterInput.AssignPlayer(playerInput);
+            }
+        }
+
+        public void UnAssignPlayer()
+        {
+            this._playerInput = null;
+            enabled = false;
+            foreach (var characterInput in GetComponentsInChildren<ICharacterInput>())
+            {
+                characterInput.UnAssignPlayer();
+            }
+        }
+
+        private void Update()
+        {
+            if (PlayerInput == null) return;
+
+            MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+
+            if (useEventsForJump) return;
+
+            JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
+            JumpHeld = PlayerInput.actions["Jump"].IsPressed();
         }
 
         public void OnJump(InputAction.CallbackContext context)
@@ -84,7 +119,7 @@ namespace Characters
                 transform = transform
             });
         }
-        
+
         public void OnInteract(InputAction.CallbackContext context)
         {
             MessageBroker.Default.Publish(new InteractActionEvent()
@@ -94,8 +129,7 @@ namespace Characters
                 transform = transform
             });
         }
-        
-        
+
         public void OnPickup(InputAction.CallbackContext context)
         {
             MessageBroker.Default.Publish(new PickupActionEvent()
@@ -104,6 +138,12 @@ namespace Characters
                 context = context,
                 transform = transform
             });
+        }
+
+        
+        public void SetHeldItem(Rigidbody2D heldObject)
+        {
+            CharacterState.heldObject.Value = heldObject;
         }
     }
 }

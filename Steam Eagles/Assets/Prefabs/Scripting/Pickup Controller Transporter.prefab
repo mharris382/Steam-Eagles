@@ -99,7 +99,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2885835730732566345}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 35.79, y: 11.67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd6261ee512481a90fdfe09d020e943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedVariable: {fileID: 11400000, guid: 4a90080395af924479b9ce482e93df68, type: 2}
+  sharedVariable: {fileID: 11400000, guid: 8e268bffb7fcb8b4697abf6e13dc32d7, type: 2}
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -162,50 +162,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HoldTrigger: {fileID: 2885835732028055649}
-  CharacterTransform: {fileID: 11400000, guid: 8e268bffb7fcb8b4697abf6e13dc32d7, type: 2}
+  CharacterTransform: {fileID: 11400000, guid: 3660ec6625eb0ec498fbffd0c03034e8, type: 2}
   holdPoint: {fileID: 2885835730257512643}
   heldObject: {fileID: 0}
   OnHeld:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2885835730257512643}
-        m_TargetAssemblyTypeName: UnityEngine.AnchoredJoint2D, UnityEngine
-        m_MethodName: set_autoConfigureConnectedAnchor
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2885835730257512643}
-        m_TargetAssemblyTypeName: UnityEngine.Joint2D, UnityEngine
-        m_MethodName: set_connectedBody
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2885835730257512643}
-        m_TargetAssemblyTypeName: UnityEngine.Joint2D, UnityEngine
-        m_MethodName: set_enableCollision
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   minHoldDistance: 0.1
   holdResetTime: 1
+  throwMultiplier: 200
   tag: Transporter
 --- !u!50 &2885835730732566344
 Rigidbody2D:
@@ -275,9 +240,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.7656975, y: 0.8559046}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.85
+  m_Radius: 2
 --- !u!114 &2885835732028055649
 MonoBehaviour:
   m_ObjectHideFlags: 0

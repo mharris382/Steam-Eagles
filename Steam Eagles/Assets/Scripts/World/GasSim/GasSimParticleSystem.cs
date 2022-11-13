@@ -301,26 +301,26 @@ namespace GasSim
 
         private void DoGridIO()
         {
-            this.TimerStart();
+            //this.TimerStart();
             
             
-            this.TimerPrintout("Starting Grid Sources (single thread, no parallel)");
+           // this.TimerPrintout("Starting Grid Sources (single thread, no parallel)");
             
             DoGridSources();
             
-            this.TimerPrintout("Processed Grid Sources");
+           // this.TimerPrintout("Processed Grid Sources");
             
             ApplySourceChangesToGrid();
             
-            this.TimerPrintout("Starting Grid Sinks");
+           // this.TimerPrintout("Starting Grid Sinks");
             
             DoGridSinks();
             
-            this.TimerPrintout("Processed Grid Sinks");
+            //this.TimerPrintout("Processed Grid Sinks");
             
             ApplySinkChangesToGrid();
 
-            this.TimerStop("Finished Grid IO (single thread, no parallel)");
+            //this.TimerStop("Finished Grid IO (single thread, no parallel)");
             
             
 

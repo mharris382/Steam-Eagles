@@ -5,8 +5,8 @@ namespace Puzzles
 {
     public class HoldableItem : MonoBehaviour
     {
-        public UnityEvent onPickedUp;
-        public UnityEvent onDropped;
+        public UnityEvent<GameObject> onPickedUp;
+        public UnityEvent<GameObject> onDropped;
         
         
         public bool IsHeld

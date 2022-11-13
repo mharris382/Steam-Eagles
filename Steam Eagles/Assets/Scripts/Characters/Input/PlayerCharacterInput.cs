@@ -33,6 +33,7 @@ namespace Characters
         {
             if (characterInputState == null) return;
             _characterInput = characterInputState;
+            _characterInput.AssignPlayer(_playerInput);
             enabled = true;
             this.name = $"PlayerInput {characterInputState.name}";
         }
@@ -41,7 +42,7 @@ namespace Characters
         {
             if (characterInputState == _characterInput)
             {
-                _characterInput = null;
+                _characterInput.UnAssignPlayer();
                 enabled = false;
                 this.name = $"PlayerInput (Unassigned)";
             }

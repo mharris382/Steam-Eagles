@@ -221,6 +221,9 @@ public class CharacterState : MonoBehaviour
     
     internal Subject<Unit> onJumped = new Subject<Unit>();
     public IObservable<Unit> OnCharacterJumped => onJumped;
+    
+    internal ReactiveProperty<Rigidbody2D> heldObject = new ReactiveProperty<Rigidbody2D>();
+    public IObservable<Rigidbody2D> HeldObject => heldObject;
 }
 
 public enum InteractionPhysicsMode

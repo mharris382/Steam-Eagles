@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Puzzles;
 using StateMachine;
 using UniRx;
 using UniRx.Diagnostics;
@@ -15,16 +16,17 @@ namespace Characters
     public class CharacterObjectHolder : MonoBehaviour
     {
         public TriggerArea HoldTrigger;
+        [Tooltip("Character Root Transform")]
         public SharedTransform CharacterTransform;
         public Joint2D holdPoint;
         public Rigidbody2D heldObject;
 
-        
         public UnityEvent<Rigidbody2D> OnHeld;
 
         public float minHoldDistance = 1; 
         public float holdResetTime = 1;
-
+        public float throwMultiplier = 15;
+        
         private float lastGrabTime;
         private CharacterInputState _characterInputState;
 
@@ -89,12 +91,13 @@ namespace Characters
         {
             if(Time.time- lastGrabTime < holdResetTime)
                 return false;
-            if (heldObject == null)
-                return true;
-            return false;
+            if (heldObject != null)
+                return false;
+            if (rb.GetComponent<HoldableItem>() == null) 
+                return false;
+            return true;
         }
 
-        
 
         void HoldTarget(Rigidbody2D rb)
         {
@@ -120,12 +123,43 @@ namespace Characters
             
             heldObject = null;
             holdPoint.connectedBody = null;
-            SetCollidersEnabled(rb, true);
-            if(releaseForce != Vector2.zero)
-                rb.AddForce(releaseForce, ForceMode2D.Impulse);
+            _characterInputState.SetHeldItem(null);
+           
+            GetComponent<HoldableItem>()?.onPickedUp?.Invoke(_characterInputState.gameObject);
+
+            var force = releaseForce + (_characterInputState.MoveInput * throwMultiplier);
+            var heldBy = _characterInputState.GetComponent<Rigidbody2D>();
+            if (heldBy != null)
+            {
+                force +=heldBy.velocity;
+                SetCollidersEnabled(rb, true);
+                StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
+            }
+            else
+            {
+                SetCollidersEnabled(rb, true);
+            }
             
-            if(releaseTorque != 0)
-                rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
+            if(force != Vector2.zero) rb.AddForce(force, ForceMode2D.Impulse);
+            if(releaseTorque != 0) rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
+        }
+
+        IEnumerator PassthroughPlayerOnThrow(Rigidbody2D rb, Rigidbody2D player)
+        {
+            if (rb == null || player == null)
+                yield break;
+
+            var capColl = player.GetComponent<CapsuleCollider2D>();
+            if (capColl == null) yield break;
+            
+            var colls = new Collider2D[rb.attachedColliderCount];
+            rb.GetAttachedColliders(colls);
+            
+            for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], true);
+
+            yield return new WaitForSeconds(0.75f);
+            
+            for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], false);
         }
 
         private void Grab(Rigidbody2D rb)
@@ -135,7 +169,8 @@ namespace Characters
             holdPoint.connectedBody = rb;
             heldObject = rb;
             SetCollidersEnabled(rb, false);
-            
+            _characterInputState.SetHeldItem(heldObject);
+            GetComponent<HoldableItem>()?.onPickedUp?.Invoke(_characterInputState.gameObject);
             OnHeld?.Invoke(rb);
         }
 
