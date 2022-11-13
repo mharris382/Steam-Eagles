@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,7 @@ namespace Characters
         {
             if (characterInputState == null) return;
             _characterInput = characterInputState;
+            _characterInput.AssignPlayer(PlayerInput);
             enabled = true;
             this.name = $"PlayerInput {characterInputState.name}";
         }
@@ -41,7 +43,7 @@ namespace Characters
         {
             if (characterInputState == _characterInput)
             {
-                _characterInput = null;
+                _characterInput.UnAssignPlayer();
                 enabled = false;
                 this.name = $"PlayerInput (Unassigned)";
             }
@@ -81,12 +83,39 @@ namespace Characters
         {
             if (_characterInput == null) return;
             _characterInput.onInteract?.Invoke(context);
+            MessageBroker.Default.Publish(new InteractActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform
+            });
         }
         
         public void OnPickup(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
             _characterInput.onPickup?.Invoke(context);
+            MessageBroker.Default.Publish(new PickupActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform
+            });
+        }
+        
+        public void OnValve(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            _characterInput.onValve?.Invoke(context);
+            MessageBroker.Default.Publish(new ValveActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform
+            });
         }
     }
 }

@@ -20,7 +20,11 @@ public class GasTank : MonoBehaviour
     public int StoredAmount
     {
         get => _storedAmount;
-        private set => _storedAmount = Mathf.Clamp(value, 0, capacity);
+        set
+        {
+            _storedAmount = Mathf.Clamp(value, 0, capacity);
+            onAmountChanged?.Invoke(_storedAmount);
+        }
     }
     
     public float StoredAmountNormalized => (float)StoredAmount / capacity;

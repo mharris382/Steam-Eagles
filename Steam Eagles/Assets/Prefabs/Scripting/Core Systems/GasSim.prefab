@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 630451184069859234}
   - component: {fileID: 630451184069859235}
   - component: {fileID: 630451184069859232}
+  - component: {fileID: 4605767937355066929}
   m_Layer: 0
   m_Name: GasSim
-  m_TagString: Untagged
+  m_TagString: Gas Sim
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,7 +56,7 @@ MonoBehaviour:
   resolution: 2
   pressureColor:
     alphaMinPressure: 0.127
-    alphaMaxPressure: 0.8
+    alphaMaxPressure: 1
   gridSize: {x: 200, y: 145}
   pressureToLifetime: 0.125
   useZOffset: 1
@@ -4961,6 +4962,19 @@ MonoBehaviour:
   - {fileID: 6663697498036348759}
   - {fileID: 6663697499281976642}
   - {fileID: 6663697498134295272}
+--- !u!114 &4605767937355066929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630451184069855321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3123804d665b4fb5931c3581693cbc15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedVariable: {fileID: 11400000, guid: c8bc81c7dc287784a8cc5471da4381a8, type: 2}
 --- !u!1001 &630451182753473803
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -301,26 +301,26 @@ namespace GasSim
 
         private void DoGridIO()
         {
-            this.TimerStart();
+            //this.TimerStart();
             
             
-            this.TimerPrintout("Starting Grid Sources (single thread, no parallel)");
+           // this.TimerPrintout("Starting Grid Sources (single thread, no parallel)");
             
             DoGridSources();
             
-            this.TimerPrintout("Processed Grid Sources");
+           // this.TimerPrintout("Processed Grid Sources");
             
             ApplySourceChangesToGrid();
             
-            this.TimerPrintout("Starting Grid Sinks");
+           // this.TimerPrintout("Starting Grid Sinks");
             
             DoGridSinks();
             
-            this.TimerPrintout("Processed Grid Sinks");
+            //this.TimerPrintout("Processed Grid Sinks");
             
             ApplySinkChangesToGrid();
 
-            this.TimerStop("Finished Grid IO (single thread, no parallel)");
+            //this.TimerStop("Finished Grid IO (single thread, no parallel)");
             
             
 
@@ -411,17 +411,13 @@ namespace GasSim
             foreach (var registeredSink in _registeredSinks)
             {
                 int totalAmount = 0;
-                _gasAddedToSinks.TryAdd(registeredSink, 0);
-                _gasAddedToSinks[registeredSink] = 0;
                 foreach (var sourceCell in registeredSink.GetSourceCells())
                 {
                     int amount = sourceCell.amount;
                     if (TryRemoveGasFromCell(sourceCell.coord, ref amount))
                         totalAmount += amount;
                 }
-
-                if (totalAmount > 0)
-                    _gasAddedToSinks[registeredSink] = totalAmount;
+        
             }
         }
         
@@ -577,7 +573,8 @@ namespace GasSim
 
         public bool CanRemoveGasFromCell(Vector2Int coord, ref int amount)
         {
-            return Mathf.Max(amount, InternalPressureGrid[coord]) > 0;
+            amount = Mathf.Min(amount, InternalPressureGrid[coord]);
+            return amount > 0;
         }
         
         
