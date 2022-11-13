@@ -36,7 +36,7 @@
                     "name": "Valve",
                     "type": "Value",
                     "id": "3eda8f6a-2ccc-4e21-89ce-68c39c0ee270",
-                    "expectedControlType": "",
+                    "expectedControlType": "Analog",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -58,6 +58,24 @@
                     "processors": "StickDeadzone",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Vaccum Gas",
+                    "type": "Button",
+                    "id": "7ccbdd9c-dd1e-438a-aaef-ed19c86fa4ce",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Release Gas",
+                    "type": "Button",
+                    "id": "723780eb-d4ca-410d-89f9-35bda831f65b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -67,18 +85,7 @@
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8ed37060-7b90-4b4d-a5f2-f101d5a34d4c",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 2",
+                    "groups": "Controller 1;Controller 2",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -107,22 +114,11 @@
                 },
                 {
                     "name": "",
-                    "id": "048f8ef5-1f61-4fb7-a6a9-b7a686b033b8",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "StickDeadzone",
-                    "groups": "Controller 1",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5b11396c-7db0-4e2b-b4e1-57d5896663eb",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "StickDeadzone",
-                    "groups": "Controller 2",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -239,17 +235,6 @@
                 },
                 {
                     "name": "",
-                    "id": "15c75c02-c3db-41c5-9c02-790eadb1c53b",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1;Controller 2",
-                    "action": "Pickup",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "c55d9061-9aa4-464d-bbac-b71c04c90076",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -262,7 +247,7 @@
                 {
                     "name": "",
                     "id": "7fde8005-7e98-41de-8312-f16635f45c0c",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -293,37 +278,48 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Gamepad Triggers",
-                    "id": "e83e7ed2-e38f-41c6-85b8-b6e82c32a3ce",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "14c87292-ce6f-456d-8d12-b96a3f7a83d1",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Valve",
-                    "isComposite": true,
+                    "groups": "Keyboard",
+                    "action": "Interact",
+                    "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "c3c7b138-181d-42dc-b91b-5dc9175e049e",
-                    "path": "<Gamepad>/leftTrigger",
+                    "name": "",
+                    "id": "9f3e73dd-f19c-40dd-aa1b-27ff2aa2763e",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller 1;Controller 2",
-                    "action": "Valve",
+                    "action": "Interact",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 },
                 {
-                    "name": "positive",
-                    "id": "6dfa51ca-16eb-47d3-881b-07cf38c38e37",
-                    "path": "<Gamepad>/rightTrigger",
+                    "name": "",
+                    "id": "5b532fe8-7e0f-4ace-b3e0-9446232a7f0f",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 2;Controller 1",
-                    "action": "Valve",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Aim",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "deefce9a-4cae-4a8c-ac06-a93cc3a6213b",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Keyboard",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "Mouse Wheel",
@@ -342,7 +338,7 @@
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard",
                     "action": "Valve",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -353,74 +349,118 @@
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Valve",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "KBM",
+                    "id": "770a408c-e062-46b1-94ab-d9a371d1a91d",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
                     "groups": "",
+                    "action": "Valve",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "770b32d8-d3bd-48bb-b2c1-f2f4dcb5b099",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Valve",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "2a96beb7-efa3-4bb3-91a2-75dd492216ce",
+                    "path": "<Mouse>/forwardButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Valve",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Gamepad",
+                    "id": "bfcccf15-8639-4836-b258-1f32ff6af71f",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Valve",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "983e7082-89a7-4830-bd0f-fa64ccc2d1c0",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Valve",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "1fa0d1d4-d07c-4771-9ca6-01531b8894db",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Valve",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "",
-                    "id": "14c87292-ce6f-456d-8d12-b96a3f7a83d1",
-                    "path": "<Keyboard>/e",
+                    "id": "bde78a39-5c94-4e64-ab31-e9a28921b1c5",
+                    "path": "<Mouse>/backButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "Interact",
+                    "action": "Vaccum Gas",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "9f3e73dd-f19c-40dd-aa1b-27ff2aa2763e",
-                    "path": "<Gamepad>/buttonEast",
+                    "id": "7bb5f9d7-9151-4cfd-bff1-732cbb8fa5b2",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Interact",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Vaccum Gas",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "ddfd6f34-ac02-4176-ba06-a271a477790e",
-                    "path": "<Gamepad>/buttonEast",
+                    "id": "49e871a4-9ddb-4bb7-ac83-62e83cf83835",
+                    "path": "<Mouse>/forwardButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 2",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5b532fe8-7e0f-4ace-b3e0-9446232a7f0f",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "deefce9a-4cae-4a8c-ac06-a93cc3a6213b",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "StickDeadzone",
                     "groups": "Keyboard",
-                    "action": "Aim",
+                    "action": "Release Gas",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f39bd96e-1965-49d0-8ac2-5832dcf543a3",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "0d42f543-ab5c-44de-bfea-2c3e2fda1329",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 2",
-                    "action": "Aim",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Release Gas",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -469,15 +509,6 @@
             "name": "Depricated",
             "id": "74ee68c8-12a4-49f9-a0f7-38633fff4502",
             "actions": [
-                {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "54efaa8b-c45a-4a08-a043-e62ea40c5a20",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
                 {
                     "name": "Queue Action Smart",
                     "type": "Button",
@@ -567,20 +598,18 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "_Valve_Old",
+                    "type": "Button",
+                    "id": "59003e4c-5c67-4277-a90e-2d60149ad190",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "5f5e8d4b-1c0f-412a-9bc5-d615b1a07c6b",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller 1",
-                    "action": "New action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "7862fab3-dbcd-4601-9988-9074445c37da",
@@ -976,6 +1005,50 @@
                     "action": "Special Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ccfa7433-050f-49f2-811b-bd2626d59eda",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "_Valve_Old",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Gamepad Triggers",
+                    "id": "6aa99863-d965-4649-9e67-f2bd53eb25ec",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "_Valve_Old",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "118bed96-e319-44ba-a3b3-7006fa88f84c",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "_Valve_Old",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "178d8c03-7b7e-4718-a496-1469371ab686",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "_Valve_Old",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
