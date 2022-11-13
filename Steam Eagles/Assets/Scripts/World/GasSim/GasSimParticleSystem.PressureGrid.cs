@@ -15,6 +15,7 @@ namespace GasSim
         internal class PressureGrid : IPressureGrid
         {
             private readonly byte[,] _grid;
+            
             private readonly StateOfMatter[,] _stateGrid;
             internal  readonly GridHelper _gridHelper;
         
@@ -132,39 +133,7 @@ namespace GasSim
 
             private bool IsValidPressure(int pressure) => pressure is >= 0 and < 16;
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="mode">0 for in order, 1 for depth first, 2 for breadth first</param>
-            public void PrintHeap(int mode = 0)
-            {
-                StringBuilder sb = new StringBuilder();
-
-                mode = Mathf.Clamp(mode, 0, 2);
-                (IEnumerable<(Vector2Int, int)>,string)enumerableAndLine = mode switch
-                {
-                    0 => (_nonEmptyPositions.InOrderWithDepth(), "InOrder"),
-                    1 => (_nonEmptyPositions.DepthFirstWithDepth(), "DepthFirst"),
-                    2 => (_nonEmptyPositions.BreadthFirstWithDepth(), "BreadthFirst"),
-                    _ => (null, "ERROR")
-                };
-                IEnumerable<(Vector2Int,int)> enumerable = enumerableAndLine.Item1;
-                sb.AppendLine(enumerableAndLine.Item2.Bolded());
             
-                if (enumerable != null)
-                {
-                    foreach (var pos in enumerable)
-                    {
-                        for (int i = 0; i < pos.Item2; i++) sb.Append('\t');
-                    
-                        Vector2Int coord = pos.Item1;
-                        sb.AppendFormat("{0}:{1}", pos.Item1.ToString(), this[coord]);
-                        sb.AppendLine();
-                    }
-                }
-                Debug.Log(sb.ToString());
-            }
-
             public void ClearGrid()
             {
                 if (UsedCellsCount == 0) return;
@@ -192,17 +161,6 @@ namespace GasSim
                 return _gridHelper.GetNeighbors(cell).Where(t => this[t] < pressure && _stateGrid[t.x, t.y] == StateOfMatter.AIR);
             }
         
-            public struct CellChange
-            {
-                public Vector2Int coord;
-                public int newPressure;
-
-                public override int GetHashCode()
-                {
-                    return coord.GetHashCode();
-                }
-            }
-
             public int GetMaxTransferAmount(Vector2Int from, Vector2Int to, int amount)
             {
                 int current = this[from];

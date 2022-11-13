@@ -1,4 +1,6 @@
-﻿using DG.Tweening;
+﻿using System;
+using CoreLib;
+using DG.Tweening;
 using UnityEngine;
 
 namespace UI
@@ -8,7 +10,8 @@ namespace UI
         [Min(2)]
         public int numberOfItems = 2;
         public UISelectedAbilitySlot slotPrefab;
-
+        public SharedInt selectedSlotIndex;
+        
         [Range(-360, 360)]
         public float offsetRotation;
         [Header("Tween properties"), Range(0, 1)]
@@ -35,6 +38,15 @@ namespace UI
         public bool testUp;
         public bool testDown;
         public int testUpNumber = 1;
+
+        private void Awake()
+        {
+            if (selectedSlotIndex != null)
+            {
+                selectedSlotIndex.onValueChanged.AddListener(v => selectedIndex = v);
+            }
+        }
+
         public void Update()
         {
             if (testDown)
