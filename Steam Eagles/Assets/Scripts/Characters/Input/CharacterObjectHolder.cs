@@ -16,27 +16,73 @@ namespace Characters
     public class CharacterObjectHolder : MonoBehaviour
     {
         public TriggerArea HoldTrigger;
-        [Tooltip("Character Root Transform")]
+
+        [Tooltip("Character Root Transform")] 
         public SharedTransform CharacterTransform;
+
         public Joint2D holdPoint;
-        public Rigidbody2D heldObject;
 
-        public UnityEvent<Rigidbody2D> OnHeld;
 
+        public string tag = "Builder";
+        public UnityEvent<Rigidbody2D> onHeld;
+
+        [Header("Settings")]
         public float minHoldDistance = 1; 
         public float holdResetTime = 1;
         public float throwMultiplier = 15;
+
         
-        private float lastGrabTime;
+        
+        
+        
+        
+        private float _lastGrabTime;
+        
+        public Rigidbody2D heldRigidBody;
+        private HoldableItem _held;
         private CharacterInputState _characterInputState;
 
-        private IDisposable d;
-        public string tag = "Builder";
-        void TrySwitchCharacters(Transform t)
+        private IDisposable _disposable;
+        private Collider2D[] _disabledColliders = new Collider2D[0];
+        
+        
+        public Rigidbody2D HeldRigidBody
         {
-            
+            get => heldRigidBody;
+            set
+            {
+                heldRigidBody = value;
+                HeldItem = GetComponent<HoldableItem>();
+            }
+        }
+        
+        private HoldableItem HeldItem
+        {
+            get => _held;
+            set
+            {
+                if (_held != value)
+                {
+                    var prev = _held;
+                    _held = value;
+                    if(prev!=null)prev.onDropped?.Invoke(Holder);
+                    if(_held!=null)_held.onPickedUp?.Invoke(Holder);
+                }
+
+            }
         }
 
+        public GameObject Holder
+        {
+            get
+            {
+                if (_characterInputState != null) return _characterInputState.gameObject;
+                if (CharacterTransform != null && CharacterTransform.HasValue) return CharacterTransform.Value.gameObject;
+                Debug.LogWarning("CharacterObjectHolder has no character GameObject", this);
+                return gameObject;
+            }
+        }
+        
        
         private void Awake()
         {
@@ -44,16 +90,13 @@ namespace Characters
             
             CharacterTransform.onValueChanged.AsObservable()
                 .Where(t => t != null)
-                .Subscribe(t =>
-                {
-                    //transform.parent = t;
-                    //transform.parent = t;
-                    if(d != null)d.Dispose();
+                .Subscribe(t => {
+                    if(_disposable != null)_disposable.Dispose();
                     _characterInputState = t.GetComponentInParent<CharacterInputState>();
                     if (_characterInputState != null)
                     {
                         Debug.Log($"Connecting Character Object Holder to Input State {_characterInputState.name}");
-                        d = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
+                        _disposable = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
                     }
                 });
 
@@ -79,27 +122,27 @@ namespace Characters
             
         }
 
-        void OnPickupInput(InputAction.CallbackContext context)
+        private void OnPickupInput(InputAction.CallbackContext context)
         {
             Debug.Log("Pickup Event Occurred");
-            if (heldObject != null)
+            if (HeldRigidBody != null)
             {
                 ReleaseObject();
             }
         }
-        bool CanGrab(Rigidbody2D rb)
+        
+        private bool CanGrab(Rigidbody2D rb)
         {
-            if(Time.time- lastGrabTime < holdResetTime)
+            if(Time.time- _lastGrabTime < holdResetTime)
                 return false;
-            if (heldObject != null)
+            if (HeldRigidBody != null)
                 return false;
             if (rb.GetComponent<HoldableItem>() == null) 
                 return false;
             return true;
         }
 
-
-        void HoldTarget(Rigidbody2D rb)
+        private void HoldTarget(Rigidbody2D rb)
         {
             if (CanGrab(rb))
             {
@@ -107,21 +150,20 @@ namespace Characters
             }
         }
 
-        void ReleaseObject()
+        private void ReleaseObject()
         {
-            if(heldObject == null)
+            if(HeldRigidBody == null)
                 return;
-            Release(heldObject, Vector2.zero, Rand.Range(- 15f, 15f));
+            Release(HeldRigidBody, Vector2.zero, Rand.Range(- 15f, 15f));
         }
 
-        private Collider2D[] _disabledColliders = new Collider2D[0];
 
         private void Release(Rigidbody2D rb, Vector2 releaseForce, float releaseTorque)
         {
             if(rb == null)
                 return;
             
-            heldObject = null;
+            HeldRigidBody = null;
             holdPoint.connectedBody = null;
             _characterInputState.SetHeldItem(null);
            
@@ -144,7 +186,7 @@ namespace Characters
             if(releaseTorque != 0) rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
         }
 
-        IEnumerator PassthroughPlayerOnThrow(Rigidbody2D rb, Rigidbody2D player)
+        private IEnumerator PassthroughPlayerOnThrow(Rigidbody2D rb, Rigidbody2D player)
         {
             if (rb == null || player == null)
                 yield break;
@@ -167,11 +209,11 @@ namespace Characters
             CheckDistance(rb);
             
             holdPoint.connectedBody = rb;
-            heldObject = rb;
+            HeldRigidBody = rb;
             SetCollidersEnabled(rb, false);
-            _characterInputState.SetHeldItem(heldObject);
+            _characterInputState.SetHeldItem(HeldRigidBody);
             GetComponent<HoldableItem>()?.onPickedUp?.Invoke(_characterInputState.gameObject);
-            OnHeld?.Invoke(rb);
+            onHeld?.Invoke(rb);
         }
 
         private void CheckDistance(Rigidbody2D rb)
