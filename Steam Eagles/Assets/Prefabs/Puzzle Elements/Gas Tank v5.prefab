@@ -1649,6 +1649,7 @@ Transform:
   - {fileID: 769624620183141684}
   - {fileID: 35718812201635475}
   - {fileID: 1701642147796059777}
+  - {fileID: 6516590733484607077}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.025}
@@ -1914,7 +1915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 100
-  initialAmount: 0
+  initialAmount: 1
   onEmpty:
     m_PersistentCalls:
       m_Calls: []
@@ -1963,7 +1964,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 8993634611038614239}
+        - m_Target: {fileID: 3548037424134828603}
           m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
           m_MethodName: Stop
           m_Mode: 6
@@ -1987,6 +1988,30 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_SizeX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 32
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_SizeY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 32
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
     onValvePushing:
       m_PersistentCalls:
         m_Calls:
@@ -2002,7 +2027,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 8993634611038614239}
+        - m_Target: {fileID: 3548037424134828603}
           m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
           m_MethodName: Play
           m_Mode: 6
@@ -2021,7 +2046,31 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 15
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_SizeX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 9185735969216170953}
+          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
+          m_MethodName: set_SizeY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 1
@@ -2041,7 +2090,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 8993634611038614239}
+        - m_Target: {fileID: 3548037424134828603}
           m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
           m_MethodName: Stop
           m_Mode: 6
@@ -2124,6 +2173,73 @@ MonoBehaviour:
   diamond: 0
   sourceMax: 100
   sinkMax: 5
+--- !u!1001 &1639174926309803089
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 769624621357987838}
+    m_Modifications:
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9145478937758908270, guid: de6334278e253024a96a77a37825d0db, type: 3}
+      propertyPath: m_Name
+      value: Gas Push Particles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de6334278e253024a96a77a37825d0db, type: 3}
+--- !u!198 &3548037424134828603 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2847029040701077098, guid: de6334278e253024a96a77a37825d0db, type: 3}
+  m_PrefabInstance: {fileID: 1639174926309803089}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6516590733484607077 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
+  m_PrefabInstance: {fileID: 1639174926309803089}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2209010707038463934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2255,10 +2371,5 @@ PrefabInstance:
 --- !u!4 &1701642147796059777 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-  m_PrefabInstance: {fileID: 6579023290288309429}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8993634611038614239 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2847029040701077098, guid: de6334278e253024a96a77a37825d0db, type: 3}
   m_PrefabInstance: {fileID: 6579023290288309429}
   m_PrefabAsset: {fileID: 0}

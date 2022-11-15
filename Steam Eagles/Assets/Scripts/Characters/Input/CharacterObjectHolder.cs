@@ -174,8 +174,8 @@ namespace Characters
            
             //GetComponent<HoldableItem>()?.onDropped?.Invoke(_characterInputState.gameObject);
             
-            StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
             SetCollidersEnabled(rb, true);
+            StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
             
             
             if(releaseForce != Vector2.zero) rb.AddForce(releaseForce, ForceMode2D.Impulse);

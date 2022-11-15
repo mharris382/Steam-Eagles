@@ -37,6 +37,16 @@ namespace GasSim
             set => size = value;
         }
 
+        public int SizeX
+        {
+            set => size.x = value;
+        }
+
+        public int SizeY
+        {
+            set => size.y = value;
+        }
+
         [SerializeField, Range(-16, 16)] private int currentFlow;
 
         public int CurrentFlow
@@ -79,6 +89,8 @@ namespace GasSim
         {
             set => CurrentFlow = inFlow.GetFlowRate(value);
         }
+
+       
 
         private int _count;
 
@@ -126,7 +138,7 @@ namespace GasSim
                     var color = Color.green;
                     if (CurrentFlow > 0)
                     {
-                        amt = Mathf.Min(tank.StoredAmount, cell.amount);
+                        amt = Mathf.Min(tank.StoredAmount, cell.amount, CurrentFlow);
                         if (targetGasSim.CanAddGasToCell(cell.coord, ref amt))
                         {
                             DrawTarget(cell.coord, Color.blue);
