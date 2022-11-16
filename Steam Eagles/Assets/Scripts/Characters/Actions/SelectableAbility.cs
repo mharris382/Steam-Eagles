@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
@@ -8,6 +9,7 @@ public class SelectableAbility : CellAbility
     [Serializable]
     private class Events
     {
+        public SharedInt selectedAbility;
         public UnityEvent<int> onSelectedAbilityIndexChanged;
         public UnityEvent<CellAbility> onSelectedAbilityChanged;
     }
@@ -26,6 +28,7 @@ public class SelectableAbility : CellAbility
         {
             if(debug)Debug.Log($"{name} Selected Ability Changed:{selectedAbility}");
             selectedAbility = value % abilities.Length;
+            events.selectedAbility.Value = selectedAbility;
             events.onSelectedAbilityIndexChanged?.Invoke(selectedAbility);
             events.onSelectedAbilityChanged?.Invoke(abilities[selectedAbility]);
         }

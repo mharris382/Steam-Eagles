@@ -44,7 +44,7 @@ namespace Characters
 
         private IDisposable _disposable;
         private Collider2D[] _disabledColliders = new Collider2D[0];
-        
+        private IDisposable _holdDisposable;
         
         public Rigidbody2D HeldRigidBody
         {
@@ -52,7 +52,7 @@ namespace Characters
             set
             {
                 heldRigidBody = value;
-                HeldItem = GetComponent<HoldableItem>();
+                HeldItem = value == null ? null : value.GetComponent<HoldableItem>();
             }
         }
         
@@ -63,10 +63,10 @@ namespace Characters
             {
                 if (_held != value)
                 {
-                    var prev = _held;
+                   // var prev = _held;
                     _held = value;
-                    if(prev!=null)prev.Dropped(Holder);
-                    if(_held!=null)_held.PickedUp(Holder);
+                   //if(prev!=null)prev.Dropped(Holder);
+                   //if(_held!=null)_held.PickedUp(Holder);
                 }
 
             }
@@ -125,6 +125,7 @@ namespace Characters
         private void OnPickupInput(InputAction.CallbackContext context)
         {
             Debug.Log("Pickup Event Occurred");
+            if (context.canceled) return;
             if (HeldRigidBody != null)
             {
                 ReleaseObject();
@@ -139,6 +140,7 @@ namespace Characters
             
             var heldBy = Holder.GetComponent<Rigidbody2D>();
             Release(HeldRigidBody, heldBy , GetThrowForce(heldBy), GetThrowTorque());
+            
         }
 
         private float GetThrowTorque()
@@ -167,16 +169,19 @@ namespace Characters
         {
             if(rb == null)
                 return;
-            
-            HeldRigidBody = null;
-            holdPoint.connectedBody = null;
-            _characterInputState.SetHeldItem(null);
+            //_holdDisposable?.Dispose();
            
+            
             //GetComponent<HoldableItem>()?.onDropped?.Invoke(_characterInputState.gameObject);
             
             SetCollidersEnabled(rb, true);
             StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
             
+            if(HeldItem!=null)
+                HeldItem.Dropped(_characterInputState.gameObject);
+            holdPoint.connectedBody = null;
+            _characterInputState.SetHeldItem(null);
+            HeldRigidBody = null;
             
             if(releaseForce != Vector2.zero) rb.AddForce(releaseForce, ForceMode2D.Impulse);
             if(releaseTorque != 0) rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
@@ -241,7 +246,9 @@ namespace Characters
             HeldRigidBody = rb;
             SetCollidersEnabled(rb, false);
             _characterInputState.SetHeldItem(HeldRigidBody);
-            
+            if(HeldItem!=null)
+                HeldItem.PickedUp(_characterInputState.gameObject);
+            //_holdDisposable = this.HeldItem.IsHeldStream.Where(t => !t && HeldItem.HeldBy == Holder).Subscribe(t => ReleaseObject());
             onHeld?.Invoke(rb);
         }
 

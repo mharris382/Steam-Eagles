@@ -1,10 +1,13 @@
-﻿using DG.Tweening;
+﻿using CoreLib;
+using DG.Tweening;
+using UniRx;
 using UnityEngine;
 
 namespace UI
 {
     public class UISelectorWheel : MonoBehaviour
     {
+        public SharedInt SelectedIndex;
         [Min(2)]
         public int numberOfItems = 2;
         public UISelectedAbilitySlot slotPrefab;
@@ -35,6 +38,15 @@ namespace UI
         public bool testUp;
         public bool testDown;
         public int testUpNumber = 1;
+        
+        private void Start()
+        {
+            if (SelectedIndex != null)
+            {
+                SelectedIndex.onValueChanged.AsObservable().TakeUntilDestroy(this).Subscribe(index => selectedIndex = index);
+            }
+            
+        }
         public void Update()
         {
             if (testDown)
