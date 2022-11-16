@@ -43,20 +43,7 @@ namespace GasSim
         
             if (Application.isPlaying)
             {
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("In Order"))
-                {
-                    gasSim.InternalPressureGrid.PrintHeap(0);
-                }
-                if (GUILayout.Button("Depth Order"))
-                {
-                    gasSim.InternalPressureGrid.PrintHeap(1);
-                }
-                if (GUILayout.Button("Breast Order"))
-                {
-                    gasSim.InternalPressureGrid.PrintHeap(2);
-                }
-                GUILayout.EndHorizontal();
+               
             }
        
         

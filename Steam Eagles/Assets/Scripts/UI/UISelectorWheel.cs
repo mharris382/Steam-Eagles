@@ -11,7 +11,8 @@ namespace UI
         [Min(2)]
         public int numberOfItems = 2;
         public UISelectedAbilitySlot slotPrefab;
-
+        public SharedInt selectedSlotIndex;
+        
         [Range(-360, 360)]
         public float offsetRotation;
         [Header("Tween properties"), Range(0, 1)]

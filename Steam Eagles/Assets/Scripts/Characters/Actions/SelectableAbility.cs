@@ -18,6 +18,7 @@ public class SelectableAbility : CellAbility
     public CellAbility[] abilities;
     [SerializeField] private Events events;
     [SerializeField] int selectedAbility = 0;
+    [SerializeField] private SharedInt selectedAbilityIndex;
     
     public bool debug;
     
