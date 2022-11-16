@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GasSim;
 using Puzzles;
 using UniRx;
 using UnityEngine;
@@ -21,6 +22,10 @@ public class GasTankAttachPoint : MonoBehaviour
     {
         public UnityEvent<GasTank> onTankAttached;
         public UnityEvent<GasTank> onTankDetached;
+        public UnityEvent<GameObject> onTankObjAttached;
+        public UnityEvent<GameObject> onTankObjDetached;
+
+      
     }
 
     private Rigidbody2D _tankRB;
@@ -94,6 +99,11 @@ public class GasTankAttachPoint : MonoBehaviour
             .Select(t => t == null ? null : t.GetComponent<GasTank>()).Where(t => t != null)
             .TakeUntilDestroy(this)
             .Subscribe(AttachGasTank);
+        events.onTankAttached.AsObservable().TakeUntilDestroy(this).Select(t => t.gameObject)
+            .Subscribe(t => events.onTankObjAttached?.Invoke(t));
+        
+        events.onTankDetached.AsObservable().TakeUntilDestroy(this).Select(t => t.gameObject)
+            .Subscribe(t => events.onTankObjDetached?.Invoke(t));
     }
     IEnumerator Start()
     {

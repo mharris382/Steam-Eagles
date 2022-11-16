@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GasSim;
 using UnityEngine;
 
 [RequireComponent(typeof(GasTank))]

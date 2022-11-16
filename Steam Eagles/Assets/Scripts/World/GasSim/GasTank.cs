@@ -1,90 +1,75 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public interface IGasPowerSource
+namespace GasSim
 {
-    public float AvailablePower { get; }
-    public void ConsumePower(float amount);
-}
-
-[RequireComponent(typeof(GasTank))]
-public class GasTankPowerSource : MonoBehaviour, IGasPowerSource
-{
-    private GasTank _gasTank;
-
-    
-    private void Awake()
+    public interface IGasPowerSource
     {
-        _gasTank = GetComponent<GasTank>();
+        public float PowerCapacity { get; }
+        public float AvailablePower { get; }
+        public void ConsumePower(float amount);
     }
 
-    public float AvailablePower { get; }
-    public void ConsumePower(float amount)
+    public class GasTank : MonoBehaviour
     {
-        throw new NotImplementedException();
-    }
-}
-public class GasTank : MonoBehaviour
-{
     
-    public int capacity = 100;
-    [Range(0, 1)]
-    public float initialAmount = 1;
+        public int capacity = 100;
+        [Range(0, 1)]
+        public float initialAmount = 1;
     
-    public UnityEvent onEmpty;
-    public UnityEvent<int> onAmountChanged;
-    public UnityEvent<float> onAmountNormalizedChanged;
-    public int generatedAmount = 0;
+        public UnityEvent onEmpty;
+        public UnityEvent<int> onAmountChanged;
+        public UnityEvent<float> onAmountNormalizedChanged;
+        public int generatedAmount = 0;
     
     
-    [SerializeField]
-    private int _storedAmount;
-    public int StoredAmount
-    {
-        get => _storedAmount;
-        set
+        [SerializeField]
+        private int _storedAmount;
+        public int StoredAmount
         {
-            _storedAmount = Mathf.Clamp(value, 0, capacity);
-            onAmountChanged?.Invoke(_storedAmount);
+            get => _storedAmount;
+            set
+            {
+                _storedAmount = Mathf.Clamp(value, 0, capacity);
+                onAmountChanged?.Invoke(_storedAmount);
+            }
         }
-    }
     
-    public float StoredAmountNormalized => (float)StoredAmount / capacity;
+        public float StoredAmountNormalized => (float)StoredAmount / capacity;
     
-    private void Start()
-    {
+        private void Start()
+        {
           
-        //add listerenr to amount changed and invoke amount changed normalized
-        onAmountChanged.AddListener(_ => onAmountNormalizedChanged?.Invoke(StoredAmountNormalized));
-        StoredAmount = (int)(capacity * initialAmount);
-        onAmountChanged.Invoke(StoredAmount);
+            //add listerenr to amount changed and invoke amount changed normalized
+            onAmountChanged.AddListener(_ => onAmountNormalizedChanged?.Invoke(StoredAmountNormalized));
+            StoredAmount = (int)(capacity * initialAmount);
+            onAmountChanged.Invoke(StoredAmount);
       
-        if(generatedAmount > 0)
-            StartCoroutine(GenerateGas());
-    }
+            if(generatedAmount > 0)
+                StartCoroutine(GenerateGas());
+        }
 
-    private IEnumerator GenerateGas()
-    {
-        while (true)
+        private IEnumerator GenerateGas()
         {
-            yield return new WaitForSeconds(1);
-            if(generatedAmount > 0) AddGas(generatedAmount);
-            else if(generatedAmount < 0) RemoveGas(-generatedAmount);
+            while (true)
+            {
+                yield return new WaitForSeconds(1);
+                if(generatedAmount > 0) AddGas(generatedAmount);
+                else if(generatedAmount < 0) RemoveGas(-generatedAmount);
+            }
+        }
+
+        public void AddGas(int amount)
+        {
+            StoredAmount += amount;
+            onAmountChanged.Invoke(StoredAmount);
+        }
+    
+        public void RemoveGas(int amount)
+        {
+            StoredAmount -= amount;
+            onAmountChanged.Invoke(StoredAmount);
         }
     }
-
-    public void AddGas(int amount)
-    {
-        StoredAmount += amount;
-        onAmountChanged.Invoke(StoredAmount);
-    }
-    
-    public void RemoveGas(int amount)
-    {
-        StoredAmount -= amount;
-        onAmountChanged.Invoke(StoredAmount);
-    }
 }
-

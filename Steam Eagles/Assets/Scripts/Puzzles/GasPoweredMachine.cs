@@ -1,40 +1,57 @@
 ﻿using System;
+using System.Collections;
+using GasSim;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GasPoweredMachine : MonoBehaviour
 {
-    private SpriteRenderer _sr;
-    private IDisposable _disposable;
+    public GameObject powerSource;
 
-    public string sortingLayer = "Hypergas Generator";
-    public int sortingOrder = -10;
+    public float consumptionAmount = 0.5f;
+    public float consumptionRate = 1f;
+    
+    private IGasPowerSource _source;
 
-    private int sortingLayerId;
+    
+    public UnityEvent onMachineStarted;
+    public UnityEvent onMachineStopped;
+    public UnityEvent<float> onPowerChangedRaw;
+    public UnityEvent<float> onPowerChangedNormalized;
+    
+    
+    public FloatReactiveProperty _power = new FloatReactiveProperty(0f);
+    public BoolReactiveProperty _isOn = new BoolReactiveProperty(false);
+    
     private void Awake()
     {
-        sortingLayerId= SortingLayer.NameToID(sortingLayer);
-        
-    }
-
-    public void OnGasTankAttached(GasTank gasTank)
-    {
-        this._sr = gasTank.GetComponent<SpriteRenderer>();
-        gasTank.transform.SetAsLastSibling();
-        
-        var prevSortingOrder = this._sr.sortingOrder;
-        var prevSortingLayer = this._sr.sortingLayerID;
-        
-        _disposable = Disposable.Create(() =>
-        {
-            if(_sr.sortingOrder == sortingOrder) _sr.sortingOrder = prevSortingOrder;
-            if(_sr.sortingLayerID == sortingLayerId) _sr.sortingLayerID = prevSortingLayer;
+        _source = GetComponent<IGasPowerSource>();
+        _isOn = new BoolReactiveProperty(_source.AvailablePower >= consumptionAmount);
+        _power.Select(t => t > consumptionAmount).DistinctUntilChanged().Subscribe(on => _isOn.Value = on);
+        _isOn.TakeUntilDestroy(this).Subscribe(t => {
+            if (t)
+            {
+                onMachineStarted?.Invoke();
+            }
+            else
+            {
+                onMachineStopped?.Invoke();
+            }
         });
+        
+        _power.DistinctUntilChanged().TakeUntilDestroy(this).Subscribe(t => onPowerChangedRaw?.Invoke(t));
+        _power.Select(t => t / _source.PowerCapacity).DistinctUntilChanged().TakeUntilDestroy(this).Subscribe(t => onPowerChangedNormalized?.Invoke(t));
     }
 
-    public void OnGasTankDetached(GasTank gasTank)
+    private IEnumerator Start()
     {
-        _disposable?.Dispose();
+
+        while (enabled)
+        {
+            yield return new WaitForSeconds(consumptionRate);
+            _source.ConsumePower(consumptionAmount);
+            _power.Value = _source.AvailablePower;
+        }
     }
-    
 }
