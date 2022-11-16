@@ -11,7 +11,7 @@ namespace Puzzles
         private Collider2D[] _colliders;
 
         public Rigidbody2D Rigidbody2D => _rb;
-
+        public ScriptableObject blockID { get; set; }
         private void Awake()
         {
             _colliders = this.GetComponentsInChildren<Collider2D>();

@@ -1,26 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using CoreLib;
 using UnityEngine;
 
-
-[RequireComponent(typeof(Rigidbody2D))]
-public class DynamicBlockInstance : MonoBehaviour
+namespace Spaces
 {
-    private Rigidbody2D _rigidbody2D;
-    public Rigidbody2D Rigidbody2D => _rigidbody2D == null ? (_rigidbody2D = GetComponent<Rigidbody2D>()) : _rigidbody2D;
-
-    [SerializeField]
-    private DynamicBlock _block;
-    public DynamicBlock Block
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class DynamicBlockInstance : MonoBehaviour, IBlockID
     {
-        get => _block;
-        set
+        private Rigidbody2D _rigidbody2D;
+        public Rigidbody2D Rigidbody2D => _rigidbody2D == null ? (_rigidbody2D = GetComponent<Rigidbody2D>()) : _rigidbody2D;
+
+        [SerializeField]
+        private DynamicBlock _block;
+        public DynamicBlock Block
         {
-            _block = value;
+            get => _block;
+            set
+            {
+                _block = value;
             
            
+            }
         }
+
+
+        public string BlockName => Block.blockName;
     }
-
-  
-
 }

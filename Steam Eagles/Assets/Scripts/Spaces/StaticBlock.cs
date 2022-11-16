@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using CoreLib;
+using Spaces;
 using StateMachine;
 using UnityEngine;
 using UnityEngine.Serialization;

@@ -16,7 +16,8 @@ namespace Puzzles
         private void OnDynamicObjectSpawned(SpawnedDynamicObjectInfo spawnedDynamicObjectInfo)
         {
             var go = spawnedDynamicObjectInfo.dynamicBlock;
-            go.AddComponent<DynamicBlock>();
+            var dynamicBlock = go.AddComponent<DynamicBlock>();
+            dynamicBlock.blockID = spawnedDynamicObjectInfo.blockID;
             go.tag = "DynamicBlock";
         }
     }

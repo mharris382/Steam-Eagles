@@ -34,10 +34,12 @@ namespace CoreLib
 
     public struct SpawnedDynamicObjectInfo
     {
+        public readonly ScriptableObject blockID;
         public GameObject dynamicBlock;
 
-        public SpawnedDynamicObjectInfo(GameObject dynamicBlock)
+        public SpawnedDynamicObjectInfo(ScriptableObject blockID, GameObject dynamicBlock)
         {
+            this.blockID = blockID;
             this.dynamicBlock = dynamicBlock;
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using CoreLib;
 using DG.Tweening;
 using UniRx;
 using UnityEngine;
@@ -19,7 +21,9 @@ namespace Puzzles
         [Header("Animation Parameters")] 
         [SerializeField] private float jumpPower = 1;
         [SerializeField] private Ease jumpEase = Ease.InOutCubic;
-
+        [Header("Inventory")] 
+        [SerializeField] private InventoryBlock[] inventoryBlocks;
+        
         private IntReactiveProperty _heldBlocks = new IntReactiveProperty(0);
         public int HeldBlockCount
         {
@@ -28,7 +32,23 @@ namespace Puzzles
         }
 
         public IObservable<int> OnHeldBlockCountChanged => _heldBlocks;
+        
+        
+        [Serializable]
+        public class InventoryBlock
+        {
+            public ScriptableObject dynamicBlock;
+            public int startingAmount = 0;
+            public SharedInt inventoryCount;
 
+            public int HeldAmount
+            {
+                get => inventoryCount.Value;
+                set => inventoryCount.Value = value;
+            }
+        }
+
+        private Dictionary<ScriptableObject, InventoryBlock> _inventoryBlocks;
         private void Awake()
         {
             if (pickupPoint == null) pickupPoint = transform;
@@ -36,13 +56,18 @@ namespace Puzzles
             {
                 collector = GetComponentInChildren<DynamicBlockCollector>();
             }
-            collector.onDynamicBlockCollected.AddListener(OnBlockAdded);
-        }
 
-        private void OnDestroy()
-        {
-            collector.onDynamicBlockCollected.RemoveListener(OnBlockAdded);
+            _inventoryBlocks = new Dictionary<ScriptableObject, InventoryBlock>();
+            foreach (var inventoryBlock in inventoryBlocks)
+            {
+                _inventoryBlocks.Add(inventoryBlock.dynamicBlock, inventoryBlock);
+                inventoryBlock.HeldAmount = inventoryBlock.startingAmount;
+            }
+            //collector.onDynamicBlockCollected.AddListener(OnBlockAdded);
+            collector.onDynamicBlockCollected.AsObservable().TakeUntilDestroy(this)
+                .Where(t => _inventoryBlocks.ContainsKey(t.blockID)).Subscribe(OnBlockAdded);
         }
+        
 
         public void OnBlockAdded(DynamicBlock block)
         {
@@ -53,6 +78,7 @@ namespace Puzzles
         {
             GameObject.Destroy(block.gameObject);
             HeldBlockCount += 1;
+            _inventoryBlocks[block.blockID].HeldAmount++;
         }
 
         IEnumerator DoPickupAnimation(DynamicBlock block, Action onAnimationCompleted)
@@ -65,5 +91,6 @@ namespace Puzzles
             yield return tween.WaitForCompletion();
             onAnimationCompleted?.Invoke();
         }
+    
     }
 }

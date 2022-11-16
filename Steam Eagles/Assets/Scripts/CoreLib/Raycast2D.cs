@@ -36,17 +36,17 @@ public class Raycast2D : MonoBehaviour
         Hit2D = Physics2D.Raycast(origin, direction, distance, layerMask);
     }
 
-    private void OnDrawGizmos()
+    public void OnDrawGizmos()
     {
-        if (Application.isPlaying)
-        {
+       // if (Application.isPlaying)
+       // {
             Gizmos.color = Hit2D ? Color.green : Color.red;
             var t = transform;
             var p0 = (Vector2) t.position;
             var p1 = !Hit2D ? (p0 + (Vector2)(t.right * distance)) : Hit2D.point;
             
             Gizmos.DrawLine(p0,p1);
-        }
+      //  }
     }
 
     public bool CheckForHit() => Hit2D;

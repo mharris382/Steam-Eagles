@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33545e0515d24a26904e5e6b454f672a, type: 3}
+  m_Name: DynamicBlock_Solid
+  m_EditorClassIdentifier: 
+  blockName: Solid
+  linkedStaticBlock: {fileID: 11400000, guid: 103234abef08c9f44bc8a4bc962da3cf, type: 2}
+  overrideSprites:
+  - {fileID: 21300000, guid: d376fa945970eb04eb1299ac898a10ca, type: 3}
+  sortingLayerName: Dynamic
+  sortingOrder: 10
+  color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+  mass: 10
+  gravityScale: 2
+  bounce: 0
+  friction: 0.4
+  sharePhysicsMaterials: 0
+  useContinuousCollision: 0
+  useBoxCollider: 0
+  sizeOffset: {x: 0, y: 0}
+  edgeOffset: 0.1
+  roundness: 0
+  onInstanceSpawned:
+    m_PersistentCalls:
+      m_Calls: []
+  spawnPrefabs:
+  - prefab: {fileID: 4235153442363593591, guid: e8cff5bd2b8f49545bdff0537ebdc15a, type: 3}
+    spawnAsChild: 1

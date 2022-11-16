@@ -18,30 +18,27 @@ public class ConnectCellAbility : CellAbility
 
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
-        bool blockedByNeighbor = false;
-        if (limitAdjacentNeighbors)
+        if (IsBlockedByNeighbor(cellPosition)) return false;
+        return !IsCellBlocked(cellPosition)
+               && !Tilemap.HasTile(cellPosition);
+    }
+
+    bool IsBlockedByNeighbor(Vector3Int cellPosition)
+    {
+        if (!limitAdjacentNeighbors) return false;
+        int cnt = 0;
+        int cellNeighbors = GetNeighbors(cellPosition);
+        if (cellNeighbors > maxAdjacentNeighbors)
+            return true;
+        foreach (var i in neighbors.Where(HasTile).Select(GetNeighbors))
         {
-            int cnt = 0;
-            foreach (var neighbor in neighbors.Select(t=> cellPosition+t))
+            if (i >= maxAdjacentNeighbors)
             {
-                if (HasTile(neighbor))
-                {
-                    cnt++;
-                    if(cnt > maxAdjacentNeighbors)
-                    {
-                        blockedByNeighbor = true;
-                        break;
-                    }
-                    else if (GetNeighbors(neighbor) >= maxAdjacentNeighbors)
-                    {
-                        blockedByNeighbor = true;
-                        break;
-                    }
-                }
+                return true;
             }
         }
-        return !blockedByNeighbor && !IsCellBlocked(cellPosition)
-               && !Tilemap.HasTile(cellPosition);
+
+        return false;
     }
 
     private bool HasTile(Vector3Int neighbor)
