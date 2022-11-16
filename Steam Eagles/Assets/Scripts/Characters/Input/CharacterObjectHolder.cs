@@ -58,17 +58,10 @@ namespace Characters
         
         private HoldableItem HeldItem
         {
-            get => _held;
+            get => _held==null && HeldRigidBody!=null ? (_held = HeldRigidBody.GetComponent<HoldableItem>()) : _held;
             set
             {
-                if (_held != value)
-                {
-                   // var prev = _held;
-                    _held = value;
-                   //if(prev!=null)prev.Dropped(Holder);
-                   //if(_held!=null)_held.PickedUp(Holder);
-                }
-
+                _held = value;
             }
         }
 
@@ -175,6 +168,10 @@ namespace Characters
             //GetComponent<HoldableItem>()?.onDropped?.Invoke(_characterInputState.gameObject);
             
             SetCollidersEnabled(rb, true);
+            if (HeldItem == null)
+            {
+                HeldItem = rb.GetComponent<HoldableItem>();
+            }
             StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
             
             if(HeldItem!=null)
@@ -244,6 +241,10 @@ namespace Characters
             
             holdPoint.connectedBody = rb;
             HeldRigidBody = rb;
+            if (HeldItem == null)
+            {
+                HeldItem = rb.GetComponent<HoldableItem>();
+            }
             SetCollidersEnabled(rb, false);
             _characterInputState.SetHeldItem(HeldRigidBody);
             if(HeldItem!=null)
