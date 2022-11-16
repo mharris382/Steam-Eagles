@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using CoreLib;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -116,6 +117,32 @@ namespace Characters
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform
             });
+        }
+    }
+
+    
+    [RequireComponent(typeof(PlayerInput))]
+    public class PauseMenuInput : MonoBehaviour
+    {
+        public SharedBool isPaused;
+        private PlayerInput _playerInput;
+        public PlayerInput PlayerInput => _playerInput ==null ? (_playerInput = GetComponent<PlayerInput>()) : _playerInput;
+        public void OnPause(InputAction.CallbackContext context)
+        {
+            
+        }
+
+
+        private void Awake()
+        {
+            isPaused.onValueChanged.AsObservable().Where(t=>t).Subscribe(_ =>
+            {
+                PlayerInput.SwitchCurrentActionMap("UI");
+            }).AddTo(this);
+            isPaused.onValueChanged.AsObservable().Where(t=>!t).Subscribe(_ =>
+            {
+                PlayerInput.SwitchCurrentActionMap("Player");
+            }).AddTo(this);
         }
     }
 }
