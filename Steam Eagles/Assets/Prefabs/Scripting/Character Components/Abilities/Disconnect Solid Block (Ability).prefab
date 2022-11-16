@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8283447107603910093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8283447107603910092}
+  - component: {fileID: 8283447107603910094}
+  - component: {fileID: 8283447107603910095}
+  m_Layer: 10
+  m_Name: Disconnect Solid Block (Ability)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8283447107603910092
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283447107603910093}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.032073975, y: 0.020370483, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4286593777192186467}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8283447107603910094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283447107603910093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02bebbe3e784dde91e53178d276bdaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityUser: {fileID: 0}
+  tilemap: {fileID: 11400000, guid: 065e470c41d2a9041bfdc6ee9b002259, type: 2}
+  blockingMap: {fileID: 0}
+  blockingMaps:
+  - {fileID: 11400000, guid: 64003a3b4627c5e4eb3fd8ffcb58b461, type: 2}
+  sceneBlockingMaps: []
+  onDisconnectedBlock:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 616097471190209115}
+        m_TargetAssemblyTypeName: DynamicBlockSpawner, SteamEagles.Spaces
+        m_MethodName: SpawnBlock
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8283447107603910095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283447107603910093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aac8c98b4e954c6eac93c408b1af4db5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 1, y: 1}
+  spacing: {x: 1, y: 1}
+  centerOffset: {x: -0.5, y: -0.5, z: 0}
+--- !u!1001 &8810460999380607425
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8283447107603910092}
+    m_Modifications:
+    - target: {fileID: 4669305654771232322, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_Name
+      value: Dynamic Solid Block Spawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+--- !u!114 &616097471190209115 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8271382964811379610, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+  m_PrefabInstance: {fileID: 8810460999380607425}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373132ae8db845759db734ad0b308641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4286593777192186467 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
+  m_PrefabInstance: {fileID: 8810460999380607425}
+  m_PrefabAsset: {fileID: 0}

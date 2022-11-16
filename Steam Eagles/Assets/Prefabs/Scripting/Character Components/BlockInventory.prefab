@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5707614140888106971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8289217234617684655}
+  - component: {fileID: 6539376259429958041}
+  - component: {fileID: 3919906309140852522}
+  - component: {fileID: 7398413498533011443}
+  m_Layer: 0
+  m_Name: BlockInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8289217234617684655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5707614140888106971}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.22, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6539376259429958041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5707614140888106971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef86127266884cf7a7484b8e1c6cc79d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collector: {fileID: 7398413498533011443}
+  pickupAnimationDuration: 0.25
+  pickupPoint: {fileID: 0}
+  jumpPower: 1
+  jumpEase: 10
+  inventoryBlocks:
+  - dynamicBlock: {fileID: 11400000, guid: f9de273cd1681d647abe43fc8265c492, type: 2}
+    startingAmount: 0
+    inventoryCount: {fileID: 11400000, guid: c1369935013390a4cb0619fe3f3b9d1e, type: 2}
+  - dynamicBlock: {fileID: 11400000, guid: 9d29fda23b627554e8948e849c735dbf, type: 2}
+    startingAmount: 0
+    inventoryCount: {fileID: 11400000, guid: 1b64741a3e3c6b44aaeee2c5ae40a145, type: 2}
+--- !u!58 &3919906309140852522
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5707614140888106971}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 6.46
+--- !u!114 &7398413498533011443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5707614140888106971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ef44a223d934f649247b7659a4d9aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  searchColliderForTargets: 1
+  searchRigidbodyForTargets: 1
+  debug: 1
+  targetTag: DynamicBlock
+  onDynamicBlockCollected:
+    m_PersistentCalls:
+      m_Calls: []

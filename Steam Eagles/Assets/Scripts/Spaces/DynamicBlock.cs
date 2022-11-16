@@ -20,7 +20,8 @@ namespace Spaces
     
         [Header("Rendering")]
         public Sprite[] overrideSprites;
-
+        public string sortingLayerName = "Dynamic";
+        public int sortingOrder = 10;
         public Color color = Color.clear;
     
         [Header("Physics")]
@@ -42,8 +43,31 @@ namespace Spaces
     
         [Header("On Spawned Event")]
         public UnityEvent<DynamicBlockInstance> onInstanceSpawned;
+        
+        
+        [Header("Spawn Prefabs")]
+        [SerializeField] private SpawnPrefab[] spawnPrefabs;
+        
+        
+        [Serializable]
+        private class SpawnPrefab
+        {
+            public GameObject prefab;
+            public bool spawnAsChild = true;
 
+            public void Spawn(GameObject parent)
+            {
+                var instance = Instantiate(prefab, parent.transform);
+                instance.transform.position = parent.transform.position;
+                instance.transform.rotation = parent.transform.rotation;
+                if (!spawnAsChild)
+                {
+                    instance.transform.SetParent(null);
+                }
+            }
+        }
 
+        
         private PhysicsMaterial2D _physicMaterial;
 
         public PhysicsMaterial2D PhysicMaterial2D
@@ -96,7 +120,7 @@ namespace Spaces
             sr.transform.position = position;
             SetupRenderer(sr);
             AddCollision(sr);
-        
+            SpawnPrefabs(inst.gameObject);
             SetupPhysics(inst.GetComponent<Rigidbody2D>(), position, rotation);
         
         
@@ -148,7 +172,16 @@ namespace Spaces
         {
             spriteRenderer.color = GetDynamicBlockColor();
             spriteRenderer.sprite = GetDynamicBlockSprite();
+            spriteRenderer.sortingLayerName = sortingLayerName;
+            spriteRenderer.sortingOrder = sortingOrder;
+        }
         
+        private void SpawnPrefabs(GameObject parent)
+        {
+            foreach (var spawnPrefab in spawnPrefabs)
+            {
+                spawnPrefab.Spawn(parent);
+            }
         }
     
         private  void AddCollision(SpriteRenderer spriteRenderer)

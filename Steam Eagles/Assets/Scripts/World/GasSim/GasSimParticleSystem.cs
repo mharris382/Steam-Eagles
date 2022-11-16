@@ -153,7 +153,7 @@ namespace GasSim
         [SerializeField] bool useZOffset = true;
 
         [SerializeField] private float pressureToZ = 1;
-        [SerializeField] private float updateRate = 1;
+        [SerializeField] protected float updateRate = 1;
         [SerializeField] private bool skipInternalGrid = true;
         [FormerlySerializedAs("copyGridToParticles")] [SerializeField] private bool enableGridToParticles = false;
         [SerializeField] private TestingMode testingMode;
@@ -186,7 +186,7 @@ namespace GasSim
                 return _cellSize;
             }
         }
-        private ParticleSystem ParticleSystem
+        protected ParticleSystem ParticleSystem
         {
             get =>_ps == null ? (_ps = GetComponent<ParticleSystem>()) : _ps;
         }
@@ -220,7 +220,7 @@ namespace GasSim
 
         #region [UNITY MESSAGES]
 
-        private void Awake()
+        protected virtual void Awake()
         {
             this.TimerStart();
 
@@ -246,7 +246,7 @@ namespace GasSim
             this.TimerStop("Awake");
         }
 
-        private void Start()
+        protected virtual void Start()
         {
           
             Invoke(nameof(DoSimulationStep1), updateRate);
@@ -299,7 +299,7 @@ namespace GasSim
         Dictionary<IGasSource, int> _gasTakenFromSources = new Dictionary<IGasSource, int>();
         Dictionary<IGasSink, int> _gasAddedToSinks = new Dictionary<IGasSink, int>();
 
-        private void DoGridIO()
+        protected virtual void DoGridIO()
         {
             //this.TimerStart();
             
@@ -338,7 +338,7 @@ namespace GasSim
         /// <summary>
         /// simulation notifies the source how much gas was taken this update 
         /// </summary>
-        private void ApplySourceChangesToGrid()
+        protected virtual void ApplySourceChangesToGrid()
         {
             foreach (var source in _gasTakenFromSources) 
                 source.Key.GasTakenFromSource(source.Value);
@@ -347,7 +347,7 @@ namespace GasSim
         /// <summary>
         /// simulation queries the sources for gas changes
         /// </summary>
-        private void DoGridSources()
+        protected virtual void DoGridSources()
         {
             foreach (var source in _registeredSources)
             {
@@ -453,14 +453,14 @@ namespace GasSim
 
         private int lastSimulationStep = -1;
 
-        void DoSimulationStep1()
+        protected virtual void DoSimulationStep1()
         {
             lastSimulationStep = 1;
             DoGridMovements();
             Invoke(nameof(DoSimulationStep2), updateRate/2f);
         }
 
-        void DoSimulationStep2()
+        protected virtual void DoSimulationStep2()
         {
             lastSimulationStep = 2;
             UpdateParticlesFromGrid();
@@ -468,7 +468,10 @@ namespace GasSim
         }
 
 
-        private void DoGridMovements()
+        [MinMaxRange(1, 50)]
+        public Vector2Int randomChance = new Vector2Int(2, 5);
+        
+        protected virtual void DoGridMovements()
         {
             bool ChooseRandom() => Random.Range(1, 5) <= 2;
             var nonEmpty = InternalPressureGrid.GetAllNonEmptyCells().ToArray();
@@ -481,10 +484,8 @@ namespace GasSim
                     var emptyNeighbors = InternalPressureGrid.GetEmptyNeighbors(cell.coord).ToArray();
                     int pressureDiff = 0;
 
-                    int GetAmountToTransfer()
-                    {
-                        return Mathf.Max(1, Mathf.FloorToInt(pressureDiff / 2f));
-                    }
+                    int GetAmountToTransfer() => Mathf.Max(1, Mathf.FloorToInt(pressureDiff / 2f));
+                    
                     if (emptyNeighbors.Length > 0)
                     {
                         from = cell.coord;
@@ -596,32 +597,32 @@ namespace GasSim
 
         #region [Particle Methods]
 
-        private int ParticleGetRandomSeed(Vector2Int cellCoord)
+        protected int ParticleGetRandomSeed(Vector2Int cellCoord)
         {
             return this.randomSeed + ((cellCoord.x * randomSeed)* (cellCoord.y * randomSeed));
         }
 
-        private Vector2 ParticleGetSize3D()
+        protected Vector2 ParticleGetSize3D()
         {
             return CellSize * particleSizeMultiplier;
         }
 
-        private Vector3 ParticleGetPosition(Vector2Int cellCoord, int pressure)
+        protected Vector3 ParticleGetPosition(Vector2Int cellCoord, int pressure)
         {
             return useZOffset ? CellToWorldSpace(cellCoord, pressure) : CellToWorldSpace(cellCoord);
         }
 
-        private Color ParticleGetColor(int pressure)
+        protected Color ParticleGetColor(int pressure)
         {
             return pressureColor.PressureToColor(pressure);
         }
 
-        private Vector3 ParticleGetVelocity(Vector2Int cellCoord, int pressure)
+        protected static Vector3 ParticleGetVelocity(Vector2Int cellCoord, int pressure)
         {
             return Vector3.zero;
         }
 
-        private float ParticleGetStartLifetime(int gasCellPressure)
+        protected float ParticleGetStartLifetime(int gasCellPressure)
         {
             //return enableGridToParticles ? updateRate : gasCellPressure * pressureToLifetime;
             return updateRate + 0.1f;
@@ -629,7 +630,7 @@ namespace GasSim
 
         #endregion
 
-        private void UpdateParticlesFromGrid()
+        protected virtual void UpdateParticlesFromGrid()
         {
         
             int targetCount = this.InternalPressureGrid.UsedCellsCount;

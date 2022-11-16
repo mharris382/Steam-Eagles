@@ -1,7 +1,31 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+public interface IGasPowerSource
+{
+    public float AvailablePower { get; }
+    public void ConsumePower(float amount);
+}
+
+[RequireComponent(typeof(GasTank))]
+public class GasTankPowerSource : MonoBehaviour, IGasPowerSource
+{
+    private GasTank _gasTank;
+
+    
+    private void Awake()
+    {
+        _gasTank = GetComponent<GasTank>();
+    }
+
+    public float AvailablePower { get; }
+    public void ConsumePower(float amount)
+    {
+        throw new NotImplementedException();
+    }
+}
 public class GasTank : MonoBehaviour
 {
     

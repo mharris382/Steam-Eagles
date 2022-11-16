@@ -15,6 +15,7 @@ namespace GasSim
         internal class PressureGrid : IPressureGrid
         {
             private readonly byte[,] _grid;
+            private readonly ParticleVelocity[,] _velocities;
             private readonly StateOfMatter[,] _stateGrid;
             internal  readonly GridHelper _gridHelper;
         
@@ -96,16 +97,15 @@ namespace GasSim
             {
                 return _stateGrid[coord.x, coord.y];
             }
+            
+            
             public PressureGrid(GameObject owner, int sizeX, int sizeY)
             {
                 const int BOUNDS_Z = 100;
                 _grid = new byte[sizeX, sizeY];
                 _stateGrid = new StateOfMatter[sizeX, sizeY];
                 _gridHelper = new GridHelper(owner, sizeX, sizeY);
-                var heapCapacity = sizeX * sizeY;
-                Debug.Log($"Number of Cells on Grid = {(heapCapacity).ToString().Bolded()}");
-                _nonEmptyPositions = new BinaryHeap<Vector2Int>();
-                _nonEmptyPositions.StartHeap(heapCapacity);
+                _velocities = new ParticleVelocity[sizeX, sizeY];                
             }
 
             public int UsedCellsCount => _usedCells.Count;
@@ -125,10 +125,7 @@ namespace GasSim
 #endif
             }
         
-            private float PressureToWeight(int pressure)
-            {
-                return pressure / 16f;
-            }
+            private float PressureToWeight(int pressure) => pressure / 16f;
 
             private bool IsValidPressure(int pressure) => pressure is >= 0 and < 16;
 
@@ -191,17 +188,6 @@ namespace GasSim
                 int pressure = this[cell];
                 return _gridHelper.GetNeighbors(cell).Where(t => this[t] < pressure && _stateGrid[t.x, t.y] == StateOfMatter.AIR);
             }
-        
-            public struct CellChange
-            {
-                public Vector2Int coord;
-                public int newPressure;
-
-                public override int GetHashCode()
-                {
-                    return coord.GetHashCode();
-                }
-            }
 
             public int GetMaxTransferAmount(Vector2Int from, Vector2Int to, int amount)
             {
@@ -209,9 +195,17 @@ namespace GasSim
                 int available = GetAvailableSpaceInCell(to);
                 int maxTransferAmount = Mathf.Min(amount, 15);
                 return Mathf.Min(current, maxTransferAmount, available);
-            }   
-        
-        
+            }
+
+
+
+            public void SetTransferVelocity(Vector2Int from, Vector2Int to, int amount)
+            {
+                var diff = to - from;
+                diff.x *= amount;
+                diff.y *= amount;
+                _velocities[to.x, to.y] = new ParticleVelocity(diff);
+            }
 
             public void Transfer(Vector2Int from, Vector2Int to, int amount)
             {
@@ -223,9 +217,66 @@ namespace GasSim
                 this[from] = f1;
                 this[to] = t1;
             }
+            
+        }
+    }
 
+
+    public struct ParticleVelocity
+    {
         
+        private byte _x;
+        private byte _y;
+        private byte _amount;
+
+        public ParticleVelocity(byte x, byte y, byte amount)
+        {
+            _x = x;
+            _y = y;
+            _amount = amount;
+        }
         
+        public ParticleVelocity(Vector2Int velocity, int amount = 1)
+        {
+            _x = (byte)velocity.x;
+            _y = (byte)velocity.y;
+            _amount = (byte)amount;
+        }
+        public Vector2Int Velocity
+        {
+            get
+            {
+                return new Vector2Int(_x, _y);
+            }
+            set
+            {
+                _x = (byte)value.x;
+                _y = (byte)value.y;
+            }
+        }
+                
+        public int VelocityX
+        {
+            get
+            {
+                return _x;
+            }
+            set
+            {
+                _x = (byte)value;
+            }
+        }
+                
+        public int VelocityY
+        {
+            get
+            {
+                return _y;
+            }
+            set
+            {
+                _y = (byte)value;
+            }
         }
     }
 }

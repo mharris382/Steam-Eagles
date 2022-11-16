@@ -1,5 +1,7 @@
 ﻿
-    public class MinMaxRangeAttribute
+    using UnityEngine;
+
+    public class MinMaxRangeAttribute : PropertyAttribute
     {
         public MinMaxRangeAttribute(float min, float max)
         {

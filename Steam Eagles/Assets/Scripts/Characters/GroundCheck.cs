@@ -22,7 +22,7 @@ public class GroundCheck : MonoBehaviour
     public IObservable<bool> IsGroundedEventStream => _isGroundedProperty ?? (_isGroundedProperty = new BoolReactiveProperty(false));
 
     public Transform groundCheckParent;
-
+    
     public float GroundPercent
     {
         get;
