@@ -15,6 +15,7 @@ namespace UI
         private void Awake()
         {
             sharedInt.onValueChanged.AsObservable().TakeUntilDestroy(this).StartWith(sharedInt.Value).Subscribe(OnValueChanged);
+            OnValueChanged(sharedInt.Value);
         }
 
         void OnValueChanged(int newInt)

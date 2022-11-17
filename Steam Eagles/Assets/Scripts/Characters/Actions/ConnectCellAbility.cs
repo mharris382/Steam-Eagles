@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class ConnectCellAbility : CellAbility
 {
     [SerializeField] private TileBase tileToPlace;
-    
+    [SerializeField] private SharedInt inventoryCount;
     [Header("Limit Number of Neighbors")]
     [SerializeField] private bool limitAdjacentNeighbors = false;
     [SerializeField, Range(0, 4)] private int maxAdjacentNeighbors = 2;
@@ -18,11 +18,21 @@ public class ConnectCellAbility : CellAbility
 
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
+        if (!HasBlockInInventory(abilityUser)) return false;
         if (IsBlockedByNeighbor(cellPosition)) return false;
         return !IsCellBlocked(cellPosition)
                && !Tilemap.HasTile(cellPosition);
     }
 
+    bool HasBlockInInventory(AbilityUser abilityUser)
+    {
+        if (inventoryCount != null)
+        {
+            return inventoryCount.Value > 0;
+        }
+
+        return true;
+    }
     bool IsBlockedByNeighbor(Vector3Int cellPosition)
     {
         if (!limitAdjacentNeighbors) return false;
@@ -57,6 +67,11 @@ public class ConnectCellAbility : CellAbility
     public override void PerformAbilityOnCell(AbilityUser abilityUser,Vector3Int cell)
     {
         Tilemap.SetTile(cell, tileToPlace);
+        if (inventoryCount != null)
+        {
+            inventoryCount.Value--;
+            Debug.Assert(inventoryCount.Value >= 0);
+        }
         MessageBroker.Default.Publish(new BuildActionInfo(Tilemap, cell));
     }
 }

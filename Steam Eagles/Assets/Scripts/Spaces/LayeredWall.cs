@@ -11,6 +11,7 @@ namespace Spaces
         private SpriteRenderer sr => _sr == null ? (_sr = GetComponent<SpriteRenderer>()) : _sr;
 
         public Vector3 positionOffset = new Vector3(0, 0, -1);
+        public AnimationCurve positionOffsetCurve = AnimationCurve.Linear(0,0, 1,1);
         public int orderOffset = 1;
 
         public bool copySortingLayer = false;
@@ -26,8 +27,8 @@ namespace Spaces
             SUBTRACT,
             LERP
         }
-        
-        private void OnDrawGizmos()
+
+        private void Update()
         {
             var t = transform;
             
@@ -54,11 +55,14 @@ namespace Spaces
             }
 
             color = offsetColorFunc(color, 0);
+            Vector3 maxOffset = positionOffset * t.childCount;
+            Vector3 minOffset = positionOffset;
             for (int i = 0; i < t.childCount; i++)
             {
                 var child = t.GetChild(i);
-                child.transform.position = pos;
-                pos += positionOffset;
+                var time = i / (float)t.childCount;
+                
+                child.localPosition = Vector3.Lerp(minOffset, maxOffset, positionOffsetCurve.Evaluate(time));
                 
                 if(child.gameObject.TryGetComponent<SpriteRenderer>(out var childSr))
                 {
