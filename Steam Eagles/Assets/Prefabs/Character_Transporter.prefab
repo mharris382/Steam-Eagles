@@ -713,7 +713,6 @@ Transform:
   - {fileID: 266664101283951023}
   - {fileID: 1783347727161890914}
   - {fileID: 4288145715092417441}
-  - {fileID: 7290740423724518423}
   - {fileID: 4838807390138654275}
   - {fileID: 949124010596657941}
   - {fileID: 874745691057173460}
@@ -858,9 +857,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50683243b6618e4c8f023a0f4bb5f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 25
-  jumpTime: 0.3
-  moveSpeed: 500
+  jumpForce: 26
+  jumpTime: 0.4
+  moveSpeed: 600
 --- !u!114 &7845558356901553888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1965,7 +1964,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1810535995130619952}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3331537941826673341
 MonoBehaviour:
@@ -2251,93 +2250,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
---- !u!1 &6418010121894451555
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7290740423724518423}
-  - component: {fileID: 5540649022264614689}
-  - component: {fileID: 2324579668950757778}
-  - component: {fileID: 8108923549777084747}
-  m_Layer: 0
-  m_Name: BlockInventory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7290740423724518423
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6418010121894451555}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1810535995130619952}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5540649022264614689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6418010121894451555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef86127266884cf7a7484b8e1c6cc79d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collector: {fileID: 0}
-  pickupAnimationDuration: 0.25
-  pickupPoint: {fileID: 0}
-  jumpPower: 1
-  jumpEase: 10
-  inventoryBlocks: []
---- !u!58 &2324579668950757778
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6418010121894451555}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2.42
---- !u!114 &8108923549777084747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6418010121894451555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ef44a223d934f649247b7659a4d9aa6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  searchColliderForTargets: 1
-  searchRigidbodyForTargets: 1
-  debug: 1
-  targetTag: DynamicBlock
-  onDynamicBlockCollected:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6520350719269697222
 GameObject:
   m_ObjectHideFlags: 0
@@ -3636,7 +3548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6836891740546770173, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6836891740546770173, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3838,11 +3750,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5707614140888106971, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
       propertyPath: m_Name
-      value: BlockInventory_01
+      value: BlockInventory (TP)
       objectReference: {fileID: 0}
     - target: {fileID: 8289217234617684655, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8289217234617684655, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
       propertyPath: m_LocalPosition.x

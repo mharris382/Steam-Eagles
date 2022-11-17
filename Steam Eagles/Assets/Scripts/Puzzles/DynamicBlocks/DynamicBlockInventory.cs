@@ -25,6 +25,7 @@ namespace Puzzles
         [SerializeField] private InventoryBlock[] inventoryBlocks;
         
         private IntReactiveProperty _heldBlocks = new IntReactiveProperty(0);
+        private int _lastAddedBlock;
         public int HeldBlockCount
         {
             get => _heldBlocks.Value;
@@ -73,12 +74,14 @@ namespace Puzzles
         {
             StartCoroutine(DoPickupAnimation(block, () => AddBlockToInventory(block)));
         }
-
+        
         public void AddBlockToInventory(DynamicBlock block)
         {
-            GameObject.Destroy(block.gameObject);
+            if (block == null || block.gameObject.GetInstanceID() == _lastAddedBlock) return;
             HeldBlockCount += 1;
-            //_inventoryBlocks[block.blockID].HeldAmount++;
+            _inventoryBlocks[block.blockID].HeldAmount++;
+            _lastAddedBlock = block.gameObject.GetInstanceID();
+            GameObject.Destroy(block.gameObject);
         }
 
         IEnumerator DoPickupAnimation(DynamicBlock block, Action onAnimationCompleted)

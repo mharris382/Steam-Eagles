@@ -11,6 +11,7 @@ namespace CoreLib
     {
         public AudioClip[] clips;
 
+        public bool playOnStart = false;
         [MinMaxRange(0, 1)]
         public Vector2 volumeRange = new Vector2(0.9f, 1);
 
@@ -23,6 +24,12 @@ namespace CoreLib
         private void Awake()
         {
             this._source = GetComponent<AudioSource>();
+        }
+
+        private void Start()
+        {
+            if(playOnStart)
+                Play();
         }
 
         public void Play()
