@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using static CharacterTriggerArea.CharactersInZone;
 
 public class CharacterTriggerArea : TriggerAreaBase<GameObject>
 {
@@ -8,13 +9,14 @@ public class CharacterTriggerArea : TriggerAreaBase<GameObject>
     public enum CharactersInZone
     {
         NONE = 0,
-        TRANSPORTER =0b01<<1,
-        BUILDER = 0b01<<2
+        TRANSPORTER =0b01,
+        BUILDER = 0b10
     }
     
     public UnityEvent<CharactersInZone> onCharactersInAreaChanged;
 
-
+    public UnityEvent onAnyCharacterInArea;
+    public UnityEvent onAllCharacterLeftArea;
     private CharactersInZone _charactersInArea;
 
     private CharactersInZone CharactersInsideArea
@@ -32,20 +34,36 @@ public class CharacterTriggerArea : TriggerAreaBase<GameObject>
         }
     }
 
+    private int cnt = 0;
     private void Start()
     {
         onCharactersInAreaChanged?.Invoke(_charactersInArea);
-    }
+        onCharactersInAreaChanged.AddListener(charactersInZone =>
+        {
+            if (charactersInZone == NONE)
+            {
+                onAllCharacterLeftArea?.Invoke();
+                cnt = 0;
+            }
+            else
+            {
+                if(cnt == 0)
+                    onAnyCharacterInArea?.Invoke();
+                cnt = (charactersInZone & TRANSPORTER) == TRANSPORTER ? 1 : 0;
+                cnt += (charactersInZone & BUILDER) == BUILDER ? 1 : 0;
+            }
+        });
+}
 
     protected override void OnTargetAdded(GameObject target, int totalNumberOfTargets)
     {
         if (target.CompareTag("Builder"))
         {
-            CharactersInsideArea |= CharactersInZone.BUILDER;
+            CharactersInsideArea |= BUILDER;
         }
         else if (target.CompareTag("Transporter"))
         {
-            CharactersInsideArea |= CharactersInZone.TRANSPORTER;
+            CharactersInsideArea |= TRANSPORTER;
         }
         base.OnTargetAdded(target, totalNumberOfTargets);
     }
@@ -54,11 +72,11 @@ public class CharacterTriggerArea : TriggerAreaBase<GameObject>
     {
         if (target.CompareTag("Builder"))
         {
-            CharactersInsideArea &= ~CharactersInZone.BUILDER;
+            CharactersInsideArea &= ~BUILDER;
         }
         else if (target.CompareTag("Transporter"))
         {
-            CharactersInsideArea &= ~CharactersInZone.TRANSPORTER;
+            CharactersInsideArea &= ~TRANSPORTER;
         }
         
         base.OnTargetRemoved(target, totalNumberOfTargets);
