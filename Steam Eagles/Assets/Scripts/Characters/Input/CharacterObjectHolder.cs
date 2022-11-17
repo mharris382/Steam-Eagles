@@ -172,7 +172,7 @@ namespace Characters
             {
                 HeldItem = rb.GetComponent<HoldableItem>();
             }
-            StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
+            _characterInputState.StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
             
             if(HeldItem!=null)
                 HeldItem.Dropped(_characterInputState.gameObject);

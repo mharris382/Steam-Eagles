@@ -118,6 +118,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   selectedAbility: 0
+  selectedAbilityIndex: {fileID: 0}
   debug: 1
   selectAbilityKeys: 3100000032000000
 --- !u!1 &1786191291559913829
@@ -6979,6 +6980,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   selectedAbility: 0
+  selectedAbilityIndex: {fileID: 0}
   debug: 1
   selectAbilityKeys: 3100000032000000
 --- !u!1 &8419228504910340077
@@ -12203,7 +12205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8815316906822059939}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.296772, y: -0.72125053, z: 0.21228418}
+  m_LocalPosition: {x: -0.29, y: -0.61, z: 0.21228418}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12230,7 +12232,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 1.7334423
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -12532,10 +12534,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlockInventory
       objectReference: {fileID: 0}
-    - target: {fileID: 6539376259429958041, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
-      propertyPath: inventoryBlocks.Array.data[0].startingAmount
-      value: 10
-      objectReference: {fileID: 0}
+    - target: {fileID: 7398413498533011443, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
+      propertyPath: onDynamicBlockCollected.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3887148582958111223}
     - target: {fileID: 8289217234617684655, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
       propertyPath: m_RootOrder
       value: 4

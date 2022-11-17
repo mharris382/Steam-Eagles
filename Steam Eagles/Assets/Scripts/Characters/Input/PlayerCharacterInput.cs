@@ -95,6 +95,7 @@ namespace Characters
         
         public void OnPickup(InputAction.CallbackContext context)
         {
+            Debug.Log("OnPickup called");
             if (_characterInput == null) return;
             _characterInput.onPickup?.Invoke(context);
             MessageBroker.Default.Publish(new PickupActionEvent()

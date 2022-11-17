@@ -14,9 +14,13 @@ public class GasTankAttachPoint : MonoBehaviour
     public Joint2D attachJoint;
     public GasTank attachedGasTank;
     public Events events;
-    [Tooltip("If enabled the attach point will grab objects that are held by players when object enters trigger area.  Otherwise held objects will only be grabbed when the player releases them.")]
+
+    [Tooltip(
+        "If enabled the attach point will grab objects that are held by players when object enters trigger area.  Otherwise held objects will only be grabbed when the player releases them.")]
     public bool allowAttachHeldItems;
-    
+
+    public bool lockTankUntilEmpty = true;
+
     [Serializable]
     public class Events
     {
@@ -25,16 +29,19 @@ public class GasTankAttachPoint : MonoBehaviour
         public UnityEvent<GameObject> onTankObjAttached;
         public UnityEvent<GameObject> onTankObjDetached;
 
-      
+
     }
 
     private Rigidbody2D _tankRB;
     private SpriteRenderer _tankSpriteRenderer;
     private GasTankState _gasTankState;
+
     private HoldableItem _holdableItem;
+
     //private Valve _valve;
     private Joint2D[] _joints;
     private IDisposable _disposable;
+
     public GasTank AttachedTank
     {
         set
@@ -56,26 +63,26 @@ public class GasTankAttachPoint : MonoBehaviour
                 _gasTankState = value.GetComponent<GasTankState>();
                 attachedGasTank = value;
             }
-         
+
         }
     }
-    
-    
+
+
 
     private void DisconnectGasTank()
     {
         if (attachedGasTank == null) return;
-        
+
         _disposable?.Dispose();
         _gasTankState.IsConnected = false;
         foreach (var joint2D in _joints) joint2D.connectedBody = null;
-        
+
         events.onTankDetached?.Invoke(attachedGasTank);
         AttachedTank = null;
     }
 
     public bool HasTankAttached() => attachedGasTank != null;
-    
+
 
     public void AttachGasTank(GasTank gasTank)
     {
@@ -85,12 +92,28 @@ public class GasTankAttachPoint : MonoBehaviour
             AttachedTank = null;
             return;
         }
-        
+
+        if(lockTankUntilEmpty)StartCoroutine(LockUntilEmpty(gasTank));
         _gasTankState.IsConnected = true;
         foreach (var joint2D in _joints) joint2D.connectedBody = _tankRB;
         _disposable = _holdableItem.IsHeldStream.Where(t => t).Take(1).Subscribe(t => DisconnectGasTank());
         events.onTankAttached.Invoke(attachedGasTank);
     }
+
+    
+    IEnumerator LockUntilEmpty(GasTank gasTank)
+    {
+        _colliders = gasTank.GetComponents<Collider2D>();
+        foreach (var collider2D1 in _colliders) collider2D1.enabled = false;
+        while (HasTankAttached() && gasTank.StoredAmountNormalized > 0.25f)
+        {
+            yield return null;
+        }
+        
+        foreach (var collider2D1 in _colliders) collider2D1.enabled = true;
+    }
+
+    Collider2D[] _colliders = new Collider2D[10];
 
     private void Awake()
     {
@@ -99,11 +122,16 @@ public class GasTankAttachPoint : MonoBehaviour
             .Select(t => t == null ? null : t.GetComponent<GasTank>()).Where(t => t != null)
             .TakeUntilDestroy(this)
             .Subscribe(AttachGasTank);
+        
         events.onTankAttached.AsObservable().TakeUntilDestroy(this).Select(t => t.gameObject)
             .Subscribe(t => events.onTankObjAttached?.Invoke(t));
         
         events.onTankDetached.AsObservable().TakeUntilDestroy(this).Select(t => t.gameObject)
             .Subscribe(t => events.onTankObjDetached?.Invoke(t));
+
+
+       
+        
     }
     IEnumerator Start()
     {
@@ -113,7 +141,11 @@ public class GasTankAttachPoint : MonoBehaviour
             if (!HasTankAttached()) yield return null;
             else
             {
-                if(_holdableItem.IsHeld)
+                if (lockTankUntilEmpty && attachedGasTank.StoredAmountNormalized < 0.25f)
+                {
+                    foreach (var collider2D1 in _colliders) collider2D1.enabled = true;
+                }
+                else if(_holdableItem.IsHeld)
                     DisconnectGasTank();
             }
         }
