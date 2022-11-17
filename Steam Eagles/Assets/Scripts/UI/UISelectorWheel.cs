@@ -44,6 +44,7 @@ namespace UI
         {
             if (SelectedIndex != null)
             {
+                SelectedIndex.Value = 0;
                 SelectedIndex.onValueChanged.AsObservable().TakeUntilDestroy(this).Subscribe(index => selectedIndex = index);
             }
             

@@ -23,8 +23,6 @@ namespace CoreLib
         private void Awake()
         {
             this._source = GetComponent<AudioSource>();
-            _source.playOnAwake = false;
-            _source.loop = false;
         }
 
         public void Play()

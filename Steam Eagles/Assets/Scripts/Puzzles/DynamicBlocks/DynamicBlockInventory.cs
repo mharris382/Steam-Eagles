@@ -78,7 +78,7 @@ namespace Puzzles
         {
             GameObject.Destroy(block.gameObject);
             HeldBlockCount += 1;
-            _inventoryBlocks[block.blockID].HeldAmount++;
+            //_inventoryBlocks[block.blockID].HeldAmount++;
         }
 
         IEnumerator DoPickupAnimation(DynamicBlock block, Action onAnimationCompleted)
