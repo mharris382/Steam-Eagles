@@ -5,10 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class UIMainMenu : MonoBehaviour
 {
-    public int startScene = 1;
-    public void StartNewGame()
+    public int startSceneSinglePlayer = 2;
+    public int startSceneMultiplayer = 1;
+    public void StartNewGame(bool singlePlayer)
     {
-        SceneManager.LoadScene(startScene);
+        
+        SceneManager.LoadScene(singlePlayer ? startSceneSinglePlayer : startSceneMultiplayer);
     }
     
 

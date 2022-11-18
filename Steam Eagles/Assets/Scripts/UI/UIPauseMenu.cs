@@ -1,5 +1,8 @@
-﻿using CoreLib;
+﻿using System;
+using CoreLib;
+using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UI
 {
@@ -8,9 +11,26 @@ namespace UI
         public SharedBool isPaused;
         [Header("Settings")]
         [SerializeField] private bool pauseTime = true;
-    
-    
+
+
+        private void Awake()
+        {
+            isPaused.onValueChanged.AsObservable().Where(x => x).Subscribe(_ => Pause()).AddTo(this);
+            isPaused.onValueChanged.AsObservable().Where(x => !x).Subscribe(_ => Resume()).AddTo(this);
+        }
+
+        private void Pause()
+        {
+            if(pauseTime)
+                Time.timeScale = 0;
+        }
         
+        private void Resume()
+        {
+            if(pauseTime)
+                Time.timeScale = 1;
+        }
+
         public void TogglePause()
         {
             isPaused.Value = !isPaused.Value;
@@ -19,28 +39,35 @@ namespace UI
                 Time.timeScale = isPaused.Value ? 0 : 1;
             }
         }
+        
         public void PauseGame()
         {
             isPaused .Value = true;
-            if(pauseTime)
-                Time.timeScale = 0;
         }
+        
         public void ResumeGame()
         {
             isPaused.Value = false;
-            if(pauseTime)
-                Time.timeScale = 1;
         }
-    
+        
+        
+        
+        public void RestartScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     
         public void QuitToMainMenu()
         {
-            Application.Quit();   
+            SceneManager.LoadScene(0);
         }
+        
         public void QuitButton()
         {
             Application.Quit();   
         }
+        
+        
     }
     
     public enum UIPauseMenuState
