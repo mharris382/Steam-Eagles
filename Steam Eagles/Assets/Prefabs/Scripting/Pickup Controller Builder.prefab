@@ -251,14 +251,23 @@ MonoBehaviour:
   HoldTrigger: {fileID: 2760969613673086763}
   CharacterTransform: {fileID: 11400000, guid: 23aa225e6cb7a8e46837ac9bc7a23f0d, type: 2}
   holdPoint: {fileID: 1415216610420608589}
-  heldObject: {fileID: 0}
-  OnHeld:
+  tag: Builder
+  onHeld:
     m_PersistentCalls:
       m_Calls: []
+  events:
+    onItemPickedUp:
+      m_PersistentCalls:
+        m_Calls: []
+    onItemDropped:
+      m_PersistentCalls:
+        m_Calls: []
   minHoldDistance: 0.1
   holdResetTime: 1
   throwMultiplier: 150
-  tag: Builder
+  throwTorqueRange: {x: -5, y: 5}
+  throwTorqueMultiplier: 1
+  heldRigidBody: {fileID: 0}
 --- !u!50 &4845252848983306912
 Rigidbody2D:
   serializedVersion: 4

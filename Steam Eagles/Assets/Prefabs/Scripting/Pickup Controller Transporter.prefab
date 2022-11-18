@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 2885835730257512641}
   - component: {fileID: 2885835730257512642}
   - component: {fileID: 2885835730257512643}
+  - component: {fileID: 4237385442640361409}
+  - component: {fileID: 3185496776796969450}
+  - component: {fileID: 5787759658166172649}
+  - component: {fileID: 827047470232966453}
   m_Layer: 17
   m_Name: Hold Point
   m_TagString: Untagged
@@ -26,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2885835730257512644}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.63, y: 0.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69,9 +73,131 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: -0.33}
   m_DampingRatio: 0
   m_Frequency: 0
+--- !u!114 &4237385442640361409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2885835730257512644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd6261ee512481a90fdfe09d020e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedVariable: {fileID: 11400000, guid: 4a90080395af924479b9ce482e93df68, type: 2}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2885835730257512641}
+        m_TargetAssemblyTypeName: UnityEngine.Transform, UnityEngine
+        m_MethodName: SetParent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 827047470232966453}
+        m_TargetAssemblyTypeName: Utilities.LocalPositionHelper, SteamEagles.Utilities
+        m_MethodName: ResetLocalPosition
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 827047470232966453}
+        m_TargetAssemblyTypeName: Utilities.LocalPositionHelper, SteamEagles.Utilities
+        m_MethodName: ResetLocalRotation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3185496776796969450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2885835730257512644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d17b60ee93c4c29ba604e9adc81490e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  variable: {fileID: 11400000, guid: e636f43395c566149a9f0f76335b4955, type: 2}
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5787759658166172649}
+        m_TargetAssemblyTypeName: MirrorScaleHelper, SteamEagles.Utilities
+        m_MethodName: SetMirrorScaleY
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5787759658166172649}
+        m_TargetAssemblyTypeName: MirrorScaleHelper, SteamEagles.Utilities
+        m_MethodName: SetMirrorScaleY
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  fireOnAwake: 0
+--- !u!114 &5787759658166172649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2885835730257512644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2447d1173895b0a4e9351b9c6d05c59e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mirror: {fileID: 2885835730257512641}
+--- !u!114 &827047470232966453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2885835730257512644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ecd1df9e3944810a07129745e3be745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 2885835730257512641}
 --- !u!1 &2885835730732566345
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,14 +290,23 @@ MonoBehaviour:
   HoldTrigger: {fileID: 2885835732028055649}
   CharacterTransform: {fileID: 11400000, guid: 3660ec6625eb0ec498fbffd0c03034e8, type: 2}
   holdPoint: {fileID: 2885835730257512643}
-  heldObject: {fileID: 0}
-  OnHeld:
+  tag: Transporter
+  onHeld:
     m_PersistentCalls:
       m_Calls: []
+  events:
+    onItemPickedUp:
+      m_PersistentCalls:
+        m_Calls: []
+    onItemDropped:
+      m_PersistentCalls:
+        m_Calls: []
   minHoldDistance: 0.1
   holdResetTime: 1
   throwMultiplier: 200
-  tag: Transporter
+  throwTorqueRange: {x: -15, y: 15}
+  throwTorqueMultiplier: 1
+  heldRigidBody: {fileID: 0}
 --- !u!50 &2885835730732566344
 Rigidbody2D:
   serializedVersion: 4

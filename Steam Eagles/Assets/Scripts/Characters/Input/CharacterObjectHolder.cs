@@ -25,14 +25,27 @@ namespace Characters
 
         public string tag = "Builder";
         public UnityEvent<Rigidbody2D> onHeld;
-
+        public Events events;
+        
         [Header("Settings")]
         public float minHoldDistance = 1; 
         public float holdResetTime = 1;
+        
+        [Header("Throw Force")]
         public float throwMultiplier = 15;
+        
 
+        [Header("Throw Torque")]
+        [MinMaxRange(-360, 360)]
+        public Vector2 throwTorqueRange = new Vector2(-15, 15);
+        public float throwTorqueMultiplier = 1;
         
-        
+        [Serializable]
+        public class Events
+        {
+            public UnityEvent<HoldableItem> onItemPickedUp;
+            public UnityEvent<HoldableItem> onItemDropped;
+        }
         
         
         
@@ -81,17 +94,17 @@ namespace Characters
         {
             HoldTrigger.onTargetAdded.AddListener(HoldTarget);
             
-            CharacterTransform.onValueChanged.AsObservable()
-                .Where(t => t != null)
-                .Subscribe(t => {
-                    if(_disposable != null)_disposable.Dispose();
-                    _characterInputState = t.GetComponentInParent<CharacterInputState>();
-                    if (_characterInputState != null)
-                    {
-                        Debug.Log($"Connecting Character Object Holder to Input State {_characterInputState.name}");
-                        _disposable = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
-                    }
-                });
+          // CharacterTransform.onValueChanged.AsObservable()
+          //     .Where(t => t != null)
+          //     .Subscribe(t => {
+          //         if(_disposable != null)_disposable.Dispose();
+          //         _characterInputState = t.GetComponentInParent<CharacterInputState>();
+          //         if (_characterInputState != null)
+          //         {
+          //             Debug.Log($"Connecting Character Object Holder to Input State {_characterInputState.name}");
+          //             _disposable = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
+          //         }
+          //     });
 
             MessageBroker.Default.Receive<PickupActionEvent>()
                 .Where(t => t.tag == this.tag)
@@ -105,6 +118,7 @@ namespace Characters
             {
                 yield return null;
             }
+            
             while(_characterInputState == null && CharacterTransform.Value != null)
             {
                 
@@ -112,6 +126,7 @@ namespace Characters
                 Debug.Assert(_characterInputState != null, $"Missing Character Input State on {CharacterTransform.Value.name}", CharacterTransform.Value);
                 yield return null;
             }
+            _disposable = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
             
         }
 
@@ -138,7 +153,7 @@ namespace Characters
 
         private float GetThrowTorque()
         {
-            return Rand.Range(-15f, 15f);
+            return Rand.Range(throwTorqueRange.x, throwTorqueRange.y) * throwTorqueMultiplier;
         }
         
         
@@ -173,9 +188,12 @@ namespace Characters
                 HeldItem = rb.GetComponent<HoldableItem>();
             }
             _characterInputState.StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
-            
-            if(HeldItem!=null)
+
+            if (HeldItem != null)
+            {
                 HeldItem.Dropped(_characterInputState.gameObject);
+                events.onItemDropped?.Invoke(HeldItem);
+            }
             holdPoint.connectedBody = null;
             _characterInputState.SetHeldItem(null);
             HeldRigidBody = null;
@@ -244,6 +262,7 @@ namespace Characters
             if (HeldItem == null)
             {
                 HeldItem = rb.GetComponent<HoldableItem>();
+                events.onItemPickedUp?.Invoke(HeldItem);
             }
             SetCollidersEnabled(rb, false);
             _characterInputState.SetHeldItem(HeldRigidBody);

@@ -3,6 +3,7 @@ using System.Collections;
 using Spine;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CoreLib;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,7 +20,7 @@ public class CharacterSkeletonAnimator : MonoBehaviour
     private CharacterState _characterState;
     private Collider2D _collider;
     List<ContactPoint2D> _contactPoint2Ds;
-    
+    public SharedBool isFacingRight;
     public enum States {IDLE, RUN, JUMP}
 
     private States _current;
@@ -106,8 +107,12 @@ public class CharacterSkeletonAnimator : MonoBehaviour
         if (isGrounded)
         {
             float speed = Mathf.Abs(moveInput.x);
-            if(speed > 0)
-                _skeleton.ScaleX = (moveInput.x > 0) ? 1 : -1;
+            if (speed > 0)
+            {
+                bool facingRight = moveInput.x > 0;
+                _skeleton.ScaleX = facingRight ? 1 : -1;
+                if(isFacingRight!=null)isFacingRight.Value = facingRight;
+            }
             
             if (speed > 0.1f)
             {
