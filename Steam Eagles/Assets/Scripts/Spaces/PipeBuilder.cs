@@ -29,25 +29,6 @@ namespace Spaces
         
     }
 
-    
-
-    public struct SelectedCellInfo
-    {
-        public SelectedCellInfo(Tilemap tm, Vector3Int cellPosition, bool isBlocked, bool isInRange)
-        {
-            IsCellBlocked = isBlocked;
-            IsCellInRange = isInRange;
-            CellPosition = cellPosition;
-            Tilemap = tm;
-        }
-        
-        public Tilemap Tilemap { get; }
-        public Vector3Int CellPosition { get; }
-
-        public bool IsCellBlocked { get; }
-
-        public bool IsCellInRange { get; set; }
-    }
 
     [System.Obsolete("Use Characters.ICellSelector")]
     public interface ICellSelector

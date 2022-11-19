@@ -36,7 +36,8 @@ namespace Puzzles.GasNetwork
 
         private void OnDestroy()
         {
-            PipeNetwork.Dispose();
+            if(useJobs)
+                PipeNetwork.Dispose();
         }
 
         public void RemoveNode(Vector3Int position) => PipeGraph.RemoveNode(position);
@@ -125,16 +126,18 @@ namespace Puzzles.GasNetwork
 
         private Dictionary<Vector3Int, PipeNode> _pipeNodeLookup;
         private Queue<Vector3Int> _addedNodes = new Queue<Vector3Int>();
-        
+        private bool useJobs;
 #if BURST
         private NativeHashMap<Vector3Int, NativePipeNode> _pipeNodes;//
 #endif
-        public PipeNetwork(int nodeCapacity = 1000)
+        public PipeNetwork(int nodeCapacity = 1000, bool useJobs=false)
         {
             #if BURST
             _pipeNodes = new NativeHashMap<Vector3Int, NativePipeNode>(nodeCapacity, Allocator.Persistent);
             #endif
-            _nativePipeNetwork = new NativePipeNetwork(nodeCapacity);
+            this.useJobs = useJobs;
+            if(useJobs)
+                _nativePipeNetwork = new NativePipeNetwork(nodeCapacity);
             _pipeNodeLookup = new Dictionary<Vector3Int, PipeNode>(nodeCapacity);
         }
 
@@ -217,6 +220,7 @@ namespace Puzzles.GasNetwork
 
         public void ScheduleJobs()
         {
+            if (!useJobs) return;
             while (_addedNodes.Count > 0)
             {
                 var nodeAdded = _addedNodes.Dequeue();
@@ -228,6 +232,7 @@ namespace Puzzles.GasNetwork
 
         public void CompleteJobs()
         {
+            if (!useJobs) return; 
             _nativePipeNetwork.CompleteJobs(nativeEdge => AddEdge(GetEdge(nativeEdge)));
             PipeEdge GetEdge(NativePipeEdge nativePipeEdge) => new(_pipeNodeLookup[nativePipeEdge.Source.Position], _pipeNodeLookup[nativePipeEdge.Target.Position]);
         }

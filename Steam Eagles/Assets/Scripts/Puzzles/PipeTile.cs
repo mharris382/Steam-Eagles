@@ -1,18 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
-namespace Puzzles
+namespace Spaces
 {
-    public class PipeTile : CellHelper
+    public class PipeTile : PuzzleTile
     {
-        void Awake()
+        public Vector4 scale = new Vector4(1, 1, 1, 1);
+        public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
-            Debug.Log($"Pipe Placed at Position: {CellCoordinate}");
+            base.GetTileData(position, tilemap, ref tileData);
+            tileData.transform.SetTRS(tileData.transform.GetPosition(), tileData.transform.rotation, scale);
         }
 
-        private void OnDestroy()
+        public override bool CanTileBeDisconnected()
         {
-            Debug.Log($"Pipe removed from Position: {CellCoordinate}");
+            return true;
         }
     }
 }

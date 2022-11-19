@@ -338,6 +338,32 @@ public class RuleTileCopier : EditorWindow
     public GameObject overrideDefaultGameobject;
     public RuleTile original;
     public Sprite[] sprites = new Sprite[0];
+    public TileType tileType = TileType.RULE_TILE;
+    public string newTileName;
+
+    private string GetNewTileName()
+    {
+        if (original == null) return "INVALID: Original Tile is null";
+        return string.IsNullOrEmpty(newTileName) ? $"{original.name}" : newTileName;
+    }
+
+    private Type GetNewTileType()
+    {
+        if (original == null) return null;
+        switch (tileType)
+        {
+            case TileType.PIPE:
+                return typeof(PipeTile);
+            case TileType.SOLID:
+                return typeof(SolidTile);
+            case TileType.ORIGINAL:
+                return original.GetType();
+            case TileType.RULE_TILE:
+                return typeof(RuleTile);
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
     
     private void OnGUI()
     {
@@ -355,21 +381,37 @@ public class RuleTileCopier : EditorWindow
         }
         else
         {
+            int cnt = original.m_TilingRules.Count;
+            GUILayout.Label($"Required Number of Sprite: {cnt}", EditorStyles.boldLabel);
             ScriptableObject target = this;
             SerializedObject so = new SerializedObject(target);
             SerializedProperty prp = so.FindProperty("sprites");
+            SerializedProperty tileNameProp = so.FindProperty("newTileName");
+            SerializedProperty tileTypeProp = so.FindProperty("tileType");
+            
             EditorGUILayout.PropertyField(prp, true);
+            EditorGUILayout.PropertyField(tileNameProp, true);
+            EditorGUILayout.PropertyField(tileTypeProp, true);
             so.ApplyModifiedProperties();
             DoOverrideGOField(so);
             if (original.m_TilingRules.Count == sprites.Length)
             {
-                if (GUILayout.Button("Copy Rule Tile"))
+                if (GUILayout.Button("Copy Rule Tile as Pipe Tile"))
                 {
-                    var newTileName = $"{original.name} (COPY)";
-                    SaveTile(CopyRuleTile(original),newTileName);
+                    var newTileName = GetNewTileName();
+                    SaveTile(GetRuleTileCopy(original),newTileName);
                 }
             }
         }
+    }
+
+   public  enum TileType
+    {
+        PIPE,
+        SOLID,
+        PUZZLE,    
+        ORIGINAL,
+        RULE_TILE
     }
     public static void SaveTile(RuleTile tile, string name)
     {
@@ -387,9 +429,39 @@ public class RuleTileCopier : EditorWindow
         so.ApplyModifiedProperties();
     }
 
+    private RuleTile GetRuleTileCopy(RuleTile ruleTile)
+    {
+        var tile = CopyRuleTile(ruleTile, GetNewTileType());
+        tile.name = GetNewTileName();
+        return tile;
+    }
+
     private PipeTile CopyRuleTile(RuleTile ruleTile)
     {
         var tile = ScriptableObject.CreateInstance<PipeTile>();
+        tile.m_DefaultSprite = ruleTile.m_DefaultSprite;
+        tile.m_DefaultColliderType = ruleTile.m_DefaultColliderType;
+        tile.m_DefaultGameObject = overrideDefaultGameobject == null ? ruleTile.m_DefaultGameObject : overrideDefaultGameobject;
+        RuleTile.TilingRule[] ruleTiles = new RuleTile.TilingRule[ruleTile.m_TilingRules.Count];
+        for (int i = 0; i < ruleTile.m_TilingRules.Count; i++)
+        {
+            var originalRule = ruleTile.m_TilingRules[i];
+            var rule = new RuleTile.TilingRule();
+
+            rule.m_Sprites[0] = sprites[i];
+            rule.m_Neighbors = originalRule.m_Neighbors;
+            rule.m_GameObject = overrideDefaultGameobject == null
+                ? originalRule.m_GameObject
+                : overrideDefaultGameobject;
+            rule.m_ColliderType = originalRule.m_ColliderType;
+            tile.m_TilingRules.Add(rule);
+        }
+
+        return tile;
+    }
+    private RuleTile CopyRuleTile(RuleTile ruleTile, Type ruleTileType)
+    {
+        var tile = ScriptableObject.CreateInstance(ruleTileType) as RuleTile;
         tile.m_DefaultSprite = ruleTile.m_DefaultSprite;
         tile.m_DefaultColliderType = ruleTile.m_DefaultColliderType;
         tile.m_DefaultGameObject = overrideDefaultGameobject == null ? ruleTile.m_DefaultGameObject : overrideDefaultGameobject;
