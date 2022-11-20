@@ -12,6 +12,9 @@ namespace Puzzles
         [SerializeField] private UnityEvent<GameObject> onDropped;
         [SerializeField] private BoolReactiveProperty isHeld = new BoolReactiveProperty(false);
         public IObservable<bool> IsHeldStream => isHeld;
+        
+        public Collider2D[] grabColliders;
+        
         public bool IsHeld
         {
             get => isHeld.Value;
@@ -23,6 +26,8 @@ namespace Puzzles
             get;
             set;
         }
+        
+        
         
         public virtual void Dropped(GameObject droppedBy)
         {
