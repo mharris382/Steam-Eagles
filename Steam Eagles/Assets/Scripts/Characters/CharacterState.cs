@@ -9,12 +9,15 @@ using UnityEngine;
 public class CharacterState : MonoBehaviour
 {
 
-    #region Public variables
-
     public CharacterConfig config;
-
+    private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
+    public bool alwaysGrounded = false;
+    private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
+    private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
     private Vector2 _moveInput;
 
+    
+    #region Public variables
     public Vector2 MoveInput
     {
         get => _moveInput;
@@ -48,9 +51,9 @@ public class CharacterState : MonoBehaviour
 
     public Vector2 AnimatorDelta { get; set; }
 
-    private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
+    
 
-    public BoolReactiveProperty IsJumpingProperty => _isJumping ??= new BoolReactiveProperty(false);
+  
     
     public bool IsJumping
     {
@@ -87,8 +90,9 @@ public class CharacterState : MonoBehaviour
         get => _isInteractingProperty.Value;
         set => _isInteractingProperty.Value = value;
     }
+    
+    
 
-    public IObservable<bool> IsInteractingStream => _isInteractingProperty;
 
     public bool IsGrounded
     {
@@ -96,35 +100,62 @@ public class CharacterState : MonoBehaviour
         set => _isGroundedProperty.Value = value;
     }
 
-
-    public IObservable<bool> IsGroundedEventStream => !alwaysGrounded ? _isGroundedProperty : Observable.Return(true);
-
-
-
+    /// <summary>
+    /// wrapper for x component of Rigidbody2D.velocity
+    /// </summary>
     public float VelocityX
     {
         get => Rigidbody.velocity.x;
         set => Rigidbody.velocity = new Vector2(value, Rigidbody.velocity.y);
     }
 
+    /// <summary>
+    /// wrapper for y component of Rigidbody2D.velocity
+    /// </summary>
     public float VelocityY
     {
         get => Rigidbody.velocity.y;
         set => Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, value);
     }
+
+    /// <summary>
+    /// wrapper for Rigidbody2D.velocity
+    /// </summary>
+    public Vector2 Velocity
+    {
+        get => Rigidbody.velocity;
+        set => Rigidbody.velocity = value;
+    }
+
+    public float LiftForce
+    {
+        get;
+        set;
+    }
+
+    
+    [System.Obsolete("Unsure if this is needed")]
+    public List<Vector4> Forces { get; set; }
+    
+    
+    public Vector2 AnimatorAccel { get; set; }
+    public bool StunLocked { get; set; }
+
+
+    #region [RxStreams]
+
+    public BoolReactiveProperty IsJumpingProperty => _isJumping ??= new BoolReactiveProperty(false);
+    public IObservable<bool> IsInteractingStream => _isInteractingProperty;
+    public IObservable<bool> IsGroundedEventStream => !alwaysGrounded ? _isGroundedProperty : Observable.Return(true);
+
+    #endregion
     
     #endregion
 
     #region [Private variables]
 
-    public bool alwaysGrounded = false;
-
-    private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
-
-    private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
-    public List<Vector4> Forces { get; set; }
-    public Vector2 AnimatorAccel { get; set; }
-    public bool StunLocked { get; set; }
+    
+   
 
     #endregion
 
@@ -156,6 +187,8 @@ public class CharacterState : MonoBehaviour
     }
 
     #endregion
+    
+    
 
     /// <summary>
     /// extends the duration that the player is allowed to 
@@ -179,6 +212,7 @@ public class CharacterState : MonoBehaviour
         set => extraJumpConsumedValue.Amount = value;
     }
 
+    #region [Consumed Value Experiment]
 
     [SerializeField]
     internal ConsumedValue extraJumpConsumedValue;
@@ -204,8 +238,8 @@ public class CharacterState : MonoBehaviour
             
             _currentRate = 
                 consumptionRateAccel > 0 
-                ? Mathf.MoveTowards(_currentRate, maxRate, delta * consumptionRateAccel) 
-                : consumptionRate;
+                    ? Mathf.MoveTowards(_currentRate, maxRate, delta * consumptionRateAccel) 
+                    : consumptionRate;
             
             _lastConsumptionTime = Time.time;
             var amountToConsume = Mathf.Min(_currentRate, amount);
@@ -213,9 +247,12 @@ public class CharacterState : MonoBehaviour
             return amountToConsume;
         }
     }
-    
-    
-    
+
+    #endregion
+
+    #region [RxStreams]
+
+
     internal Subject<Unit> onLanded = new Subject<Unit>();
     public IObservable<Unit> OnCharacterLanded => onJumped;
     
@@ -224,6 +261,8 @@ public class CharacterState : MonoBehaviour
     
     internal ReactiveProperty<Rigidbody2D> heldObject = new ReactiveProperty<Rigidbody2D>();
     public IObservable<Rigidbody2D> HeldObject => heldObject;
+
+    #endregion
 }
 
 public enum InteractionPhysicsMode

@@ -15,28 +15,34 @@ public class CharacterController : MonoBehaviour
 
     #endregion
 
-    #region Private variables
-
+   
+    private Health _health;
     private GroundCheck _groundCheck;
+    private CharacterState _state;
 
     private Vector2 _interactPosition;
     private Vector2 _interactVelocity;
 
     private float _jumpTimeCounter;
-    private Rigidbody2D _rigidbody;
+    
     private bool _startedInteractionGrounded;
 
     private Vector2 lastFramePosition;
     private Vector2 lastFrameDelta;
     private bool wasInteracting;
-
-    private CharacterState State { get; set; }
+    #region Private variables
+    private CharacterState State
+    {
+        get => _state;
+        set => _state = value;
+    }
 
 
     private bool JumpPressed => State.JumpPressed;
     private bool IsGrounded => _groundCheck.IsGrounded;
     private bool IsInteracting => State.IsInteracting;
     private bool JumpHeld => State.JumpHeld;
+    private GroundCheck GroundCheck => _groundCheck;
     
     private bool IsJumping
     {
@@ -47,10 +53,45 @@ public class CharacterController : MonoBehaviour
     private Rigidbody2D rb => State.Rigidbody;
 
     private Vector2 AnimatorDelta => State.AnimatorDelta;
-    private Health _health;
+   
 
-  
-    
+
+    public float JumpTime
+    {
+        get
+        {
+            if (State.config == null)
+            {
+                return jumpTime;
+            }
+            return State.config.jumpTime;
+        }
+    }
+    public float JumpForce
+    {
+        get
+        {
+            if (State.config == null)
+            {
+                return jumpForce;
+            }
+
+            return State.config.jumpForce;
+        }
+    }
+
+    public float MoveSpeed
+    {
+        get
+        {
+            if (State.config == null)
+            {
+                return moveSpeed;
+            }
+            return State.config.moveSpeed;
+        }
+    }
+
     #endregion
 
     #region [Unity events]
@@ -60,7 +101,6 @@ public class CharacterController : MonoBehaviour
         _health = GetComponent<Health>();
         State = GetComponent<CharacterState>();
         _groundCheck = GetComponent<GroundCheck>();
-        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
@@ -71,46 +111,8 @@ public class CharacterController : MonoBehaviour
             {
                 _startedInteractionGrounded = IsGrounded;
                 _interactPosition = transform.position;
-            });
-    }
-
-
-    private void FixedUpdate()
-    {
-        if (State.IsDead) return;
-        
-        if (IsInteracting) {
-            DoForces();
-            HandleInteractionFixedUpdate(Time.fixedDeltaTime);
-            return;
-        }
-
-       
-
-        if (HasGroundedMovement())
-            DoGroundedMovement();
-        else
-            DoAerialMovement();
-        
-        DoForces();
-    }
-
-    private void DoForces()
-    {
-        if (State.Forces.Count > 0)
-        {
-            foreach (var forceData in State.Forces)
-            {
-                float forceStartTime = forceData.w;
-                float forceDuration = forceData.z;
-                Vector2 force = new Vector2(forceData.x, forceData.y);
-                if ((Time.time - forceStartTime) < forceDuration)
-                {
-                    Debug.DrawRay(transform.position, force, Color.cyan, 1);
-                    rb.velocity += force;
-                }
-            }
-        }
+                _interactVelocity = rb.velocity;
+            }).AddTo(this);
     }
 
     private void Update()
@@ -122,27 +124,73 @@ public class CharacterController : MonoBehaviour
             HandleInteractionUpdate(Time.deltaTime);
             return;
         }
-
         HandleJump();
     }
 
-    #endregion
-
-    #region [Methods]
-
-    private bool CheckIsGrounded()
+    private void FixedUpdate()
     {
-        if (IsJumping ) return false;
-        return State.IsGrounded && !(State.VelocityY > 0);
+        if (State.IsDead) return;
+        
+        if (IsInteracting) 
+        {
+            HandleInteractionFixedUpdate(Time.fixedDeltaTime);
+            return;
+        }
+        SlopeCheckVertical();
+        ApplyMovement();
     }
 
-    private void DoAerialMovement()
+    void ApplyMovement()
     {
-        State.VelocityX = State.MoveX * moveSpeed * Time.fixedDeltaTime;
+        newVelocity.Set(State.MoveX * moveSpeed, State.VelocityY);
+        State.Velocity = newVelocity;
+        
+        if (IsGrounded && !isOnSlope)
+        {
+            newVelocity.Set(State.MoveX * MoveSpeed, IsJumping ? State.VelocityY : 0);
+            State.Velocity = newVelocity;
+        }
+        else if (IsGrounded && isOnSlope)
+        {
+            float xComponent = MoveSpeed * slopeNormalPerp.x * -State.MoveX;
+            float yComponent = MoveSpeed * slopeNormalPerp.y * -State.MoveX;
+            newVelocity.Set(xComponent, yComponent);
+            State.Velocity = newVelocity;
+        }
+        else if (!IsGrounded)
+        {
+            newVelocity.Set(State.MoveX * MoveSpeed, State.VelocityY + State.LiftForce);
+            State.Velocity = newVelocity;
+        }
+}
+
+    private Vector2 newVelocity;
+    private Vector2 slopeNormalPerp;
+    private float slopeDownAngle;
+    private float slopeDownAngleOld;
+
+    private bool isOnSlope;
+
+    private void SlopeCheckVertical()
+    {
+        if (IsGrounded) SlopeCheckVertical(GroundCheck.Hit);
     }
-    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
-    private Collider2D _collider;
-    private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
+
+    private void SlopeCheckVertical(RaycastHit2D hit)
+    {
+        if (hit) SlopeCheckVertical(hit.normal);
+    }
+    private void SlopeCheckVertical(Vector2 groundNormal)
+    {
+        slopeNormalPerp = Vector2.Perpendicular(groundNormal).normalized;
+        slopeDownAngle = Vector2.Angle(groundNormal, Vector2.up);
+        if (slopeDownAngleOld != slopeDownAngle)
+        {
+            isOnSlope = true;
+        }
+        slopeDownAngleOld = slopeDownAngle;
+        Debug.DrawRay(transform.position, slopeNormalPerp*5, Color.magenta);
+    }
     private void DoGroundedMovement()
     {
         Vector2 DoExternalForces(Vector2 vector2)
@@ -165,14 +213,53 @@ public class CharacterController : MonoBehaviour
             return vector2;
         }
 
-        Vector3 externalForces=Vector2.zero; 
+        Vector2 externalForces=Vector2.zero; 
         
         externalForces = DoExternalForces(externalForces);
         var normal = Vector2.up;
         var tangent = Vector3.Cross(normal, Vector3.forward);
-        var newVelocity = State.MoveX * moveSpeed * Time.fixedDeltaTime * tangent.normalized;
+     
+        newVelocity = State.MoveX * moveSpeed * Time.fixedDeltaTime * tangent.normalized;
         rb.velocity = newVelocity + externalForces;
     }
+
+    private void DoForces(ref Vector2 velocity)
+    {
+        if (State.Forces.Count > 0)
+        {
+            foreach (var forceData in State.Forces)
+            {
+                float forceStartTime = forceData.w;
+                float forceDuration = forceData.z;
+                Vector2 force = new Vector2(forceData.x, forceData.y);
+                if ((Time.time - forceStartTime) < forceDuration)
+                {
+                    Debug.DrawRay(transform.position, force, Color.cyan, 1);
+                    velocity += force;
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region [Methods]
+
+    private bool CheckIsGrounded()
+    {
+        if (IsJumping ) return false;
+        return State.IsGrounded && !(State.VelocityY > 0);
+    }
+
+    private void DoAerialMovement(ref Vector2 velocity)
+    {
+        velocity.Set(State.MoveX * moveSpeed * Time.fixedDeltaTime, velocity.y);
+    }
+
+    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
+    private Collider2D _collider;
+    private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
+
 
     private void HandleInteractionFixedUpdate(float dt)
     {
@@ -209,6 +296,7 @@ public class CharacterController : MonoBehaviour
         }
     }
 
+
     private void HandleJump()
     {
         if (Time.time - lastDropTime < 0.5f) return;
@@ -222,7 +310,7 @@ public class CharacterController : MonoBehaviour
 
         if (IsJumping) {
             if (JumpHeld && _jumpTimeCounter > 0.0f) {
-                rb.velocity = Vector2.up * (jumpForce + State.ExtraJumpForce);
+                rb.velocity = Vector2.up * (JumpForce + State.ExtraJumpForce);
                 _jumpTimeCounter -= Time.deltaTime;
                 if (State.ExtraJumpTime > 0) State.ExtraJumpTime = Mathf.Max(0, State.ExtraJumpTime - Time.deltaTime);
                 
@@ -232,6 +320,7 @@ public class CharacterController : MonoBehaviour
             }
         }
     }
+
     private bool CheckForDropThroughPlatform()
     {
         if (JumpHeld && (State.MoveY < 0 && Mathf.Abs(State.MoveY) > Mathf.Abs(State.MoveX)))

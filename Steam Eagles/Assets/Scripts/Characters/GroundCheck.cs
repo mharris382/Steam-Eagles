@@ -6,20 +6,31 @@ using UnityEngine;
 using UniRx;
 using UnityEngine.Events;
 
+public interface IGroundCheck
+{
+    bool IsGrounded { get; }
+    
+    Vector2 GroundNormal { get; }
+}
 public class GroundCheck : MonoBehaviour
 {
     [SerializeField]
     private UnityEvent<bool> OnGroundedStateChanged;
 
-    
-    BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(true);
+    private bool _isGrounded;
     public bool IsGrounded
     {
-        get => _isGroundedProperty.Value;
-        private set => _isGroundedProperty.Value = value;
+        get => _isGrounded;
+        private set
+        {
+            if (value != _isGrounded)
+            {
+                _isGrounded = value;
+                OnGroundedStateChanged?.Invoke(value);
+            }
+        }
     }
 
-    public IObservable<bool> IsGroundedEventStream => _isGroundedProperty ?? (_isGroundedProperty = new BoolReactiveProperty(false));
 
     public Transform groundCheckParent;
     
@@ -49,12 +60,16 @@ public class GroundCheck : MonoBehaviour
     private void Awake()
     {
         _state = GetComponent<CharacterState>();
-        _isGroundedProperty.Subscribe(gnded => OnGroundedStateChanged?.Invoke(gnded));
-        var pnts = _points;
+        _points = groundCheckParent.GetComponentsInChildren<Raycast2D>();
         hits = new RaycastHit2D?[_points.Length];
     }
 
- 
+    private IEnumerator Start()
+    {
+        yield return null;
+        OnGroundedStateChanged?.Invoke(IsGrounded);
+    }
+
     protected virtual void Update()
     {
             if (_state == null) return;

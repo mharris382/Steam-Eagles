@@ -175,7 +175,10 @@ namespace Characters
             DisconnectJoint();
             ApplyForces();
             InvokeDropEvents();
-            
+            foreach (var component in heldBody.GetComponents<Collider2D>())
+            {
+                component.enabled = true;
+            }
             yield return PreventCollisionsWithPlayerOnThrow(holderCollider, heldItem.grabColliders);
             
             _isReleasing = false;
@@ -268,7 +271,7 @@ namespace Characters
 
         private IEnumerator PreventCollisionsWithPlayerOnThrow(Collider2D playerCollider, Collider2D[] holdableColliders, float waitTime = 0.75f)
         {
-            SetCollidersEnabled(holdableColliders, true);
+             SetCollidersEnabled(holdableColliders, true);
             foreach (var holdableCollider in holdableColliders)
             {
                 Physics2D.IgnoreCollision(playerCollider, holdableCollider, true);
