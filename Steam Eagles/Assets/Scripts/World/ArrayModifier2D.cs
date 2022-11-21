@@ -1,10 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 
 #endif
+
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class JointConnection2D : MonoBehaviour
+{
+    private Joint2D _joint;
+    public Joint2D Joint => _joint ? _joint : _joint = GetComponent<Joint2D>();
+
+    
+    private ReadOnlyReactiveProperty<Rigidbody2D> connectedBody;
+    
+    private void Awake()
+    {
+        connectedBody = new ReadOnlyReactiveProperty<Rigidbody2D>(_joint.ObserveEveryValueChanged(t => t.attachedRigidbody));
+    }
+}
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(JointConnection2D))]
+public class JointConnection2DEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        string label = "";
+        GUILayout.Box(new GUIContent(label));
+        base.OnInspectorGUI();
+    }
+}
+#endif
+
+public abstract class JointVisual2D : MonoBehaviour
+{
+    private Joint2D _joint;
+    
+
+    public Joint2D Joint => _joint ? _joint : _joint = GetComponent<Joint2D>();
+    
+    private void Awake()
+    {
+        _joint = GetComponent<Joint2D>();
+    }
+
+    
+}
+
+public abstract class JointVisual2D<T> : JointVisual2D where T : Joint2D
+{
+    private T _joint;
+    public new T Joint => _joint ? _joint : _joint = GetComponent<T>();
+    
+
+    private void Awake()
+    {
+        _joint = GetComponent<T>();
+    }
+    
+    
+    
+}
+
 [ExecuteAlways]
 [RequireComponent(typeof(Renderer))]
 public class ArrayModifier2D : MonoBehaviour
