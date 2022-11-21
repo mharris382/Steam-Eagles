@@ -1,5 +1,5 @@
 {
-    "m_SGVersion": 2,
+    "m_SGVersion": 3,
     "m_Type": "UnityEditor.ShaderGraph.GraphData",
     "m_ObjectId": "58368911927f42008d9d964db4756851",
     "m_Properties": [
@@ -11,6 +11,12 @@
         }
     ],
     "m_Keywords": [],
+    "m_Dropdowns": [],
+    "m_CategoryData": [
+        {
+            "m_Id": "897c18fc28a14a5fa45c9e262d0b50b5"
+        }
+    ],
     "m_Nodes": [
         {
             "m_Id": "128ca3f3b74a4e1cb8687dff0167ba39"
@@ -171,10 +177,11 @@
         "serializedMesh": {
             "m_SerializedMesh": "{\"mesh\":{\"instanceID\":0}}",
             "m_Guid": ""
-        }
+        },
+        "preventRotation": false
     },
     "m_Path": "Sub Graphs",
-    "m_ConcretePrecision": 0,
+    "m_GraphPrecision": 0,
     "m_PreviewMode": 2,
     "m_OutputNode": {
         "m_Id": "128ca3f3b74a4e1cb8687dff0167ba39"
@@ -195,6 +202,8 @@
     "m_DefaultReferenceName": "distance",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -235,6 +244,8 @@
     "m_DefaultReferenceName": "world_offset",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -461,6 +472,21 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
+    "m_ObjectId": "897c18fc28a14a5fa45c9e262d0b50b5",
+    "m_Name": "",
+    "m_ChildObjectList": [
+        {
+            "m_Id": "03047155f2b1479986b97aa372b322c0"
+        },
+        {
+            "m_Id": "018bce60ffad408c8a0445853c7e9ca2"
+        }
+    ]
 }
 
 {
@@ -824,7 +850,8 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     },
-    "m_Space": 2
+    "m_Space": 2,
+    "m_PositionSource": 0
 }
 
 {
@@ -839,10 +866,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 45.6666259765625,
-            "y": 40.83331298828125,
-            "width": 0.0,
-            "height": 0.0
+            "x": 36.0,
+            "y": 111.0,
+            "width": 120.0,
+            "height": 34.0
         }
     },
     "m_Slots": [
