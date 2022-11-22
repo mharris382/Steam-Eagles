@@ -50,7 +50,11 @@ namespace Characters
         public float throwTorqueMultiplier = 1;
         
        
-        
+        [Header("Attach Points")]
+        public string targetTag = "Attach Point";
+
+        public LayerMask checkLayer = 1 << 0;
+        public float checkRadius = 1;
         
         
         private float _lastGrabTime;
@@ -159,7 +163,7 @@ namespace Characters
         }
 
         #region [Drop/Release Methods]
-
+        float _lastReleaseTime;
         private IEnumerator ReleaseHeldObject()
         {
             _isReleasing = true;
@@ -169,20 +173,35 @@ namespace Characters
             var holderCollider = holderBody.gameObject.GetComponent<CapsuleCollider2D>();
             var heldItem = HeldItem;
             Debug.Assert(heldBody != null && holderBody != null && heldItem != null, $"Missing Components! \nHeld Rigidbody{heldBody}\nHolder Rigidbody{holderBody}\nItem:{heldItem}", this);
-            
+            recentlyHeld = heldBody;
             
             ClearHeld();
             DisconnectJoint();
-            ApplyForces();
             InvokeDropEvents();
+            if (CheckForAttachPoints(heldBody, out var point))
+            {
+                var position = point.transform.TransformPoint(point.offset);
+                var targetRotation = point.transform.eulerAngles.z;
+                heldBody.position = position;
+                heldBody.rotation = targetRotation;
+                heldBody.velocity = Vector2.zero;
+                Debug.Log($"Found Attach Point {point.name}", point);
+                Debug.Log($"Attaching {heldBody.name} to {point.name}", heldBody);
+            }
+            else
+            {
+                ApplyForces();    
+            }
+            
+            
             foreach (var component in heldBody.GetComponents<Collider2D>())
             {
                 component.enabled = true;
             }
             yield return PreventCollisionsWithPlayerOnThrow(holderCollider, heldItem.grabColliders);
-            
+            _lastGrabTime = Time.time;
             _isReleasing = false;
-
+            EnsureDisconnect();
             void InvokeDropEvents()
             {
                 heldItem.Dropped(holderBody.gameObject);
@@ -208,6 +227,45 @@ namespace Characters
             }
         }
 
+        void EnsureDisconnect()
+        {
+            holdTrigger.gameObject.GetComponent<Collider2D>().enabled = false;
+            StartCoroutine(StayDisconnected());
+        }
+
+        private Rigidbody2D recentlyHeld;
+        
+
+        IEnumerator StayDisconnected()
+        {
+            for (float i = 0; i < 1; i+=Time.deltaTime)
+            {
+                yield return null;
+                if (holdPoint != null)
+                {
+                    holdPoint.enabled = false;
+                }
+            }
+
+            holdPoint.enabled = true;
+            holdTrigger.gameObject.GetComponent<Collider2D>().enabled = true;
+        }
+
+        private bool CheckForAttachPoints(Rigidbody2D heldBody, out Collider2D attachPoint)
+        {
+            var position = heldBody.transform.position;
+            var colliders = Physics2D.OverlapCircleAll(position, checkRadius, checkLayer);
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag(targetTag))
+                {
+                    attachPoint = collider;
+                    return true;
+                }
+            }
+            attachPoint = null;
+            return false;
+        }
         private void ReleaseObject()
         {
             if(HeldRigidBody == null)
@@ -250,7 +308,7 @@ namespace Characters
                 HeldItem = rb.GetComponent<HoldableItem>();
             }
             _characterInputState.StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
-
+            _lastGrabTime = Time.time;
             if (HeldItem != null)
             {
                 HeldItem.Dropped(_characterInputState.gameObject);
@@ -324,11 +382,13 @@ namespace Characters
             if (CanGrab(rb))
             {
                 Grab(rb);
+                holdPoint.enabled = true;
             }
         }
 
         private bool CanGrab(Rigidbody2D rb)
         {
+            if(recentlyHeld == rb)return false;
             if(Time.time- _lastGrabTime < holdResetTime)
                 return false;
             if (HeldRigidBody != null)

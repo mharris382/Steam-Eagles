@@ -156,6 +156,10 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
     {
         if (searchColliderForTargets && HasTarget(col, out var value))
         {
+            if (_targetsInArea.ContainsKey(col))
+            {
+                return;
+            }
             _targetsInArea.Add(col, value);
             AddTarget(value);
         }
@@ -163,6 +167,10 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
         if (searchRigidbodyForTargets && col.attachedRigidbody != null &&
             !_rbTargetsInArea.ContainsKey(col.attachedRigidbody) && HasTarget(col.attachedRigidbody, out var valu2))
         {
+            if (_rbTargetsInArea.ContainsKey(col.attachedRigidbody))
+            {
+                return;
+            }
             _rbTargetsInArea.Add(col.attachedRigidbody, valu2);
             AddTarget(valu2);
         }

@@ -287,14 +287,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 345a6d2962fa41b5a4c493ab5bc4e11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HoldTrigger: {fileID: 2885835732028055649}
+  holdTrigger: {fileID: 2885835732028055649}
   CharacterTransform: {fileID: 11400000, guid: 3660ec6625eb0ec498fbffd0c03034e8, type: 2}
   holdPoint: {fileID: 2885835730257512643}
   tag: Transporter
-  onHeld:
-    m_PersistentCalls:
-      m_Calls: []
   events:
+    onHeld:
+      m_PersistentCalls:
+        m_Calls: []
     onItemPickedUp:
       m_PersistentCalls:
         m_Calls: []
@@ -306,6 +306,11 @@ MonoBehaviour:
   throwMultiplier: 200
   throwTorqueRange: {x: -15, y: 15}
   throwTorqueMultiplier: 1
+  targetTag: AttachPoint
+  checkLayer:
+    serializedVersion: 2
+    m_Bits: 135168
+  checkRadius: 3
   heldRigidBody: {fileID: 0}
 --- !u!50 &2885835730732566344
 Rigidbody2D:

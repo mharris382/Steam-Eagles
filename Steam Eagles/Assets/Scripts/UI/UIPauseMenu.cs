@@ -15,6 +15,7 @@ namespace UI
 
         private void Awake()
         {
+            isPaused.Value = false;
             isPaused.onValueChanged.AsObservable().Where(x => x).Subscribe(_ => Pause()).AddTo(this);
             isPaused.onValueChanged.AsObservable().Where(x => !x).Subscribe(_ => Resume()).AddTo(this);
         }

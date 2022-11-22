@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 822289114925148323}
   - component: {fileID: 6739823951545541704}
   - component: {fileID: 2472560228712964645}
+  - component: {fileID: -731175683974856642}
   m_Layer: 10
   m_Name: Character_Builder
   m_TagString: Builder
@@ -502,6 +503,7 @@ MonoBehaviour:
     amount: 10
     consumptionRate: 4
     consumptionRateAccel: 1
+  toAttach: {fileID: 0}
 --- !u!114 &2023073604413840130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,6 +626,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 695ee9e78afc462b842132cd59a768bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!255 &-731175683974856642
+FixedJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023073604413840154}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_DampingRatio: 0
+  m_Frequency: 0
 --- !u!1 &2462750353514555147
 GameObject:
   m_ObjectHideFlags: 0

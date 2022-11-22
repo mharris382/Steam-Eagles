@@ -263,6 +263,47 @@ public class CharacterState : MonoBehaviour
     public IObservable<Rigidbody2D> HeldObject => heldObject;
 
     #endregion
+
+
+
+    public Rigidbody2D toAttach;
+    private FixedJoint2D _fixedJoint;
+
+ 
+    
+    
+    private Rigidbody2D _attachedBody;
+    public Rigidbody2D AttachedBody
+    {
+        get => _attachedBody;
+        set
+        {
+            if (value != _attachedBody)
+            {
+                if (_attachedBody != null)
+                {
+                    Destroy(_fixedJoint);
+                }
+                _attachedBody = value;
+                if (_attachedBody != null)
+                {     
+                    _fixedJoint = _attachedBody.gameObject.AddComponent<FixedJoint2D>();
+                    _fixedJoint.connectedBody = this.Rigidbody;
+                }
+            }
+        }
+    }
+
+    public bool CheckAttached()
+    {
+        if(toAttach != null)
+        {
+            AttachedBody = toAttach;
+            toAttach = null;
+            return true;
+        }
+        return AttachedBody != null;
+    }
 }
 
 public enum InteractionPhysicsMode

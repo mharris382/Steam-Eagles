@@ -473,7 +473,7 @@ namespace GasSim
         
         protected virtual void DoGridMovements()
         {
-            bool ChooseRandom() => Random.Range(1, 5) <= 2;
+            bool ChooseRandom() => Random.Range(1, randomChance.x) <= randomChance.y;
             var nonEmpty = InternalPressureGrid.GetAllNonEmptyCells().ToArray();
             try
             {

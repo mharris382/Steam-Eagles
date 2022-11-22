@@ -1,34 +1,81 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CoreLib;
+using UniRx;
 using UnityEngine;
 public class CursorTexture : MonoBehaviour
 {
-
-    [SerializeField] private int cursorTexture;
-    [SerializeField] private List<Texture2D> cursorTextures;
-
-    public int InUseCursorTexture
+    [Serializable]
+    public class CursorStateSettings
     {
-        set
+        public string stateName = "New Cursor State";
+        public bool visible;
+        public Texture2D texture;
+        public CursorLockMode lockMode = CursorLockMode.None;
+        public Vector2 hotspot;
+        public CursorMode mode = CursorMode.Auto;
+        [Header("Cursor State")] 
+        public SharedBool isStateActive;
+        public void UpdateCursor()
         {
-            cursorTexture = value % cursorTextures.Count;
-            OnCursorTextureChanged();
+            Cursor.visible = visible;
+            Cursor.lockState = lockMode;
+            if (visible && texture != null)
+            {
+                Cursor.SetCursor(texture, hotspot, mode);
+            }
         }
-        get => cursorTexture;
+
+        
+        public void Setup(CursorTexture cursorTexture)
+        {
+            if (isStateActive == null) return;
+            isStateActive.onValueChanged.AsObservable().Where(t => t).Subscribe(_ =>
+            {
+                cursorTexture.stateStack.Push(this);
+                cursorTexture.NotifyStateChange();
+            }).AddTo(cursorTexture);
+            isStateActive.onValueChanged.AsObservable().Where(t => !t).Subscribe(_ =>
+            {
+                if (cursorTexture.stateStack.Peek() == this)
+                {
+                    cursorTexture.stateStack.Pop();
+                    cursorTexture.NotifyStateChange();
+                }
+            }).AddTo(cursorTexture);
+        }
     }
+
+    private void NotifyStateChange()
+    {
+        if (stateStack.Count == 0)
+        {
+            stateStack.Push(defaultState);
+        }
+        stateStack.Peek().UpdateCursor();
+    }
+
+    public CursorStateSettings defaultState;
+    [SerializeField] public CursorStateSettings[] states;
+    
+
+
+    
+    private Stack<CursorStateSettings> stateStack = new Stack<CursorStateSettings>();
 
     private void Awake()
     {
-        OnCursorTextureChanged();
-    }
-
-    internal void OnCursorTextureChanged()
-    {
-        if (Application.isPlaying)
+        
+        foreach (var state in states)
         {
-            Cursor.SetCursor(cursorTextures[cursorTexture], Vector2.zero, CursorMode.Auto);
+            var cursorState = state;
+            cursorState.Setup(this);
         }
+
+        stateStack.Push(defaultState);
+        NotifyStateChange();
     }
+    
 }
 

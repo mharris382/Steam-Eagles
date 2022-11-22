@@ -101,6 +101,7 @@ public class CharacterController : MonoBehaviour
         _health = GetComponent<Health>();
         State = GetComponent<CharacterState>();
         _groundCheck = GetComponent<GroundCheck>();
+        contactPoint2Ds = new List<ContactPoint2D>(100);
     }
 
     private void Start()
@@ -130,7 +131,21 @@ public class CharacterController : MonoBehaviour
     private void FixedUpdate()
     {
         if (State.IsDead) return;
+        if (State.toAttach != null)
+        {
+            State.AttachedBody = State.toAttach;
+            State.toAttach = null;
+        }
         
+        if (State.CheckAttached())
+        {
+            HandleAttachedBody();
+            return;
+        }
+        else
+        {
+            
+        }
         if (IsInteracting) 
         {
             HandleInteractionFixedUpdate(Time.fixedDeltaTime);
@@ -138,6 +153,11 @@ public class CharacterController : MonoBehaviour
         }
         SlopeCheckVertical();
         ApplyMovement();
+    }
+
+    private void HandleAttachedBody()
+    {
+        
     }
 
     void ApplyMovement()
@@ -148,6 +168,7 @@ public class CharacterController : MonoBehaviour
         if (IsGrounded && !isOnSlope)
         {
             newVelocity.Set(State.MoveX * MoveSpeed, IsJumping ? State.VelocityY : 0);
+            DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
         else if (IsGrounded && isOnSlope)
@@ -155,6 +176,7 @@ public class CharacterController : MonoBehaviour
             float xComponent = MoveSpeed * slopeNormalPerp.x * -State.MoveX;
             float yComponent = MoveSpeed * slopeNormalPerp.y * -State.MoveX;
             newVelocity.Set(xComponent, yComponent);
+            DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
         else if (!IsGrounded)
@@ -163,6 +185,49 @@ public class CharacterController : MonoBehaviour
             State.Velocity = newVelocity;
         }
 }
+
+    
+    void DoExternalForces(ref Vector2 currentVelocity)
+    {
+        HashSet<Rigidbody2D> detected = new HashSet<Rigidbody2D>();
+        var groundHit = GroundCheck.Hit;
+        var hitColl = groundHit.collider;
+        if (hitColl.attachedRigidbody != null)
+        {
+            detected.Add(hitColl.attachedRigidbody);
+            CheckCollider(hitColl, groundHit.normal, ref currentVelocity);
+        }
+        
+        
+        var count = State.Rigidbody.GetContacts(contactPoint2Ds);
+        for (int i = 0; i < count; i++)
+        {
+            var contactPoint = contactPoint2Ds[i];
+            var coll = contactPoint.collider;
+            if(!coll.attachedRigidbody || detected.Contains(coll.attachedRigidbody)) continue;
+            
+            if (CheckCollider(coll, contactPoint.normal, ref currentVelocity)) 
+                detected.Add(coll.attachedRigidbody);
+        }
+        
+    }
+
+    private static bool CheckCollider(Collider2D coll, Vector2 normal, ref Vector2 currentVelocity)
+    {
+        
+        if (coll.attachedRigidbody != null && coll.gameObject.CompareTag("Moving Platform"))
+        {
+            var contactPointNormal = normal;
+            if (Vector2.Dot(contactPointNormal, Vector2.up) > 0.1f)
+            {
+                var movingPlatformVelocity = coll.attachedRigidbody.velocity;
+                currentVelocity += movingPlatformVelocity;
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private Vector2 newVelocity;
     private Vector2 slopeNormalPerp;
@@ -195,11 +260,11 @@ public class CharacterController : MonoBehaviour
     {
         Vector2 DoExternalForces(Vector2 vector2)
         {
-            var count = collider.GetContacts(contactPoint2Ds);
+            int count = State.Rigidbody.GetContacts(contactPoint2Ds);
             for (int i = 0; i < count; i++)
             {
                 var contactPoint = contactPoint2Ds[i];
-                if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.attachedRigidbody.gameObject.CompareTag("Moving Platform"))
+                if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.gameObject.CompareTag("Moving Platform"))
                 {
                     var contactPointNormal = contactPoint.normal;
                     if (Vector2.Dot(contactPointNormal, Vector2.up) > 0.1f)
