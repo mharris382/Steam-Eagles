@@ -91,6 +91,7 @@ namespace Characters
 
         public void UnAssignPlayer()
         {
+            if(this == null)return;
             this._playerInput = null;
             enabled = false;
             foreach (var characterInput in GetComponentsInChildren<ICharacterInput>())
