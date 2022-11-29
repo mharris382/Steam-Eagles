@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GasSim.SimCore.DataStructures;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.Tilemaps;
 
-namespace Characters.Actions
+namespace Characters.Actions.Selectors
 {
     public class CellSelector : MonoBehaviour, ICellSelector
     {
