@@ -213,3 +213,6 @@ public abstract class TriggerAreaBase<T> : MonoBehaviour
         OnTargetRemoved(target, _targets.Count);
     }
 }
+
+
+

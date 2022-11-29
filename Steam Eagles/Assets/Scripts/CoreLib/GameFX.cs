@@ -15,59 +15,75 @@ namespace Utilities
         {
             public string effectName = "New Effect";
 
-            
-            public GameObject fxPrefab;
+            [Tooltip(
+                "If tag is empty the effect is always spawned, otherwise it is spawned only if the tag matches the tag of the object that is invoking the fx.")]
+            public string tag = "";
 
+            public bool CheckTag(GameObject go)
+            {
+                return string.IsNullOrEmpty(tag) || go.CompareTag(tag);
+            }
+            public GameObject fxPrefab;
+            
             [Tooltip("if true, the effect will be spawned as a child of the object it is spawned on. " +
                      " Otherwise it will be spawned at the position of the object it is spawned on")]
             public bool spawnAsChild;
 
             public float scalePosition = 1;
-            public ParticleSystem.MinMaxCurve xOffset = new ParticleSystem.MinMaxCurve() {
+
+            public ParticleSystem.MinMaxCurve xOffset = new ParticleSystem.MinMaxCurve()
+            {
                 mode = ParticleSystemCurveMode.Constant,
                 constant = 0,
                 constantMin = -1,
                 constantMax = 1,
-                curve = AnimationCurve.Linear(0,-1,1,1),
-                curveMin = AnimationCurve.Linear(0,0,-1,-1),
-                curveMax = AnimationCurve.Linear(0,0,1,1),
+                curve = AnimationCurve.Linear(0, -1, 1, 1),
+                curveMin = AnimationCurve.Linear(0, 0, -1, -1),
+                curveMax = AnimationCurve.Linear(0, 0, 1, 1),
                 curveMultiplier = 1,
             };
-            public ParticleSystem.MinMaxCurve yOffset = new ParticleSystem.MinMaxCurve() {
+
+            public ParticleSystem.MinMaxCurve yOffset = new ParticleSystem.MinMaxCurve()
+            {
                 mode = ParticleSystemCurveMode.Constant,
                 constant = 0,
                 constantMin = -1,
                 constantMax = 1,
-                curve = AnimationCurve.Linear(0,-1,1,1),
-                curveMin = AnimationCurve.Linear(0,0,-1,-1),
-                curveMax = AnimationCurve.Linear(0,0,1,1),
+                curve = AnimationCurve.Linear(0, -1, 1, 1),
+                curveMin = AnimationCurve.Linear(0, 0, -1, -1),
+                curveMax = AnimationCurve.Linear(0, 0, 1, 1),
                 curveMultiplier = 1,
             };
-            public ParticleSystem.MinMaxCurve zOffset = new ParticleSystem.MinMaxCurve() {
+
+            public ParticleSystem.MinMaxCurve zOffset = new ParticleSystem.MinMaxCurve()
+            {
                 mode = ParticleSystemCurveMode.Constant,
                 constant = 0,
                 constantMin = -1,
                 constantMax = 1,
-                curve = AnimationCurve.Linear(0,-1,1,1),
-                curveMin = AnimationCurve.Linear(0,0,-1,-1),
-                curveMax = AnimationCurve.Linear(0,0,1,1),
+                curve = AnimationCurve.Linear(0, -1, 1, 1),
+                curveMin = AnimationCurve.Linear(0, 0, -1, -1),
+                curveMax = AnimationCurve.Linear(0, 0, 1, 1),
                 curveMultiplier = 1,
             };
-            [Range(-180, 180)] public float fixedRotationOffset= 0.0f;
-            public ParticleSystem.MinMaxCurve rotationOffset = new ParticleSystem.MinMaxCurve() {
+
+            [Range(-180, 180)] public float fixedRotationOffset = 0.0f;
+
+            public ParticleSystem.MinMaxCurve rotationOffset = new ParticleSystem.MinMaxCurve()
+            {
                 mode = ParticleSystemCurveMode.Constant,
                 constant = 0,
                 constantMin = -15,
                 constantMax = 15,
-                curve = AnimationCurve.Linear(0,0,1,1),
+                curve = AnimationCurve.Linear(0, 0, 1, 1),
                 curveMultiplier = 1,
-                curveMin = AnimationCurve.Linear(0,0,0.9f,0.9f),
-                curveMax = AnimationCurve.Linear(0.1f,0.1f,1,1)
+                curveMin = AnimationCurve.Linear(0, 0, 0.9f, 0.9f),
+                curveMax = AnimationCurve.Linear(0.1f, 0.1f, 1, 1)
             };
 
-        [Tooltip("If true, the spawned effect will destroyed after this amount of time")]
-            [Min(0)] public float autoDestroyDelay;
-            
+            [Tooltip("If true, the spawned effect will destroyed after this amount of time")] [Min(0)]
+            public float autoDestroyDelay;
+
             public void Spawn(Transform fxCaller)
             {
                 var fxInstance = spawnAsChild ? Instantiate(fxPrefab, fxCaller.transform) : Instantiate(fxPrefab);
@@ -82,9 +98,10 @@ namespace Utilities
             private Quaternion GetRotationOffset()
             {
                 var z = GetPositionOffset(rotationOffset);
-                
-                return Quaternion.Euler(0,0,z + fixedRotationOffset);
+
+                return Quaternion.Euler(0, 0, z + fixedRotationOffset);
             }
+
             private Vector3 GetPositionOffset()
             {
                 var x = GetPositionOffset(xOffset);
@@ -92,7 +109,7 @@ namespace Utilities
                 var z = GetPositionOffset(zOffset);
                 return new Vector3(x, y, 1);
             }
-            
+
             private float GetPositionOffset(ParticleSystem.MinMaxCurve minMaxCurve)
             {
                 var randValue = Rand.value;
@@ -105,7 +122,8 @@ namespace Utilities
                     case ParticleSystemCurveMode.Curve:
                         return minMaxCurve.curve.Evaluate(randValue);
                     case ParticleSystemCurveMode.TwoCurves:
-                        return Rand.Range(minMaxCurve.curveMin.Evaluate(randValue), minMaxCurve.curveMax.Evaluate(randValue));
+                        return Rand.Range(minMaxCurve.curveMin.Evaluate(randValue),
+                            minMaxCurve.curveMax.Evaluate(randValue));
                     default:
                         return 0;
                 }
@@ -114,7 +132,7 @@ namespace Utilities
             private IEnumerator AutoDestroy(GameObject instance, float delay)
             {
                 yield return new WaitForSeconds(delay);
-                if(instance) Destroy(instance);
+                if (instance) Destroy(instance);
             }
         }
 
@@ -123,15 +141,28 @@ namespace Utilities
             var spawnPoint = new GameObject($"{name} (FX Instance)");
             spawnPoint.transform.SetParent(GameFxManager.Instance.transform);
             spawnPoint.transform.position = spawnPosition;
-            spawnPoint.transform.rotation = Quaternion.Euler(0,0,rotation);
+            spawnPoint.transform.rotation = Quaternion.Euler(0, 0, rotation);
             SpawnEffectFrom(spawnPoint.transform);
         }
+
         public void SpawnEffectFrom(Transform spriteRendererTransform)
         {
+            string tag = spriteRendererTransform.tag;
             foreach (var spawnedEffect in effects)
             {
                 spawnedEffect.Spawn(spriteRendererTransform);
             }
         }
-    }
+        
+        
+        public void SpawnEffectFrom(Transform owner, Transform spawnPoint)
+        {
+            string tag = owner.tag;
+            foreach (var spawnedEffect in effects)
+            {
+                if(spawnedEffect.CheckTag(owner.gameObject))
+                    spawnedEffect.Spawn(spawnPoint);
+            }
+        }
+}
 }
