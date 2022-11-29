@@ -35,8 +35,8 @@ public class ParallaxObject : MonoBehaviour
 
     public class ParallaxSprite
     {
-        private readonly Transform _transform;
         private readonly ParallaxObject _parallaxObject;
+        private readonly Transform _transform;
         private Vector2 _startPosition;
         private float _startZ;
 
