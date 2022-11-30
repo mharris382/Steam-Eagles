@@ -7,7 +7,6 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
-
 public class GasTankAttachPoint : MonoBehaviour
 {
     public TriggerArea triggerArea;

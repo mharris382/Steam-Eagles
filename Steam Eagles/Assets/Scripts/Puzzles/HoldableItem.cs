@@ -26,6 +26,9 @@ namespace Puzzles
             get;
             set;
         }
+
+        private Rigidbody2D _rb;
+        public Rigidbody2D rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
         
         
         
@@ -42,6 +45,11 @@ namespace Puzzles
             HeldBy = pickedUpBy;
             onPickedUp?.Invoke(pickedUpBy);
             Debug.Log($"{name.Bolded()} was Picked Up by {pickedUpBy.name.Bolded()}");
+        }
+
+        public virtual void Thrown(Vector2 releaseForce, float releaseTorque)
+        {
+            
         }
     }
 }
