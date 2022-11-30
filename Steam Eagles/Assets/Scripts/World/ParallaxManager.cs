@@ -307,7 +307,7 @@ namespace World
                 ParallaxObjectJobSafe pObject = parallaxObjects[index];
                 Vector2 startPosition = pObject._startPosition;
                 float startZ = pObject._startZ;
-                float distanceFromSubject = startZ -subjectZPosition;
+                float distanceFromSubject = subjectZPosition - startZ;
                 bool useFarClippingPlane = distanceFromSubject > 0;
                 float clippingPlane = cameraZPosition + (useFarClippingPlane ? farClippingPlane : nearClippingPlane);
                 float parallaxFactor = Abs(distanceFromSubject) / clippingPlane;

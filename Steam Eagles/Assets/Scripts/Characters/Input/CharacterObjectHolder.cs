@@ -104,19 +104,7 @@ namespace Characters
         private void Awake()
         {
             holdTrigger.onTargetAdded.AddListener(HoldTarget);
-            
-          // CharacterTransform.onValueChanged.AsObservable()
-          //     .Where(t => t != null)
-          //     .Subscribe(t => {
-          //         if(_disposable != null)_disposable.Dispose();
-          //         _characterInputState = t.GetComponentInParent<CharacterInputState>();
-          //         if (_characterInputState != null)
-          //         {
-          //             Debug.Log($"Connecting Character Object Holder to Input State {_characterInputState.name}");
-          //             _disposable = _characterInputState.onPickup.AsObservable().Subscribe(OnPickupInput);
-          //         }
-          //     });
-
+        
             MessageBroker.Default.Receive<PickupActionEvent>()
                 .Where(t => t.tag == this.tag)
                 .Select(t => t.context)
@@ -152,15 +140,7 @@ namespace Characters
             }
         }
 
-        private void OnPickupInput(InputAction.CallbackContext context)
-        {
-            Debug.Log("Pickup Event Occurred");
-            if (context.canceled) return;
-            if (HeldRigidBody != null)
-            {
-                ReleaseObject();
-            }
-        }
+     
 
         #region [Drop/Release Methods]
         float _lastReleaseTime;
@@ -185,6 +165,10 @@ namespace Characters
                 heldBody.position = position;
                 heldBody.rotation = targetRotation;
                 heldBody.velocity = Vector2.zero;
+                if (point.gameObject.TryGetComponent<AttachPoint>(out var attachPoint))
+                {
+                    attachPoint.Attach(heldItem, heldBody, holderBody);
+                }
                 Debug.Log($"Found Attach Point {point.name}", point);
                 Debug.Log($"Attaching {heldBody.name} to {point.name}", heldBody);
             }
@@ -214,9 +198,10 @@ namespace Characters
             void ApplyForces()
             {
                 var releaseForce = GetThrowForce(holderBody);
-                var releaseTorque = GetThrowTorque();
+                var releaseTorque = GetThrowTorque(heldItem);
                 if (releaseForce != Vector2.zero) heldBody.AddForce(releaseForce, ForceMode2D.Impulse);
                 if (releaseTorque != 0) heldBody.AddTorque(releaseTorque, ForceMode2D.Impulse);
+                heldItem.Thrown(releaseForce, releaseTorque);
             }
             void ClearHeld()
             {
@@ -227,7 +212,7 @@ namespace Characters
             }
         }
 
-        void EnsureDisconnect()
+        private void EnsureDisconnect()
         {
             holdTrigger.gameObject.GetComponent<Collider2D>().enabled = false;
             StartCoroutine(StayDisconnected());
@@ -236,7 +221,7 @@ namespace Characters
         private Rigidbody2D recentlyHeld;
         
 
-        IEnumerator StayDisconnected()
+        private IEnumerator StayDisconnected()
         {
             for (float i = 0; i < 1; i+=Time.deltaTime)
             {
@@ -251,6 +236,12 @@ namespace Characters
             holdTrigger.gameObject.GetComponent<Collider2D>().enabled = true;
         }
 
+        /// <summary>
+        /// check for nearby attach points, so that instead of throwing the object, it can be attached to the point 
+        /// </summary>
+        /// <param name="heldBody"></param>
+        /// <param name="attachPoint"></param>
+        /// <returns></returns>
         private bool CheckForAttachPoints(Rigidbody2D heldBody, out Collider2D attachPoint)
         {
             var position = heldBody.transform.position;
@@ -266,17 +257,8 @@ namespace Characters
             attachPoint = null;
             return false;
         }
-        private void ReleaseObject()
-        {
-            if(HeldRigidBody == null)
-                return;
-            
-            var heldBy = Holder.GetComponent<Rigidbody2D>();
-            Release(HeldRigidBody, heldBy , GetThrowForce(heldBy), GetThrowTorque());
-            
-        }
-
-        private float GetThrowTorque() => Rand.Range(throwTorqueRange.x, throwTorqueRange.y) * throwTorqueMultiplier;
+     
+        private float GetThrowTorque(HoldableItem heldItem) => (Rand.Range(throwTorqueRange.x, throwTorqueRange.y) * throwTorqueMultiplier) * heldItem.TorqueMultiplier;
 
 
         private Vector2 GetThrowForce(Rigidbody2D heldBy)
@@ -294,38 +276,6 @@ namespace Characters
             return Vector2.zero;
         }
 
-        private void Release(Rigidbody2D rb, Rigidbody2D heldBy, Vector2 releaseForce, float releaseTorque)
-        {
-            if(rb == null)
-                return;
-            if (heldBy == null)
-                return;
-            
-            SetCollidersEnabled(rb, true);
-            
-            if (HeldItem == null)
-            {
-                HeldItem = rb.GetComponent<HoldableItem>();
-            }
-            _characterInputState.StartCoroutine(PassthroughPlayerOnThrow(rb, heldBy));
-            _lastGrabTime = Time.time;
-            if (HeldItem != null)
-            {
-                HeldItem.Dropped(_characterInputState.gameObject);
-                events.onItemDropped?.Invoke(HeldItem);
-            }
-            holdPoint.connectedBody = null;
-            _characterInputState.SetHeldItem(null);
-            HeldRigidBody = null;
-            
-            ApplyForces();
-
-            void ApplyForces()
-            {
-                if (releaseForce != Vector2.zero) rb.AddForce(releaseForce, ForceMode2D.Impulse);
-                if (releaseTorque != 0) rb.AddTorque(releaseTorque, ForceMode2D.Impulse);
-            }
-        }
 
         private IEnumerator PreventCollisionsWithPlayerOnThrow(Collider2D playerCollider, Collider2D[] holdableColliders, float waitTime = 0.75f)
         {
@@ -341,37 +291,6 @@ namespace Characters
             }
         }
         
-        /// <summary>
-        /// this coroutine is necessary to prevent the thrown object from colliding with the player
-        /// </summary>
-        /// <param name="rb">thrown object</param>
-        /// <param name="player">throwing character</param>
-        /// <returns></returns>
-        private IEnumerator PassthroughPlayerOnThrow(Rigidbody2D rb, Rigidbody2D player)
-        {
-            if (rb == null || player == null)
-                yield break;
-            
-            var capColl = player.GetComponent<CapsuleCollider2D>();
-            if (capColl == null) yield break;
-            
-            var colls = new Collider2D[rb.attachedColliderCount];
-            rb.GetAttachedColliders(colls);
-            
-            for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], true);
-
-            yield return new WaitForSeconds(0.75f);
-
-            try
-            {
-                for (int i = 0; i < rb.attachedColliderCount; i++) Physics2D.IgnoreCollision(capColl, colls[i], false);
-            }
-            catch (IndexOutOfRangeException e)
-            {
-                Debug.LogWarning(e.Message);
-            }
-        }
-
         #endregion
 
 

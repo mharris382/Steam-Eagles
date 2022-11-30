@@ -75,6 +75,7 @@ public class ArrayModifier2D : MonoBehaviour
     [SerializeField] private LocalOffset localOffset;
     [SerializeField] private AbsoluteOffset absoluteOffset;
     [SerializeField] private TransformOffset transformOffset;
+    [SerializeField] private ColorOffset colorOffset;
     [SerializeField] internal List<GameObject> copies;
     
     
@@ -163,6 +164,22 @@ public class ArrayModifier2D : MonoBehaviour
         }
     }
 
+    [System.Serializable]
+    public class ColorOffset
+    {
+        public bool useColorOffset;
+        public Gradient gradient;
+
+        public void ApplyOffset(ArrayModifier2D arrayModifier2D, int i)
+        {
+            if (Application.isPlaying == false) return;
+            var renderer = arrayModifier2D.transform.GetChild(i).GetComponent<Renderer>();
+            float t = i / (float)arrayModifier2D.transform.childCount;
+            var color = gradient.Evaluate(t);
+            renderer.material.color = color;
+        }
+    }
+    
     [SerializeField] 
     private Transform _copyParent;
 
@@ -209,6 +226,7 @@ public class ArrayModifier2D : MonoBehaviour
             localOffset.ApplyOffset(this, i);
             absoluteOffset.ApplyOffset(this, i);
             transformOffset.ApplyOffset(this, i);
+            colorOffset.ApplyOffset(this, i);
         }
     }
 
@@ -257,76 +275,76 @@ public class ArrayModifier2D : MonoBehaviour
 
 
 
-#if UNITY_EDITOR
-[CustomEditor(typeof(ArrayModifier2D))]
-public class ArrayModifier2DEditor : Editor
-{
-    private SerializedProperty _copyCount;
-    private SerializedProperty _copies;
-    private SerializedProperty _localOffset;
-    private SerializedProperty _transformOffset;
-    private SerializedProperty _absoluteOffset;
-    private SerializedProperty _localOffset_useOffset;
-    private SerializedProperty _localOffset_offset;
-    private SerializedProperty _absoluteOffset_useOffset;
-    private SerializedProperty _absoluteOffset_offset;
-    private SerializedProperty _transformOffset_useOffset;
-    private SerializedProperty _transformOffset_offset;
-
-    private void OnEnable()
-    {
-        this._copyCount = serializedObject.FindProperty("copyCount");
-        this._copies = serializedObject.FindProperty("copies");
-        this._localOffset = serializedObject.FindProperty("localOffset");
-        this._localOffset_useOffset = _localOffset.FindPropertyRelative("useLocalOffset");
-        this._localOffset_offset = _localOffset.FindPropertyRelative("offset");
-        this._absoluteOffset = serializedObject.FindProperty("absoluteOffset");
-        this._absoluteOffset_useOffset = _absoluteOffset.FindPropertyRelative("useAbsoluteOffset");
-        this._absoluteOffset_offset = _absoluteOffset.FindPropertyRelative("offset");
-        this._transformOffset = serializedObject.FindProperty("transformOffset");
-        this._transformOffset_useOffset = _transformOffset.FindPropertyRelative("useTransformOffset");
-        this._transformOffset_offset = _transformOffset.FindPropertyRelative("offsetObject");
-        
-    }
-    
-    void DrawOffsetField(SerializedProperty property, SerializedProperty usePropertyProperty, SerializedProperty offsetProperty)
-    {
-        
-        EditorGUILayout.BeginHorizontal();
-        if (EditorGUILayout.Toggle(usePropertyProperty.boolValue, EditorStyles.toggle, GUILayout.Width(100)))
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(offsetProperty);
-            EditorGUI.indentLevel--;
-        }
-        EditorGUILayout.EndHorizontal();
-    }
-    
-    
-
-    public override void OnInspectorGUI()
-    {
-        var am = target as ArrayModifier2D;
-        serializedObject.Update();
-        GUIContent copyCountContent = new GUIContent("Count");
-        EditorGUI.BeginChangeCheck();
-        EditorGUILayout.PropertyField(this._copyCount);
-        if (EditorGUI.EndChangeCheck())
-        {
-            
-            am.CreateCopies();
-        }
-        EditorGUI.BeginChangeCheck();
-        DrawOffsetField(_localOffset, _localOffset_useOffset, _localOffset_offset);
-        DrawOffsetField(_absoluteOffset, _absoluteOffset_useOffset, _absoluteOffset_offset);
-        DrawOffsetField(_transformOffset, _transformOffset_useOffset, _transformOffset_offset);
-        if (EditorGUI.EndChangeCheck())
-        {
-            am.PositionCopies();
-        }
-
-        EditorGUILayout.PropertyField(_copies);
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif
+// #if UNITY_EDITOR
+// [CustomEditor(typeof(ArrayModifier2D))]
+// public class ArrayModifier2DEditor : Editor
+// {
+//     private SerializedProperty _copyCount;
+//     private SerializedProperty _copies;
+//     private SerializedProperty _localOffset;
+//     private SerializedProperty _transformOffset;
+//     private SerializedProperty _absoluteOffset;
+//     private SerializedProperty _localOffset_useOffset;
+//     private SerializedProperty _localOffset_offset;
+//     private SerializedProperty _absoluteOffset_useOffset;
+//     private SerializedProperty _absoluteOffset_offset;
+//     private SerializedProperty _transformOffset_useOffset;
+//     private SerializedProperty _transformOffset_offset;
+//
+//     private void OnEnable()
+//     {
+//         this._copyCount = serializedObject.FindProperty("copyCount");
+//         this._copies = serializedObject.FindProperty("copies");
+//         this._localOffset = serializedObject.FindProperty("localOffset");
+//         this._localOffset_useOffset = _localOffset.FindPropertyRelative("useLocalOffset");
+//         this._localOffset_offset = _localOffset.FindPropertyRelative("offset");
+//         this._absoluteOffset = serializedObject.FindProperty("absoluteOffset");
+//         this._absoluteOffset_useOffset = _absoluteOffset.FindPropertyRelative("useAbsoluteOffset");
+//         this._absoluteOffset_offset = _absoluteOffset.FindPropertyRelative("offset");
+//         this._transformOffset = serializedObject.FindProperty("transformOffset");
+//         this._transformOffset_useOffset = _transformOffset.FindPropertyRelative("useTransformOffset");
+//         this._transformOffset_offset = _transformOffset.FindPropertyRelative("offsetObject");
+//         
+//     }
+//     
+//     void DrawOffsetField(SerializedProperty property, SerializedProperty usePropertyProperty, SerializedProperty offsetProperty)
+//     {
+//         
+//         EditorGUILayout.BeginHorizontal();
+//         if (EditorGUILayout.Toggle(usePropertyProperty.boolValue, EditorStyles.toggle, GUILayout.Width(100)))
+//         {
+//             EditorGUI.indentLevel++;
+//             EditorGUILayout.PropertyField(offsetProperty);
+//             EditorGUI.indentLevel--;
+//         }
+//         EditorGUILayout.EndHorizontal();
+//     }
+//     
+//     
+//
+//     public override void OnInspectorGUI()
+//     {
+//         var am = target as ArrayModifier2D;
+//         serializedObject.Update();
+//         GUIContent copyCountContent = new GUIContent("Count");
+//         EditorGUI.BeginChangeCheck();
+//         EditorGUILayout.PropertyField(this._copyCount);
+//         if (EditorGUI.EndChangeCheck())
+//         {
+//             
+//             am.CreateCopies();
+//         }
+//         EditorGUI.BeginChangeCheck();
+//         DrawOffsetField(_localOffset, _localOffset_useOffset, _localOffset_offset);
+//         DrawOffsetField(_absoluteOffset, _absoluteOffset_useOffset, _absoluteOffset_offset);
+//         DrawOffsetField(_transformOffset, _transformOffset_useOffset, _transformOffset_offset);
+//         if (EditorGUI.EndChangeCheck())
+//         {
+//             am.PositionCopies();
+//         }
+//
+//         EditorGUILayout.PropertyField(_copies);
+//         serializedObject.ApplyModifiedProperties();
+//     }
+// }
+// #endif

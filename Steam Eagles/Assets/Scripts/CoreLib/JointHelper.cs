@@ -68,11 +68,22 @@ public class JointHelper : MonoBehaviour
     {
         _lr = GetComponent<LineRenderer>();
         if (_lr == null) return;
-        _lr.positionCount = transform.childCount + 1;
-        _lr.SetPosition(0, transform.position);
+        var rb = transform.GetComponent<Rigidbody2D>();
+        int iPlus = 0;
+        if (rb != null && rb.isKinematic)
+        {
+            _lr.positionCount = transform.childCount + 1;
+            _lr.SetPosition(0, transform.position);
+            iPlus = 1;
+        }
+        else
+        {
+            _lr.positionCount = transform.childCount;
+        }
+        
         for (int i = 0; i < transform.childCount; i++)
         {
-            _lr.SetPosition(i + 1, transform.GetChild(i).position);
+            _lr.SetPosition(i + iPlus, transform.GetChild(i).position);
         }
     }
 
