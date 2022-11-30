@@ -19,6 +19,7 @@ namespace Experimental
         
 
         public List<Gear> childGears;
+        public List<Gear> axelChildGears = new  List<Gear>();
 
         public Gears System
         {
@@ -31,6 +32,15 @@ namespace Experimental
         public CircleCollider2D CircleCollider2D =>
             _circleCollider2D ? _circleCollider2D : _circleCollider2D = GetComponent<CircleCollider2D>();
 
+        private bool _disconnected;
+        public bool Disconnected
+        {
+            get => _disconnected;
+            set
+            {
+                _disconnected = value;
+            }
+        }
         public float AngularVelocity
         {
             set
@@ -38,21 +48,31 @@ namespace Experimental
                 Rb.angularVelocity = value;
                 foreach (var childGear in childGears)
                 {
-                    if (childGear == null) return;
+                    if (childGear == null)  continue;
                     childGear.AngularVelocity = ComputeChildGearVelocity(value, childGear);
+                }
+
+                foreach (var gear in axelChildGears)
+                {
+                    if (gear == null) continue;
+                    gear.AngularVelocity = gear.Disconnected ? 0 : value;
                 }
             }
         }
 
         public float Radius
         {
-            get => CircleCollider2D.radius;
+            get => CircleCollider2D.radius * transform.lossyScale.x;
         }
 
         private float ComputeChildGearVelocity(float value, Gear childGear)
         {
             return -value;
         }
+
+
+     
+
         private CircleCollider2D _circleCollider2D;
         private Rigidbody2D _rb;
         private Gears _system;
