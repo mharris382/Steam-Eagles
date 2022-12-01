@@ -67,7 +67,6 @@ public abstract class JointVisual2D<T> : JointVisual2D where T : Joint2D
 }
 
 [ExecuteAlways]
-[RequireComponent(typeof(Renderer))]
 public class ArrayModifier2D : MonoBehaviour
 {
     [Min(1)]
@@ -75,6 +74,7 @@ public class ArrayModifier2D : MonoBehaviour
     [SerializeField] private LocalOffset localOffset;
     [SerializeField] private AbsoluteOffset absoluteOffset;
     [SerializeField] private TransformOffset transformOffset;
+    [SerializeField] private SortingOrderOffset sortingOrderOffset;
     [SerializeField] private ColorOffset colorOffset;
     [SerializeField] internal List<GameObject> copies;
     
@@ -94,7 +94,7 @@ public class ArrayModifier2D : MonoBehaviour
         {
             if (!useLocalOffset) return;
             var t = arrayModifier2D.transform.GetChild(index);
-            var renderBounds = arrayModifier2D.Renderer.localBounds;
+            var renderBounds = arrayModifier2D.GetComponentInChildren<UnityEngine.Renderer>().localBounds;
             var startPosition = arrayModifier2D.transform.position;
             var localOffset = new Vector3(renderBounds.size.x * (offset.x * index), renderBounds.size.x * offset.x * index, 0);
             var offset2D = startPosition + localOffset;
@@ -172,14 +172,56 @@ public class ArrayModifier2D : MonoBehaviour
 
         public void ApplyOffset(ArrayModifier2D arrayModifier2D, int i)
         {
-            if (Application.isPlaying == false) return;
-            var renderer = arrayModifier2D.transform.GetChild(i).GetComponent<Renderer>();
+            if (!useColorOffset) return;
             float t = i / (float)arrayModifier2D.transform.childCount;
             var color = gradient.Evaluate(t);
+            var tr = arrayModifier2D.transform.GetChild(i);
+            var sr = tr.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.color = color;
+                return;
+            }
+            if (Application.isPlaying == false) return;
+            var renderer = arrayModifier2D.transform.GetChild(i).GetComponent<Renderer>();
+           
             renderer.material.color = color;
         }
     }
-    
+
+    [Serializable]
+    public class SortingOrderOffset
+    {
+        public bool useSortingOrderOffset;
+        public int startOrder = 0;
+        public int offset = -1;
+
+        private int _currentOrder;
+        public void Apply(ArrayModifier2D arrayModifier2D, int i)
+        {
+            if (!useSortingOrderOffset) return;
+            if (i == 0)
+            {
+                _currentOrder = startOrder;
+            }
+            else
+            {
+                _currentOrder += offset;
+            }
+            var renderer = arrayModifier2D.transform.GetChild(i).GetComponent<Renderer>();
+            switch (renderer.GetType())
+            {
+                case var _ when renderer is SpriteRenderer:
+                    var spriteRenderer = renderer as SpriteRenderer;
+                    spriteRenderer.sortingOrder = _currentOrder;
+                    break;
+                case var _ when renderer is ParticleSystemRenderer:
+                    var particleSystemRenderer = renderer as ParticleSystemRenderer;
+                    particleSystemRenderer.sortingOrder = _currentOrder;
+                    break;
+            }
+        }
+    }
     [SerializeField] 
     private Transform _copyParent;
 
@@ -227,6 +269,8 @@ public class ArrayModifier2D : MonoBehaviour
             absoluteOffset.ApplyOffset(this, i);
             transformOffset.ApplyOffset(this, i);
             colorOffset.ApplyOffset(this, i);
+            sortingOrderOffset.Apply(this, i);
+            
         }
     }
 
