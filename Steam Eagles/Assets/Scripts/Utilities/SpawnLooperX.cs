@@ -44,12 +44,12 @@ namespace Utilities
 
         public IEnumerator Start()
         {
-            var limit = _instance.trackPosition.position.x + xLimit;
+            
             while (enabled)
             {
                 yield return null;
                 var xPos = _instance.trackPosition.position.x;
-                if (xPos > limit)
+                if (xPos > xLimit)
                 {
                     Destroy(_instance.gameObject);
                     _instance = Respawn();
@@ -62,7 +62,7 @@ namespace Utilities
             if(targetObject == null) return;
             var pos = transform.position;
             var limit = pos;
-            limit.x += xLimit;
+            limit.x = xLimit;
             var line0 = limit;
             var line1 = limit;
             line0.y += 100;
