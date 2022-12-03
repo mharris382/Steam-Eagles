@@ -42,13 +42,13 @@ namespace Experimental
                 foreach (var childGear in childGears)
                 {
                     if (childGear == null)  continue;
-                    childGear.AngularVelocity = ComputeChildGearVelocity(value, childGear);
+                    childGear.AngularVelocity = !childGear.IsAxelConnection ? ComputeChildGearVelocity(Rb.angularVelocity, childGear) :  Rb.angularVelocity;
                 }
 
                 foreach (var gear in axelChildGears)
                 {
                     if (gear == null) continue;
-                    gear.AngularVelocity = value;
+                    gear.AngularVelocity = Rb.angularVelocity;
                 }
             }
         }
@@ -105,6 +105,13 @@ namespace Experimental
             tag = "Gear";
         }
 
+        private void Start()
+        {
+            foreach (var gear in axelChildGears)
+            {
+                childGears.Remove(gear);
+            }
+        }
 
         private void OnDrawGizmos()
         {

@@ -80,7 +80,7 @@ namespace Experimental
                     var gearRadius = gear.Radius;
                     var diff = gear.Center - currentGear.Center;
                     
-                    if (diff.magnitude > (currentRadius + gearRadius)- (bufferRadius / 2f)) continue;
+                    
                     
 
                     if (gear == currentGear.parentGear) continue;

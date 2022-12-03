@@ -136,7 +136,7 @@ namespace Characters
                 _releasePressed = false;
                 if (_isReleasing) return;
                 _isReleasing = true;
-                StartCoroutine(ReleaseHeldObject());
+                 StartCoroutine(ReleaseHeldObject());
             }
         }
 
