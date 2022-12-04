@@ -73,6 +73,8 @@ public class ArrayModifier2D : MonoBehaviour
     [SerializeField] private int copyCount = 2;
     [SerializeField] private LocalOffset localOffset;
     [SerializeField] private AbsoluteOffset absoluteOffset;
+    [SerializeField] private LerpOffset lerpOffset;
+    [SerializeField] private TransformLerpOffset transformLerpOffset;
     [SerializeField] private TransformOffset transformOffset;
     [SerializeField] private SortingOrderOffset sortingOrderOffset;
     [SerializeField] private ColorOffset colorOffset;
@@ -100,6 +102,55 @@ public class ArrayModifier2D : MonoBehaviour
             var offset2D = startPosition + localOffset;
             var offsetZ = startPosition.z + (zOffset * index);
             t.position = new Vector3(offset2D.x, offset2D.y, offsetZ);
+        }
+    }
+    
+    [System.Serializable]
+    public class LerpOffset
+    {
+        public bool useLerpOffset;
+        public Vector3 offset = Vector3.right;
+        
+        public void ApplyOffset(ArrayModifier2D arrayModifier2D, int i)
+        {
+            if (!useLerpOffset) return;
+            var cnt = arrayModifier2D.transform.childCount;
+            var t = i / (float) cnt;
+            var child = arrayModifier2D.transform.GetChild(i);
+            var p0 = arrayModifier2D.transform.position;
+            var p1 = arrayModifier2D.transform.TransformPoint(offset);
+            child.position = Vector3.Lerp(p0, p1, t);
+        }
+    }
+    [System.Serializable]
+    public class TransformLerpOffset
+    {
+        public bool useLerpOffset;
+
+
+       [SerializeField] private Transform target;
+       [SerializeField] private Vector3 targetOffset;
+       [SerializeField] private Transform from; 
+       [SerializeField] private Vector3 fromOffset;
+        public void ApplyOffset(ArrayModifier2D arrayModifier2D, int i)
+        {
+            if (!useLerpOffset) return;
+            if (target == null)
+                return;
+
+            var cnt = arrayModifier2D.transform.childCount;
+            var t = i / (float) cnt;
+            var child = arrayModifier2D.transform.GetChild(i);
+            
+            
+            var transformFrom = @from ? @from : arrayModifier2D.transform;
+            var p0 = target.TransformPoint(targetOffset);
+            var p1 = transformFrom.TransformPoint(fromOffset);
+            
+            if (child == target) return;
+            if (child == transformFrom) return;
+           
+            child.position = Vector3.Lerp(p0, p1, t);
         }
     }
     
@@ -263,14 +314,20 @@ public class ArrayModifier2D : MonoBehaviour
     internal void PositionCopies()
     {
 
+        if (Application.isPlaying)
+        {
+            enabled = false;
+            return;
+        }
         for (int i = 0; i < transform.childCount; i++)
         {
             localOffset.ApplyOffset(this, i);
+            lerpOffset.ApplyOffset(this, i);
+            transformLerpOffset.ApplyOffset(this, i);
             absoluteOffset.ApplyOffset(this, i);
             transformOffset.ApplyOffset(this, i);
             colorOffset.ApplyOffset(this, i);
             sortingOrderOffset.Apply(this, i);
-            
         }
     }
 

@@ -6251,9 +6251,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e54e74bc7111e4a8ead4038b7698ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorTexture: 0
-  cursorTextures:
-  - {fileID: 2800000, guid: 342bb819ccd6d8347aa120ae3fae9932, type: 3}
+  defaultState:
+    stateName: New Cursor State
+    visible: 0
+    texture: {fileID: 0}
+    lockMode: 0
+    hotspot: {x: 0, y: 0}
+    mode: 0
+    isStateActive: {fileID: 0}
+  states: []
 --- !u!1 &1731602818
 GameObject:
   m_ObjectHideFlags: 0
@@ -8763,6 +8769,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2162861105588264157, guid: 8c27898b52f0589449ec438adac7d58a, type: 3}
   m_PrefabInstance: {fileID: 7613476369164584972}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7613476369164584974 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2162861105588264160, guid: 8c27898b52f0589449ec438adac7d58a, type: 3}
+  m_PrefabInstance: {fileID: 7613476369164584972}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7613476369164584975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7613476369164584974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788ec46366575b04db81f14027b785cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7787458462354294728
 PrefabInstance:
   m_ObjectHideFlags: 0
