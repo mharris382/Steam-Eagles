@@ -145,6 +145,7 @@ namespace GasSim
 
         #region [FIELDS]
 
+        [SerializeField] private float riseRate = 0.1f;
         [SerializeField] private IGasSim.GridResolution resolution =IGasSim.GridResolution.HALF;
         [SerializeField] internal PressureColor pressureColor;
         [SerializeField] private Vector2Int gridSize = new Vector2Int(100, 100);
@@ -451,6 +452,8 @@ namespace GasSim
         #endregion
 
 
+        Subject<Unit> riseSubject = new Subject<Unit>();
+       
         private int lastSimulationStep = -1;
 
         protected virtual void DoSimulationStep1()
@@ -473,7 +476,7 @@ namespace GasSim
         
         protected virtual void DoGridMovements()
         {
-            bool ChooseRandom() => Random.Range(1, randomChance.x) <= randomChance.y;
+            bool ChooseRandom() => Random.Range(0, randomChance.y) > randomChance.x;
             var nonEmpty = InternalPressureGrid.GetAllNonEmptyCells().ToArray();
             try
             {

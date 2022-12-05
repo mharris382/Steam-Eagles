@@ -2813,6 +2813,7 @@ GameObject:
   - component: {fileID: 111350728}
   - component: {fileID: 111350727}
   - component: {fileID: 111350726}
+  - component: {fileID: 111350731}
   m_Layer: 25
   m_Name: Gear_07
   m_TagString: Untagged
@@ -2832,9 +2833,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 557959860}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 557959860}
   childGears: []
   axelChildGears: []
 --- !u!50 &111350727
@@ -2942,6 +2943,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &111350731
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111350725}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &114746834
 GameObject:
   m_ObjectHideFlags: 0
@@ -3802,6 +3827,7 @@ GameObject:
   - component: {fileID: 152494759}
   - component: {fileID: 152494758}
   - component: {fileID: 152494757}
+  - component: {fileID: 152494762}
   m_Layer: 25
   m_Name: Gear r0.59_03
   m_TagString: Untagged
@@ -3858,9 +3884,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &152494760
@@ -3930,6 +3956,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &152494762
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152494756}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &173194146
 GameObject:
   m_ObjectHideFlags: 1
@@ -7083,6 +7133,7 @@ GameObject:
   - component: {fileID: 224041775}
   - component: {fileID: 224041774}
   - component: {fileID: 224041773}
+  - component: {fileID: 224041778}
   m_Layer: 25
   m_Name: Gear_14
   m_TagString: Untagged
@@ -7102,9 +7153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1969257672}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1969257672}
   childGears: []
   axelChildGears: []
 --- !u!50 &224041774
@@ -7212,6 +7263,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &224041778
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224041772}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &227367546
 GameObject:
   m_ObjectHideFlags: 1
@@ -8032,7 +8107,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.43501046, g: 0.43501046, b: 0.43501046, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -18851,6 +18926,10 @@ MonoBehaviour:
   transformOffset:
     useTransformOffset: 1
     offsetObject: {fileID: 292450859}
+  sortingOrderOffset:
+    useSortingOrderOffset: 0
+    startOrder: 0
+    offset: -1
   colorOffset:
     useColorOffset: 1
     gradient:
@@ -24252,6 +24331,7 @@ GameObject:
   - component: {fileID: 339480554}
   - component: {fileID: 339480553}
   - component: {fileID: 339480552}
+  - component: {fileID: 339480558}
   m_Layer: 25
   m_Name: Root Gear
   m_TagString: Untagged
@@ -24292,9 +24372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!50 &339480554
@@ -24402,6 +24482,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &339480558
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339480551}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &341204099
 GameObject:
   m_ObjectHideFlags: 1
@@ -24494,6 +24598,139 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1873101764}
   m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &357301578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 357301582}
+  - component: {fileID: 357301581}
+  - component: {fileID: 357301580}
+  - component: {fileID: 357301579}
+  m_Layer: 0
+  m_Name: Blimp Boyancy Effector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!50 &357301579
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357301578}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!61 &357301580
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357301578}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 142, y: 71.50163}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!212 &357301581
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357301578}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 2
+  m_Size: {x: 142, y: 71.50163}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &357301582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357301578}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 58.5, y: 16.581, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 51
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357625670
 GameObject:
@@ -25612,6 +25849,7 @@ GameObject:
   - component: {fileID: 400289202}
   - component: {fileID: 400289201}
   - component: {fileID: 400289200}
+  - component: {fileID: 400289204}
   m_Layer: 25
   m_Name: Gear r0.59_06
   m_TagString: Untagged
@@ -25683,9 +25921,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &400289203
@@ -25740,6 +25978,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &400289204
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400289198}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &401447838
 GameObject:
   m_ObjectHideFlags: 0
@@ -25814,7 +26076,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.5209643, g: 0.5209643, b: 0.5209643, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -27664,6 +27926,7 @@ GameObject:
   - component: {fileID: 498616292}
   - component: {fileID: 498616291}
   - component: {fileID: 498616290}
+  - component: {fileID: 498616295}
   m_Layer: 25
   m_Name: Gear_10
   m_TagString: Untagged
@@ -27683,9 +27946,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 590954417}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 590954417}
   childGears: []
   axelChildGears: []
 --- !u!50 &498616291
@@ -27793,6 +28056,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &498616295
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498616289}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &499929543
 GameObject:
   m_ObjectHideFlags: 0
@@ -29150,6 +29437,7 @@ GameObject:
   - component: {fileID: 557959862}
   - component: {fileID: 557959861}
   - component: {fileID: 557959860}
+  - component: {fileID: 557959865}
   m_Layer: 25
   m_Name: Gear_06
   m_TagString: Untagged
@@ -29169,9 +29457,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 870797407}
+  teethCount: 10
   axelConnection: 1
-  connectAngle: 15
+  parentGear: {fileID: 870797407}
   childGears: []
   axelChildGears: []
 --- !u!50 &557959861
@@ -29279,6 +29567,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 115.116}
+--- !u!233 &557959865
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557959859}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &562878965
 GameObject:
   m_ObjectHideFlags: 0
@@ -29865,6 +30177,7 @@ GameObject:
   - component: {fileID: 590954419}
   - component: {fileID: 590954418}
   - component: {fileID: 590954417}
+  - component: {fileID: 590954422}
   m_Layer: 25
   m_Name: Gear_09
   m_TagString: Untagged
@@ -29884,9 +30197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1241565643}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1241565643}
   childGears: []
   axelChildGears: []
 --- !u!50 &590954418
@@ -29994,6 +30307,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &590954422
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590954416}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &591188124
 GameObject:
   m_ObjectHideFlags: 0
@@ -30068,7 +30405,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  m_Color: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -30395,6 +30732,7 @@ GameObject:
   - component: {fileID: 610419877}
   - component: {fileID: 610419876}
   - component: {fileID: 610419875}
+  - component: {fileID: 610419880}
   m_Layer: 25
   m_Name: Gear r0.59_04
   m_TagString: Untagged
@@ -30451,9 +30789,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &610419878
@@ -30523,6 +30861,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &610419880
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610419874}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &613483052
 GameObject:
   m_ObjectHideFlags: 0
@@ -34971,6 +35333,7 @@ GameObject:
   - component: {fileID: 681258780}
   - component: {fileID: 681258779}
   - component: {fileID: 681258778}
+  - component: {fileID: 681258782}
   m_Layer: 25
   m_Name: Gear r0.59_07
   m_TagString: Untagged
@@ -35042,9 +35405,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &681258781
@@ -35099,6 +35462,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &681258782
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681258776}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &681893588
 GameObject:
   m_ObjectHideFlags: 1
@@ -35692,6 +36079,7 @@ GameObject:
   - component: {fileID: 730937096}
   - component: {fileID: 730937095}
   - component: {fileID: 730937094}
+  - component: {fileID: 730937098}
   m_Layer: 25
   m_Name: Gear r0.59_12
   m_TagString: Untagged
@@ -35763,9 +36151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &730937097
@@ -35820,6 +36208,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &730937098
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730937092}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &738239043
 GameObject:
   m_ObjectHideFlags: 1
@@ -38340,6 +38752,7 @@ GameObject:
   - component: {fileID: 870797409}
   - component: {fileID: 870797408}
   - component: {fileID: 870797407}
+  - component: {fileID: 870797412}
   m_Layer: 25
   m_Name: Gear_05
   m_TagString: Untagged
@@ -38359,9 +38772,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears:
   - {fileID: 557959860}
@@ -38470,6 +38883,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -17.927}
+--- !u!233 &870797412
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870797406}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &876750732
 GameObject:
   m_ObjectHideFlags: 0
@@ -38578,6 +39015,7 @@ GameObject:
   - component: {fileID: 895121307}
   - component: {fileID: 895121306}
   - component: {fileID: 895121305}
+  - component: {fileID: 895121310}
   m_Layer: 25
   m_Name: Gear_11
   m_TagString: Untagged
@@ -38597,9 +39035,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1821840251}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1821840251}
   childGears: []
   axelChildGears: []
 --- !u!50 &895121306
@@ -38707,6 +39145,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &895121310
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895121304}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &896491041
 GameObject:
   m_ObjectHideFlags: 0
@@ -39503,6 +39965,7 @@ GameObject:
   - component: {fileID: 927770064}
   - component: {fileID: 927770063}
   - component: {fileID: 927770062}
+  - component: {fileID: 927770067}
   m_Layer: 25
   m_Name: End Gear
   m_TagString: Untagged
@@ -39522,9 +39985,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1592498778}
+  teethCount: 10
   axelConnection: 1
-  connectAngle: 15
+  parentGear: {fileID: 1592498778}
   childGears: []
   axelChildGears: []
 --- !u!50 &927770063
@@ -39633,6 +40096,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 78.041}
+--- !u!233 &927770067
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927770061}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &929407365
 GameObject:
   m_ObjectHideFlags: 1
@@ -44996,6 +45483,7 @@ GameObject:
   - component: {fileID: 980134672}
   - component: {fileID: 980134671}
   - component: {fileID: 980134670}
+  - component: {fileID: 980134675}
   m_Layer: 25
   m_Name: Gear_04
   m_TagString: Untagged
@@ -45015,9 +45503,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!50 &980134671
@@ -45125,6 +45613,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -59.992}
+--- !u!233 &980134675
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980134669}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &980705709
 GameObject:
   m_ObjectHideFlags: 0
@@ -45736,6 +46248,7 @@ GameObject:
   - component: {fileID: 1012178965}
   - component: {fileID: 1012178964}
   - component: {fileID: 1012178963}
+  - component: {fileID: 1012178968}
   m_Layer: 25
   m_Name: Gear_03
   m_TagString: Untagged
@@ -45755,9 +46268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!50 &1012178964
@@ -45865,6 +46378,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -17.927}
+--- !u!233 &1012178968
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012178962}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1016371256
 GameObject:
   m_ObjectHideFlags: 1
@@ -47711,6 +48248,7 @@ GameObject:
   - component: {fileID: 1083987207}
   - component: {fileID: 1083987206}
   - component: {fileID: 1083987205}
+  - component: {fileID: 1083987210}
   m_Layer: 25
   m_Name: Gear r0.59
   m_TagString: Untagged
@@ -47767,9 +48305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1083987208
@@ -47839,6 +48377,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &1083987210
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1083987204}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1090301023
 GameObject:
   m_ObjectHideFlags: 1
@@ -48991,7 +49553,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.5639413, g: 0.5639413, b: 0.5639413, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -49388,28 +49950,28 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: 83.034996, y: -0.5699992, z: 0}
-  - {x: 83.035, y: -1.5699992, z: 0}
-  - {x: 83.035, y: -2.5699992, z: 0}
-  - {x: 83.035, y: -3.5699992, z: 0}
-  - {x: 83.03501, y: -4.569999, z: 0}
-  - {x: 83.03501, y: -5.569999, z: 0}
-  - {x: 83.03502, y: -6.569999, z: 0}
-  - {x: 83.03502, y: -7.569999, z: 0}
-  - {x: 83.03502, y: -8.57, z: 0}
-  - {x: 83.03503, y: -9.57, z: 0}
-  - {x: 83.03503, y: -10.57, z: 0}
-  - {x: 83.035034, y: -11.57, z: 0}
-  - {x: 83.035034, y: -12.57, z: 0}
-  - {x: 83.035034, y: -13.57, z: 0}
-  - {x: 83.03504, y: -14.570011, z: 0}
-  - {x: 83.03504, y: -15.570011, z: 0}
-  - {x: 83.03505, y: -16.570011, z: 0}
-  - {x: 83.03505, y: -17.570011, z: 0}
-  - {x: 83.03505, y: -18.570011, z: 0}
-  - {x: 83.03506, y: -19.570015, z: 0}
-  - {x: 83.03506, y: -20.695011, z: 0}
-  - {x: 83.035065, y: -21.695015, z: 0}
+  - {x: 156.455, y: -0.5699992, z: 0}
+  - {x: 156.455, y: -1.5699992, z: 0}
+  - {x: 156.45502, y: -2.5699992, z: 0}
+  - {x: 156.45502, y: -3.5699992, z: 0}
+  - {x: 156.45502, y: -4.569999, z: 0}
+  - {x: 156.45502, y: -5.569999, z: 0}
+  - {x: 156.45502, y: -6.569999, z: 0}
+  - {x: 156.45502, y: -7.569999, z: 0}
+  - {x: 156.45503, y: -8.57, z: 0}
+  - {x: 156.45503, y: -9.57, z: 0}
+  - {x: 156.45503, y: -10.57, z: 0}
+  - {x: 156.45503, y: -11.57, z: 0}
+  - {x: 156.45505, y: -12.57, z: 0}
+  - {x: 156.45505, y: -13.57, z: 0}
+  - {x: 156.45505, y: -14.570011, z: 0}
+  - {x: 156.45505, y: -15.570011, z: 0}
+  - {x: 156.45505, y: -16.570011, z: 0}
+  - {x: 156.45505, y: -17.570011, z: 0}
+  - {x: 156.45506, y: -18.570011, z: 0}
+  - {x: 156.45506, y: -19.570015, z: 0}
+  - {x: 156.45506, y: -20.695011, z: 0}
+  - {x: 156.45506, y: -21.695015, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.7383035
@@ -50141,7 +50703,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.4779874, g: 0.4779874, b: 0.4779874, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -50516,6 +51078,7 @@ GameObject:
   - component: {fileID: 1216018907}
   - component: {fileID: 1216018906}
   - component: {fileID: 1216018905}
+  - component: {fileID: 1216018909}
   m_Layer: 25
   m_Name: Gear r0.59_08
   m_TagString: Untagged
@@ -50587,9 +51150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1216018908
@@ -50644,6 +51207,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1216018909
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216018903}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1216130161
 GameObject:
   m_ObjectHideFlags: 1
@@ -50961,6 +51548,7 @@ GameObject:
   - component: {fileID: 1236842261}
   - component: {fileID: 1236842260}
   - component: {fileID: 1236842259}
+  - component: {fileID: 1236842264}
   m_Layer: 25
   m_Name: Gear_02
   m_TagString: Untagged
@@ -50980,9 +51568,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!50 &1236842260
@@ -51090,6 +51678,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -59.992}
+--- !u!233 &1236842264
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236842258}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1238163025
 GameObject:
   m_ObjectHideFlags: 1
@@ -51134,6 +51746,7 @@ GameObject:
   - component: {fileID: 1238944703}
   - component: {fileID: 1238944702}
   - component: {fileID: 1238944701}
+  - component: {fileID: 1238944705}
   m_Layer: 25
   m_Name: Gear r0.59_13
   m_TagString: Untagged
@@ -51205,9 +51818,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1238944704
@@ -51262,6 +51875,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1238944705
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238944699}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1239384398
 GameObject:
   m_ObjectHideFlags: 1
@@ -51337,6 +51974,7 @@ GameObject:
   - component: {fileID: 1241565645}
   - component: {fileID: 1241565644}
   - component: {fileID: 1241565643}
+  - component: {fileID: 1241565648}
   m_Layer: 25
   m_Name: Gear_08
   m_TagString: Untagged
@@ -51356,9 +51994,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 111350726}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 111350726}
   childGears: []
   axelChildGears: []
 --- !u!50 &1241565644
@@ -51466,6 +52104,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &1241565648
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241565642}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1241654792
 GameObject:
   m_ObjectHideFlags: 0
@@ -51794,7 +52456,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.6928721, g: 0.6928721, b: 0.6928721, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -52972,28 +53634,28 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: 102.225, y: -0.39999962, z: 0}
-  - {x: 102.225006, y: -1.3999996, z: 0}
-  - {x: 102.225006, y: -2.3999996, z: 0}
-  - {x: 102.225006, y: -3.3999996, z: 0}
-  - {x: 102.22501, y: -4.3999996, z: 0}
-  - {x: 102.22501, y: -5.3999996, z: 0}
-  - {x: 102.22502, y: -6.3999996, z: 0}
-  - {x: 102.22502, y: -7.3999996, z: 0}
-  - {x: 102.22502, y: -8.4, z: 0}
-  - {x: 102.22503, y: -9.4, z: 0}
-  - {x: 102.22503, y: -10.4, z: 0}
-  - {x: 102.22504, y: -11.4, z: 0}
-  - {x: 102.22504, y: -12.4, z: 0}
-  - {x: 102.22504, y: -13.4, z: 0}
-  - {x: 102.225044, y: -14.400011, z: 0}
-  - {x: 102.225044, y: -15.400011, z: 0}
-  - {x: 102.22505, y: -16.400011, z: 0}
-  - {x: 102.22505, y: -17.400011, z: 0}
-  - {x: 102.22505, y: -18.400011, z: 0}
-  - {x: 102.22506, y: -19.400015, z: 0}
-  - {x: 102.22506, y: -20.525011, z: 0}
-  - {x: 102.22507, y: -21.525015, z: 0}
+  - {x: 175.645, y: -0.39999962, z: 0}
+  - {x: 175.645, y: -1.3999996, z: 0}
+  - {x: 175.64502, y: -2.3999996, z: 0}
+  - {x: 175.64502, y: -3.3999996, z: 0}
+  - {x: 175.64502, y: -4.3999996, z: 0}
+  - {x: 175.64502, y: -5.3999996, z: 0}
+  - {x: 175.64502, y: -6.3999996, z: 0}
+  - {x: 175.64502, y: -7.3999996, z: 0}
+  - {x: 175.64503, y: -8.4, z: 0}
+  - {x: 175.64503, y: -9.4, z: 0}
+  - {x: 175.64503, y: -10.4, z: 0}
+  - {x: 175.64503, y: -11.4, z: 0}
+  - {x: 175.64505, y: -12.4, z: 0}
+  - {x: 175.64505, y: -13.4, z: 0}
+  - {x: 175.64505, y: -14.400011, z: 0}
+  - {x: 175.64505, y: -15.400011, z: 0}
+  - {x: 175.64505, y: -16.400011, z: 0}
+  - {x: 175.64505, y: -17.400011, z: 0}
+  - {x: 175.64507, y: -18.400011, z: 0}
+  - {x: 175.64507, y: -19.400015, z: 0}
+  - {x: 175.64507, y: -20.525011, z: 0}
+  - {x: 175.64507, y: -21.525015, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.7383035
@@ -53665,6 +54327,7 @@ GameObject:
   - component: {fileID: 1304912422}
   - component: {fileID: 1304912421}
   - component: {fileID: 1304912420}
+  - component: {fileID: 1304912425}
   m_Layer: 25
   m_Name: Gear r0.59_02
   m_TagString: Untagged
@@ -53721,9 +54384,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1304912423
@@ -53793,6 +54456,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &1304912425
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1304912419}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1313114697
 GameObject:
   m_ObjectHideFlags: 1
@@ -54945,6 +55632,7 @@ GameObject:
   - component: {fileID: 1369543948}
   - component: {fileID: 1369543947}
   - component: {fileID: 1369543946}
+  - component: {fileID: 1369543952}
   m_Layer: 25
   m_Name: Gear r0.59_01
   m_TagString: Untagged
@@ -55022,9 +55710,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1369543950
@@ -55094,6 +55782,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &1369543952
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369543945}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1370048987
 GameObject:
   m_ObjectHideFlags: 1
@@ -67536,6 +68248,7 @@ GameObject:
   - component: {fileID: 1592498780}
   - component: {fileID: 1592498779}
   - component: {fileID: 1592498778}
+  - component: {fileID: 1592498783}
   m_Layer: 25
   m_Name: Gear_15
   m_TagString: Untagged
@@ -67555,9 +68268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1969257672}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1969257672}
   childGears: []
   axelChildGears: []
 --- !u!50 &1592498779
@@ -67665,6 +68378,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &1592498783
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592498777}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1596817992
 GameObject:
   m_ObjectHideFlags: 1
@@ -68741,6 +69478,7 @@ GameObject:
   - component: {fileID: 1658064602}
   - component: {fileID: 1658064601}
   - component: {fileID: 1658064600}
+  - component: {fileID: 1658064604}
   m_Layer: 25
   m_Name: Gear r0.59_15
   m_TagString: Untagged
@@ -68812,9 +69550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1658064603
@@ -68869,6 +69607,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1658064604
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658064598}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1659860356
 GameObject:
   m_ObjectHideFlags: 1
@@ -69036,7 +69798,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.64989513, g: 0.64989513, b: 0.64989513, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -70102,6 +70864,7 @@ GameObject:
   - component: {fileID: 1710964881}
   - component: {fileID: 1710964880}
   - component: {fileID: 1710964879}
+  - component: {fileID: 1710964883}
   m_Layer: 25
   m_Name: Gear r0.59_10
   m_TagString: Untagged
@@ -70173,9 +70936,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1710964882
@@ -70230,6 +70993,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1710964883
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710964877}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1721584882
 GameObject:
   m_ObjectHideFlags: 0
@@ -70989,7 +71776,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.6069182, g: 0.6069182, b: 0.6069182, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -71238,6 +72025,7 @@ GameObject:
   - component: {fileID: 1769025058}
   - component: {fileID: 1769025057}
   - component: {fileID: 1769025056}
+  - component: {fileID: 1769025060}
   m_Layer: 25
   m_Name: Gear r0.59_11
   m_TagString: Untagged
@@ -71309,9 +72097,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1769025059
@@ -71366,6 +72154,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1769025060
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769025054}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1769025539
 GameObject:
   m_ObjectHideFlags: 0
@@ -71981,7 +72793,7 @@ SpriteRenderer:
   m_SortingLayer: -4
   m_SortingOrder: -2
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+  m_Color: {r: 0.39203355, g: 0.39203355, b: 0.39203355, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -72670,6 +73482,7 @@ GameObject:
   - component: {fileID: 1794235038}
   - component: {fileID: 1794235037}
   - component: {fileID: 1794235036}
+  - component: {fileID: 1794235040}
   m_Layer: 25
   m_Name: Gear r0.59_09
   m_TagString: Untagged
@@ -72741,9 +73554,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1794235039
@@ -72798,6 +73611,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1794235040
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794235034}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1802448136
 GameObject:
   m_ObjectHideFlags: 1
@@ -73421,6 +74258,7 @@ GameObject:
   - component: {fileID: 1821840253}
   - component: {fileID: 1821840252}
   - component: {fileID: 1821840251}
+  - component: {fileID: 1821840256}
   m_Layer: 25
   m_Name: Gear_12
   m_TagString: Untagged
@@ -73440,9 +74278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1241565643}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1241565643}
   childGears: []
   axelChildGears: []
 --- !u!50 &1821840252
@@ -73550,6 +74388,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &1821840256
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821840250}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1821996320
 GameObject:
   m_ObjectHideFlags: 1
@@ -73734,6 +74596,7 @@ GameObject:
   - component: {fileID: 1830249555}
   - component: {fileID: 1830249554}
   - component: {fileID: 1830249553}
+  - component: {fileID: 1830249558}
   m_Layer: 25
   m_Name: Gear
   m_TagString: Untagged
@@ -73753,9 +74616,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!50 &1830249554
@@ -73863,6 +74726,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -17.927}
+--- !u!233 &1830249558
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830249552}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1830924018
 GameObject:
   m_ObjectHideFlags: 0
@@ -74204,6 +75091,7 @@ GameObject:
   - component: {fileID: 1839998300}
   - component: {fileID: 1839998299}
   - component: {fileID: 1839998298}
+  - component: {fileID: 1839998302}
   m_Layer: 25
   m_Name: Gear r0.59_14
   m_TagString: Untagged
@@ -74275,9 +75163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1839998301
@@ -74332,6 +75220,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1839998302
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839998296}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1843114746
 GameObject:
   m_ObjectHideFlags: 0
@@ -75185,7 +76097,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1887037502}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 92.579994, y: -6.880001, z: 0}
+  m_LocalPosition: {x: 166, y: -6.880001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -76419,6 +77331,7 @@ GameObject:
   - component: {fileID: 1939521737}
   - component: {fileID: 1939521736}
   - component: {fileID: 1939521735}
+  - component: {fileID: 1939521740}
   m_Layer: 25
   m_Name: Gear r0.59_05
   m_TagString: Untagged
@@ -76511,9 +77424,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &1939521739
@@ -76568,6 +77481,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!233 &1939521740
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939521733}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1939883728
 GameObject:
   m_ObjectHideFlags: 0
@@ -77080,6 +78017,7 @@ GameObject:
   - component: {fileID: 1969257674}
   - component: {fileID: 1969257673}
   - component: {fileID: 1969257672}
+  - component: {fileID: 1969257677}
   m_Layer: 25
   m_Name: Gear_13
   m_TagString: Untagged
@@ -77099,9 +78037,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 1241565643}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 1241565643}
   childGears: []
   axelChildGears: []
 --- !u!50 &1969257673
@@ -77209,6 +78147,30 @@ Transform:
   m_Father: {fileID: 460582867}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 134.414}
+--- !u!233 &1969257677
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969257671}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &1970061331
 GameObject:
   m_ObjectHideFlags: 1
@@ -84918,6 +85880,7 @@ GameObject:
   - component: {fileID: 2124520564}
   - component: {fileID: 2124520563}
   - component: {fileID: 2124520562}
+  - component: {fileID: 2124520567}
   m_Layer: 25
   m_Name: Gear r0.59
   m_TagString: Untagged
@@ -84974,9 +85937,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26987d9c4e0b4528ad2d8e7aa98f6615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentGear: {fileID: 0}
+  teethCount: 10
   axelConnection: 0
-  connectAngle: 15
+  parentGear: {fileID: 0}
   childGears: []
   axelChildGears: []
 --- !u!212 &2124520565
@@ -85046,6 +86009,30 @@ Transform:
   m_Father: {fileID: 1654882653}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!233 &2124520567
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124520561}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &2126481713
 GameObject:
   m_ObjectHideFlags: 1
