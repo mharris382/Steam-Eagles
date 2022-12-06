@@ -4,7 +4,7 @@ using UnityEngine;
 namespace GasSim
 {
     [RequireComponent(typeof(Grid))]
-    public class GasSimManager : MonoBehaviour
+    public class GasSimManager2 : MonoBehaviour
     {
         [SerializeField] private IGasSim.GridResolution resolution = IGasSim.GridResolution.HALF;
         [SerializeField] private Vector2Int chunkSize = new Vector2Int(16, 16);
