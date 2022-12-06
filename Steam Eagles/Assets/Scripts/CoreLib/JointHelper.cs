@@ -1,8 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+public abstract class JointModule
+{
+    
+}
 [ExecuteAlways]
 public class JointHelper : MonoBehaviour
 {
@@ -17,7 +22,15 @@ public class JointHelper : MonoBehaviour
     }
 
     [SerializeField] ColliderMode handleColliders = ColliderMode.IGNORE;
-
+    [SerializeField]private JointTypeMask jointTypeMask = JointTypeMask.ALL;
+    JointTypeMask GetJointTypeMask() => jointTypeMask;
+    [Header("Joint Settings")] public float jointRadius = 1;
+    [Header("External Joints")]
+    
+    public Joint2D[] jointsToAttachToStart;
+    public Rigidbody2D bodyToAttachToStart;
+    public Joint2D[] jointsToAttachToEnd;
+    public Rigidbody2D bodyToAttachToEnd;
     [Header("Relative Joint - Linear Offset")]
     public bool setLinearOffset = true;
 
@@ -35,9 +48,13 @@ public class JointHelper : MonoBehaviour
 
     [Header("Spring Joint")] public bool updateSpringJoints = true;
     public float springJointFrequency = 1;
-
+    [Header("Rendering")]
+    public bool attachLineToStart;
+    public bool attachLineToEnd;
     public float angleStart => angle.x;
     public float angleEnd => angle.y;
+
+     
 
     private void Awake()
     {
@@ -51,7 +68,45 @@ public class JointHelper : MonoBehaviour
         UpdateLine();
     }
 
+    [Flags]
+    enum JointTypeMask
+    {
+        DISTANCE = 1 << 0,
+        RELATIVE= 1 << 1,
+        SPRING =  1 << 2,
+        FRICTION = 1 << 3,
+        HINGE = 1 << 4,
+        FIXED = 1 << 5,
+        ALL = DISTANCE | RELATIVE | SPRING | FRICTION | HINGE | FIXED
+    }
 
+    bool MaskIncludesDistance(JointTypeMask mask) => (mask & JointTypeMask.DISTANCE) > 0;
+    bool MaskIncludesRelative(JointTypeMask mask) => (mask & JointTypeMask.DISTANCE) > 0;
+    bool MaskIncludesFriction(JointTypeMask mask) => (mask & JointTypeMask.DISTANCE) > 0;
+    private Dictionary<Type, JointTypeMask> maskLookup;
+    void SetupTypeDictionary()
+    {
+         maskLookup = new Dictionary<Type, JointTypeMask>();
+        maskLookup.Add(typeof(DistanceJoint2D), JointTypeMask.DISTANCE);
+        maskLookup.Add(typeof(RelativeJoint2D), JointTypeMask.RELATIVE);
+        maskLookup.Add(typeof(SpringJoint2D), JointTypeMask.SPRING);
+        maskLookup.Add(typeof(HingeJoint2D), JointTypeMask.HINGE);
+        maskLookup.Add(typeof(FixedJoint2D), JointTypeMask.FIXED);
+        maskLookup.Add(typeof(FrictionJoint2D), JointTypeMask.FRICTION);
+    }
+
+    bool MaskIncludesType(Type jointType)
+    {
+        if (maskLookup == null)
+        {
+            SetupTypeDictionary();
+        }
+
+        if (maskLookup.ContainsKey(jointType))
+            return (GetJointTypeMask() & maskLookup[jointType]) > 0;
+
+        return false;
+    }
 
     private float GetAngle(int index, int count)
     {
@@ -66,74 +121,133 @@ public class JointHelper : MonoBehaviour
 
     private void UpdateLine()
     {
+        List<Vector3> points = new List<Vector3>();
         _lr = GetComponent<LineRenderer>();
         if (_lr == null) return;
-        var rb = transform.GetComponent<Rigidbody2D>();
-        int iPlus = 0;
-        if (rb != null && rb.isKinematic)
-        {
-            _lr.positionCount = transform.childCount + 1;
-            _lr.SetPosition(0, transform.position);
-            iPlus = 1;
-        }
-        else
-        {
-            _lr.positionCount = transform.childCount;
-        }
+
         
-        for (int i = 0; i < transform.childCount; i++)
+
+        var bodies = GetJointBodies(transform);
+        for (int i = 0; i < bodies.Count; i++)
         {
-            _lr.SetPosition(i + iPlus, transform.GetChild(i).position);
+            points.Add(bodies[i].position);
         }
+        if(!attachLineToEnd && bodyToAttachToEnd!=null)points.RemoveAt(points.Count-1);
+        if (!attachLineToStart) points.RemoveAt(0);
+
+        _lr.positionCount = points.Count;
+        _lr.SetPositions(points.ToArray());
+
     }
 
+    struct JointConnection
+    {
+        public Rigidbody2D connectedBody;
+        public Rigidbody2D attachedBody;
+        public readonly int JointIndex;
+
+        public JointConnection(Rigidbody2D connectedBody, Rigidbody2D attachedBody, int jointIndex)
+        {
+            this.connectedBody = connectedBody;
+            this.attachedBody = attachedBody;
+            this.JointIndex = jointIndex;
+        }
+    }
+    
     private void UpdateJoints()
     {
         var t = transform;
         if (t.childCount < 1) return;
         int cnt = t.childCount;
-
-        if (_rb != null)
+        var bodies = GetJointBodies(transform).ToList();
+        if (bodies.Count == 0) return;
+        var connections = GetConnections(bodies).ToList();
+        
+        if (connections.Count == 0) return;
+        foreach (var connection in connections)
         {
-            Attach(_rb, t.GetChild(0).GetComponents<Joint2D>(), -1);
+            Attach(connection, connections.Count);
+        }
+    }
+    IEnumerable GetJointBodiesIterator(Transform ropeJointParent)
+    {
+        var startBody = bodyToAttachToStart ? bodyToAttachToStart : GetComponent<Rigidbody2D>();
+        if (startBody != null) yield return startBody;
+
+        for (int i = 0; i < ropeJointParent.childCount; i++)
+        {
+            var childBody = ropeJointParent.GetChild(i).GetComponent<Rigidbody2D>();
+            if (childBody) yield return childBody;
         }
 
-        for (int i = 1; i < cnt; i++)
+        if (bodyToAttachToEnd) yield return bodyToAttachToEnd;
+        
+    }
+    IEnumerable<JointConnection> GetConnections(List<Rigidbody2D> jointBodies)
+    {
+        if (jointBodies.Count < 1)
         {
-            var t0 = t.GetChild(i - 1);
-            var t1 = t.GetChild(i);
-            Attach(t0.GetComponent<Rigidbody2D>(), t1.GetComponents<Joint2D>(), i);
+            yield break;
         }
+
+        for (int i = 1; i < jointBodies.Count; i++)
+        {
+            var b0 = jointBodies[i - 1];
+            var b1 = jointBodies[i];
+            yield return new JointConnection(b0, b1, i-1);
+        }
+    }
+    List<Rigidbody2D> GetJointBodies(Transform ropeJointParent)
+    {
+        List<Rigidbody2D> bodies = new List<Rigidbody2D>();
+        
+        
+        var startBody = bodyToAttachToStart ? bodyToAttachToStart : GetComponent<Rigidbody2D>();
+        if (startBody != null) bodies.Add(startBody);
+
+        for (int i = 0; i < ropeJointParent.childCount; i++)
+        {
+            var childBody = ropeJointParent.GetChild(i).GetComponent<Rigidbody2D>();
+            if (childBody) bodies.Add(childBody);
+        }
+        
+        if (bodyToAttachToEnd) bodies.Add(bodyToAttachToEnd);
+        return bodies;
     }
 
     private void Attach(Rigidbody2D rb, Joint2D[] joints, int i)
     {
-        int cnt = transform.childCount;
+        
+    }
+
+    private void Attach(JointConnection connection, int connectionsCount)
+    {
+        if (connection.JointIndex ==0)
+            connection = new JointConnection(connection.attachedBody, connection.connectedBody, connection.JointIndex);
+        Joint2D[] joints = connection.attachedBody.GetComponents<Joint2D>();
+        bool isFirstOrLast = connection.JointIndex == 0 || connection.JointIndex == connectionsCount - 1; 
         foreach (var joint2D in joints)
         {
-            joint2D.connectedBody = rb;
-            // if (joint2D is RelativeJoint2D anchoredJoint)
-            // {
-            //     anchoredJoint.linearOffset = this.offset;
-            //     if(i > -1) UpdateAngle(anchoredJoint, i, cnt);
-            // }
+            joint2D.connectedBody = connection.connectedBody;
             UpdateCollider(joint2D);
+            if (!MaskIncludesType(joint2D.GetType()))
+                continue;
             switch (joint2D.GetType())
             {
                 case var _ when joint2D is RelativeJoint2D relativeJoint2D:
-                    relativeJoint2D.linearOffset = GetRelativeJointLinearOffset(relativeJoint2D, i, cnt);
-                    UpdateAngle(relativeJoint2D, i, cnt);
+                    
+                    relativeJoint2D.linearOffset = GetRelativeJointLinearOffset(relativeJoint2D, connection.JointIndex, connectionsCount);
+                    UpdateAngle(relativeJoint2D, connection.JointIndex, connectionsCount);
                     break;
                 case var _ when joint2D is DistanceJoint2D distanceJoint:
-                    distanceJoint.distance = GetDistanceJointDistance(distanceJoint, i, cnt);
+                    distanceJoint.distance = !isFirstOrLast ? GetDistanceJointDistance(distanceJoint, connection.JointIndex, connectionsCount) : 0.1f;
                     break;
                 case var _ when joint2D is SpringJoint2D springJoint:
-                    springJoint.frequency = GetSpringJointFrequency(springJoint, i, cnt);
+                    springJoint.frequency = GetSpringJointFrequency(springJoint, connection.JointIndex, connectionsCount);
                     break;
             }
         }
     }
-
     private void UpdateCollider(Joint2D joint2D)
     {
         if (handleColliders != ColliderMode.IGNORE)
@@ -187,4 +301,23 @@ public class JointHelper : MonoBehaviour
         Invoke(nameof(DisableColliders), delay);   
     }
 
+
+    private void OnDrawGizmos()
+    {
+        var bodies = GetJointBodies(transform);
+        if (bodies.Count <= 1)
+        {
+            return;
+        }
+
+        for (int i = 1; i < bodies.Count; i++)
+        {
+            var body0 = bodies[i - 1];
+            var body1 = bodies[i];
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(body0.position,jointRadius);
+            Gizmos.DrawWireSphere(body1.position, jointRadius);
+            Gizmos.DrawLine(body0.position, body1.position);
+        }
+    }
 }
