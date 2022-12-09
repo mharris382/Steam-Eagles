@@ -1,28 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreLib;
+using NaughtyAttributes;
 using UniRx;
+using Rand = UnityEngine.Random;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Spaces
 {
+    #if UNITY_EDITOR
+    
+    public class DynamicBlockEditorWindow : EditorWindow
+    {
+        public List<DynamicBlock> blocks;
+        private const string DYNAMIC_BLOCK_PATH = "Assets/Tiles/Dynamic Block/";
+        
+        [MenuItem("Tools/Block Editor")]
+        public static void OpenBlockEditorWindow()
+        {
+            var window = GetWindow<DynamicBlockEditorWindow>();
+            var guids = AssetDatabase.FindAssets("t:DynamicBlock");
+            if (guids.Length == 0)
+            {
+                Debug.LogWarning("Search for dynamic blocks returned no results");
+            }
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var block = AssetDatabase.LoadAssetAtPath<DynamicBlock>(path);
+                window.blocks.Add(block);
+            }
+            window.Show();
+        }
+
+        private void OnGUI()
+        {
+            var so = new SerializedObject(this);
+            var prop = so.FindProperty("blocks");
+            EditorGUILayout.PropertyField(prop, true);
+            so.ApplyModifiedProperties();
+        }
+    }
+    
+    #endif
     [CreateAssetMenu(menuName = "Steam Eagles/Dynamic Block")]
     public class DynamicBlock : ScriptableObject, IBlockID
     {
         public string BlockName => blockName;
         
         public string blockName = "";
-        
-        
-        [HideInInspector, Obsolete("Unnecessary coupling between systems")]
-        public StaticBlock linkedStaticBlock;
     
-        [Header("Rendering")]
-        public Sprite[] overrideSprites;
+        [Required]
+        public RuleTile tile;
+
+        [Header("Rendering")] public Sprite[] overrideSprites;
         public string sortingLayerName = "Dynamic";
         public int sortingOrder = 10;
         public Color color = Color.clear;
+        public ParticleSystem.MinMaxGradient spawnColor;
     
         [Header("Physics")]
         public float mass = 1;
@@ -49,8 +90,7 @@ namespace Spaces
         [SerializeField] private SpawnPrefab[] spawnPrefabs;
         
         
-        [Serializable]
-        private class SpawnPrefab
+        [Serializable] private class SpawnPrefab
         {
             public GameObject prefab;
             public bool spawnAsChild = true;
@@ -69,7 +109,6 @@ namespace Spaces
 
         
         private PhysicsMaterial2D _physicMaterial;
-
         public PhysicsMaterial2D PhysicMaterial2D
         {
             get
@@ -129,17 +168,8 @@ namespace Spaces
             return inst;
         }
 
-        public Color GetDynamicBlockColor()
-        {
-            if (linkedStaticBlock == null)
-            {
-                var c = color;
-                c.a = 1;
-                return c;
-            }
-            return color == Color.clear ? linkedStaticBlock.color : color;
-        }
-    
+        public Color GetDynamicBlockColor() => spawnColor.Evaluate(Rand.value);
+        
         public Sprite GetDynamicBlockSprite()
         {
             if (overrideSprites != null && overrideSprites.Length > 0)
@@ -147,8 +177,7 @@ namespace Spaces
                 var index =UnityEngine.Random.Range(0, overrideSprites.Length - 1);
                 return overrideSprites[index];
             }
-        
-            return linkedStaticBlock.sprite;
+            return tile.m_DefaultSprite;
         }
 
         private void SetupPhysics(Rigidbody2D rb,Vector3 position, float rotation)

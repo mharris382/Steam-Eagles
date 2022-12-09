@@ -337,6 +337,7 @@ public class RuleTileCopier : EditorWindow
 
     public GameObject overrideDefaultGameobject;
     public RuleTile original;
+    public Sprite fallbackSprite;
     public Sprite[] sprites = new Sprite[0];
     public TileType tileType = TileType.RULE_TILE;
     public string newTileName;
