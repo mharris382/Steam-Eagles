@@ -11,11 +11,50 @@ public abstract class CellAbility : MonoBehaviour
 {
     [SerializeField] private AbilityUser abilityUser;
     [SerializeField] private SharedTilemap tilemap;
+    [SerializeField] private SharedTilemaps tilemaps;
     [SerializeField] public SharedTilemap blockingMap;
     
     [SerializeField] public List<SharedTilemap> blockingMaps;
     [SerializeField] public List<Tilemap> sceneBlockingMaps;
-    public virtual Tilemap Tilemap => tilemap.Value;
+
+    public virtual Tilemap Tilemap
+    {
+        get
+        {
+            if(tilemap != null)
+            {
+                if (tilemap.HasValue)
+                {
+                    return tilemap.Value;
+                }
+            }
+
+            if (tilemaps != null)
+            {
+                return GetSelectedTilemapFromTargetTilemaps();
+            }
+
+            return null;
+        }
+    }
+
+    Tilemap GetSelectedTilemapFromTargetTilemaps()
+    {
+        if (tilemaps == null)
+        {
+            return null;
+        }
+
+        foreach (var tm in tilemaps.Value)
+        {
+            if (tm != null)
+            {
+                return tm;
+            }
+        }
+
+        return null;
+    }
 
     protected virtual bool IsCellBlocked(Vector3Int cell)
     {

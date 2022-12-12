@@ -10,10 +10,10 @@ namespace Characters
     {
         public Camera camera;
         public SharedCamera sharedCamera;
-        public CellSelector selector;
+       public CellSelector selector;
         
-        public Ability leftMouseButton;
-        public Ability righttMouseButton;
+        public AbilityController leftMouseButton;
+        public AbilityController righttMouseButton;
         public Camera ActiveCam => camera == null ? sharedCamera.Value : camera;
 
         private void Update()

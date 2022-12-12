@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Characters.Actions;
 using UnityEngine;
 
+[Obsolete("Refactoring system to use new input system")]
 public class AbilityButtonInput : MonoBehaviour
 {
     private CharacterState _characterState;
 
-    public Ability leftAbility;
-    public Ability rightAbility;
-    public Ability upAbility;
-    public Ability downAbility;
+    public AbilityController downAbility;
+    public AbilityController upAbility;
+    public AbilityController leftAbility;
+    public AbilityController rightAbility;
 
     private Vector2 lastVelocity;
     
@@ -53,7 +55,7 @@ public class AbilityButtonInput : MonoBehaviour
         }
     }
 
-    IEnumerable<Ability> GetAbilityCheckOrder()
+    IEnumerable<AbilityController> GetAbilityCheckOrder()
     {
         var vel = new Vector2(
             Mathf.Abs(_characterState.VelocityX > 0.1f ? _characterState.VelocityX : lastVelocity.x),

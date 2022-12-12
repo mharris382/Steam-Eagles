@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Characters.Actions
 {
-    public class Ability : MonoBehaviour
+    public class AbilityController : MonoBehaviour
     {
         public CellSelector selector;
         public CellAbility cellAbility;

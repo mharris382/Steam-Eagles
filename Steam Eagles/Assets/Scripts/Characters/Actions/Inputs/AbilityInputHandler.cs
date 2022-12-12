@@ -8,10 +8,10 @@ using UnityEngine.InputSystem;
 public class AbilityInputHandler : MonoBehaviour
 {
 
-    public Ability leftAbility;
-    public Ability rightAbility;
-    public Ability upAbility;
-    public Ability downAbility;
+    public AbilityController leftAbility;
+    public AbilityController rightAbility;
+    public AbilityController upAbility;
+    public AbilityController downAbility;
     
     [Header("Legacy Keyboard Input")]
     public bool useLegacyInput = false;
