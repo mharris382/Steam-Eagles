@@ -14,5 +14,16 @@ namespace Spaces
                 Debug.Log($"StartUp {this.name} - {position}", this);
             return base.StartUp(position, tilemap, instantiatedGameObject);
         }
+
+        public override bool RuleMatches(TilingRule rule, Vector3Int position, ITilemap tilemap, ref Matrix4x4 transform)
+        {
+            if (RuleMatches(rule, position, tilemap, 0))
+            {
+                transform = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, 0f), Vector3.one);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
