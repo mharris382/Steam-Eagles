@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Characters.Interactables
 {
@@ -9,6 +10,7 @@ namespace Characters.Interactables
         
         public string description = "Flip Lever";
         public InteractionType interactionType;
+        public UnityEvent onInteraction;
         
         public enum InteractionType
         {
@@ -24,7 +26,9 @@ namespace Characters.Interactables
 
         public virtual void OnInteractionTriggered(InteractionController actor)
         {
-            
+            onInteraction.Invoke();   
         }
+        
+        
     }
 }
