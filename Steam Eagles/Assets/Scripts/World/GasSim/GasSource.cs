@@ -10,6 +10,38 @@ using UnityEditor;
 
 namespace GasSim
 {
+    
+    public abstract class GasIO : MonoBehaviour
+    {
+        private Grid _gasGrid;
+        public Grid GasGrid => _gasGrid ? _gasGrid : _gasGrid = GetComponentInParent<Grid>();
+
+        /// <summary>
+        /// rather than checking every cell that the gas IO modifies, we first check the scan points.  If no gas is found
+        /// in any scan points, we don't bother checking the cells.
+        /// </summary>
+        /// <returns></returns>
+        public abstract IEnumerable<Vector2Int> GetScanPoints();
+        
+        
+        [SerializeField]
+        private Rect worldSpaceBounds = new Rect(0, 0, 1, 1);
+
+
+
+        protected abstract Color GetGizmoColor();
+
+        private void OnDrawGizmos()
+        {
+            var color = GetGizmoColor();
+            Gizmos.color = color;
+        }
+    }
+    
+    
+    
+    
+    
     [AddComponentMenu("SteamEagles/Gas/GasSource")]
     public class GasSource : CellHelper, IGasSource
     {

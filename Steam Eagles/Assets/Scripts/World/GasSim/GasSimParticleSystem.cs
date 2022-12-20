@@ -307,29 +307,29 @@ namespace GasSim
             
            // this.TimerPrintout("Starting Grid Sources (single thread, no parallel)");
             
-            DoGridSources();
+            //DoGridSources();
             
            // this.TimerPrintout("Processed Grid Sources");
             
-            ApplySourceChangesToGrid();
+            //ApplySourceChangesToGrid();
             
            // this.TimerPrintout("Starting Grid Sinks");
             
-            DoGridSinks();
+            //DoGridSinks();
             
             //this.TimerPrintout("Processed Grid Sinks");
             
-            ApplySinkChangesToGrid();
+            //ApplySinkChangesToGrid();
 
             //this.TimerStop("Finished Grid IO (single thread, no parallel)");
             
             
 
-            if (updateParticlesOnSourceUpdate)
-            {
-                CancelInvoke(lastSimulationStep == 1 ? nameof(DoSimulationStep2) : nameof(DoSimulationStep1));
-                DoSimulationStep1();
-            }
+            //if (updateParticlesOnSourceUpdate)
+            //{
+            //    CancelInvoke(lastSimulationStep == 1 ? nameof(DoSimulationStep2) : nameof(DoSimulationStep1));
+            //    DoSimulationStep1();
+            //}
         }
         
        

@@ -19,6 +19,10 @@ namespace GasSim
 
         public List<GameObject> sources;
         public List<GameObject> sinks;
+
+
+        private List<GasIO> _blobs;
+        
         
         private void Awake()
         {
@@ -70,6 +74,11 @@ namespace GasSim
             {
                 GasSim.RemoveGasSinkFromSimulation(gasSink);
             }
+        }
+
+        public void ApplyIOToPressure(IPressureGrid simGrid)
+        {
+            
         }
     }
     
