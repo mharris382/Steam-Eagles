@@ -17,23 +17,36 @@ public class BoatPropeller : MonoBehaviour
         _constantForce2D ? _constantForce2D : _constantForce2D = GetComponent<ConstantForce2D>();
     
     [SerializeField] private float propellerRadius = 0.5f;
-    [SerializeField] private float propellerForce = 10f;
-
+    
+    [SerializeField] private float propellerForwardsForce = 10f;
+    [SerializeField] private float propellerReverseForce = 10f;
+    
+    [SerializeField] private IntReactiveProperty _direction = new IntReactiveProperty(1);
+    
     [SerializeField] private Events events;
     
     private FloatReactiveProperty _propellerSpeed = new FloatReactiveProperty(0f);
     private BoolReactiveProperty _isPowered = new BoolReactiveProperty();
     private BoolReactiveProperty _inWater = new BoolReactiveProperty();
     
+    
+    
     public bool InWater
     {
         private set => _inWater.Value = value;
         get => _inWater.Value;
     }
+    
     public bool IsPowered
     {
         get => _isPowered.Value;
         set => _isPowered.Value = value;
+    }
+
+    public int Direction
+    {
+        get => _direction.Value;
+        set => _direction.Value = Mathf.Clamp(value, -1, 1);
     }
 
     public bool IsFunctional => InWater && IsPowered;
@@ -42,15 +55,25 @@ public class BoatPropeller : MonoBehaviour
     {
         _isPowered = new BoolReactiveProperty();
         _inWater = new BoolReactiveProperty();
+        _direction = new IntReactiveProperty(1);
+        var isPoweredAndOn = _isPowered.CombineLatest(_direction, (isPowered, direction) => isPowered && direction != 0);
         
-        _inWater.ZipLatest(_isPowered, (sub, pow) => (sub,pow))
-            .Subscribe(t => events.RaiseEvents(t.pow, t.sub))
+        var isConstantForceEnabled = isPoweredAndOn.CombineLatest(_inWater, (isPowAndOn, inWater) => isPowAndOn && inWater)
+            .Subscribe(isEnabled => ConstantForce2D.enabled = isEnabled)
+            .AddTo(this);
+        
+        var propellerForce = isPoweredAndOn.CombineLatest(_inWater, (isPowAndOn, inWater) => isPowAndOn && inWater)
+            .Select(t => t ? Direction * (Direction > 0 ? propellerForwardsForce : propellerReverseForce) : 0f)
+            .Subscribe(force => ConstantForce2D.force = new Vector2(force, 0))
+            .AddTo(this);
+        
+        _inWater.CombineLatest(isPoweredAndOn, (sub, pow) => (sub,pow))
+            .Subscribe(t => events.RaiseEvents(t.pow, t.sub, Direction))
             .AddTo(this);
     }
 
     private void Update()
     {
-        
         InWater = IsPropellerSubmerged();
     }
 
@@ -91,6 +114,9 @@ public class BoatPropeller : MonoBehaviour
         Gizmos.DrawSphere(transform.position, propellerRadius);
     }
 
+    
+    
+    
     [Serializable]
     private class Events
     {
@@ -106,6 +132,9 @@ public class BoatPropeller : MonoBehaviour
         public UnityEvent onPropellerFunctional;
         public UnityEvent onPropellerNonFunctional;
 
+        [Header("Direction")]
+        public UnityEvent<int> onDirectionChanged;
+        
         void RaiseWaterEvents(bool inWater)
         {
             if (inWater)
@@ -117,7 +146,6 @@ public class BoatPropeller : MonoBehaviour
                 onSurfaced.Invoke();
             }
         }
-
         void RaisePowerEvents(bool powered)
         {
             if (!powered)
@@ -129,11 +157,13 @@ public class BoatPropeller : MonoBehaviour
                 onPropellerPowered?.Invoke();
             }
         }
-        public void RaiseEvents(bool powered, bool inWater)
+        
+        public void RaiseEvents(bool powered, bool inWater, int direction)
         {
             RaisePowerEvents(powered);
             RaiseWaterEvents(inWater);
-            if (inWater && powered)
+            onDirectionChanged?.Invoke(direction);
+            if (inWater && powered && direction != 0)
             {
                 onPropellerFunctional?.Invoke();
             }
@@ -152,14 +182,18 @@ public class BoatPropellerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        
         if (Application.isPlaying)
         {
             EditorGUILayout.BeginHorizontal();
             if(GUILayout.Button("Toggle Power")) ((BoatPropeller) target).IsPowered = !((BoatPropeller) target).IsPowered;
-            if (GUILayout.Button("Off")) ((BoatPropeller)target).IsPowered = false;
-            if (GUILayout.Button("On")) ((BoatPropeller)target).IsPowered = true;
+            
+            if (GUILayout.Button("<", GUILayout.Width(25))) ((BoatPropeller)target).Direction = -1;
+            if (GUILayout.Button("|", GUILayout.Width(25))) ((BoatPropeller)target).Direction = 0;
+            if (GUILayout.Button(">", GUILayout.Width(25))) ((BoatPropeller)target).Direction = 1;
             EditorGUILayout.EndHorizontal();
         }
+        EditorGUILayout.Space(10);
         base.OnInspectorGUI();
     }
 }

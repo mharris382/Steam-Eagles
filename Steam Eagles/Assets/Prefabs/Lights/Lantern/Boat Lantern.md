@@ -1,0 +1,1 @@
+Physically jointed 2D light, created initially to be attached at the bow of the boat. Later modified the light to function as a hanging ceiling light in the same scene.
