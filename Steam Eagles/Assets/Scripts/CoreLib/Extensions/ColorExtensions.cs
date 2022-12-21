@@ -28,5 +28,10 @@ namespace CoreLib
             color.a = alpha;
             return color;
         }
+
+        public static Color Darken(this Color color, float intensity) => Color.Lerp(color, Color.black, intensity);
+        public static Color Lighten(this Color color, float intensity) => Color.Lerp(color, Color.white, intensity);
+
+        public static Color Mix(this Color color, Color other, float amount) => Color.Lerp(color, other, amount);
     }
 }
