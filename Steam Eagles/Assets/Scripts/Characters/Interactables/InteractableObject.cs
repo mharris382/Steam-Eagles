@@ -26,7 +26,7 @@ namespace Characters.Interactables
 
         public virtual void OnInteractionTriggered(InteractionController actor)
         {
-            onInteraction.Invoke();   
+            onInteraction?.Invoke();   
         }
         
         
