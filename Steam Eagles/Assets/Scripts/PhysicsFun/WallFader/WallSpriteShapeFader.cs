@@ -13,5 +13,7 @@ namespace PhysicsFun
             
             spriteShapeController.color = new Color(1, 1, 1, alpha);
         }
+
+        public override float GetWallAlpha() => spriteShapeController.color.a;
     }
 }

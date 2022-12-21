@@ -14,5 +14,7 @@ namespace PhysicsFun
             c.a = alpha;
             tmr.color = c;
         }
+
+        public override float GetWallAlpha() => tmr.color.a;
     }
 }
