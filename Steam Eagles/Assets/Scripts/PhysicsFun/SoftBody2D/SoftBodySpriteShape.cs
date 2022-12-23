@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace PhysicsFun
+namespace PhysicsFun.SoftBody2D
 {
     [ExecuteAlways]
-    [RequireComponent(typeof(SoftBody2D))]
+    [RequireComponent(typeof(PhysicsFun.SoftBody2D.SoftBody2D))]
     public class SoftBodySpriteShape : MonoBehaviour
     {
         private const float SPLINE_OFFSET = .5f;
         public SpriteShapeController spriteShapeController;
       
 
-        private SoftBody2D _softBody;
-        public SoftBody2D softBody2D => _softBody ? _softBody : _softBody = GetComponent<SoftBody2D>();
+        private PhysicsFun.SoftBody2D.SoftBody2D _softBody;
+        public PhysicsFun.SoftBody2D.SoftBody2D softBody2D => _softBody ? _softBody : _softBody = GetComponent<PhysicsFun.SoftBody2D.SoftBody2D>();
 
+        public bool checkForBreaks = true;
 
         bool HasResources()
         {
@@ -30,11 +29,18 @@ namespace PhysicsFun
             UpdateVertices();
         }
 
+        void CheckForBreaks()
+        {
+            
+        }
+        
         private void Update()
         {
             if (!HasResources()) return;
             UpdateVertices();
         }
+
+        
 
         private void UpdateVertices()
         {

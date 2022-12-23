@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace PhysicsFun
+namespace PhysicsFun.SoftBody2D
 {
     [RequireComponent(typeof(SpringJoint2D))]
     [RequireComponent(typeof(CircleCollider2D))]
@@ -44,6 +44,11 @@ namespace PhysicsFun
                 return _springs[2];
             }
         }
+
+        public bool IsRightBroken() => GetSpringToNextBody().connectedBody == null;
+        public bool IsLeftBroken() => GetSpringToPrevBody().connectedBody == null;
+        public bool IsBroken() => GetSpringToNextBody().connectedBody == null || GetSpringToPrevBody().connectedBody == null;
+
         public SpringJoint2D GetSpringToPrevBody()
         {
             if(_springs.Length < 3)

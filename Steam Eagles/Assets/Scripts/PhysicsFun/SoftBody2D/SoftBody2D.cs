@@ -1,50 +1,62 @@
-﻿
-using System;
+﻿using System;
+using System.Collections.Generic;
 using NaughtyAttributes;
-using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
+using UnityEngine;
 
-namespace PhysicsFun
+namespace PhysicsFun.SoftBody2D
 {
     [RequireComponent(typeof(CircleCollider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
     public class SoftBody2D : MonoBehaviour
     {
-        private Rigidbody2D _rb;
-        public Rigidbody2D centerBody => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
-        
-        
-        private CircleCollider2D _circle;
-        public CircleCollider2D circle => _circle ? _circle : _circle = GetComponent<CircleCollider2D>();
-
-        [Range(3, 25)]
-        public int numBodies = 4;
+       
 
         public bool autoPosition = true;
+        [Range(3, 25)] public int numBodies = 4;
+        
+        [Header("Spring Distance")]
+        public bool overrideDistance = false;
+        [ShowIf("overrideDistance")] public float distance = 1f;
+
         [Header("Spring Settings")]
         public float springFrequency = 3;
         [Range(0,1)] public float springDamping = 0f;
         
-        
-        [Header("Radius")]
+        [Header("Radius")] 
         public bool uniformRadius = true;
-        [ShowIf(nameof(uniformRadius))]
-        public float bodyRadius = 0.1f;
-
+        [ShowIf(nameof(uniformRadius))] public float bodyRadius = 0.1f;
         public float padding = 0.5f;
-        [Header("Middle Spring")]
+
+        [Header("Middle Spring")] 
         public bool overrideSpringMiddle = false;
-        [ShowIf(nameof(overrideSpringMiddle))]
-        public float springFrequencyMiddle = 3;
-        [ShowIf(nameof(overrideSpringMiddle))]
-        public float springDistanceMiddle = 4;
-        [ShowIf(nameof(overrideSpringMiddle)), Range(0,1)]
-        public float springDampingMiddle = 0;
+        [ShowIf(nameof(overrideSpringMiddle))] public float springFrequencyMiddle = 3;
+        [ShowIf(nameof(overrideSpringMiddle))] public float springDistanceMiddle = 4;
+        [ShowIf(nameof(overrideSpringMiddle)), Range(0,1)] public float springDampingMiddle = 0;
+
+        
+        
+        private Rigidbody2D _rb;
+        private CircleCollider2D _circle;
+        public Rigidbody2D centerBody => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
+        public CircleCollider2D circle => _circle ? _circle : _circle = GetComponent<CircleCollider2D>();
+    
         public void UpdateBodies()
         {
-            if (Application.isPlaying) return;
+            if (!Application.isPlaying)
+            {
+                INTERNAL_UpdateBodies_EDITOR();
+            }
+            else
+            {
+                throw new Exception("Call this method only in editor mode");
+            }
+        }
+
+        
+        
+        private void INTERNAL_UpdateBodies_EDITOR()
+        {
             if (transform.childCount <= 1) return;
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -60,18 +72,39 @@ namespace PhysicsFun
                 
                 SetupColliders(child0, child1);
             }
-            if(autoPosition)
-                AutoPositionBodies();
+            if(autoPosition) AutoPositionBodies();
         }
+
+        private void INTERNAL_UpdateBodies()
+        {
+            var t = transform;
+            for (int i = 0; i < t.childCount; i++)
+            {
+                var child = t.GetChild(i).GetComponent<SoftBody2DCollider>();
+                if (child == null) continue;
+                child.GetSpringToNextBody().frequency = child.GetSpringToPrevBody().frequency = springFrequency;
+                child.GetSpringToNextBody().dampingRatio = child.GetSpringToPrevBody().dampingRatio = springDamping;
+                if (overrideDistance)
+                {
+                    
+                    child.GetSpringToNextBody().distance = child.GetSpringToPrevBody().distance = distance;
+                }
+                
+            }
+        }
+        
 
         private void SetupColliders(SoftBody2DCollider child0, SoftBody2DCollider child1)
         {
             SetupCollider(child0);
             SetupCollider(child1);
+            
             var s0 = child0.GetSpringToNextBody();
             var s1 = child1.GetSpringToPrevBody();
+            
             s0.connectedBody = child1.rigidbody;
             s1.connectedBody = child0.rigidbody;
+            
             s0.frequency = s1.frequency = this.springFrequency;
             s0.dampingRatio = s1.dampingRatio = this.springDamping;
             
@@ -128,6 +161,7 @@ namespace PhysicsFun
                 PositionBody(anglePerBody, i, this);
             }
         }
+        
         public static void PositionBody(float anglePerBody, int i, SoftBody2D softBody)
         {
             float angle = anglePerBody * i;
@@ -260,4 +294,6 @@ namespace PhysicsFun
     }
     
     #endif
+    
+    
 }
