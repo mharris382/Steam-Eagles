@@ -60,24 +60,27 @@ namespace PhysicsFun
                 
                 SetupColliders(child0, child1);
             }
-            
+            if(autoPosition)
+                AutoPositionBodies();
         }
 
         private void SetupColliders(SoftBody2DCollider child0, SoftBody2DCollider child1)
         {
+            SetupCollider(child0);
+            SetupCollider(child1);
             var s0 = child0.GetSpringToNextBody();
             var s1 = child1.GetSpringToPrevBody();
             s0.connectedBody = child1.rigidbody;
             s1.connectedBody = child0.rigidbody;
             s0.frequency = s1.frequency = this.springFrequency;
             s0.dampingRatio = s1.dampingRatio = this.springDamping;
-            SetupCollider(child0);
-            SetupCollider(child1);
+            
         }
 
 
         private void SetupCollider(SoftBody2DCollider child0)
         {
+            child0.circleCollider2D.radius = this.bodyRadius;
             var middle = child0.GetSpringToMiddle();
             middle.frequency = springFrequencyMiddle;
             if (middle.autoConfigureDistance == false)
