@@ -1,7 +1,10 @@
-﻿namespace Buildings
+﻿using Buildings.BuildingTilemaps;
+using World;
+
+namespace Buildings
 {
     public class WallTilemap : BuildingTilemap
     {
-        public override TilemapType TilemapType => TilemapType.WALL;
+        public override BuildingLayers Layer => BuildingLayers.WALL;
     }
 }

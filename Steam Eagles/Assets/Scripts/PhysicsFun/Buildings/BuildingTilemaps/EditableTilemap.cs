@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using World;
 
 namespace Buildings.BuildingTilemaps
@@ -8,5 +9,20 @@ namespace Buildings.BuildingTilemaps
         [SerializeField]
         private BuildingLayers blockingLayers = BuildingLayers.FOUNDATION;
         public virtual BuildingLayers GetBlockingLayers() => blockingLayers;
+        
+        public bool CanBuild(Building building, Vector3Int position)
+        {
+            return !IsBlocked(building, position);
+        }
+        
+        public bool CanDestroy(Building building, Vector3Int position)
+        {
+            return IsBlocked(building, position);
+        }
+
+        protected virtual bool IsBlocked(Building building, Vector3Int position)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

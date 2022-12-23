@@ -1,7 +1,14 @@
-﻿namespace Buildings
+﻿using Buildings.BuildingTilemaps;
+using World;
+
+namespace Buildings
 {
-    public class FoundationTilemap : BuildingTilemap
+    public class FoundationTilemap : RenderedTilemap
     {
-        public override TilemapType TilemapType => TilemapType.WALL;
+        public override BuildingLayers Layer => BuildingLayers.FOUNDATION;
+        public override int GetSortingOrder(Building building)
+        {
+            return building.orderInLayer + SolidTilemap.ORDER_IN_LAYER + 1;
+        }
     }
 }

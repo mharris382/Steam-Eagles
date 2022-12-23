@@ -1,29 +1,28 @@
-﻿using UnityEditor.MemoryProfiler;
+﻿using Buildings.BuildingTilemaps;
+using PhysicsFun;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using World;
 
 namespace Buildings
 {
+    [RequireComponent(typeof(WallTilemapFader))]
     [RequireComponent(typeof(TilemapRenderer))]
-    public class CoverTilemap : BuildingTilemap
+    public class CoverTilemap : RenderedTilemap
     {
-        private TilemapRenderer _tilemapRenderer;
-        public TilemapRenderer tilemapRenderer => _tilemapRenderer ? _tilemapRenderer : _tilemapRenderer = GetComponent<TilemapRenderer>();
+                
         
-        public override TilemapType TilemapType => TilemapType.COVER;
-        public Color Color
+        public override BuildingLayers Layer { get; }
+
+        public override int GetSortingOrder(Building building)
         {
-            get => tilemap.color;
-            set => tilemap.color = value;
+            return building.orderInLayer;
         }
 
-        public float GetOpacity() => tilemap.color.a;
-
-        public void SetOpacity(float opacity)
+        public override string GetSortingLayerName(Building building)
         {
-            var c = Color;
-            c.a = opacity;
-            Color = c;
+            return "Near FG";
         }
     }
 }

@@ -7,32 +7,48 @@ using UnityEngine.Tilemaps;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using World;
 #endif
 namespace Buildings
 {
-    
+    [ExecuteInEditMode]
     [RequireComponent(typeof(Grid))]
     public  class Building : MonoBehaviour
     {
+        public string buildingName;
+        public int orderInLayer;
+
+        
         private Grid _grid;
 
         public Rect sizeWorldSpace;
 
         public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
         
-        public WallTilemap WallTilemap => _wallTilemap ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
-        public FoundationTilemap FoundationTilemap => _oundationTilemap ? _oundationTilemap : _oundationTilemap = GetComponentInChildren<FoundationTilemap>();
-        public SolidTilemap SolidTilemap => _olidTilemap ? _olidTilemap : _olidTilemap = GetComponentInChildren<SolidTilemap>();
-        public PipeTilemap PipeTilemap => _ipeTilemap ? _ipeTilemap : _ipeTilemap = GetComponentInChildren<PipeTilemap>();
-        public CoverTilemap CoverTilemap => _overTilemap ? _overTilemap : _overTilemap = GetComponentInChildren<CoverTilemap>();
         private WallTilemap _wallTilemap;
-        private FoundationTilemap _oundationTilemap;
-        private SolidTilemap _olidTilemap;
-        private PipeTilemap _ipeTilemap;
-        private CoverTilemap _overTilemap;
+        private FoundationTilemap _foundationTilemap;
+        private SolidTilemap _solidTilemap;
+        private PipeTilemap _pipeTilemap;
+        private CoverTilemap _coverTilemap;
+        
+        private WallTilemap[] _wallTilemaps;
+        private FoundationTilemap[] _foundationTilemaps;
+        private SolidTilemap[] _solidTilemaps;
+        private PipeTilemap[] _pipeTilemaps;
+        private CoverTilemap[] _coverTilemaps;
+        
+        public FoundationTilemap[] FoundationTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _foundationTilemaps : _foundationTilemaps = GetComponentsInChildren<FoundationTilemap>();
+        public SolidTilemap[] SolidTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _solidTilemaps : _solidTilemaps = GetComponentsInChildren<SolidTilemap>();
+        public PipeTilemap[] PipeTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _pipeTilemaps : _pipeTilemaps = GetComponentsInChildren<PipeTilemap>();
+        public CoverTilemap[] CoverTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _coverTilemaps : _coverTilemaps = GetComponentsInChildren<CoverTilemap>();
+        public WallTilemap[] WallTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _wallTilemaps : _wallTilemaps = GetComponentsInChildren<WallTilemap>();
+        
+        public FoundationTilemap FoundationTilemap => _foundationTilemap ? _foundationTilemap : _foundationTilemap = GetComponentInChildren<FoundationTilemap>();
+        public SolidTilemap SolidTilemap => _solidTilemap ? _solidTilemap : _solidTilemap = GetComponentInChildren<SolidTilemap>();
+        public PipeTilemap PipeTilemap => _pipeTilemap ? _pipeTilemap : _pipeTilemap = GetComponentInChildren<PipeTilemap>();
+        public CoverTilemap CoverTilemap => _coverTilemap ? _coverTilemap : _coverTilemap = GetComponentInChildren<CoverTilemap>();
+        public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
 
-        
-        
         public bool HasResources
         {
             get
@@ -45,22 +61,34 @@ namespace Buildings
             }
         }
 
-        public bool IsCoverHidden
+
+        public void Update()
         {
-            set => CoverOpacity = value ? 0 : 1;
+            if(Application.isPlaying) return;
+            UpdateTilemaps();
         }
 
-        public float CoverOpacity
+
+        public void UpdateTilemaps()
         {
-            set
+            foreach (var buildingLayer in GetAllBuildingLayers())
             {
-                var c = CoverTilemap.Color;
-                c.a = value;
-                CoverTilemap.tilemap.color = c;
+                buildingLayer.UpdateTilemap(this);
             }
         }
-        
 
+        IEnumerable<BuildingTilemap> GetAllBuildingLayers()
+        {
+            return GetComponentsInChildren<BuildingTilemap>();
+            List<BuildingTilemap> lob = new List<BuildingTilemap>();
+            
+            lob.AddRange(WallTilemaps);
+            lob.AddRange(PipeTilemaps);
+            lob.AddRange(SolidTilemaps);
+            lob.AddRange(FoundationTilemaps);
+            lob.AddRange(CoverTilemaps);
+            return lob;
+        }
 
         public IEnumerator<BuildingTilemap> GetMapSortingOrder_BackToFront()
         {
@@ -68,7 +96,8 @@ namespace Buildings
             yield return PipeTilemap;
             yield return SolidTilemap;
             yield return FoundationTilemap;
-        } 
+        }
+        
     }
 
     
@@ -79,7 +108,7 @@ namespace Buildings
     [CustomEditor(typeof(Building), true)]
     public class BuildingEditor : Editor
     {
-        public static BuildingTilemap CreateBuildingTilemapType(Building building, TilemapType type)
+        public static BuildingTilemap CreateBuildingTilemapType(Building building, BuildingLayers type)
         {
             
             var go = new GameObject($"{building}_{type.ToString().ToLower()}", typeof(Tilemap), typeof(TilemapRenderer));
@@ -97,42 +126,43 @@ namespace Buildings
             }
             switch (type)
             {
-                case TilemapType.SOLID:
+                case BuildingLayers.SOLID:
                     AddCollider();
                     go.layer = LayerMask.NameToLayer("Solids");
                     go.tag = "Solid Tilemap";
                     return go.AddComponent<SolidTilemap>();
                     break;
                 
-                case TilemapType.WALL:
+                case BuildingLayers.WALL:
                     go.layer = LayerMask.NameToLayer("Air");
                     go.tag = "Wall";
                     return go.AddComponent<WallTilemap>();
                     break;
                 
-                case TilemapType.FOUNDATION:
+                case BuildingLayers.FOUNDATION:
                     go.layer = LayerMask.NameToLayer("Ground");
                     go.tag = "Solid Tilemap";
                     AddCollider();
                     return go.AddComponent<FoundationTilemap>();
 
-                case TilemapType.PLATFORM:
+                case BuildingLayers.PLATFORM:
                     AddCollider(asPlatform: true);
                     go.layer = LayerMask.NameToLayer("Platforms");
                     return go.AddComponent<PlatformTilemap>();
                 
-                case TilemapType.PIPE:
+                case BuildingLayers.PIPE:
                     AddCollider(asPlatform: true);
                     go.layer = LayerMask.NameToLayer("Pipes");
                     go.tag = "Pipe Tilemap";
                     return go.AddComponent<PipeTilemap>();
                 
-                case TilemapType.COVER:
+                case BuildingLayers.COVER:
                     AddCollider(asTrigger: true);
                     go.layer = LayerMask.NameToLayer("Triggers");
                     return go.AddComponent<CoverTilemap>();
 
-                case TilemapType.DECOR:
+                case BuildingLayers.DECOR:
+                    throw new NotImplementedException();
                     break;
                 
                 default:
@@ -155,13 +185,16 @@ namespace Buildings
                 EditorGUILayout.HelpBox($"Building {building.name} is missing resources", MessageType.Warning);
                 if (GUILayout.Button("Create Tilemaps"))
                 {
-                    if (building.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, TilemapType.SOLID));
-                    if (building.WallTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, TilemapType.WALL));
-                    if (building.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, TilemapType.FOUNDATION));
-                    if (building.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, TilemapType.PIPE));
-                    if (building.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, TilemapType.COVER));
+                    if (building.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.SOLID));
+                    if (building.WallTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.WALL));
+                    if (building.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.FOUNDATION));
+                    if (building.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.PIPE));
+                    if (building.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.COVER));
                 }
             }
+            serializedObject.Update();
+            building.UpdateTilemaps();
+            serializedObject.ApplyModifiedProperties();
             base.OnInspectorGUI();
         }
     }

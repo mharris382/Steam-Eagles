@@ -19,6 +19,7 @@ namespace Buildings.BuildingTilemaps
         {
             TilemapRenderer.sortingOrder = GetSortingOrder(building);
             TilemapRenderer.sortingLayerID = SortingLayer.NameToID(GetSortingLayerName(building));
+            base.UpdateTilemap(building);
         }
     }
 }
