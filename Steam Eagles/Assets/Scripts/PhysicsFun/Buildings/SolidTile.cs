@@ -1,6 +1,6 @@
 ﻿namespace Spaces
 {
-    public class SolidTile : PuzzleTile
+    public class SolidTile : EditableTile
     {
         public override bool CanTileBeDisconnected()
         {
