@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
 using DG.Tweening;
+using Puzzles;
 using UniRx;
 using UnityEngine;
 
-namespace Puzzles
+namespace PhysicsFun.DynamicBlocks
 {
     /// <summary>
     /// add this to builder and transporter both.  They will then each have their own handler which will manage the

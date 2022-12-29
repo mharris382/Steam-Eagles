@@ -1,8 +1,9 @@
 ﻿using CoreLib;
+using Puzzles;
 using UniRx;
 using UnityEngine;
 
-namespace Puzzles
+namespace PhysicsFun.DynamicBlocks
 {
     public class DynamicBlockManager : MonoBehaviour
     {

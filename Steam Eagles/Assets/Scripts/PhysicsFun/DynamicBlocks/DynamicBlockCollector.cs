@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Puzzles;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace Puzzles
+namespace PhysicsFun.DynamicBlocks
 {
     /// <summary>
     /// one of these should be added to each character and the unity event will allow them to communicate

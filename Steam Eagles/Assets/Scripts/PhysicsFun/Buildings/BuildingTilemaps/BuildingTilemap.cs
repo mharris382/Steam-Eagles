@@ -17,5 +17,13 @@ namespace Buildings.BuildingTilemaps
         {
             name = $"{building.buildingName} {GetType().Name}";
         }
+
+        public Rect GetWorldBounds()
+        {
+            var bounds = Tilemap.cellBounds;
+            var min = Tilemap.CellToWorld(bounds.min);
+            var max = Tilemap.CellToWorld(bounds.max);
+            return new Rect(min, max - min);
+        }
     }
 }

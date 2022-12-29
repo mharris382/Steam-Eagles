@@ -128,6 +128,11 @@ namespace CoreLib
             }
         }
 
+        public static Rect ToRect(this Bounds bounds)
+        {
+            return new Rect(bounds.min, bounds.size);
+        }
+
         public static IEnumerable<Vector2> GetPoints(this Rect rect, bool looping)
         {
            yield return new Vector2(rect.min.x, rect.min.y);

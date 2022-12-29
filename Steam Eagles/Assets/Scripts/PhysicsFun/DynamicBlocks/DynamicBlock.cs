@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Puzzles
+namespace PhysicsFun.DynamicBlocks
 {
     /// <summary>
     /// this class is instantiated from code by dynamic block manager

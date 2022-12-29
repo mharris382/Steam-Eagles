@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using Buildings.BuildingTilemaps;
+using CoreLib;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.Tilemaps;
 
 #if UNITY_EDITOR
+using PhysicsFun;
 using UnityEditor;
 using World;
 #endif
 namespace Buildings
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BuildingState))]
     public  class Building : MonoBehaviour
     {
         public string buildingName;
@@ -22,9 +26,11 @@ namespace Buildings
         private Grid _grid;
 
         public Rect sizeWorldSpace;
-
-        public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
         
+        public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
+
+        private Rigidbody2D _rb;
+        public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
         private WallTilemap _wallTilemap;
         private FoundationTilemap _foundationTilemap;
         private SolidTilemap _solidTilemap;
@@ -61,6 +67,10 @@ namespace Buildings
             }
         }
 
+        private void Awake()
+        {
+            UpdateRigidbody(Rb);
+        }
 
         public void Update()
         {
@@ -97,12 +107,34 @@ namespace Buildings
             yield return SolidTilemap;
             yield return FoundationTilemap;
         }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            this.sizeWorldSpace.DrawGizmos();
+        }
+
+        public void CalculateSize()
+        {
+            var bounds = new Bounds();
+            foreach (var buildingLayer in GetAllBuildingLayers())
+            {
+                var layerBounds = buildingLayer.GetWorldBounds();
+                bounds.Encapsulate(layerBounds.max);
+                bounds.Encapsulate(layerBounds.min);
+            }
         
+            this.sizeWorldSpace = bounds.ToRect();
+        }
+
+        public virtual void UpdateRigidbody(Rigidbody2D rb)
+        {
+            rb.bodyType = RigidbodyType2D.Static;
+            
+        }
     }
 
-    
-    
-    
+
 #if UNITY_EDITOR
     
     [CustomEditor(typeof(Building), true)]
@@ -159,6 +191,7 @@ namespace Buildings
                 case BuildingLayers.COVER:
                     AddCollider(asTrigger: true);
                     go.layer = LayerMask.NameToLayer("Triggers");
+                    go.AddComponent<BuildingFaderTrigger>();
                     return go.AddComponent<CoverTilemap>();
 
                 case BuildingLayers.DECOR:
@@ -174,6 +207,7 @@ namespace Buildings
       
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
             var building = target as Building;
             void AddToBuilding(BuildingTilemap buildingTilemap)
             {
@@ -192,7 +226,14 @@ namespace Buildings
                     if (building.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.COVER));
                 }
             }
-            serializedObject.Update();
+            else
+            {
+                if (GUILayout.Button("Update Size"))
+                {
+                    building.CalculateSize();
+                }
+            }
+            
             building.UpdateTilemaps();
             serializedObject.ApplyModifiedProperties();
             base.OnInspectorGUI();
