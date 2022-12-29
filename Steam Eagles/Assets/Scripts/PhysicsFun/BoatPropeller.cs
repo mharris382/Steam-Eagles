@@ -48,7 +48,12 @@ namespace PhysicsFun
         public int Direction
         {
             get => _direction.Value;
-            set => _direction.Value = Mathf.Clamp(value, -1, 1);
+            set
+            {
+                _direction.Value = Mathf.Clamp(value, -1, 1);
+                events.RaiseEvents(IsPowered, InWater,Direction);
+                UpdateForce();
+            }
         }
 
         public bool IsFunctional => InWater && IsPowered;
@@ -57,7 +62,8 @@ namespace PhysicsFun
         {
             _isPowered = new BoolReactiveProperty();
             _inWater = new BoolReactiveProperty();
-            _direction = new IntReactiveProperty(1);
+            _direction = new IntReactiveProperty(0);
+            
             var isPoweredAndOn = _isPowered.CombineLatest(_direction, (isPowered, direction) => isPowered && direction != 0);
         
             var isConstantForceEnabled = isPoweredAndOn.CombineLatest(_inWater, (isPowAndOn, inWater) => isPowAndOn && inWater)
@@ -72,6 +78,12 @@ namespace PhysicsFun
             _inWater.CombineLatest(isPoweredAndOn, (sub, pow) => (sub,pow))
                 .Subscribe(t => events.RaiseEvents(t.pow, t.sub, Direction))
                 .AddTo(this);
+        }
+
+        void UpdateForce()
+        {
+            ConstantForce2D.force = new Vector2(Direction * (Direction > 0 ? propellerForwardsForce : propellerReverseForce), 0);
+            ConstantForce2D.enabled = IsFunctional && Direction != 0;
         }
 
         private void Update()
@@ -137,7 +149,7 @@ namespace PhysicsFun
             [Header("Direction")]
             public UnityEvent<int> onDirectionChanged;
         
-            void RaiseWaterEvents(bool inWater)
+            public void RaiseWaterEvents(bool inWater)
             {
                 if (inWater)
                 {
@@ -148,7 +160,7 @@ namespace PhysicsFun
                     onSurfaced.Invoke();
                 }
             }
-            void RaisePowerEvents(bool powered)
+            public void RaisePowerEvents(bool powered)
             {
                 if (!powered)
                 {
@@ -159,7 +171,8 @@ namespace PhysicsFun
                     onPropellerPowered?.Invoke();
                 }
             }
-        
+
+            
             public void RaiseEvents(bool powered, bool inWater, int direction)
             {
                 RaisePowerEvents(powered);

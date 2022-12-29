@@ -6,6 +6,7 @@ using UnityEngine;
 public class GasTankPowerSource : MonoBehaviour, IGasPowerSource
 {
     private GasTank _gasTank;
+    private GasTank gasTank => _gasTank ? _gasTank : _gasTank = GetComponent<GasTank>();
     public float gasToPower = 4;
     
     private void Awake()
@@ -13,13 +14,13 @@ public class GasTankPowerSource : MonoBehaviour, IGasPowerSource
         _gasTank = GetComponent<GasTank>();
     }
 
-    public float PowerCapacity => _gasTank.capacity * gasToPower;
-    public float AvailablePower => _gasTank.StoredAmount * gasToPower;
+    public float PowerCapacity => gasTank.capacity * gasToPower;
+    public float AvailablePower => gasTank.StoredAmount * gasToPower;
     
     public void ConsumePower(float amount)
     {
         int amt = Mathf.RoundToInt( amount * gasToPower);
-        _gasTank.StoredAmount -= amt;
-        _gasTank.StoredAmount=Mathf.Max(0, _gasTank.StoredAmount);
+        gasTank.StoredAmount -= amt;
+        gasTank.StoredAmount=Mathf.Max(0, gasTank.StoredAmount);
     }
 }

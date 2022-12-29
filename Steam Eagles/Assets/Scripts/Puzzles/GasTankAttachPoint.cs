@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GasSim;
 using Puzzles;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -38,7 +39,7 @@ public class GasTankAttachPoint : MonoBehaviour
     private HoldableItem _holdableItem;
 
     //private Valve _valve;
-    private Joint2D[] _joints;
+    private Joint2D _joints;
     private IDisposable _disposable;
 
     public GasTank AttachedTank
@@ -74,7 +75,7 @@ public class GasTankAttachPoint : MonoBehaviour
 
         _disposable?.Dispose();
         _gasTankState.IsConnected = false;
-        foreach (var joint2D in _joints) joint2D.connectedBody = null;
+        //foreach (var joint2D in _joints) joint2D.connectedBody = null;
 
         events.onTankDetached?.Invoke(attachedGasTank);
         AttachedTank = null;
@@ -94,7 +95,7 @@ public class GasTankAttachPoint : MonoBehaviour
 
         if(lockTankUntilEmpty)StartCoroutine(LockUntilEmpty(gasTank));
         _gasTankState.IsConnected = true;
-        foreach (var joint2D in _joints) joint2D.connectedBody = _tankRB;
+        _joints.connectedBody = _tankRB;
         _disposable = _holdableItem.IsHeldStream.Where(t => t).Take(1).Subscribe(t => DisconnectGasTank());
         events.onTankAttached.Invoke(attachedGasTank);
     }
@@ -113,10 +114,11 @@ public class GasTankAttachPoint : MonoBehaviour
     }
 
     Collider2D[] _colliders = new Collider2D[10];
-
+    
     private void Awake()
     {
-        this._joints = attachJoint.GetComponents<Joint2D>();
+        this._joints = attachJoint;
+        
         triggerArea.onTargetAdded.AsObservable().Where(t => !HasTankAttached())
             .Select(t => t == null ? null : t.GetComponent<GasTank>()).Where(t => t != null)
             .TakeUntilDestroy(this)

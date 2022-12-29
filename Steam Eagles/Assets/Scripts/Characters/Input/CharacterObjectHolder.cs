@@ -70,6 +70,8 @@ namespace Characters
         private bool _releasePressed;
         private bool _isReleasing;
 
+        public bool HasHeldItem => HeldItem != null;
+
         public Rigidbody2D HeldRigidBody
         {
             get => heldRigidBody;
@@ -131,10 +133,14 @@ namespace Characters
         private void Update()
         {
             
-            if (_releasePressed)
+            if (_releasePressed && HasHeldItem)
             {
                 _releasePressed = false;
-                if (_isReleasing) return;
+                if (_isReleasing)
+                {
+                    Debug.Log("Already releasing Held item",this);
+                    return;
+                }
                 _isReleasing = true;
                  StartCoroutine(ReleaseHeldObject());
             }
