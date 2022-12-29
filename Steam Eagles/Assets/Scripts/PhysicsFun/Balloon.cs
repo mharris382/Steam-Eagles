@@ -11,7 +11,7 @@ namespace PhysicsFun
 
 
         public Atmosphere atmosphere;
-
+        public SoftBody2D.SoftBody2D softBody;
 
         private void OnDrawGizmos()
         {
