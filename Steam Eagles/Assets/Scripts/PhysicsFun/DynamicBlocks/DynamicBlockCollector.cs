@@ -8,7 +8,7 @@ namespace PhysicsFun.DynamicBlocks
     /// one of these should be added to each character and the unity event will allow them to communicate
     /// </summary>
     [RequireComponent(typeof(CircleCollider2D))]
-    public class DynamicBlockCollector : TriggerArea<DynamicBlock>
+    public class DynamicBlockCollector : TriggerAreaBase<DynamicBlock>
     {
         public string targetTag = "DynamicBlock";
         private CircleCollider2D _circleCollider2D;

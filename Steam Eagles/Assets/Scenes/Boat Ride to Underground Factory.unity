@@ -8848,17 +8848,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4699508192859853730, guid: e0c2c5edcd3e05541bf9de919abad5ad, type: 3}
   m_PrefabInstance: {fileID: 676449841}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &736983934 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6467978299912315526, guid: c5f26fae63c0be147b7d1f208c70b7e9, type: 3}
-  m_PrefabInstance: {fileID: 1564821337}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &903064181
 GameObject:
   m_ObjectHideFlags: 0
@@ -9378,10 +9367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a57b562fc8740a59679cb302efbf5e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameras:
-  - {fileID: 1668916435}
-  - {fileID: 1398564597}
-  cameraMode: 2
 --- !u!1001 &1181308040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9535,11 +9520,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &1398564597 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 30153094754203340, guid: 232399b02dc25f74db1cf308098289cb, type: 3}
-  m_PrefabInstance: {fileID: 70091412}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1475589117
 GameObject:
   m_ObjectHideFlags: 0
@@ -11788,11 +11768,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08ab6586da5e54b4e89a73079f35019a, type: 3}
---- !u!20 &1668916435 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 695265507931688503, guid: a1cb4f138a6e2254b85e24d88b05e9e1, type: 3}
-  m_PrefabInstance: {fileID: 1181308040}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1677176523
 GameObject:
   m_ObjectHideFlags: 0
@@ -11803,7 +11778,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1677176524}
   - component: {fileID: 1677176526}
-  - component: {fileID: 1677176525}
   m_Layer: 14
   m_Name: Player Trigger Area
   m_TagString: Untagged
@@ -11826,54 +11800,6 @@ Transform:
   m_Father: {fileID: 228377054}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1677176525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677176523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16b2fd395ec941e6958646d674f8a187, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  searchColliderForTargets: 1
-  searchRigidbodyForTargets: 1
-  debug: 1
-  onCharactersInAreaChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onAnyCharacterInArea:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 736983934}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  onAllCharacterLeftArea:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 736983934}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!61 &1677176526
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -11887,7 +11813,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.49237904, y: 3.0501041}
+  m_Offset: {x: 0.49237907, y: 3.9799223}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -11898,7 +11824,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.0670855, y: 8.759464}
+  m_Size: {x: 2.0670855, y: 6.899828}
   m_EdgeRadius: 0
 --- !u!1 &1748443381
 GameObject:
@@ -12177,7 +12103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bea0872e84be45ae8842d200ff574b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playersInBuilding: 0000
 --- !u!50 &1832174581
 Rigidbody2D:
   serializedVersion: 4
@@ -13152,6 +13077,10 @@ PrefabInstance:
     - target: {fileID: 4491502497806081891, guid: e5ee14e60cec23e4db93f6ee525f3e9a, type: 3}
       propertyPath: propellerForwardsForce
       value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997606071831259571, guid: e5ee14e60cec23e4db93f6ee525f3e9a, type: 3}
+      propertyPath: m_Mass
+      value: 463.44763
       objectReference: {fileID: 0}
     - target: {fileID: 8158037203474101602, guid: e5ee14e60cec23e4db93f6ee525f3e9a, type: 3}
       propertyPath: m_ConnectedAnchor.x
