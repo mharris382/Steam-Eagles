@@ -16,6 +16,8 @@ namespace Buildings
             box.size = building.sizeWorldSpace.size;
             box.offset = transform.InverseTransformPoint(building.sizeWorldSpace.center);
         }
+        
+        
 
         private void OnTriggerEnter2D(Collider2D col)
         {
