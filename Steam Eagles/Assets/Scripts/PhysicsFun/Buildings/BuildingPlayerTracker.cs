@@ -19,6 +19,8 @@ namespace Buildings
             box.size = building.sizeWorldSpace.size;
             box.offset = transform.InverseTransformPoint(building.sizeWorldSpace.center);
         }
+        
+        
 
         private IEnumerator Start()
         {

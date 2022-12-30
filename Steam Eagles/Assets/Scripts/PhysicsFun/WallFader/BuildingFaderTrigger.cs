@@ -17,8 +17,8 @@ namespace PhysicsFun
             this._buildingState = this.GetComponentInParent<BuildingState>();
             
             var hasAnyPlayers = _buildingState.PlayerCountChanged.Select(t => t > 0);
-            var fadeIn = hasAnyPlayers.Where(t => t).DistinctUntilChanged();
-            var fadeOut = hasAnyPlayers.Where(t => !t).DistinctUntilChanged();
+            var fadeIn = hasAnyPlayers.Where(t => !t).DistinctUntilChanged();
+            var fadeOut = hasAnyPlayers.Where(t => t).DistinctUntilChanged();
             
             fadeIn.Subscribe(_ => _wallFaderController.FadeIn()).AddTo(this);
             fadeOut.Subscribe(_ => _wallFaderController.FadeOut()).AddTo(this);
