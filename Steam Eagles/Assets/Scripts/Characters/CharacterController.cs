@@ -128,6 +128,13 @@ public class CharacterController : MonoBehaviour
         HandleJump();
     }
 
+    bool CheckForWater()
+    {
+        Vector2 pos = rb.position;
+        LayerMask waterLayers = LayerMask.GetMask("Water");
+        return Physics2D.OverlapPoint(pos, waterLayers) != null;
+    }
+
     private void FixedUpdate()
     {
         if (State.IsDead) return;
@@ -366,7 +373,7 @@ public class CharacterController : MonoBehaviour
     {
         if (Time.time - lastDropTime < 0.5f) return;
         if (CheckForDropThroughPlatform()) return;
-        if (IsGrounded && JumpPressed) {
+        if ((IsGrounded || CheckForWater()) && JumpPressed) {
             IsJumping = true;
             _jumpTimeCounter = jumpTime;
             rb.velocity = Vector2.up * jumpForce;
