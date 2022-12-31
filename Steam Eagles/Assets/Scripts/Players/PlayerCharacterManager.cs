@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Characters;
 using CoreLib;
+
 using StateMachine;
 using UniRx;
 using UniRx.Triggers;
@@ -21,6 +23,14 @@ namespace Characters
         [SerializeField] List<CharacterAssignment> characterAssignments;
         
         private PlayerInputManager _inputManager;
+        
+        
+        
+        
+        
+        
+        
+        [Obsolete("the player character manager should not be handling character spawning and character assignment")]
         private LinkedList<CharacterInputState> _unassignedCharacters = new LinkedList<CharacterInputState>();
         private Dictionary<PlayerCharacterInput, CharacterInputState> _joinedPlayers = new Dictionary<PlayerCharacterInput, CharacterInputState>();
         private Dictionary<CharacterInputState, PlayerCharacterInput> _assignedCharacters = new Dictionary<CharacterInputState, PlayerCharacterInput>();
@@ -66,24 +76,16 @@ namespace Characters
         private void OnPlayerJoined(PlayerInput obj)
         {
             var characterInput = GetCharacterInput(obj);
-            if(_unassignedCharacters.Count == 0)
-            {
-                _unassignedPlayers.Enqueue(characterInput);
-                return;
-            }
+            
             AssignCharacterToPlayer(characterInput);
         }
 
         private void AssignCharacterToPlayer(PlayerCharacterInput playerCharacterInput, CharacterInputState characterInputState = null)
         {
-            //if there are no more characters to assign, wait for a character to be unassigned
-            if (_unassignedCharacters.Count == 0)
-            {
-                _unassignedPlayers.Enqueue(playerCharacterInput);
-                return;
-            }
+            
 
             characterInputState = characterInputState == null ? Dequeue(): characterInputState;
+            
             _joinedPlayers.Add(playerCharacterInput, characterInputState);
             _assignedCharacters.Add(characterInputState, playerCharacterInput);
             playerCharacterInput.Assign(characterInputState);
@@ -205,8 +207,11 @@ namespace Characters
     }   
     
     
-        [Serializable]
-        public class CharacterAssignment
+        
+
+
+    [Serializable]
+    public class CharacterAssignment
         {
             public string characterName;
             [SerializeField] CharacterState prefab;
@@ -271,11 +276,8 @@ namespace Characters
                 Object.Destroy(character.gameObject);
             }
             
-            public void MoveCharacterToSpawn(CharacterState character)
-            {
-                character.transform.position = SpawnPosition;
-            }
-            
+            public void MoveCharacterToSpawn(CharacterState character) => character.transform.position = SpawnPosition;
+
             public void ResetSpawnPosition()
             {
                 SpawnTransform.position = defaultPosition;
@@ -287,50 +289,75 @@ namespace Characters
                 Gizmos.DrawSphere(defaultPosition, 0.125f);
             }
         }
-}
-
-
-[Serializable]
-public class CameraAssignments
-{
-    [SerializeField] 
-    enum CameraModes
+    
+    [Serializable]
+    public class CameraAssignments
     {
-        SINGLE_PLAYER,
-        SPLIT_SCREEN,
-        MULTI_MONITOR
-    }
-
-    [SerializeField] CameraModes cameraMode = CameraModes.SPLIT_SCREEN;
-
-    [SerializeField] private PlayerCameras splitScreenCameras;
-    [SerializeField] private PlayerCameras dualMonitorCameras;
-    [SerializeField] private PlayerCameras singlePlayerCamera;
-
-    IEnumerable<(PlayerCameras, CameraModes)> GetAllPlayerCameras()
-    {
-        yield return (splitScreenCameras, CameraModes.SPLIT_SCREEN);
-        yield return (dualMonitorCameras, CameraModes.MULTI_MONITOR);
-        yield return (singlePlayerCamera, CameraModes.SINGLE_PLAYER);
-    }
-    public PlayerCameras GetPlayerCameras()
-    {
-        switch (cameraMode)
+        [SerializeField] 
+        enum CameraModes
         {
-            case CameraModes.SPLIT_SCREEN:
-                return ActivateCamera(splitScreenCameras);
-            case CameraModes.MULTI_MONITOR:
-                return ActivateCamera(dualMonitorCameras);
-            default:
-                return ActivateCamera(singlePlayerCamera);
+            SINGLE_PLAYER,
+            SPLIT_SCREEN,
+            MULTI_MONITOR
+        }
+    #if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.OnValueChanged(nameof(OnModeChanged))]
+        [Sirenix.OdinInspector.EnumPaging]
+    #endif
+        [SerializeField] CameraModes cameraMode = CameraModes.SPLIT_SCREEN;
+
+        [SerializeField] private PlayerCameras splitScreenCameras;
+        [SerializeField] private PlayerCameras dualMonitorCameras;
+        [SerializeField] private PlayerCameras singlePlayerCamera;
+
+        IEnumerable<(PlayerCameras, CameraModes)> GetAllPlayerCameras()
+        {
+            if(splitScreenCameras != null)
+                yield return (splitScreenCameras, CameraModes.SPLIT_SCREEN);
+            if(dualMonitorCameras != null)
+                yield return (dualMonitorCameras, CameraModes.MULTI_MONITOR);
+            if(singlePlayerCamera != null)
+                yield return (singlePlayerCamera, CameraModes.SINGLE_PLAYER);
+        }
+        public PlayerCameras GetPlayerCameras()
+        {
+            switch (cameraMode)
+            {
+                case CameraModes.SPLIT_SCREEN:
+                    return ActivateCamera(splitScreenCameras);
+                case CameraModes.MULTI_MONITOR:
+                    return ActivateCamera(dualMonitorCameras);
+                default:
+                    return ActivateCamera(singlePlayerCamera);
+            }
+        }
+        PlayerCameras ActivateCamera(PlayerCameras playerCameras)
+        {
+            foreach (var allPlayerCamera in GetAllPlayerCameras())
+            {
+                allPlayerCamera.Item1.gameObject.SetActive(allPlayerCamera.Item1 == playerCameras);
+            }
+            return playerCameras;
+        }
+
+
+        void OnModeChanged()
+        {
+            switch (cameraMode)
+            {
+                case CameraModes.SPLIT_SCREEN:
+                    ActivateCamera(splitScreenCameras);
+                    break;
+                case CameraModes.MULTI_MONITOR:
+                    ActivateCamera(dualMonitorCameras);
+                    break;
+                default:
+                    ActivateCamera(singlePlayerCamera);
+                    break;
+            }
         }
     }
-    PlayerCameras ActivateCamera(PlayerCameras playerCameras)
-    {
-        foreach (var allPlayerCamera in GetAllPlayerCameras())
-        {
-            allPlayerCamera.Item1.gameObject.SetActive(allPlayerCamera.Item1 == playerCameras);
-        }
-        return playerCameras;
-    }
+
+
+
 }
