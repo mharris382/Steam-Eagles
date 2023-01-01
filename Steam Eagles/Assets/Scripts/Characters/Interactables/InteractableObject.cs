@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 namespace Characters.Interactables
 {
+    
     public class InteractableObject : MonoBehaviour
     {
         public Vector2 Position => transform.position;
@@ -17,6 +18,8 @@ namespace Characters.Interactables
             INSTANT,
             ANALOG
         }
+        
+        
 
         public bool inUse;
         private void Awake()

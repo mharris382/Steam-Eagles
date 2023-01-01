@@ -4,19 +4,24 @@ using DefaultNamespace;
 using UniRx;
 using UnityEngine;
 
+public enum InteractionPhysicsMode
+{
+    Default = 0,  //default, root motion controls character's movement
+    Mixed = 1,      //root motion is added with gravity
+    FullPhysics = 2 //root motion is applied as a force
+}
+
 [RequireComponent(typeof(GroundCheck))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterState : MonoBehaviour
 {
 
     public CharacterConfig config;
-    private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
     public bool alwaysGrounded = false;
-    private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
-    private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
-    private Vector2 _moveInput;
+   
 
     
+
     #region Public variables
     public Vector2 MoveInput
     {
@@ -154,8 +159,10 @@ public class CharacterState : MonoBehaviour
 
     #region [Private variables]
 
-    
-   
+    private Vector2 _moveInput;
+    private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
+    private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
+    private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
 
     #endregion
 
@@ -264,7 +271,7 @@ public class CharacterState : MonoBehaviour
 
     #endregion
 
-
+    
 
     public Rigidbody2D toAttach;
     private FixedJoint2D _fixedJoint;
@@ -304,11 +311,4 @@ public class CharacterState : MonoBehaviour
         }
         return AttachedBody != null;
     }
-}
-
-public enum InteractionPhysicsMode
-{
-    Default = 0,  //default, root motion controls character's movement
-    Mixed = 1,      //root motion is added with gravity
-    FullPhysics = 2 //root motion is applied as a force
 }

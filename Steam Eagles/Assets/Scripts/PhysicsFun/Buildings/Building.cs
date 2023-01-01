@@ -1,36 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildings;
 using Buildings.BuildingTilemaps;
 using CoreLib;
-using UnityEngine;
-using UnityEngine.TestTools;
-using UnityEngine.Tilemaps;
-
-#if UNITY_EDITOR
-using PhysicsFun;
-using UnityEditor;
-using World;
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
 #endif
-namespace Buildings
+#if UNITY_EDITOR && ODIN_INSPECTOR
+using UnityEditor;
+using Sirenix.OdinInspector.Editor;
+#elif UNITY_EDITOR && !ODIN_INSPECTOR
+using UnityEditor;
+#endif
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using World;
+
+namespace PhysicsFun.Buildings
 {
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BuildingState))]
-    public  class Building : MonoBehaviour
+    public class Building : MonoBehaviour
     {
         public string buildingName;
         public int orderInLayer;
 
-        
+
+        private BuildingState _buildingState;
         private Grid _grid;
-
         public Rect sizeWorldSpace;
-        
-        public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
-
         private Rigidbody2D _rb;
-        public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
+
         private WallTilemap _wallTilemap;
         private FoundationTilemap _foundationTilemap;
         private SolidTilemap _solidTilemap;
@@ -43,6 +45,12 @@ namespace Buildings
         private PipeTilemap[] _pipeTilemaps;
         private CoverTilemap[] _coverTilemaps;
         
+        public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
+        public BuildingState State => _buildingState ? _buildingState : _buildingState = GetComponent<BuildingState>();
+        public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
+        public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
+
+
         public FoundationTilemap[] FoundationTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _foundationTilemaps : _foundationTilemaps = GetComponentsInChildren<FoundationTilemap>();
         public SolidTilemap[] SolidTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _solidTilemaps : _solidTilemaps = GetComponentsInChildren<SolidTilemap>();
         public PipeTilemap[] PipeTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _pipeTilemaps : _pipeTilemaps = GetComponentsInChildren<PipeTilemap>();
@@ -55,17 +63,12 @@ namespace Buildings
         public CoverTilemap CoverTilemap => _coverTilemap ? _coverTilemap : _coverTilemap = GetComponentInChildren<CoverTilemap>();
         public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
 
-        public bool HasResources
-        {
-            get
-            {
-                return WallTilemap != null
-                       && FoundationTilemap != null
-                       && SolidTilemap != null
-                       && PipeTilemap != null
-                       && CoverTilemap != null;
-            }
-        }
+        public bool HasResources =>
+            WallTilemap != null
+            && FoundationTilemap != null
+            && SolidTilemap != null
+            && PipeTilemap != null
+            && CoverTilemap != null;
 
         private void Awake()
         {
@@ -74,7 +77,6 @@ namespace Buildings
 
         public void Update()
         {
-            if(Application.isPlaying) return;
             UpdateTilemaps();
         }
 
@@ -108,12 +110,6 @@ namespace Buildings
             yield return FoundationTilemap;
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            this.sizeWorldSpace.DrawGizmos();
-        }
-
         public void CalculateSize()
         {
             var bounds = new Bounds();
@@ -132,14 +128,63 @@ namespace Buildings
             rb.bodyType = RigidbodyType2D.Static;
             
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            this.sizeWorldSpace.DrawGizmos();
+        }
+#endif
     }
 
 
 #if UNITY_EDITOR
     
     [CustomEditor(typeof(Building), true)]
-    public class BuildingEditor : Editor
+    public class BuildingEditor :
+#if !ODIN_INSPECTOR
+        Editor
+#else
+        OdinEditor
+#endif
     {
+        public override void OnInspectorGUI()
+        {
+            var building = target as Building;
+            
+            void CreateBuildingTilemaps(Building building1)
+            {
+                if (building1.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.SOLID));
+                if (building1.WallTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.WALL));
+                if (building1.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.FOUNDATION));
+                if (building1.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PIPE));
+                if (building1.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.COVER));
+            }
+            void AddToBuilding(BuildingTilemap buildingTilemap)
+            {
+                buildingTilemap.transform.parent = building.transform;
+                
+            }
+            
+            
+            serializedObject.Update();
+
+            
+            if (!building.HasResources)
+            {
+                EditorGUILayout.HelpBox($"Building {building.name} is missing resources", MessageType.Warning);
+                if (GUILayout.Button("Create Tilemaps"))
+                {
+                    CreateBuildingTilemaps(building);
+                }
+            }
+            
+            building.UpdateTilemaps();
+            serializedObject.ApplyModifiedProperties();
+            base.OnInspectorGUI();
+        }
+
         public static BuildingTilemap CreateBuildingTilemapType(Building building, BuildingLayers type)
         {
             
@@ -202,41 +247,6 @@ namespace Buildings
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
             throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
-
-      
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
-            var building = target as Building;
-            void AddToBuilding(BuildingTilemap buildingTilemap)
-            {
-                buildingTilemap.transform.parent = building.transform;
-                
-            }
-            if (!building.HasResources)
-            {
-                EditorGUILayout.HelpBox($"Building {building.name} is missing resources", MessageType.Warning);
-                if (GUILayout.Button("Create Tilemaps"))
-                {
-                    if (building.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.SOLID));
-                    if (building.WallTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.WALL));
-                    if (building.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.FOUNDATION));
-                    if (building.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.PIPE));
-                    if (building.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building, BuildingLayers.COVER));
-                }
-            }
-            else
-            {
-                if (GUILayout.Button("Update Size"))
-                {
-                    building.CalculateSize();
-                }
-            }
-            
-            building.UpdateTilemaps();
-            serializedObject.ApplyModifiedProperties();
-            base.OnInspectorGUI();
         }
     }
 #endif

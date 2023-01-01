@@ -11,7 +11,6 @@ namespace Characters.Interactables
     public class InteractionController : MonoBehaviour
     {
         public string tag;
-        public string inputButton;
         private CharacterState _state;
         private Transform _target;
         public float interactionRadius = 4;

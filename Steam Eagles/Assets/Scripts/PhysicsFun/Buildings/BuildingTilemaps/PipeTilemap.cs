@@ -1,4 +1,5 @@
-﻿using World;
+﻿using PhysicsFun.Buildings;
+using World;
 
 namespace Buildings.BuildingTilemaps
 {
@@ -15,7 +16,7 @@ namespace Buildings.BuildingTilemaps
 
         public override int GetSortingOrder(Building building)
         {
-            return building.orderInLayer - SolidTilemap.ORDER_IN_LAYER - 2;
+            return building.orderInLayer - SolidTilemap.ORDER_IN_LAYER - 1;
         }
     }
 }

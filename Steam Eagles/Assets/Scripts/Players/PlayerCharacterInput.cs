@@ -18,7 +18,6 @@ namespace Characters
         
         public PlayerInput PlayerInput => _playerInput == null ? (_playerInput = GetComponent<PlayerInput>()) : _playerInput;
 
-        public bool useEventsForJump;
         
         private PlayerInput _playerInput;
         private CharacterInputState _characterInput;
@@ -57,13 +56,12 @@ namespace Characters
             _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
             _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
            // _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
-            if (useEventsForJump) return;
             _characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             _characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();
         }
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (_characterInput == null || !useEventsForJump) return;
+            if (_characterInput == null) return;
             _characterInput.JumpPressed = context.performed;
             _characterInput.JumpHeld = context.started;
         }

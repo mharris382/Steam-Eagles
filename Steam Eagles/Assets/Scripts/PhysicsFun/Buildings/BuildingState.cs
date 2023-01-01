@@ -9,7 +9,7 @@ namespace Buildings
 
         public bool?[] playersInBuilding;
 
-        Subject<int> _playerCountChanged = new Subject<int>();
+        private Subject<int> _playerCountChanged = new Subject<int>();
 
         public IObservable<int> PlayerCountChanged => _playerCountChanged;
         private void Awake()
@@ -29,7 +29,7 @@ namespace Buildings
             _playerCountChanged.OnNext(CountPlayersInBuilding());
         }
 
-        int CountPlayersInBuilding()
+        private  int CountPlayersInBuilding()
         {
             int cnt = 0;
             foreach (var b in playersInBuilding)

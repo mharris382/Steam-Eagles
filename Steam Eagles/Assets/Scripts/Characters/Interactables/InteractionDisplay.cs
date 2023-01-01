@@ -12,7 +12,7 @@ namespace Characters.Interactables
         public UnityEvent onNoInteractionAvailable;
         public UnityEvent onInteractionAvailable;
         
-        public UnityEvent<string> inputLabel;
+        //public UnityEvent<string> inputLabel;
         public UnityEvent<string> interactionLabel;
         public Transform display;
 
@@ -32,7 +32,7 @@ namespace Characters.Interactables
             controller._currentAvailableInteractable.Where(t => t != null).Subscribe(t =>
             {
                 onInteractionAvailable?.Invoke();
-                inputLabel?.Invoke(controller.inputButton);
+                //inputLabel?.Invoke(controller.inputButton);
                 interactionLabel?.Invoke(t.description);
             }).AddTo(this);
         }

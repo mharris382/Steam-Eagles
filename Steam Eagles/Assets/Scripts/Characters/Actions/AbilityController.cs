@@ -13,7 +13,11 @@ namespace Characters.Actions
     
   
         public AbilityPreview abilityPreview;
+        
+        
+        
         private List<Vector3Int> selectedCells;
+        
         public bool previewingMouse = false;
         public bool showPreview = true;
     
