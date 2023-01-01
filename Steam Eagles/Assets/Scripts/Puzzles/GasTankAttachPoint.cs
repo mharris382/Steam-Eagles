@@ -79,6 +79,7 @@ public class GasTankAttachPoint : MonoBehaviour
 
         events.onTankDetached?.Invoke(attachedGasTank);
         AttachedTank = null;
+        attachJoint.enabled = false;
     }
 
     public bool HasTankAttached() => attachedGasTank != null;
@@ -96,6 +97,7 @@ public class GasTankAttachPoint : MonoBehaviour
         if(lockTankUntilEmpty)StartCoroutine(LockUntilEmpty(gasTank));
         _gasTankState.IsConnected = true;
         _joints.connectedBody = _tankRB;
+        _joints.enabled = true;
         _disposable = _holdableItem.IsHeldStream.Where(t => t).Take(1).Subscribe(t => DisconnectGasTank());
         events.onTankAttached.Invoke(attachedGasTank);
     }
@@ -130,10 +132,10 @@ public class GasTankAttachPoint : MonoBehaviour
         events.onTankDetached.AsObservable().TakeUntilDestroy(this).Select(t => t.gameObject)
             .Subscribe(t => events.onTankObjDetached?.Invoke(t));
 
-
-       
-        
+        attachJoint.enabled = false;
+        _joints.enabled = false;
     }
+    
     IEnumerator Start()
     {
         while (enabled)
