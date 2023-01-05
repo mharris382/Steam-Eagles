@@ -47,7 +47,14 @@ namespace Characters.Actions
             {
                 HideAbilityPreview();
             }
-        
+
+            var tm = cellAbility.Tilemap;
+            if (tm == null)
+            {
+                Debug.LogWarning($"Cell Ability {cellAbility.name} returned no tilemap!", cellAbility);
+                return;
+            }
+            selector.Grid = tm.layoutGrid;
             selectedCells = selector.GetSelectedCells().ToList();
             if (previewingMouse) return;
             if (selectedCells.Count > 0)
@@ -122,7 +129,39 @@ namespace Characters.Actions
                 return (wp - tPos).sqrMagnitude;
             }
 
-      
+            Debug.Log($"Trying ability: {name}");
+            var cells = selectedCells;
+            if (cells.Count == 0)
+            {
+                Debug.Log("No cells selected");
+                return false;
+            }
+
+            Vector3Int? cell = null;
+            foreach (var selectedCell in selectedCells)
+            {
+                if (!cellAbility.CanPerformAbilityOnCell(User, selectedCell))
+                {
+                    Debug.Log($"{_user.name} Cannot perform ability on cell {selectedCell}");
+                    
+                    continue;
+                }
+                cell = selectedCell;
+                break;
+            }
+
+            if (cell.HasValue)
+            {
+                Debug.Log($"Found Valid cell at {cell.Value}! Performing ability now!");
+                cellAbility.PerformAbilityOnCell(User, cell.Value);
+                return true;
+            }
+            else
+            {
+                Debug.Log("No valid cells found!");
+                return false;
+            }
+
             foreach (var selectedCell in selectedCells
                          .Where(t => cellAbility.CanPerformAbilityOnCell(User,t))
                          .OrderByDescending(CompareDist))
@@ -145,8 +184,17 @@ namespace Characters.Actions
                 return (wp - mp).sqrMagnitude;
             }
 
-            return selectedCells.Where(cellPosition => cellAbility.CanPerformAbilityOnCell(User,cellPosition))
-                .OrderByDescending(CompareDist).Select(t => (t, cellAbility.Tilemap.GetCellCenterWorld(t)));
+            selector.SelectorPosition = mp;
+            foreach (var selectedCell in selectedCells)
+            {
+                if (cellAbility.CanPerformAbilityOnCell(User, selectedCell))
+                {
+                   yield return (selectedCell, cellAbility.Tilemap.GetCellCenterWorld(selectedCell));
+                }
+            }
+
+           // return selectedCells.Where(cellPosition => cellAbility.CanPerformAbilityOnCell(User,cellPosition))
+             //   .OrderByDescending(CompareDist).Select(t => (t, cellAbility.Tilemap.GetCellCenterWorld(t)));
         }
 
         #region Preview Helpers

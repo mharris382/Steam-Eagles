@@ -6,7 +6,7 @@ namespace GasSim
     [RequireComponent(typeof(Grid))]
     public class GasSimManager2 : MonoBehaviour
     {
-        [SerializeField] private IGasSim.GridResolution resolution = IGasSim.GridResolution.HALF;
+        [SerializeField] private GridResolution resolution = GridResolution.HALF;
         [SerializeField] private Vector2Int chunkSize = new Vector2Int(16, 16);
 
         private GasSimGrid _gasSimGrid;
@@ -28,12 +28,12 @@ namespace GasSim
             var grid = GetComponent<Grid>();
             grid.cellSize = resolution switch
             {
-                IGasSim.GridResolution.FULL => Vector2.one,
-                IGasSim.GridResolution.HALF => Vector2.one / 2f,
-                IGasSim.GridResolution.QUART => Vector2.one / 4f,
-                IGasSim.GridResolution.EIGHTH => Vector2.one / 8f,
-                IGasSim.GridResolution.X16 => Vector2.one / 16f,
-                IGasSim.GridResolution.X32 => Vector2.one / 32f,
+                GridResolution.FULL => Vector2.one,
+                GridResolution.HALF => Vector2.one / 2f,
+                GridResolution.QUART => Vector2.one / 4f,
+                GridResolution.EIGHTH => Vector2.one / 8f,
+                GridResolution.X16 => Vector2.one / 16f,
+                GridResolution.X32 => Vector2.one / 32f,
                 _ => throw new ArgumentOutOfRangeException()
             };
             return grid;

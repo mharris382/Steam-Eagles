@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace Buildings.BuildingTilemaps
 {
+    [RequireComponent(typeof(TilemapRenderer))]
     public abstract class RenderedTilemap : BuildingTilemap
     {
         private TilemapRenderer _tmr;

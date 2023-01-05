@@ -76,6 +76,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Ability Primary",
+                    "type": "Button",
+                    "id": "00dae576-3e2e-47e6-acdc-6a7674be1e9d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ability Secondary",
+                    "type": "Button",
+                    "id": "cba94b11-18ab-4c02-a57a-1566d1162c0b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -313,7 +331,7 @@
                 {
                     "name": "",
                     "id": "deefce9a-4cae-4a8c-ac06-a93cc3a6213b",
-                    "path": "<Mouse>/delta",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Keyboard",
@@ -461,6 +479,28 @@
                     "processors": "",
                     "groups": "Controller 1;Controller 2",
                     "action": "Release Gas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59141fd6-702b-4e71-8507-6dd0a0d2c5e1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbfd2752-58db-4e40-99f9-87882f11017f",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability Secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -10,7 +10,7 @@ using World;
 public abstract class CellAbility : MonoBehaviour
 {
     [SerializeField] private AbilityUser abilityUser;
-    [SerializeField] private SharedTilemap tilemap;
+    [SerializeField] protected SharedTilemap tilemap;
     [SerializeField] private SharedTilemaps tilemaps;
     [SerializeField] public SharedTilemap blockingMap;
     
@@ -26,6 +26,10 @@ public abstract class CellAbility : MonoBehaviour
                 if (tilemap.HasValue)
                 {
                     return tilemap.Value;
+                }
+                else
+                {
+                    return null;
                 }
             }
 
@@ -58,6 +62,7 @@ public abstract class CellAbility : MonoBehaviour
 
     protected virtual bool IsCellBlocked(Vector3Int cell)
     {
+        if (!tilemap.HasValue) return false;
         foreach (var sharedTilemap in blockingMaps.Where(t=> t.HasValue).Select(t => t.Value).Concat(sceneBlockingMaps.Where(t=>t!=null)))
         {
             if (sharedTilemap.HasTile(cell))

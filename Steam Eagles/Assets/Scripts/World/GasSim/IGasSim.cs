@@ -2,17 +2,18 @@
 
 namespace GasSim
 {
+    public enum GridResolution
+    {
+        FULL,
+        HALF,
+        QUART,
+        EIGHTH,
+        X16,
+        X32
+    }
     public interface IGasSim
     {
-        enum GridResolution
-        {
-            FULL,
-            HALF,
-            QUART,
-            EIGHTH,
-            X16,
-            X32
-        }
+        
 
     
         Grid Grid { get; }

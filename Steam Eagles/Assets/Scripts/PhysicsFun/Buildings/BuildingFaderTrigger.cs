@@ -8,15 +8,15 @@ namespace PhysicsFun
     public class BuildingFaderTrigger : MonoBehaviour
     {
         private WallFaderController _wallFaderController;
-        private BuildingState _buildingState;
+        private StructureState _structureState;
 
         private void Awake()
         {
             
             this._wallFaderController = this.GetComponent<WallFaderController>();
-            this._buildingState = this.GetComponentInParent<BuildingState>();
+            this._structureState = this.GetComponentInParent<StructureState>();
             
-            var hasAnyPlayers = _buildingState.PlayerCountChanged.Select(t => t > 0);
+            var hasAnyPlayers = _structureState.PlayerCountChanged.Select(t => t > 0);
             var fadeIn = hasAnyPlayers.Where(t => !t).DistinctUntilChanged();
             var fadeOut = hasAnyPlayers.Where(t => t).DistinctUntilChanged();
             

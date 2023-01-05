@@ -18,9 +18,7 @@ namespace GasSim
             private readonly ParticleVelocity[,] _velocities;
             private readonly StateOfMatter[,] _stateGrid;
             internal  readonly GridHelper _gridHelper;
-        
-            [System.Obsolete("_usedCells instead")]
-            private readonly BinaryHeap<Vector2Int> _nonEmptyPositions;
+           
         
             private Dictionary<Vector2Int, float> _usedCells = new Dictionary<Vector2Int, float>();
         
@@ -129,17 +127,6 @@ namespace GasSim
 
             private bool IsValidPressure(int pressure) => pressure is >= 0 and < 16;
 
-            
-            public void ClearGrid()
-            {
-                if (UsedCellsCount == 0) return;
-                foreach (var cell in _nonEmptyPositions.DepthFirst())
-                {
-                    _grid[cell.x, cell.y] = 0;
-                }
-                _totalPressureInGrid = 0;
-                _nonEmptyPositions.Clear();
-            }
 
             public IEnumerable<Vector2Int> GetEmptyNeighbors(Vector2Int cell)
             {

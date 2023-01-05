@@ -146,7 +146,7 @@ namespace GasSim
         #region [FIELDS]
 
         [SerializeField] private float riseRate = 0.1f;
-        [SerializeField] private IGasSim.GridResolution resolution =IGasSim.GridResolution.HALF;
+        [SerializeField] private GridResolution resolution = GridResolution.HALF;
         [SerializeField] internal PressureColor pressureColor;
         [SerializeField] private Vector2Int gridSize = new Vector2Int(100, 100);
         [SerializeField] private float pressureToLifetime = 0.125f;
@@ -264,12 +264,12 @@ namespace GasSim
         {
             _cellSize = resolution switch
             {
-                IGasSim.GridResolution.FULL => Vector2.one,
-                IGasSim.GridResolution.HALF => Vector2.one / 2f,
-                IGasSim.GridResolution.QUART => Vector2.one / 4f,
-                IGasSim.GridResolution.EIGHTH => Vector2.one / 8f,
-                IGasSim.GridResolution.X16 => Vector2.one / 16f,
-                IGasSim.GridResolution.X32 => Vector2.one / 32f,
+                GridResolution.FULL => Vector2.one,
+                GridResolution.HALF => Vector2.one / 2f,
+                GridResolution.QUART => Vector2.one / 4f,
+                GridResolution.EIGHTH => Vector2.one / 8f,
+                GridResolution.X16 => Vector2.one / 16f,
+                GridResolution.X32 => Vector2.one / 32f,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

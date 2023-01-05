@@ -5,6 +5,7 @@ using GasSim.SimCore.DataStructures;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using World;
 
 namespace Characters.Actions.Selectors
 {
@@ -13,41 +14,50 @@ namespace Characters.Actions.Selectors
         public Vector2Int size = Vector2Int.one *6;
         public Vector2 spacing = Vector2.one/2f;
         public Vector3 centerOffset = Vector3.zero;
-        private CellHelper _cellHelperPrefab;
-        private List<CellHelper> _cellHelpers;
+        //private CellHelper _cellHelperPrefab;
+        //private List<CellHelper> _cellHelpers;
 
         private bool doneSetup = false;
         
         public bool Ready => doneSetup;
-        
-        private IEnumerator Start()
+
+        public Vector2 SelectorPosition { get; set; }
+        public Grid Grid
         {
-            var loadOp = Addressables.LoadAssetAsync<GameObject>("CellHelper");
-            yield return loadOp;
-            if (loadOp.Status == AsyncOperationStatus.Failed)
-            {
-                Debug.LogError("Couldnt load prefab CelLHelper!");
-            }
-            var prefab = loadOp.Result;
-
-            _cellHelpers = new List<CellHelper>(size.x * size.y);
-            var positions = GetLocalSpacePositions().ToArray();
-            PriorityQueue<CellHelper> sortedHelpers= new PriorityQueue<CellHelper>(positions.Length);
-            
-            
-            foreach (var localSpacePosition in positions)
-            {
-                var inst = Instantiate(prefab, transform);
-                inst.transform.localPosition = localSpacePosition;
-                sortedHelpers.Enqueue(inst.GetComponent<CellHelper>(), localSpacePosition.sqrMagnitude);
-            }
-
-            while (!sortedHelpers.IsEmpty)
-            {
-                _cellHelpers.Add(sortedHelpers.ExtractMin());
-            }
-            
+            get;
+            set;
+        }
+        
+        private void Start()
+        {
             doneSetup = true;
+            // var loadOp = Addressables.LoadAssetAsync<GameObject>("CellHelper");
+            // yield return loadOp;
+            // if (loadOp.Status == AsyncOperationStatus.Failed)
+            // {
+            //     Debug.LogError("Couldnt load prefab CelLHelper!");
+            // }
+            // var prefab = loadOp.Result;
+            //
+            // _cellHelpers = new List<CellHelper>(size.x * size.y);
+            // var positions = GetLocalSpacePositions().ToArray();
+            // PriorityQueue<CellHelper> sortedHelpers= new PriorityQueue<CellHelper>(positions.Length);
+            //
+            //
+            // foreach (var localSpacePosition in positions)
+            // {
+            //     var inst = Instantiate(prefab, transform);
+            //     inst.transform.localPosition = localSpacePosition;
+            //     sortedHelpers.Enqueue(inst.GetComponent<CellHelper>(), localSpacePosition.sqrMagnitude);
+            // }
+            //
+            // while (!sortedHelpers.IsEmpty)
+            // {
+            //     _cellHelpers.Add(sortedHelpers.ExtractMin());
+            // }
+            //
+            // doneSetup = true;
+
         }
 
         public IEnumerable<Vector3Int> GetSelectedCells()
@@ -57,10 +67,17 @@ namespace Characters.Actions.Selectors
                 yield break;
             }
 
-            foreach (var vector3Int in  _cellHelpers.Select(t => t.CellCoordinate))
+            if (Grid == null)
             {
-                yield return vector3Int;
+                Debug.LogWarning("Selector is missing Grid!", this);
+                yield break;
             }
+
+            yield return Grid.WorldToCell(SelectorPosition);
+            // foreach (var vector3Int in  _cellHelpers.Select(t => t.CellCoordinate))
+            // {
+            //     yield return vector3Int;
+            // }
         }
         
         IEnumerable<Vector3> GetLocalSpacePositions()

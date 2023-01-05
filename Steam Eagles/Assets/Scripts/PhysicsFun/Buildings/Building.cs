@@ -1,37 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Buildings;
 using Buildings.BuildingTilemaps;
 using CoreLib;
-#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
-#endif
-#if UNITY_EDITOR && ODIN_INSPECTOR
-using UnityEditor;
-using Sirenix.OdinInspector.Editor;
-#elif UNITY_EDITOR && !ODIN_INSPECTOR
-using UnityEditor;
-#endif
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using World;
 
 namespace PhysicsFun.Buildings
 {
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(BuildingState))]
-    public class Building : MonoBehaviour
+    [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
+    [RequireComponent(typeof(StructureState))]
+    public class Building : MonoBehaviour, IStructure
     {
+        #region [Inspector Fields]
+
         public string buildingName;
+        
+        [OnValueChanged(nameof(UpdateTilemaps))]
         public int orderInLayer;
-
-
-        private BuildingState _buildingState;
-        private Grid _grid;
+        
         public Rect sizeWorldSpace;
+
+        #endregion
+
+        #region [Private Fields]
+
+        private StructureState _structureState;
+        private Grid _grid;
         private Rigidbody2D _rb;
+        private BoxCollider2D _box;
 
         private WallTilemap _wallTilemap;
         private FoundationTilemap _foundationTilemap;
@@ -39,23 +37,17 @@ namespace PhysicsFun.Buildings
         private PipeTilemap _pipeTilemap;
         private CoverTilemap _coverTilemap;
         
-        private WallTilemap[] _wallTilemaps;
-        private FoundationTilemap[] _foundationTilemaps;
-        private SolidTilemap[] _solidTilemaps;
-        private PipeTilemap[] _pipeTilemaps;
-        private CoverTilemap[] _coverTilemaps;
+
+        #endregion
         
+        #region [Properties]
+
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
-        public BuildingState State => _buildingState ? _buildingState : _buildingState = GetComponent<BuildingState>();
-        public Grid grid => _grid ? _grid : _grid = GetComponent<Grid>();
+        public StructureState State => _structureState ? _structureState : _structureState = GetComponent<StructureState>();
+        public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
 
-
-        public FoundationTilemap[] FoundationTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _foundationTilemaps : _foundationTilemaps = GetComponentsInChildren<FoundationTilemap>();
-        public SolidTilemap[] SolidTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _solidTilemaps : _solidTilemaps = GetComponentsInChildren<SolidTilemap>();
-        public PipeTilemap[] PipeTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _pipeTilemaps : _pipeTilemaps = GetComponentsInChildren<PipeTilemap>();
-        public CoverTilemap[] CoverTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _coverTilemaps : _coverTilemaps = GetComponentsInChildren<CoverTilemap>();
-        public WallTilemap[] WallTilemaps => (_wallTilemaps==null ||_wallTilemaps.Length < 1)  ? _wallTilemaps : _wallTilemaps = GetComponentsInChildren<WallTilemap>();
+        
         
         public FoundationTilemap FoundationTilemap => _foundationTilemap ? _foundationTilemap : _foundationTilemap = GetComponentInChildren<FoundationTilemap>();
         public SolidTilemap SolidTilemap => _solidTilemap ? _solidTilemap : _solidTilemap = GetComponentInChildren<SolidTilemap>();
@@ -70,9 +62,29 @@ namespace PhysicsFun.Buildings
             && PipeTilemap != null
             && CoverTilemap != null;
 
+        #endregion
+
+        #region [MonoBehaviour Events]
+
         private void Awake()
         {
-            UpdateRigidbody(Rb);
+            _rb = GetComponent<Rigidbody2D>();
+            _structureState = GetComponent<StructureState>();
+            _box = GetComponent<BoxCollider2D>();
+            
+            _wallTilemap = GetComponent<WallTilemap>();
+            _foundationTilemap = GetComponent<FoundationTilemap>();
+            _solidTilemap = GetComponent<SolidTilemap>();
+            _pipeTilemap = GetComponent<PipeTilemap>();
+            _coverTilemap = GetComponent<CoverTilemap>();
+            
+            SetupPhysics();
+            
+            void SetupPhysics()
+            {
+                gameObject.layer = LayerMask.NameToLayer("Triggers");
+                _box.isTrigger = true;
+            }
         }
 
         public void Update()
@@ -80,7 +92,15 @@ namespace PhysicsFun.Buildings
             UpdateTilemaps();
         }
 
+        #endregion
 
+        #region [Public Methods]
+
+        #region [Update Methods]
+
+        /// <summary>
+        /// currently used in the tilemap impl to update the tilemap sorting order relative to the buildings order
+        /// </summary>
         public void UpdateTilemaps()
         {
             foreach (var buildingLayer in GetAllBuildingLayers())
@@ -89,45 +109,29 @@ namespace PhysicsFun.Buildings
             }
         }
 
-        IEnumerable<BuildingTilemap> GetAllBuildingLayers()
+        #endregion
+
+        [Button("Save"), DisableInPlayMode]
+        public void SaveBuilding()
         {
-            return GetComponentsInChildren<BuildingTilemap>();
-            List<BuildingTilemap> lob = new List<BuildingTilemap>();
             
-            lob.AddRange(WallTilemaps);
-            lob.AddRange(PipeTilemaps);
-            lob.AddRange(SolidTilemaps);
-            lob.AddRange(FoundationTilemaps);
-            lob.AddRange(CoverTilemaps);
-            return lob;
         }
 
-        public IEnumerator<BuildingTilemap> GetMapSortingOrder_BackToFront()
+        [Button("Load"), DisableInPlayMode]
+        public void LoadBuilding()
         {
-            yield return WallTilemap;
-            yield return PipeTilemap;
-            yield return SolidTilemap;
-            yield return FoundationTilemap;
+            
         }
-
-        public void CalculateSize()
-        {
-            var bounds = new Bounds();
-            foreach (var buildingLayer in GetAllBuildingLayers())
-            {
-                var layerBounds = buildingLayer.GetWorldBounds();
-                bounds.Encapsulate(layerBounds.max);
-                bounds.Encapsulate(layerBounds.min);
-            }
         
-            this.sizeWorldSpace = bounds.ToRect();
-        }
+        #endregion
 
-        public virtual void UpdateRigidbody(Rigidbody2D rb)
-        {
-            rb.bodyType = RigidbodyType2D.Static;
-            
-        }
+        #region [Helper Methods]
+
+        private IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
+
+        #endregion
+        
+        #region [Editor Stuff]
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
@@ -136,118 +140,7 @@ namespace PhysicsFun.Buildings
             this.sizeWorldSpace.DrawGizmos();
         }
 #endif
+
+        #endregion
     }
-
-
-#if UNITY_EDITOR
-    
-    [CustomEditor(typeof(Building), true)]
-    public class BuildingEditor :
-#if !ODIN_INSPECTOR
-        Editor
-#else
-        OdinEditor
-#endif
-    {
-        public override void OnInspectorGUI()
-        {
-            var building = target as Building;
-            
-            void CreateBuildingTilemaps(Building building1)
-            {
-                if (building1.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.SOLID));
-                if (building1.WallTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.WALL));
-                if (building1.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.FOUNDATION));
-                if (building1.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PIPE));
-                if (building1.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.COVER));
-            }
-            void AddToBuilding(BuildingTilemap buildingTilemap)
-            {
-                buildingTilemap.transform.parent = building.transform;
-                
-            }
-            
-            
-            serializedObject.Update();
-
-            
-            if (!building.HasResources)
-            {
-                EditorGUILayout.HelpBox($"Building {building.name} is missing resources", MessageType.Warning);
-                if (GUILayout.Button("Create Tilemaps"))
-                {
-                    CreateBuildingTilemaps(building);
-                }
-            }
-            
-            building.UpdateTilemaps();
-            serializedObject.ApplyModifiedProperties();
-            base.OnInspectorGUI();
-        }
-
-        public static BuildingTilemap CreateBuildingTilemapType(Building building, BuildingLayers type)
-        {
-            
-            var go = new GameObject($"{building}_{type.ToString().ToLower()}", typeof(Tilemap), typeof(TilemapRenderer));
-
-            TilemapCollider2D AddCollider( bool asPlatform =false, bool asTrigger =false)
-            {
-                var collider = go.AddComponent<TilemapCollider2D>();
-                collider.isTrigger = asTrigger;
-                if (asPlatform)
-                {
-                    collider.usedByEffector = asPlatform;
-                    go.AddComponent<PlatformEffector2D>();
-                }
-                return collider;
-            }
-            switch (type)
-            {
-                case BuildingLayers.SOLID:
-                    AddCollider();
-                    go.layer = LayerMask.NameToLayer("Solids");
-                    go.tag = "Solid Tilemap";
-                    return go.AddComponent<SolidTilemap>();
-                    break;
-                
-                case BuildingLayers.WALL:
-                    go.layer = LayerMask.NameToLayer("Air");
-                    go.tag = "Wall";
-                    return go.AddComponent<WallTilemap>();
-                    break;
-                
-                case BuildingLayers.FOUNDATION:
-                    go.layer = LayerMask.NameToLayer("Ground");
-                    go.tag = "Solid Tilemap";
-                    AddCollider();
-                    return go.AddComponent<FoundationTilemap>();
-
-                case BuildingLayers.PLATFORM:
-                    AddCollider(asPlatform: true);
-                    go.layer = LayerMask.NameToLayer("Platforms");
-                    return go.AddComponent<PlatformTilemap>();
-                
-                case BuildingLayers.PIPE:
-                    AddCollider(asPlatform: true);
-                    go.layer = LayerMask.NameToLayer("Pipes");
-                    go.tag = "Pipe Tilemap";
-                    return go.AddComponent<PipeTilemap>();
-                
-                case BuildingLayers.COVER:
-                    AddCollider(asTrigger: true);
-                    go.layer = LayerMask.NameToLayer("Triggers");
-                    go.AddComponent<BuildingFaderTrigger>();
-                    return go.AddComponent<CoverTilemap>();
-
-                case BuildingLayers.DECOR:
-                    throw new NotImplementedException();
-                    break;
-                
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-            throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
-    }
-#endif
 }

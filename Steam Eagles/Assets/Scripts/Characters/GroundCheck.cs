@@ -2,9 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 using UniRx;
+
 using UnityEngine.Events;
+
+#if UNITY_EDITOR
+using Sirenix.OdinInspector.Editor;
+using UnityEditor;
+#endif
 
 public interface IGroundCheck
 {
@@ -108,3 +115,27 @@ public class GroundCheck : MonoBehaviour
    }
 
 }
+
+
+
+
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(GroundCheck))]
+public class GroundCheckEditor : OdinEditor
+{
+    private void OnSceneGUI()
+    {
+        var groundCheck = target as GroundCheck;
+        if(groundCheck.groundCheckParent == null) return;
+        var parent = groundCheck.groundCheckParent;
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            var gndCheck = parent.GetChild(i);
+            var pos = gndCheck.position;
+            Handles.DrawWireDisc(pos, Vector3.forward, 0.2f);
+            gndCheck.position = Handles.FreeMoveHandle(pos, Quaternion.identity, 0.03f, Vector3.zero, Handles.DotHandleCap);
+        }
+    }
+}
+#endif

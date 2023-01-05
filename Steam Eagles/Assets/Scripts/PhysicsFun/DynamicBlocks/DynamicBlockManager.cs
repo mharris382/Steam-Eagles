@@ -12,6 +12,7 @@ namespace PhysicsFun.DynamicBlocks
             MessageBroker.Default.Receive<SpawnedDynamicObjectInfo>()
                 .TakeUntilDestroy(this)
                 .Subscribe(OnDynamicObjectSpawned);
+                
         }
 
         private void OnDynamicObjectSpawned(SpawnedDynamicObjectInfo spawnedDynamicObjectInfo)

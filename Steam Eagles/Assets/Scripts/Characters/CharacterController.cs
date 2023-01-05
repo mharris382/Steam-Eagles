@@ -178,7 +178,7 @@ public class CharacterController : MonoBehaviour
             DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
-        else if (IsGrounded && isOnSlope)
+        else if (IsGrounded && isOnSlope && IsSlopeWalkable())
         {
             float xComponent = MoveSpeed * slopeNormalPerp.x * -State.MoveX;
             float yComponent = MoveSpeed * slopeNormalPerp.y * -State.MoveX;
@@ -193,7 +193,12 @@ public class CharacterController : MonoBehaviour
         }
 }
 
-    
+    private bool IsSlopeWalkable()
+    {
+        return this.slopeDownAngle <= State.config.maxSlopeAngle;
+    }
+
+
     void DoExternalForces(ref Vector2 currentVelocity)
     {
         HashSet<Rigidbody2D> detected = new HashSet<Rigidbody2D>();

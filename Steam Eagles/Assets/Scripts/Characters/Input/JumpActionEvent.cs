@@ -47,5 +47,37 @@ namespace Characters
         public InputAction.CallbackContext context;
     }
 
+    public enum PlayerAbilityID
+    {
+        PRIMARY,
+        SECONDARY
+    }
+    
+    /// <summary>
+    /// called when primary or secondary input is triggered
+    /// </summary>
+    public struct UseAbilityActionEvent
+    {
+        public string tag;
+        public PlayerAbilityID abilityID;
+        public Transform transform;
+        public CharacterState characterState;
+        public CharacterInputState inputState;
+        public InputAction.CallbackContext context;
+    }
+
+    /// <summary>
+    /// called when select next/prev ability input is triggered
+    /// </summary>
+    public struct SelectAbilityActionEvent
+    {
+        public string tag;
+        public int abilityIndex;
+        public bool isRelative;
+        public Transform transform;
+        public CharacterState characterState;
+        public CharacterInputState inputState;
+        public InputAction.CallbackContext context;
+    }
     
 }

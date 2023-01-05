@@ -117,6 +117,64 @@ namespace Characters
                 transform = _characterInput.transform
             });
         }
+
+        public void OnAbility01(InputAction.CallbackContext context)
+        {
+            var eventInfo = new UseAbilityActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                inputState = this._characterInput,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform,
+                abilityID =PlayerAbilityID.PRIMARY,
+                
+            };
+            MessageBroker.Default.Publish(eventInfo);
+        }
+
+        public void OnAbility02(InputAction.CallbackContext context)
+        {
+            var eventInfo = new UseAbilityActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                inputState = this._characterInput,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform,
+                abilityID =PlayerAbilityID.SECONDARY
+            };
+            MessageBroker.Default.Publish(eventInfo);
+        }
+        
+        public void SelectNextAbility(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            var eventInfo = new SelectAbilityActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform,
+                abilityIndex = 1,
+                isRelative =  true
+            };
+            MessageBroker.Default.Publish(eventInfo);
+        }
+        public void SelectPreviousAbility(InputAction.CallbackContext context)
+        {
+            if (_characterInput == null) return;
+            var eventInfo = new SelectAbilityActionEvent()
+            {
+                context = context,
+                characterState = this._characterInput.CharacterState,
+                tag = _characterInput.gameObject.tag,
+                transform = _characterInput.transform,
+                abilityIndex = -1,
+                isRelative =  true
+            };
+            MessageBroker.Default.Publish(eventInfo);
+        }
     }
 
     

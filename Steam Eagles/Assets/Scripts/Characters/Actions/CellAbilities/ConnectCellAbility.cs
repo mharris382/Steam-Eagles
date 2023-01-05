@@ -18,10 +18,12 @@ public class ConnectCellAbility : CellAbility
 
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
+        if (!tilemap.HasValue) return false;
         if (!HasBlockInInventory(abilityUser)) return false;
         if (IsBlockedByNeighbor(cellPosition)) return false;
-        return !IsCellBlocked(cellPosition)
-               && !Tilemap.HasTile(cellPosition);
+        if (IsCellBlocked(cellPosition)) return false;
+        if(Tilemap.HasTile(cellPosition)) return false;
+        return true;
     }
 
     bool HasBlockInInventory(AbilityUser abilityUser)

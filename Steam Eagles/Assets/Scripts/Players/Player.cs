@@ -1,7 +1,10 @@
 ﻿using Characters;
+using CoreLib;
 using Sirenix.OdinInspector;
 using StateMachine;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using World;
 #if ODIN_INSPECTOR
 #endif
 namespace Players
@@ -19,7 +22,11 @@ namespace Players
         
         public SharedTransform characterTransform;
         
-        
+        public SharedTilemap foundationTilemap;
+        public SharedTilemap wallTilemap;
+        public SharedTilemap solidTilemap;
+        public SharedTilemap pipeTilemap;
+        public SharedTilemap decorTilemap;
         
         
         public void AssignPlayer(PlayerCharacterInput playerCharacterInput, Camera assignedCamera, CharacterState assignedCharacter)
@@ -27,6 +34,23 @@ namespace Players
             
         }
 
+        public void EnableStructureEditing(EditableTilemapStructure structure)
+        {
+            pipeTilemap.Value = structure.pipeTilemap;
+            solidTilemap.Value = structure.solidTilemap;
+            wallTilemap.Value = structure.wallTilemap;
+            foundationTilemap.Value = structure.foundationTilemap;
+            decorTilemap.Value = structure.decorTilemap;
+        }
+
+        public void DisableStructureEditing()
+        {
+            foundationTilemap.Value = null;
+            wallTilemap.Value = null;
+            solidTilemap.Value = null;
+            pipeTilemap.Value = null;
+            decorTilemap.Value = null;
+        } 
 
 
 

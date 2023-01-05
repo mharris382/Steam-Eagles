@@ -7,14 +7,14 @@ namespace Buildings
 {
     public class BuildingPlayerTracker : MonoBehaviour
     {
-        public BuildingState buildingState;
+        public StructureState structureState;
         public Building building;
         private BoxCollider2D box;
 
         private void Awake()
         {
             building = GetComponent<Building>();
-            buildingState = GetComponent<BuildingState>();
+            structureState = GetComponent<StructureState>();
             this.box= gameObject.AddComponent<BoxCollider2D>();
             box.isTrigger = true;
             box.size = building.sizeWorldSpace.size;
@@ -36,12 +36,12 @@ namespace Buildings
         {
             if (col.CompareTag("Transporter"))
             {
-                buildingState.SetPlayerInBuilding(1, true);
+                structureState.SetPlayerInBuilding(1, true);
             }
 
             else if (col.CompareTag("Builder"))
             {
-                buildingState.SetPlayerInBuilding(0, true);
+                structureState.SetPlayerInBuilding(0, true);
             }
         }
 
@@ -49,12 +49,12 @@ namespace Buildings
         {
             if (col.CompareTag("Transporter"))
             {
-                buildingState.SetPlayerInBuilding(1, false);
+                structureState.SetPlayerInBuilding(1, false);
             }
 
             else if (col.CompareTag("Builder"))
             {
-                buildingState.SetPlayerInBuilding(0, false);
+                structureState.SetPlayerInBuilding(0, false);
             }
         }
     }

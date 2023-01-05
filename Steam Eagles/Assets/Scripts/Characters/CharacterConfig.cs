@@ -16,7 +16,10 @@ namespace DefaultNamespace
         [SerializeField] private bool overrideGroundMask = false;
         [ShowIf(nameof(overrideGroundMask))]
         [SerializeField] private LayerMask groundMask = 1;
+
         
+        public float maxSlopeAngle = 75;
+
         public LayerMask GetGroundLayers()
         {
             return overrideGroundMask ? groundMask : LayerMask.GetMask("Ground", "Solids");

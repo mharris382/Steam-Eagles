@@ -9,9 +9,12 @@ public class DisconnectCellAbility : CellAbility
     public UnityEvent<Vector3> onDisconnectedBlock;
     public override bool CanPerformAbilityOnCell(AbilityUser abilityUser, Vector3Int cellPosition)
     {
+        if (!tilemap.HasValue) return false;
         //var wp = Tilemap.GetCellCenterWorld(cellPosition);
         //var tp = transform.position;
-        return !IsCellBlocked(cellPosition) && Tilemap.HasTile(cellPosition);
+        if(IsCellBlocked(cellPosition)) return false;
+        if (!Tilemap.HasTile(cellPosition)) return false;
+        return true;
         throw new System.NotImplementedException();
     }
 

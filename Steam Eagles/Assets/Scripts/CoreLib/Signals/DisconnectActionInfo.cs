@@ -11,11 +11,12 @@ namespace CoreLib
         public Vector3Int cellPosition;
         public Tilemap tilemap;
         public TilemapTypes tilemapType;
-
+        public Tile tile;
         public DisconnectActionInfo(Tilemap tilemap, Vector3Int cellPosition)
         {
             this.cellPosition = cellPosition;
             this.tilemap = tilemap;
+            tile = tilemap.GetTile(cellPosition) as Tile;
             if (tilemap.gameObject.CompareTag("Pipe Tilemap"))
             {
                 tilemapType = TilemapTypes.PIPE;

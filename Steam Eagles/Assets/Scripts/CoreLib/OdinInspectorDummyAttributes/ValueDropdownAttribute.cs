@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CoreLib.OdinInspectorDummyAttributes
-{
+
 #if !ODIN_INSPECTOR
     public class DummyStringAttribute : PropertyAttribute
     {
@@ -45,5 +44,24 @@ namespace CoreLib.OdinInspectorDummyAttributes
         {
         }
     }
+    public class ButtonAttribute : PropertyAttribute
+    {
+        public ButtonAttribute(string label = "")
+        {
+            
+        }
+    }
+
+    public class DisableInPlayModeAttribute : PropertyAttribute
+    {
+        
+    }
+
+    public class HideInPlayModeAttribute : PropertyAttribute
+    {
+            
+    }
 #endif
-}
+
+
+   

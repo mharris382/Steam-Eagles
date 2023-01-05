@@ -30,12 +30,17 @@ namespace CoreLib
             if (_instance == null)
             {
                 _instance = this as T;
+                Init();
             }
             else
             {
-                Debug.LogWarning($"Found multiple {nameof(T)} found in scene. Deleting extra");
+                Debug.LogWarning($"Found multiple {typeof(T).Name} found in scene. Deleting extra");
                 Destroy(this);
             }
+        }
+
+        protected virtual void Init()
+        {
         }
     }
 }

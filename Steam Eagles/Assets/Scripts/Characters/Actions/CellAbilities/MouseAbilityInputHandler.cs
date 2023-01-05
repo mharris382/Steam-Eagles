@@ -20,6 +20,7 @@ namespace Characters
         {
            
             var wp = ActiveCam.ScreenToWorldPoint(Input.mousePosition);
+            wp.z = 0;
             leftMouseButton.selector.transform.position = wp;
             righttMouseButton.selector.transform.position = wp;
             leftMouseButton.ShowAbilityPreviewFromMouse(wp);

@@ -108,8 +108,7 @@ namespace Puzzles
     
     
     
-    public class 
-    HoldableItem : MonoBehaviour
+    public class HoldableItem : MonoBehaviour
     {
         [SerializeField]
         private float torqueMultiplier = 1;

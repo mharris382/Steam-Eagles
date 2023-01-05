@@ -143,12 +143,33 @@ namespace Characters
                 }
                 _isReleasing = true;
                  StartCoroutine(ReleaseHeldObject());
+            }else if (_releasePressed && !HasHeldItem)
+            {
+                _releasePressed = false;
+                
             }
         }
 
      
 
         #region [Drop/Release Methods]
+
+        IEnumerator DoReleaseDelay()
+        {
+            var colliders = recentlyHeld.GetComponentsInChildren<Collider2D>();
+            var holderBody = Holder.GetComponent<Rigidbody2D>();
+            var holderCollider = holderBody.gameObject.GetComponent<CapsuleCollider2D>();
+            foreach (var collider2D1 in colliders)
+            {
+                Physics2D.IgnoreCollision(holderCollider, collider2D1, true);
+            }
+            yield return new WaitForSeconds(1);
+            foreach (var collider2D1 in colliders)
+            {
+                Physics2D.IgnoreCollision(holderCollider, collider2D1, false);
+            }
+            recentlyHeld = null;
+        }
         float _lastReleaseTime;
         private IEnumerator ReleaseHeldObject()
         {
@@ -160,6 +181,7 @@ namespace Characters
             var heldItem = HeldItem;
             Debug.Assert(heldBody != null && holderBody != null && heldItem != null, $"Missing Components! \nHeld Rigidbody{heldBody}\nHolder Rigidbody{holderBody}\nItem:{heldItem}", this);
             recentlyHeld = heldBody;
+            StartCoroutine(DoReleaseDelay());
             
             ClearHeld();
             DisconnectJoint();
