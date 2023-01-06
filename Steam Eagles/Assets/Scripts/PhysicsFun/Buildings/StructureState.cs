@@ -10,7 +10,7 @@ namespace Buildings
     {
         [Tooltip("When a player is inside multiple structures, the one with the highest priority will be used for placing and removing blocks")]
         public int structureEditPriority;
-        public bool?[] playersInBuilding;
+        public bool[] playersInBuilding;
 
         private Subject<int> _playerCountChanged = new Subject<int>();
 
@@ -18,10 +18,10 @@ namespace Buildings
         private IStructure _structure;
         private void Awake()
         {
-            playersInBuilding = new bool?[2]
+            playersInBuilding = new bool[2]
             {
-                null,
-                null
+                false,
+                false
             };
             _structure = GetComponent<IStructure>();
             Debug.Assert(_structure!=null, $"Missing Structure on {name}" , this);
@@ -30,6 +30,7 @@ namespace Buildings
         public void SetPlayerInBuilding(int playerNumber, bool playerInBuilding)
         {
             playerNumber = Mathf.Clamp(playerNumber, 0, 1);
+            
             if (playerInBuilding)
             {
                 StructureManager.Instance.NotifyPlayerEnteredStructure(playerNumber, this);
@@ -38,22 +39,21 @@ namespace Buildings
             {
                 StructureManager.Instance.NotifyPlayerExitedStructure(playerNumber, this);
             }
-
-            var cur = playersInBuilding[playerNumber];
             playersInBuilding[playerNumber] = playerInBuilding;
-            _playerCountChanged.OnNext(CountPlayersInBuilding());
+            _playerCountChanged.OnNext(GetPlayerCount());
         }
 
-        private  int CountPlayersInBuilding()
+        private int GetPlayerCount()
         {
             int cnt = 0;
             foreach (var b in playersInBuilding)
             {
-                if (b.HasValue && b.Value) cnt++;
+                if (b) cnt++;
             }
-
             return cnt;
         }
+
+      
 
 
         public EditableTilemapStructure GetEditableStructure()
