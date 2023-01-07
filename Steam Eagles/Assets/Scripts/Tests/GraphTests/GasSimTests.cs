@@ -14,7 +14,7 @@ namespace Tests.GraphTests
         public void SetUp()
         {
             var go = new GameObject("GasSimManager");
-            _gasSimManager = go.AddComponent<GasSim.GasSimManager>();
+            _gasSimManager = go.AddComponent<GasSimManager>();
         }
         
         [TearDown]

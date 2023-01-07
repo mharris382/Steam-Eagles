@@ -117,14 +117,6 @@ namespace GasSim
 
     
     
-        private class InvalidPressureGridOperation : InvalidOperationException
-        {
-            public InvalidPressureGridOperation(Vector2Int coord, int valueToSet) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}") { }
-            public InvalidPressureGridOperation(Vector2Int coord, int valueToSet, string message) : base($"Invalid Pressure Operation Occured setting {valueToSet} at {coord}\n{message.InItalics()}") { }
-            public InvalidPressureGridOperation(Vector2Int coord) : base($"Invalid Pressure Operation Occured getting value at {coord}") { }
-        }
-
-    
         #region [ENUM DECLARATIONS]
 
         private enum TestingMode
