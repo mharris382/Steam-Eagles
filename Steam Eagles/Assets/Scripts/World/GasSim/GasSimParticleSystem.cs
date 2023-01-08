@@ -49,6 +49,8 @@ namespace GasSim
                 position.y = Mathf.Clamp(position.y,_bounds.min.y, _bounds.max.y);
                 return position;
             }
+            
+            
 
             public bool IsPositionOnGrid(Vector3Int position)
             {
@@ -66,6 +68,15 @@ namespace GasSim
                 const int BOUNDS_Z = 100;
                 var _min = new Vector2Int(0, 0);
                 _bounds = new BoundsInt(_min.x, _min.y, -BOUNDS_Z, sizeX, sizeY, BOUNDS_Z);
+                _neighborDirs = new Vector2Int[4]
+                {
+                    Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down
+                };
+            }
+
+            public GridHelper(RectInt rect)
+            {
+                _bounds = new BoundsInt(rect.xMin, rect.yMin, 0, rect.width, rect.height, 1);
                 _neighborDirs = new Vector2Int[4]
                 {
                     Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down

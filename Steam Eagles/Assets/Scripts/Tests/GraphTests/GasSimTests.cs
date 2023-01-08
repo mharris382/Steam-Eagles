@@ -8,19 +8,21 @@ namespace Tests.GraphTests
     [TestFixture]
     public class GasSimTests
     {
-        private GasSim.GasSimManager _gasSimManager;
+        private GasSim.GasGridController _gasManager;
+        
         
         [SetUp]
         public void SetUp()
         {
             var go = new GameObject("GasSimManager");
-            _gasSimManager = go.AddComponent<GasSimManager>();
+            _gasManager = go.AddComponent<GasGridController>();
+            
         }
         
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(_gasSimManager.gameObject);
+            Object.Destroy(_gasManager.gameObject);
         }
 
         [Test]
@@ -28,19 +30,19 @@ namespace Tests.GraphTests
         {
             int expectedChunksX = 10;
             int expectedChunksY = 10;
-            Vector2Int chunkSize = _gasSimManager.GasSimGrid.ChunkSize;
-            Vector2Int chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            Vector2Int chunkSize = _gasManager.GasSimGrid.ChunkSize;
+            Vector2Int chunkCount = _gasManager.GasSimGrid.ChunkCount;
             Assert.AreEqual(Vector2Int.zero, chunkCount);
 
             int sizeX = UnityEngine.Random.Range((chunkSize.x * (expectedChunksX - 1))+1, chunkSize.x * expectedChunksX);
             int sizeY = UnityEngine.Random.Range((chunkSize.y * (expectedChunksY - 1))+1, chunkSize.y * expectedChunksY);
-            _gasSimManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
-            chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            _gasManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
+            chunkCount = _gasManager.GasSimGrid.ChunkCount;
             Assert.AreEqual(expectedChunksX, chunkCount.x);
             Assert.AreEqual(expectedChunksY, chunkCount.y);
             
             int expectedTotalCells = (expectedChunksX * chunkSize.x) * (expectedChunksY * chunkSize.y);
-            Assert.AreEqual(expectedTotalCells, _gasSimManager.GasSimGrid.TotalCells);
+            Assert.AreEqual(expectedTotalCells, _gasManager.GasSimGrid.TotalCells);
         }
 
 
@@ -52,10 +54,10 @@ namespace Tests.GraphTests
             Vector2 worldPosition = new Vector2(startX, startY);
             Vector2Int simulationOffset = new Vector2Int(-10, -10);
             Vector2Int simulationSize = new Vector2Int(20, 20);
-            _gasSimManager.ResizeSimulation(simulationOffset, simulationSize);
-            Vector2Int gridPos = _gasSimManager.WorldToGridPosition(worldPosition);
+            _gasManager.ResizeSimulation(simulationOffset, simulationSize);
+            Vector2Int gridPos = _gasManager.WorldToGridPosition(worldPosition);
             Vector2 expectedPosition = new Vector2(gridPos.x - simulationOffset.x, gridPos.y - simulationOffset.y);
-            Vector2Int simPosition = _gasSimManager.WorldToSimPosition(worldPosition);
+            Vector2Int simPosition = _gasManager.WorldToSimPosition(worldPosition);
             
             Assert.AreEqual(expectedPosition, new Vector2(simPosition.x, simPosition.y));
         }
@@ -68,14 +70,14 @@ namespace Tests.GraphTests
             Vector2Int simPosition = new Vector2Int(startX, startY);
             Vector2Int simulationOffset = new Vector2Int(-10, -10);
             Vector2Int simulationSize = new Vector2Int(20, 20);
-            _gasSimManager.ResizeSimulation(simulationOffset, simulationSize);
+            _gasManager.ResizeSimulation(simulationOffset, simulationSize);
             
             Vector2 expectedPosition = new Vector2(
-                (simulationOffset.x + startX) * _gasSimManager.CellSize.x,
-                (simulationOffset.y + startY) * _gasSimManager.CellSize.y);
+                (simulationOffset.x + startX) * _gasManager.CellSize.x,
+                (simulationOffset.y + startY) * _gasManager.CellSize.y);
             
             
-            Vector2 actualWorld = _gasSimManager.SimToWorldPosition(simPosition);
+            Vector2 actualWorld = _gasManager.SimToWorldPosition(simPosition);
             
             Assert.AreEqual(expectedPosition, actualWorld);
 
@@ -96,9 +98,9 @@ namespace Tests.GraphTests
             Vector2Int expectedGridPosition = new Vector2Int(simulationPosition.x + startX, simulationPosition.y + startY);
             Vector2Int simulationSize = new Vector2Int(20, 20);
             
-            _gasSimManager.ResizeSimulation(simulationOffset, simulationSize);
+            _gasManager.ResizeSimulation(simulationOffset, simulationSize);
             Vector2Int expectedPosition = new Vector2Int(simulationOffset.x + startX, simulationOffset.y + startY);
-            Vector2Int simPosition = _gasSimManager.GridToSimPosition(expectedGridPosition);
+            Vector2Int simPosition = _gasManager.GridToSimPosition(expectedGridPosition);
             
             (Vector2Int simPosition, Vector2Int gridPosition)[] pairs =
                 new (Vector2Int simPosition, Vector2Int gridPosition)[]
@@ -115,7 +117,7 @@ namespace Tests.GraphTests
             {
                 var simPos = valueTuple.simPosition;
                 var gridPos = valueTuple.gridPosition;
-                Assert.AreEqual(gridPos, _gasSimManager.SimToGridPosition(simPos));
+                Assert.AreEqual(gridPos, _gasManager.SimToGridPosition(simPos));
             }
         }
         
@@ -128,9 +130,9 @@ namespace Tests.GraphTests
             Vector2Int simulationOffset = new Vector2Int(-10, -10);
             Vector2Int simulationSize = new Vector2Int(20, 20);
             
-            _gasSimManager.ResizeSimulation(simulationOffset, simulationSize);
+            _gasManager.ResizeSimulation(simulationOffset, simulationSize);
             Vector2Int expectedPosition = new Vector2Int(simulationOffset.x + startX, simulationOffset.y + startY);
-            Vector2Int simPosition = _gasSimManager.GridToSimPosition(gridPosition);
+            Vector2Int simPosition = _gasManager.GridToSimPosition(gridPosition);
             
             (Vector2Int simPosition, Vector2Int gridPosition)[] pairs =
                 new (Vector2Int simPosition, Vector2Int gridPosition)[]
@@ -148,7 +150,7 @@ namespace Tests.GraphTests
             {
                 var simPos = valueTuple.simPosition;
                 var gridPos = valueTuple.gridPosition;
-                Assert.AreEqual(simPos, _gasSimManager.GridToSimPosition(gridPos));
+                Assert.AreEqual(simPos, _gasManager.GridToSimPosition(gridPos));
             }
         }
 
@@ -157,11 +159,11 @@ namespace Tests.GraphTests
         {
             int expectedChunksX = 10;
             int expectedChunksY = 10;
-            Vector2Int chunkSize = _gasSimManager.GasSimGrid.ChunkSize;
+            Vector2Int chunkSize = _gasManager.GasSimGrid.ChunkSize;
             int sizeX = chunkSize.x * expectedChunksX;
             int sizeY = chunkSize.y * expectedChunksY;
-            _gasSimManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
-            Vector2Int chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            _gasManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
+            Vector2Int chunkCount = _gasManager.GasSimGrid.ChunkCount;
         }
         
         [Test]
@@ -169,22 +171,22 @@ namespace Tests.GraphTests
         {
             int expectedChunksX = 10;
             int expectedChunksY = 10;
-            Vector2Int chunkSize = _gasSimManager.GasSimGrid.ChunkSize;
+            Vector2Int chunkSize = _gasManager.GasSimGrid.ChunkSize;
             
-            Vector2Int chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            Vector2Int chunkCount = _gasManager.GasSimGrid.ChunkCount;
             Assert.AreEqual(Vector2Int.zero, chunkCount);
 
             int sizeX = chunkSize.x * expectedChunksX;
             int sizeY = chunkSize.y * expectedChunksY;
-            _gasSimManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
-            chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            _gasManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
+            chunkCount = _gasManager.GasSimGrid.ChunkCount;
             Assert.AreEqual(chunkCount, new Vector2Int(expectedChunksX, expectedChunksY));
             
             
             Assert.AreEqual(expectedChunksX, chunkCount.x);
             Assert.AreEqual(expectedChunksY, chunkCount.y);
             Debug.Log($"Chunk Count = {chunkCount}");
-            var grid = _gasSimManager.GasSimGrid;
+            var grid = _gasManager.GasSimGrid;
             
             int cellX = 0;
             int cellY = 0;
@@ -238,15 +240,15 @@ namespace Tests.GraphTests
         {
             int expectedChunksX = 10;
             int expectedChunksY = 10;
-            Vector2Int chunkSize = _gasSimManager.GasSimGrid.ChunkSize;
+            Vector2Int chunkSize = _gasManager.GasSimGrid.ChunkSize;
             
-            Vector2Int chunkCount = _gasSimManager.GasSimGrid.ChunkCount;
+            Vector2Int chunkCount = _gasManager.GasSimGrid.ChunkCount;
             Assert.AreEqual(Vector2Int.zero, chunkCount);
 
             int sizeX = chunkSize.x * expectedChunksX;
             int sizeY = chunkSize.y * expectedChunksY;
-            _gasSimManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
-            var grid = _gasSimManager.GasSimGrid;
+            _gasManager.ResizeSimulation(Vector2Int.zero, new Vector2Int(sizeX, sizeY));
+            var grid = _gasManager.GasSimGrid;
             HashSet<Vector2Int> foundCells = new HashSet<Vector2Int>();
             int totalCells = 0;
             foreach (var gasSimChunk in grid.GetChunks())

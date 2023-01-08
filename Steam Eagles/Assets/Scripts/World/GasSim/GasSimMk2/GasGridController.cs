@@ -4,7 +4,7 @@ using UnityEngine;
 namespace GasSim
 {
     [RequireComponent(typeof(Grid))]
-    public class GasSimManager2 : MonoBehaviour
+    public class GasGridController : MonoBehaviour
     {
         [SerializeField] private GridResolution resolution = GridResolution.HALF;
         [SerializeField] private Vector2Int chunkSize = new Vector2Int(16, 16);
@@ -12,6 +12,7 @@ namespace GasSim
         private GasSimGrid _gasSimGrid;
         private Grid _grid;
         private RectInt _simulationBounds;
+        private GasSimParticleSystem.GridHelper _gridHelper;
 
         public Vector2 CellSize => Grid.cellSize;
         public Grid Grid => _grid ? _grid : _grid = GetAndSetupGrid();
@@ -21,6 +22,7 @@ namespace GasSim
         private void Awake()
         {
             _gasSimGrid = new GasSimGrid(chunkSize);
+            _grid = GetAndSetupGrid();
         }
 
         private Grid GetAndSetupGrid()
@@ -44,6 +46,7 @@ namespace GasSim
         {
             _simulationBounds = new RectInt(position, size);
             _gasSimGrid.ResizeSimulation(size);
+            _gridHelper = new GasSimParticleSystem.GridHelper(_simulationBounds);
         }
 
         public Vector2Int WorldToSimPosition(Vector2 worldSpaceCoord)
@@ -58,6 +61,17 @@ namespace GasSim
             return Grid.CellToWorld((Vector3Int)gridPosition);
         }
         
+        
+        public bool IsInSimulationBounds(Vector2Int simCoordinate)
+        {
+            return _simulationBounds.Contains(simCoordinate);
+        }
+        
+        public bool IsInSimulationBounds(Vector2 wsPos)
+        {
+            return false;
+        }
+        
         public Vector2 GridToWorldPosition(Vector2Int gridCoordinate) => Grid.CellToWorld((Vector3Int)gridCoordinate);
 
         public Vector2Int WorldToGridPosition(Vector3 worldSpacePosition) => (Vector2Int)Grid.WorldToCell(worldSpacePosition);
@@ -70,7 +84,5 @@ namespace GasSim
         {
             return simCoord + _simulationBounds.position;
         }
-        
-        
     }
 }

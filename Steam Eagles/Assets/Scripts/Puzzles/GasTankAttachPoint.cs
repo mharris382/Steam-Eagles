@@ -13,7 +13,7 @@ public class GasTankAttachPoint : MonoBehaviour
 {
     public TriggerArea triggerArea;
     public Joint2D attachJoint;
-    public GasTank attachedGasTank;
+    public IGasTank attachedGasTank;
     public Events events;
 
     [Tooltip(
@@ -25,8 +25,8 @@ public class GasTankAttachPoint : MonoBehaviour
     [Serializable]
     public class Events
     {
-        public UnityEvent<GasTank> onTankAttached;
-        public UnityEvent<GasTank> onTankDetached;
+        public UnityEvent<IGasTank> onTankAttached;
+        public UnityEvent<IGasTank> onTankDetached;
         public UnityEvent<GameObject> onTankObjAttached;
         public UnityEvent<GameObject> onTankObjDetached;
 
@@ -43,7 +43,7 @@ public class GasTankAttachPoint : MonoBehaviour
     private Joint2D _joints;
     private IDisposable _disposable;
 
-    public GasTank AttachedTank
+    public IGasTank AttachedTank
     {
         set
         {
@@ -57,11 +57,11 @@ public class GasTankAttachPoint : MonoBehaviour
             }
             else
             {
-                _holdableItem = value.GetComponent<HoldableItem>();
+                _holdableItem = value.gameObject.GetComponent<HoldableItem>();
                 //if(_holdableItem.IsHeld) _holdableItem.Dropped(_holdableItem.HeldBy);
-                _tankRB = value.GetComponent<Rigidbody2D>();
-                _tankSpriteRenderer = value.GetComponent<SpriteRenderer>();
-                _gasTankState = value.GetComponent<GasTankState>();
+                _tankRB = value.gameObject.GetComponent<Rigidbody2D>();
+                _tankSpriteRenderer = value.gameObject.GetComponent<SpriteRenderer>();
+                _gasTankState = value.gameObject.GetComponent<GasTankState>();
                 attachedGasTank = value;
             }
 
@@ -86,7 +86,7 @@ public class GasTankAttachPoint : MonoBehaviour
     public bool HasTankAttached() => attachedGasTank != null;
 
 
-    public void AttachGasTank(GasTank gasTank)
+    public void AttachGasTank(IGasTank gasTank)
     {
         AttachedTank = gasTank;
         if (_holdableItem.IsHeld)
@@ -104,9 +104,9 @@ public class GasTankAttachPoint : MonoBehaviour
     }
 
     
-    IEnumerator LockUntilEmpty(GasTank gasTank)
+    IEnumerator LockUntilEmpty(IGasTank gasTank)
     {
-        _colliders = gasTank.GetComponents<Collider2D>();
+        _colliders = gasTank.gameObject.GetComponents<Collider2D>();
         foreach (var collider2D1 in _colliders) collider2D1.enabled = false;
         while (HasTankAttached() && gasTank.StoredAmountNormalized > 0.25f)
         {
@@ -123,7 +123,7 @@ public class GasTankAttachPoint : MonoBehaviour
         this._joints = attachJoint;
         
         triggerArea.onTargetAdded.AsObservable().Where(t => !HasTankAttached())
-            .Select(t => t == null ? null : t.GetComponent<GasTank>()).Where(t => t != null)
+            .Select(t => t == null ? null : t.GetComponent<IGasTank>()).Where(t => t != null)
             .TakeUntilDestroy(this)
             .Subscribe(AttachGasTank);
         

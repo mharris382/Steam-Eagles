@@ -89,7 +89,7 @@ namespace GasSim
             _count++;
             if ((_count % slowdown) != 0) yield break;
 
-            Vector2Int c0 = (Vector2Int)CellCoordinate;
+            Vector2Int c0 = Vector2Int.zero;
             for (int x = 0; x < size.x; x++)
             {
                 for (int y = 0; y < size.y; y++)
