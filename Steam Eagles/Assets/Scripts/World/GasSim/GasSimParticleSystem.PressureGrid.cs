@@ -73,7 +73,8 @@ namespace GasSim
                         _totalPressureInGrid -= previousPressure;
                         _usedCells.Remove(coord);
                     }
-                    else//case 3: cell pressure state, increased or decreased 
+                    //case 3: cell pressure state, increased or decreased
+                    else 
                     {
                         _totalPressureInGrid += newPressure - previousPressure;
                         _usedCells[coord] = newPressure;

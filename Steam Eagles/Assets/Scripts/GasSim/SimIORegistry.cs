@@ -1,0 +1,72 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
+
+public class SimIORegistry : MonoBehaviour
+{
+    private BoxCollider2D _collider;
+
+    private BoxCollider2D Collider => _collider ? _collider : _collider = GetComponent<BoxCollider2D>();
+
+
+    public List<SimIOPoint> dynamicSources = new List<SimIOPoint>();
+    private BoundsInt _simBounds;
+    private Grid _grid;
+
+    public int testSourceAmount = 1;
+    public List<Vector2Int> testSources = new List<Vector2Int>();
+
+    public IEnumerable<(Vector2Int cellSpacePos, int gasDelta)> GetSimIOPoints()
+    {
+        foreach (var testSource in testSources)
+        {
+            if (_simBounds.Contains(new Vector3Int(testSource.x, testSource.y, 0)))
+            {
+                yield return (testSource, testSourceAmount);
+            }
+        }  
+    }
+    public void InitializeIOTracking(BoxCollider2D boundingArea, Grid grid, BoundsInt simBounds)
+    {
+        boundingArea.OnTriggerEnter2DAsObservable()
+            .Select(t => t.GetComponent<SimIOPoint>())
+            .Where(t => t != null)
+            .Subscribe(OnIOEntered).AddTo(this);
+        
+        boundingArea.OnTriggerExit2DAsObservable()
+            .Select(t => t.GetComponent<SimIOPoint>())
+            .Where(t => t != null)
+            .Subscribe(OnIOExited).AddTo(this);
+
+        this._grid = grid;
+        this._simBounds = simBounds;
+    }
+
+    void OnIOEntered(SimIOPoint simIOPoint)
+    {
+        Debug.Log($"SimIOPoint {simIOPoint.name} Entered", this);
+    }
+
+    void OnIOExited(SimIOPoint simIOPoint)
+    {
+        Debug.Log($"SimIOPoint {simIOPoint.name} Exited", this);
+    }
+
+}
+
+public interface ISimIO
+{
+    Vector3 Position { get; }
+    bool isActive { get; }
+}
+public interface IGasSink : ISimIO
+{
+    int TryRemoveGas(int amount);
+}
+public interface IGasSource : ISimIO
+{
+    int TryAddGas(int amount);
+} 

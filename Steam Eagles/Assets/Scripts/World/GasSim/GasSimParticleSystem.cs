@@ -648,7 +648,7 @@ namespace GasSim
             int i = 0;
             foreach (var gasCell in InternalPressureGrid.GetAllNonEmptyCells())
             {
-                var startLifetime = ParticleGetStartLifetime(gasCell.pressure);
+                var startLifetime = this.updateRate + 0.01f;
                 particles[i] = new ParticleSystem.Particle()
                 {
                     position = ParticleGetPosition(gasCell.coord, gasCell.pressure),
