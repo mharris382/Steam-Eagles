@@ -100,10 +100,10 @@ namespace GasSim
 
         private void Awake()
         {
-            if (targetGasSim == null)
-            {
-                targetGasSim = GameObject.FindWithTag("Gas Sim").GetComponent<IGasSim>();
-            }
+            //if (targetGasSim == null)
+            //{
+            //    targetGasSim = GameObject.FindWithTag("Gas Sim").GetComponent<IGasSim>();
+            //}
 
             Debug.Assert(targetGasSim != null, this);
             grid = targetGasSim.Grid;

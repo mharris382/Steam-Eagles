@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using DG.DemiEditor;
+using CoreLib;
 using NaughtyAttributes;
 using UnityEngine;
 

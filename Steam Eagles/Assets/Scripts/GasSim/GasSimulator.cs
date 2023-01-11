@@ -58,25 +58,19 @@ namespace GasSim
             simIORegistry.InitializeIOTracking(boundingArea, _grid, _simBounds);
 
 
+            LayerMask solidLayerMask = LayerMask.GetMask("Solids", "Ground");
             _stateOfMatter = new StateOfMatter[cellCountX, cellCountY];
             for (int x = 0; x < cellCountX; x++)
             {
                 for (int y = 0; y < cellCountY; y++)
                 {
-                    _stateOfMatter[x, y] = StateOfMatter.AIR;
+                    _stateOfMatter[x, y] = Physics2D.OverlapPoint(Grid.CellToWorld(new Vector3Int(x, y, 0)), solidLayerMask) ?
+                        StateOfMatter.SOLID : StateOfMatter.AIR;
                 }
             }
         }
 
-        private void OnBuildAction(BuildActionInfo buildActionInfo)
-        {
-            
-        }
-
-        private void OnDisconnectAction(DisconnectActionInfo disconnectActionInfo)
-        {
-            
-        }
+        
 
 
 
@@ -105,12 +99,25 @@ namespace GasSim
         private void SimulateSinks()
         {
             //remove pressure from cells at sink locations
+            foreach (var sink in simIORegistry.GetSimIOSinks())
+            {
+                var cellPos = sink.cellSpacePos;
+                if (_usedCells.ContainsKey(cellPos))
+                {
+                    var prevAmount = _usedCells[cellPos];
+                    _usedCells[cellPos] = Mathf.Max(0, _usedCells[cellPos] - sink.gasDelta);
+                    var newAmount = _usedCells[cellPos];
+                    var delta = prevAmount - newAmount;
+                    if(newAmount == 0)
+                        _usedCells.Remove(cellPos);
+                }
+            }
         }
 
         private void SimulateSources()
         {
             // try to add pressure to a cell at source locations
-            foreach (var source in simIORegistry.GetSimIOPoints())
+            foreach (var source in simIORegistry.GetSimIOSources())
             {
                 var cellPos = source.cellSpacePos;
                 if (_usedCells.ContainsKey(cellPos))
@@ -177,6 +184,7 @@ namespace GasSim
             amt = Mathf.Min(amt, pressureInFromCell, PRESSURE_MAX-pressureInToCell);
             _usedCells[to] += amt;
             _usedCells[from] -= amt;
+            Debug.Assert(!(_usedCells[from] < 0));
             if(_usedCells[from] <= 0)
             {
                 _usedCells.Remove(from);
@@ -192,7 +200,8 @@ namespace GasSim
             {
                 var neighbor = coord + neighborDirections[i];
                 if (_simBounds.Contains(new Vector3Int(neighbor.x, neighbor.y, 0))
-                    && !_usedCells.ContainsKey(neighbor))
+                    && !_usedCells.ContainsKey(neighbor)
+                    && _stateOfMatter[neighbor.x, neighbor.y] == StateOfMatter.AIR)
                 {
                     _neighbors[emptyNeighbors] = neighbor;
                     emptyNeighbors++;
@@ -211,6 +220,7 @@ namespace GasSim
             {
                 var neighbor = coord + neighborDirections[i];
                 if (_simBounds.Contains(new Vector3Int(neighbor.x, neighbor.y, 0))
+                    && _stateOfMatter[neighbor.x, neighbor.y] == StateOfMatter.AIR
                     && (!_usedCells.ContainsKey(neighbor) || _usedCells[neighbor] < cellDensity))
                 {
                     _neighbors[lowerDensityNeighbors] = neighbor;

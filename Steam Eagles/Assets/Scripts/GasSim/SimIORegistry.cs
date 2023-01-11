@@ -19,7 +19,7 @@ public class SimIORegistry : MonoBehaviour
     public int testSourceAmount = 1;
     public List<Vector2Int> testSources = new List<Vector2Int>();
 
-    public IEnumerable<(Vector2Int cellSpacePos, int gasDelta)> GetSimIOPoints()
+    public IEnumerable<(Vector2Int cellSpacePos, int gasDelta)> GetSimIOSources()
     {
         foreach (var testSource in testSources)
         {
@@ -28,6 +28,17 @@ public class SimIORegistry : MonoBehaviour
                 yield return (testSource, testSourceAmount);
             }
         }  
+    }
+
+    public IEnumerable<(Vector2Int cellSpacePos, int gasDelta)> GetSimIOSinks()
+    {
+        var bounds = _simBounds;
+        var maxY = bounds.max.y;
+        for (int x = 0; x < bounds.xMax; x++)
+        {
+            var cellPos = new Vector2Int(x, maxY);
+            yield return (cellPos, 15);
+        }
     }
     public void InitializeIOTracking(BoxCollider2D boundingArea, Grid grid, BoundsInt simBounds)
     {
@@ -55,6 +66,20 @@ public class SimIORegistry : MonoBehaviour
         Debug.Log($"SimIOPoint {simIOPoint.name} Exited", this);
     }
 
+
+    private void OnDrawGizmos()
+    {
+        if (_grid == null)
+        {
+            _grid = GetComponent<Grid>();
+        }
+        foreach (var testSource in testSources)
+        {
+            Gizmos.color = Color.blue;
+            var wsPos = _grid.GetCellCenterWorld(new Vector3Int(testSource.x, testSource.y, 0));
+            Gizmos.DrawCube(wsPos, _grid.cellSize);
+        }
+    }
 }
 
 public interface ISimIO

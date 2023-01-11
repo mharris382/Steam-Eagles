@@ -1468,7 +1468,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dcb7a3483d54765a31a2ea76f0b87a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gasTank: {fileID: 769624621357987836}
   updateGasTankUI:
     m_PersistentCalls:
       m_Calls: []
@@ -1649,7 +1648,6 @@ Transform:
   - {fileID: 769624621127409763}
   - {fileID: 769624620183141684}
   - {fileID: 35718812201635475}
-  - {fileID: 1701642147796059777}
   - {fileID: 6516590733484607077}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1739,6 +1737,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82c8efecd594317987557fe7effbd97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  torqueMultiplier: 1
+  isHeld:
+    value: 0
+  events:
+    onPickedUp:
+      m_PersistentCalls:
+        m_Calls: []
+    onDropped:
+      m_PersistentCalls:
+        m_Calls: []
+    onThrown:
+      m_PersistentCalls:
+        m_Calls: []
   onPickedUp:
     m_PersistentCalls:
       m_Calls:
@@ -1793,8 +1804,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  isHeld:
-    value: 0
+  grabColliders: []
 --- !u!114 &769624621357987778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2124,7 +2134,6 @@ MonoBehaviour:
   tilemap: {fileID: 0}
   grid: {fileID: 0}
   gasSimObject: {fileID: 0}
-  targetGasSim: {fileID: 0}
   size: {x: 4, y: 4}
   slowdown: 1
   useConstantAmount: 0
@@ -2188,6 +2197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab8c01448fe436faa7243c02c43d981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gasToPower: 4
 --- !u!1001 &1639174926309803089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2197,7 +2207,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2325,66 +2335,4 @@ Transform:
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
   m_PrefabInstance: {fileID: 2209010707038463934}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &6579023290288309429
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 769624621357987838}
-    m_Modifications:
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.04
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9145478937758908270, guid: de6334278e253024a96a77a37825d0db, type: 3}
-      propertyPath: m_Name
-      value: Gas Push Particles
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: de6334278e253024a96a77a37825d0db, type: 3}
---- !u!4 &1701642147796059777 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5534941911118217780, guid: de6334278e253024a96a77a37825d0db, type: 3}
-  m_PrefabInstance: {fileID: 6579023290288309429}
   m_PrefabAsset: {fileID: 0}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GasSim
 {
@@ -8,6 +9,7 @@ namespace GasSim
     public class GasSimVisualizer : MonoBehaviour
     {
         public uint seed = 100;
+        public float sizeMultiplier = 1.5f;
         ParticleSystem ps;
         ParticleSystem PS => ps ? ps : ps = GetComponent<ParticleSystem>();
         
@@ -21,14 +23,16 @@ namespace GasSim
             Color particleColor = Color.white;
             float lifetime = updateRate + 0.1f;
             particleColor.a = pressureOpacity;
+            uint seed = (uint)Random.Range(0, 10000);
             return new ParticleSystem.Particle
             {
                 position = Grid.GetCellCenterWorld(cellPos),
                 startColor = particleColor,
-                startSize = Grid.cellSize.x,
+                startSize = Grid.cellSize.x * sizeMultiplier,
                 startLifetime = lifetime,
                 remainingLifetime = lifetime,
-                randomSeed = seed
+                randomSeed = seed,
+                
             };
         }
 
