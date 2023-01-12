@@ -8,7 +8,7 @@ namespace CoreLib
     /// </summary>
     public struct BuildActionInfo
     {
-        public Vector3 worldPosition => tilemap.layoutGrid.CellToWorld(cellPosition);
+        public Vector3 worldPosition => tilemap.CellToWorld(cellPosition);
         public Vector3Int cellPosition;
         public Tilemap tilemap;
         public TilemapTypes tilemapType;

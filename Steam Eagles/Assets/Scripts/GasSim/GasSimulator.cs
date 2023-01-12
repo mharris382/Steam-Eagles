@@ -4,7 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 
@@ -28,6 +30,7 @@ namespace GasSim
         [SerializeField] private BoxCollider2D boundingArea;
         [MinMaxRange(1, 50)] public Vector2Int randomChance = new Vector2Int(2, 5);
         public float updateRate = 1f;
+        [SerializeField] private bool autoPositionGrid = true;
 
         Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         private SimIORegistry simIORegistry => _simIORegistry ? _simIORegistry : _simIORegistry = GetComponent<SimIORegistry>();
@@ -38,6 +41,8 @@ namespace GasSim
         private Vector2Int[] _neighbors = new Vector2Int[4];
         private Vector2Int[] _neighborDirections;
         private Vector2Int[] _neighborDirections2;
+        private int _solidLayerMask;
+
         private void Awake()
         {
             _grid = GetComponent<Grid>();
@@ -50,7 +55,8 @@ namespace GasSim
             var cellCountX = Mathf.CeilToInt(worldSpaceBounds.size.x / cellSize.x);
             var cellCountY = Mathf.CeilToInt(worldSpaceBounds.size.y / cellSize.y);
             transform.parent = boundingArea.transform;
-            transform.position = worldSpaceBounds.min;
+            if(autoPositionGrid)
+                transform.position = worldSpaceBounds.min;
 
             _simBounds = new BoundsInt(Vector3Int.zero, new Vector3Int(cellCountX, cellCountY, 1));
             _simIORegistry = GetComponent<SimIORegistry>();
@@ -58,19 +64,76 @@ namespace GasSim
             simIORegistry.InitializeIOTracking(boundingArea, _grid, _simBounds);
 
 
-            LayerMask solidLayerMask = LayerMask.GetMask("Solids", "Ground");
+            this._solidLayerMask = LayerMask.GetMask("Solids", "Ground");
             _stateOfMatter = new StateOfMatter[cellCountX, cellCountY];
             for (int x = 0; x < cellCountX; x++)
             {
                 for (int y = 0; y < cellCountY; y++)
                 {
-                    _stateOfMatter[x, y] = Physics2D.OverlapPoint(Grid.CellToWorld(new Vector3Int(x, y, 0)), solidLayerMask) ?
+                    _stateOfMatter[x, y] = Physics2D.OverlapPoint(Grid.GetCellCenterWorld(new Vector3Int(x, y, 0)), _solidLayerMask) ?
                         StateOfMatter.SOLID : StateOfMatter.AIR;
+                }
+            }
+
+            MessageBroker.Default.Receive<BuildActionInfo>().DelayFrame(1).Where(t => t.tilemapType == TilemapTypes.SOLIDS).Subscribe(OnBuildTile).AddTo(this);
+            MessageBroker.Default.Receive<DisconnectActionInfo>().DelayFrame(1).Where(t => t.tilemapType == TilemapTypes.SOLIDS).Subscribe(OnDisconnectTile).AddTo(this);
+        }
+
+        #region [Solid Tilemap Events]
+
+        private void SolidTilemapUpdated(Vector3Int cellPos, Tilemap tilemap, Vector3 worldPos)
+        {
+            if (_simBounds.Contains(cellPos))
+            {
+                var xCells = Mathf.CeilToInt((tilemap.cellSize.x * tilemap.transform.lossyScale.x) / Grid.cellSize.x) + 2;
+                var yCells = Mathf.CeilToInt((tilemap.cellSize.y * tilemap.transform.lossyScale.y) / Grid.cellSize.y) + 2;
+                var x = cellPos.x;
+                var y = cellPos.y;
+                for (int i = 0; i < xCells; i++)
+                {
+                    for (int j = 0; j < yCells; j++)
+                    {
+                        var cell = new Vector3Int(x + i, y + j);
+                        if (_simBounds.Contains(cell))
+                        {
+                            var cellWorldPos = Grid.GetCellCenterWorld(cell);
+                            if (Physics2D.OverlapPoint(cellWorldPos, _solidLayerMask))
+                            {
+                                _stateOfMatter[cell.x, cell.y] = StateOfMatter.SOLID;
+                                _usedCells.Remove(new Vector2Int(cell.x, cell.y));
+                            }
+                            else
+                            {
+                                _stateOfMatter[cell.x, cell.y] = StateOfMatter.AIR;
+                            }
+
+                            Debug.DrawLine(worldPos, cellWorldPos,
+                                _stateOfMatter[cell.x, cell.y] == StateOfMatter.AIR ? Color.cyan : Color.red, 1);
+                        }
+                    }
                 }
             }
         }
 
+        void OnBuildTile(BuildActionInfo buildActionInfo)
+        {
+            var worldPos = buildActionInfo.worldPosition;
+            var cellPos = Grid.WorldToCell(worldPos);
+            var tilemap = buildActionInfo.tilemap;
+            cellPos.z = 0;
+            SolidTilemapUpdated(cellPos, tilemap, worldPos);
+        }
+
+        void OnDisconnectTile(DisconnectActionInfo disconnectActionInfo)
+        {
+            var worldPos = disconnectActionInfo.WorldPosition;
+            var cellPos = Grid.WorldToCell(worldPos);
+            cellPos.z = 0;
+            SolidTilemapUpdated(cellPos, disconnectActionInfo.tilemap, worldPos);
+        }
         
+
+        #endregion
 
 
 
@@ -110,6 +173,7 @@ namespace GasSim
                     var delta = prevAmount - newAmount;
                     if(newAmount == 0)
                         _usedCells.Remove(cellPos);
+                    
                 }
             }
         }

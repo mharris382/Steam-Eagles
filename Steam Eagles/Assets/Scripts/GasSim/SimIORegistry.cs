@@ -33,7 +33,7 @@ public class SimIORegistry : MonoBehaviour
     public IEnumerable<(Vector2Int cellSpacePos, int gasDelta)> GetSimIOSinks()
     {
         var bounds = _simBounds;
-        var maxY = bounds.max.y;
+        var maxY = bounds.max.y-1;
         for (int x = 0; x < bounds.xMax; x++)
         {
             var cellPos = new Vector2Int(x, maxY);

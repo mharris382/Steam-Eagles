@@ -8,6 +8,7 @@ namespace CoreLib
     /// </summary>
     public struct DisconnectActionInfo
     {
+        public Vector3 WorldPosition => tilemap.CellToWorld(cellPosition);
         public Vector3Int cellPosition;
         public Tilemap tilemap;
         public TilemapTypes tilemapType;
