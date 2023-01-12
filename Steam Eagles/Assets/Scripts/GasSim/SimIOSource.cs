@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class SimIOSource : MonoBehaviour
+namespace GasSim
 {
-    // Start is called before the first frame update
-    void Start()
+    public class SimIOSource : SimIOPoint, IGasSource
     {
+    
+        [Range(0, GasSimulator.PRESSURE_MAX)]
+        public int flowRate = 0;
         
-    }
+        public UnityEvent<int> onGasAddedToSim;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public int RatePerCell => 1;
+
+        protected override Color GizmoColor => Color.green;
+
+        public int SourceFlowRate
+        {
+            get => flowRate;
+            set => flowRate = Mathf.Clamp(value, 0, GasSimulator.PRESSURE_MAX);
+        }
+
+    
+        public void OnGasAddedToSim(int amountAdded)
+        {
+            onGasAddedToSim?.Invoke(amountAdded);
+        }
     }
 }

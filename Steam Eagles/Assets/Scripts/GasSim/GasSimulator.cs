@@ -15,7 +15,7 @@ namespace GasSim
     [RequireComponent(typeof(Grid), typeof(GasSimVisualizer), typeof(SimIORegistry))]
     public class GasSimulator : MonoBehaviour
     {
-        private const int PRESSURE_MAX = 15;
+        public const int PRESSURE_MAX = 15;
         
         private Grid _grid;
         private GasSimVisualizer _visualizer;
@@ -79,7 +79,18 @@ namespace GasSim
             MessageBroker.Default.Receive<DisconnectActionInfo>().DelayFrame(1).Where(t => t.tilemapType == TilemapTypes.SOLIDS).Subscribe(OnDisconnectTile).AddTo(this);
         }
 
-        #region [Solid Tilemap Events]
+        private void OnEnable()
+        {
+            StartCoroutine(nameof(Simulate));
+        }
+
+        private void OnDisable()
+        {
+            StopCoroutine(nameof(Simulate));
+        }
+        
+        
+        #region [SOLID TILEMAP CHANGED EVENTS]
 
         private void SolidTilemapUpdated(Vector3Int cellPos, Tilemap tilemap, Vector3 worldPos)
         {
@@ -136,16 +147,59 @@ namespace GasSim
         #endregion
 
 
+        #region [HELPER METHODS]
 
-        private void OnEnable()
+        int GetRemainingGasCapacity(Vector2Int simCoord)
         {
-            StartCoroutine(nameof(Simulate));
+            if (_usedCells.ContainsKey(simCoord))
+            {
+                return PRESSURE_MAX - _usedCells[simCoord];
+            }
+            return PRESSURE_MAX;
+        }
+        int GetGas(Vector2Int simCoord)
+        {
+            if (_usedCells.ContainsKey(simCoord))
+            {
+                return _usedCells[simCoord];
+            }
+            return 0;
+        }
+        bool TryAddGas(Vector2Int simCoord, ref int amt)
+        {
+            if (_stateOfMatter[simCoord.x, simCoord.y] == StateOfMatter.AIR)
+            {
+                if (_usedCells.ContainsKey(simCoord))
+                {
+                    amt = Mathf.Max(amt, GetRemainingGasCapacity(simCoord));
+                    _usedCells[simCoord] += amt;
+                }
+                else
+                {
+                    _usedCells.Add(simCoord, amt);
+                }
+                return true;
+            }
+            return false;
+        }
+        bool TryRemoveGas(Vector2Int simCoord, ref int amt)
+        {
+            if (_stateOfMatter[simCoord.x, simCoord.y] == StateOfMatter.AIR)
+            {
+                int amountCanRemove = GetGas(simCoord);
+                if (amountCanRemove > 0)
+                {
+                    amt = Mathf.Min(amt, amountCanRemove);
+                    _usedCells[simCoord] -= amt;
+                    if(_usedCells[simCoord]<=0) _usedCells.Remove(simCoord);
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
-        private void OnDisable()
-        {
-            StopCoroutine(nameof(Simulate));
-        }
+        #endregion
 
         IEnumerator Simulate()
         {
@@ -165,15 +219,10 @@ namespace GasSim
             foreach (var sink in simIORegistry.GetSimIOSinks())
             {
                 var cellPos = sink.cellSpacePos;
-                if (_usedCells.ContainsKey(cellPos))
+                var amount = sink.amount;
+                if (TryRemoveGas(cellPos, ref amount))
                 {
-                    var prevAmount = _usedCells[cellPos];
-                    _usedCells[cellPos] = Mathf.Max(0, _usedCells[cellPos] - sink.gasDelta);
-                    var newAmount = _usedCells[cellPos];
-                    var delta = prevAmount - newAmount;
-                    if(newAmount == 0)
-                        _usedCells.Remove(cellPos);
-                    
+                    sink.onGasRemoved?.Invoke(amount);                    
                 }
             }
         }
@@ -183,14 +232,11 @@ namespace GasSim
             // try to add pressure to a cell at source locations
             foreach (var source in simIORegistry.GetSimIOSources())
             {
-                var cellPos = source.cellSpacePos;
-                if (_usedCells.ContainsKey(cellPos))
+                var cellPos = new Vector3Int(source.cellSpacePos.x, source.cellSpacePos.y, 0);
+                var amount = source.amount;
+                if (_simBounds.Contains(cellPos) && TryAddGas(source.cellSpacePos, ref amount))
                 {
-                    _usedCells[cellPos] = Mathf.Clamp(_usedCells[cellPos] + source.gasDelta, 0, PRESSURE_MAX);
-                }
-                else
-                {
-                    _usedCells.Add(cellPos, source.gasDelta);
+                    source.onGasAdded?.Invoke(amount);
                 }
             }
         }

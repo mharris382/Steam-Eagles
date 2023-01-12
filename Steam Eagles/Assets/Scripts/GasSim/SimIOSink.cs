@@ -1,16 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class SimIOSink : MonoBehaviour, IGasSink
+namespace GasSim
 {
-    public Vector3 Position
+    public class SimIOSink : SimIOPoint, global::GasSim.IGasSink
     {
-        get { return transform.position; }
-    }
-    public bool isActive { get; }
-    public int TryRemoveGas(int amount)
-    {
-        throw new System.NotImplementedException();
+        [Range(0, GasSimulator.PRESSURE_MAX)] public int flowRate = 0;
+        public UnityEvent<int> onGasRemovedFromSim;
+
+
+        protected override Color GizmoColor => Color.red;
+
+        public int SinkFlowRate
+        {
+            get => flowRate;
+            set => flowRate = Mathf.Clamp(value, 0, GasSimulator.PRESSURE_MAX);
+        }
+    
+        public void OnGasRemovedFromSim(int amountRemoved)
+        {
+            onGasRemovedFromSim?.Invoke(amountRemoved);
+        }
     }
 }
