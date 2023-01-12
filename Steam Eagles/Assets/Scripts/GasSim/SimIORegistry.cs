@@ -54,7 +54,7 @@ namespace GasSim
             foreach (var gasSource in _sources)
             {
                 int rate = gasSource.SourceFlowRate;
-                
+                if (rate <= 0) continue;
                 foreach (var cell in gasSource.GetCellsFromRect(_grid, _simBounds))
                 {
                     yield return (cell,Mathf.Min(rate, gasSource.RatePerCell), t =>

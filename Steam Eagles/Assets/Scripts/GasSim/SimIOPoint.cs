@@ -16,7 +16,7 @@ public class SimIOPoint : MonoBehaviour
     public IEnumerable<Vector2Int> GetCellsFromRect(Grid grid, BoundsInt simBounds)
     {
         var pos = transform.TransformPoint(ioArea.position);
-        var size = transform.TransformVector(ioArea.size);
+        var size = ioArea.size;
         var rect = new Rect(pos, size);
         var min = rect.min;
         var max = rect.max;
@@ -39,7 +39,7 @@ public class SimIOPoint : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = GizmoColor.SetAlpha(0.5f);
-        Gizmos.DrawCube(transform.TransformPoint(ioArea.position), transform.TransformVector(ioArea.size));
+        Gizmos.DrawCube(transform.TransformPoint(ioArea.position), ioArea.size);
     }
 }
 
