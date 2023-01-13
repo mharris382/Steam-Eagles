@@ -1,5 +1,123 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1269648964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1269648965}
+  - component: {fileID: 1269648966}
+  - component: {fileID: 1269648967}
+  - component: {fileID: 1269648968}
+  m_Layer: 1
+  m_Name: SimIO
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1269648965
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269648964}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.002, y: 0.036, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 769624621357987838}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1269648966
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269648964}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.00043803194, y: 1.0039679}
+  serializedVersion: 2
+  m_Radius: 0.20030658
+--- !u!114 &1269648967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269648964}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7382b5edf8c864458f6b1638830a640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ioArea:
+    serializedVersion: 2
+    x: -0.19
+    y: 0.83
+    width: 4.03
+    height: 5.95
+  flowRate: 6
+  onGasRemovedFromSim:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 769624621357987836}
+        m_TargetAssemblyTypeName: GasSim.GasTank, SteamEagles.GasNetwork
+        m_MethodName: AddGas
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1269648968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269648964}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 967577e5115e6eb46abf464ce3fbd4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ioArea:
+    serializedVersion: 2
+    x: 0.01
+    y: 1
+    width: 1
+    height: 1
+  flowRate: 7
+  onGasAddedToSim:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 769624621357987836}
+        m_TargetAssemblyTypeName: GasSim.GasTank, SteamEagles.GasNetwork
+        m_MethodName: RemoveGas
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &769624619433053839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,6 +1767,7 @@ Transform:
   - {fileID: 769624620183141684}
   - {fileID: 35718812201635475}
   - {fileID: 6516590733484607077}
+  - {fileID: 1269648965}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.025}
@@ -1713,7 +1832,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1507656175
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: be0b4cdbe31c9a04ea1f768e5b42e9d5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1755,24 +1874,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 769624621357987777}
         m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-        m_MethodName: set_sortingLayerName
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Default
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 769624621357987777}
-        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
         m_MethodName: set_sortingOrder
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1782,24 +1889,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 769624621357987777}
         m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-        m_MethodName: set_sortingLayerName
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Dynamic
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 769624621357987777}
-        m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
         m_MethodName: set_sortingOrder
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1822,82 +1917,10 @@ MonoBehaviour:
   events:
     onBecameConnected:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 769624621357987777}
-          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Hypergas Generator
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Hypergas Generator
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 769624621127409766}
-          m_TargetAssemblyTypeName: UnityEngine.Canvas, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Hypergas Generator
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     onBecameDisconnected:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 769624621357987777}
-          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Dynamic
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Dynamic
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 769624621127409766}
-          m_TargetAssemblyTypeName: UnityEngine.Canvas, UnityEngine
-          m_MethodName: set_sortingLayerName
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Dynamic
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
   debugConnected: 0
 --- !u!70 &769624621357987837
 CapsuleCollider2D:
@@ -1927,8 +1950,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfba00e6fa53a494d9b57d1ca8d61c23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 100
-  initialAmount: 1
+  capacity: 1000
+  initialAmount: 0.56
   onEmpty:
     m_PersistentCalls:
       m_Calls: []
@@ -1989,48 +2012,21 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_CurrentFlow
-          m_Mode: 3
+        - m_Target: {fileID: 1269648968}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: -15
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
-            m_BoolArgument: 1
+            m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_SizeX
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 32
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_SizeY
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 32
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-    onValvePushing:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7722648142679194317}
-          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-          m_MethodName: Stop
+        - m_Target: {fileID: 1269648967}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2040,6 +2036,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+    onValvePushing:
+      m_PersistentCalls:
+        m_Calls:
         - m_Target: {fileID: 3548037424134828603}
           m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
           m_MethodName: Play
@@ -2052,38 +2051,26 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_CurrentFlow
-          m_Mode: 3
+        - m_Target: {fileID: 1269648967}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
-            m_BoolArgument: 1
+            m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_SizeX
-          m_Mode: 3
+        - m_Target: {fileID: 1269648968}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-        - m_Target: {fileID: 9185735969216170953}
-          m_TargetAssemblyTypeName: GasSim.GasValve, SteamEagles.World
-          m_MethodName: set_SizeY
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 1
@@ -2115,6 +2102,31 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+        - m_Target: {fileID: 1269648967}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1269648968}
+          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+          m_MethodName: set_enabled
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  attachedGasTank: {fileID: 769624621357987836}
   discreteSteps: 5
   clampToSteps: 1
   _valveStep: 0
@@ -2320,9 +2332,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gas Vac Particles
       objectReference: {fileID: 0}
+    - target: {fileID: 5860632078179773332, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: m_VelocityScale
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.separateAxes
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.strengthY.scalar
+      value: 0.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.strengthZ.scalar
+      value: 1.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8470039553564401011, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}
+      propertyPath: NoiseModule.scrollSpeed.scalar
+      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5cb577eca3f33284fb0189b3c8334ad6, type: 3}

@@ -1,4 +1,5 @@
 ﻿using System;
+using GasSim;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,16 +19,14 @@ namespace Characters
             
             public UnityEvent<float> onValvePullAmountChanged;
             
-            [Tooltip("Called when valve is opened in pull mode")]
-            public UnityEvent onValvePulling;
-            [Tooltip("Called when valve is opened in push mode")]
-            public UnityEvent onValvePushing;
-            [Tooltip("Called when valve is closed")]
-            public UnityEvent onValveClosed;
+            [Tooltip("Called when valve is opened in pull mode")] public UnityEvent onValvePulling;
+            [Tooltip("Called when valve is opened in push mode")] public UnityEvent onValvePushing;
+            [Tooltip("Called when valve is closed")] public UnityEvent onValveClosed;
         }
 
         public Events events;
 
+        public GasTank attachedGasTank;
 
         [Header("Settings")]
         [Range(1, 5)]
@@ -82,7 +81,10 @@ namespace Characters
             get
             {
                 if (_valvePercentOpen == 0) return ValveDirection.CLOSED;
-                if (_valvePercentOpen > 0) return ValveDirection.OPEN_PUSH;
+                if (_valvePercentOpen > 0)
+                {
+                    return ValveDirection.OPEN_PUSH;
+                }
                 return ValveDirection.OPEN_PULL;
             }
         }
@@ -106,6 +108,22 @@ namespace Characters
             onValveChanged.Where(t => t.Item1 == ValveDirection.CLOSED).Subscribe(t => events.onValveClosed?.Invoke());
             onValveChanged.Where(t => t.Item1 == ValveDirection.OPEN_PUSH).DistinctUntilChanged().Subscribe(t => events.onValvePushing?.Invoke());
             onValveChanged.Where(t => t.Item1 == ValveDirection.OPEN_PULL).DistinctUntilChanged().Subscribe(t => events.onValvePulling?.Invoke());
+            if (attachedGasTank != null)
+            {
+                attachedGasTank.OnAmountNormalizedChanged.AsObservable().Subscribe(OnGasTankAmountChanged).AddTo(this);
+            }
+        }
+
+        void OnGasTankAmountChanged(float amountFull)
+        {
+            if(ValveStep < 0 && amountFull >= 1)
+            {
+                ValveStep = 0;
+            }
+            else if(ValveStep > 0 && amountFull <= 0)
+            {
+                ValveStep = 0;
+            }
         }
 
         /// <summary>
@@ -120,9 +138,19 @@ namespace Characters
                 case ValveDirection.CLOSED:
                     break;
                 case ValveDirection.OPEN_PUSH:
+                    if(attachedGasTank != null && attachedGasTank.StoredAmountNormalized <= 0)
+                    {
+                        ValveStep = 0;
+                        return;
+                    }
                     NudgeValveOpenPushing();
                     break;
                 case ValveDirection.OPEN_PULL:
+                    if (attachedGasTank != null && attachedGasTank.StoredAmountNormalized >= 1)
+                    {
+                        ValveStep = 0;
+                        return;
+                    }
                     NudgeValveOpenPulling();
                     break;
                 default:

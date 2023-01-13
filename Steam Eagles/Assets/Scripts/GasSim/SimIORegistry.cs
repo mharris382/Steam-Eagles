@@ -84,6 +84,7 @@ namespace GasSim
             foreach (var gasSink in _sinks)
             {
                 int rate = gasSink.SinkFlowRate;
+                if (rate == 0) continue;
                 foreach (var cell in gasSink.GetCellsFromRect(_grid, _simBounds))
                 {
                     yield return (cell, rate, gasSink.OnGasRemovedFromSim);
@@ -94,6 +95,7 @@ namespace GasSim
         void OnIOEntered(SimIOPoint simIOPoint)
         {
             Debug.Log($"SimIOPoint {simIOPoint.name} Entered", this);
+            if(dynamicSources.Contains(simIOPoint)) return;
             dynamicSources.Add(simIOPoint);
             var sink = simIOPoint.GetComponent<IGasSink>();
             var src = simIOPoint.GetComponent<IGasSource>();

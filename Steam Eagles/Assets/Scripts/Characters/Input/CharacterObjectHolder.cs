@@ -156,7 +156,7 @@ namespace Characters
 
         IEnumerator DoReleaseDelay()
         {
-            var colliders = recentlyHeld.GetComponentsInChildren<Collider2D>();
+            var colliders = recentlyHeld.GetComponents<Collider2D>();
             var holderBody = Holder.GetComponent<Rigidbody2D>();
             var holderCollider = holderBody.gameObject.GetComponent<CapsuleCollider2D>();
             foreach (var collider2D1 in colliders)
@@ -397,6 +397,7 @@ namespace Characters
                 rb.GetAttachedColliders(colls);
                 foreach (var c in colls)
                 {
+                    if (c.gameObject.layer == LayerMask.NameToLayer("TransparentFX")) continue;
                     c.enabled = enabled;
                 }
                 _disabledColliders = colls;

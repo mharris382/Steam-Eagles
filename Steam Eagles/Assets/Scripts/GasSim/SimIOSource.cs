@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,7 +18,7 @@ namespace GasSim
 
         public int SourceFlowRate
         {
-            get => flowRate;
+            get => enabled ? flowRate : 0;
             set => flowRate = Mathf.Clamp(value, 0, GasSimulator.PRESSURE_MAX);
         }
 
@@ -25,6 +26,11 @@ namespace GasSim
         public void OnGasAddedToSim(int amountAdded)
         {
             onGasAddedToSim?.Invoke(amountAdded);
+        }
+
+        private void OnEnable()
+        {
+            
         }
     }
 }

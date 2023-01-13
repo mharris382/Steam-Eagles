@@ -38,6 +38,7 @@ public class SimIOPoint : MonoBehaviour
     protected virtual Color GizmoColor => Color.magenta;
     private void OnDrawGizmos()
     {
+        if (!enabled) return;
         Gizmos.color = GizmoColor.SetAlpha(0.5f);
         Gizmos.DrawCube(transform.TransformPoint(ioArea.position), ioArea.size);
     }

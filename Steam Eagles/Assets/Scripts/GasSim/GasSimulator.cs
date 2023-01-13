@@ -184,7 +184,7 @@ namespace GasSim
         }
         bool TryRemoveGas(Vector2Int simCoord, ref int amt)
         {
-            if (_stateOfMatter[simCoord.x, simCoord.y] == StateOfMatter.AIR)
+            if (_usedCells.ContainsKey(simCoord) && _stateOfMatter[simCoord.x, simCoord.y] == StateOfMatter.AIR)
             {
                 int amountCanRemove = GetGas(simCoord);
                 if (amountCanRemove > 0)
