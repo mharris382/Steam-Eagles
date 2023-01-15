@@ -9,6 +9,7 @@ namespace Characters
     /// <see cref="https://www.youtube.com/watch?v=QPiZSTEuZnw&t=1308s&ab_channel=Bardent"/>
     /// 
     /// </summary>
+    [RequireComponent(typeof(IGroundCheck))]
     [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
     [RequireComponent(typeof(CharacterInputState), typeof(CharacterState))]
     public class CharacterPhysicsController : MonoBehaviour
@@ -21,6 +22,7 @@ namespace Characters
         private Rigidbody2D _rigidbody;
         private CharacterInputState _inputState;
         private CharacterState _characterState;
+        private IGroundCheck _groundCheck;
 
         
         private PhysicsMaterial2D noFrictionMaterial;
@@ -29,9 +31,6 @@ namespace Characters
         public float jumpForce => _characterState.config.jumpForce;
         private CharacterConfig config => _characterState.config;
         
-
-        
-        
         private Vector2 capsuleColliderSize;
         private void Awake()
         {
@@ -39,7 +38,7 @@ namespace Characters
             _capsuleCollider = GetComponent<CapsuleCollider2D>();
             _inputState = GetComponent<CharacterInputState>();
             _characterState = GetComponent<CharacterState>();
-            
+            _groundCheck = GetComponent<IGroundCheck>();
         }
 
         private void Start()
@@ -48,6 +47,12 @@ namespace Characters
             fullFrictionMaterial = config.GetFullFrictionMaterial();
             noFrictionMaterial = config.GetNoFrictionMaterial();
             capsuleColliderSize = _capsuleCollider.size;
+            _groundCheck.OnGroundedStateChanged += OnGroundedChanged;
+        }
+
+        private void OnGroundedChanged(bool isGrounded)
+        {
+            _capsuleCollider.sharedMaterial = isGrounded ? fullFrictionMaterial : noFrictionMaterial;
         }
     }
 

@@ -12,9 +12,9 @@ namespace Characters.Animations
         private Spine.Skin closedHands;
         private Spine.Skin jumpHands;
 
-        public string bodySkinName;
-        public string closedHandsSkin;
-        public string jumpHandsSkin;
+        [SpineSkin()]public string bodySkinName;
+        [SpineSkin()]public string closedHandsSkin;
+        [SpineSkin()]public string jumpHandsSkin;
         
         private void Start()
         {

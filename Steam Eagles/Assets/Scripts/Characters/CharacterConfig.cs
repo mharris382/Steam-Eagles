@@ -32,6 +32,7 @@ namespace DefaultNamespace
                 friction = 0,
                 bounciness = 0
             };
+            mat.name = "Frictionless Material";
             return mat;
         }
 
@@ -42,6 +43,7 @@ namespace DefaultNamespace
                 friction = groundedFriction,
                 bounciness = 0
             };
+            mat.name = $"Full Friction Material {groundedFriction:F2}";
             return mat;
         }
     }

@@ -7,6 +7,7 @@ namespace Characters.Actions.Selectors
     {
         public override bool CanSelectCells()
         {
+            
             return TargetCamera != null && TargetGrid != null;
         }
 

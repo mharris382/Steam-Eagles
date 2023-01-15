@@ -56,7 +56,9 @@ public class CharacterSkeletonAnimator : MonoBehaviour
 
     public UnityEvent<States> UpdateState;
     
-    public string animIdle, animRun, animJump;
+    [SpineAnimation()] public string animIdle;
+    [SpineAnimation()] public string animRun;
+    [SpineAnimation()] public string animJump;
 
     private void Awake()
     {

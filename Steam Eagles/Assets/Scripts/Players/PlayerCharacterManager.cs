@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Characters;
 using CoreLib;
-
+using Players;
 using StateMachine;
 using UniRx;
 using UniRx.Triggers;
@@ -26,7 +26,7 @@ namespace Characters
         
         
         
-        
+        [SerializeField] private List<Player> players; 
         
         
         
@@ -78,6 +78,7 @@ namespace Characters
             var characterInput = GetCharacterInput(obj);
             
             AssignCharacterToPlayer(characterInput);
+            players[obj.playerIndex].SetCharacterInput(characterInput);
         }
 
         private void AssignCharacterToPlayer(PlayerCharacterInput playerCharacterInput, CharacterInputState characterInputState = null)

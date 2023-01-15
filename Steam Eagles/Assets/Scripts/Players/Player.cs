@@ -28,6 +28,7 @@ namespace Players
         public SharedTilemap pipeTilemap;
         public SharedTilemap decorTilemap;
         
+        public PlayerCharacterInput CharacterInput { get; private set; }
         
         public void AssignPlayer(PlayerCharacterInput playerCharacterInput, Camera assignedCamera, CharacterState assignedCharacter)
         {
@@ -51,7 +52,12 @@ namespace Players
             pipeTilemap.Value = null;
             decorTilemap.Value = null;
         } 
-
+        
+        
+        public void SetCharacterInput(PlayerCharacterInput characterInput)
+        {
+            this.CharacterInput = characterInput;
+        }
 
 
         #region [Editor]
@@ -68,6 +74,8 @@ namespace Players
         void GetCharacterTags(){}
 #endif
   #endregion
+
+  
     }
 
 
