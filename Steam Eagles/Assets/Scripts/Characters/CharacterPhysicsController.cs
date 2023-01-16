@@ -1,5 +1,6 @@
 ﻿using System;
 using DefaultNamespace;
+using UniRx;
 using UnityEngine;
 
 namespace Characters
@@ -32,6 +33,8 @@ namespace Characters
         private CharacterConfig config => _characterState.config;
         
         private Vector2 capsuleColliderSize;
+        private ReadOnlyReactiveProperty<bool> readRX;
+
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
@@ -40,7 +43,7 @@ namespace Characters
             _characterState = GetComponent<CharacterState>();
             _groundCheck = GetComponent<IGroundCheck>();
         }
-
+        
         private void Start()
         {
             groundMask = config.GetGroundLayers();
@@ -48,11 +51,18 @@ namespace Characters
             noFrictionMaterial = config.GetNoFrictionMaterial();
             capsuleColliderSize = _capsuleCollider.size;
             _groundCheck.OnGroundedStateChanged += OnGroundedChanged;
+
+            this.readRX = new ReadOnlyReactiveProperty<bool>(Observable.FromEvent<bool>(
+                t => _groundCheck.OnGroundedStateChanged += t, t => _groundCheck.OnGroundedStateChanged -= t));
+            readRX.Subscribe(OnGroundedChanged).AddTo(this);
+            _characterState.ObserveEveryValueChanged(t => t.MoveInput.x)
+                .Select(t => Mathf.Abs(t )< 0.1f)
+                .Subscribe(OnGroundedChanged).AddTo(this);
         }
 
         private void OnGroundedChanged(bool isGrounded)
         {
-            _capsuleCollider.sharedMaterial = isGrounded ? fullFrictionMaterial : noFrictionMaterial;
+            _capsuleCollider.sharedMaterial = (isGrounded && readRX.Value) ? fullFrictionMaterial : noFrictionMaterial;
         }
     }
 

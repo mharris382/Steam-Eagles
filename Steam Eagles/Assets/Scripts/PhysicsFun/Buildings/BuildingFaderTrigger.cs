@@ -1,4 +1,5 @@
 ﻿using Buildings;
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace PhysicsFun
             
             this._wallFaderController = this.GetComponent<WallFaderController>();
             this._structureState = this.GetComponentInParent<StructureState>();
-            
+           
             var hasAnyPlayers = _structureState.PlayerCountChanged.Select(t => t > 0);
             var fadeIn = hasAnyPlayers.Where(t => !t).DistinctUntilChanged();
             var fadeOut = hasAnyPlayers.Where(t => t).DistinctUntilChanged();

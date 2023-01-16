@@ -2,6 +2,8 @@
 // Rope
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 
 
@@ -20,7 +22,7 @@ public class RopeFHB : MonoBehaviour
 		}
 	}
 
-	
+	public bool useJobSystem = true;
 	[SerializeField]private bool useFixedSegmentLength = false;
 	[SerializeField]private float fixedDistancePerSegment = .1f;
 	
@@ -39,7 +41,7 @@ public class RopeFHB : MonoBehaviour
 	private float _lineWidth = 0.1f;
 
 	private List<RopeSegment> _ropeSegments = new List<RopeSegment>();
-
+	private NativeArray<RopeSegment> _ropeSegmentsNative;
 	private LineRenderer _lineRenderer;
 
 	private LayerMask _playerLayer;
@@ -47,8 +49,9 @@ public class RopeFHB : MonoBehaviour
 	private bool _passengerDetected;
 
 	private RopeSegment _pivotSegment;
+	private JobHandle handle;
+	Vector3[] array;
 
-	
 	public Transform StartPoint
 	{
 		get
@@ -98,6 +101,7 @@ public class RopeFHB : MonoBehaviour
 	private void Awake()
 	{
 		_lineRenderer = GetComponent<LineRenderer>();
+		
 	}
 
 	private void Start()
@@ -113,19 +117,57 @@ public class RopeFHB : MonoBehaviour
 	private void Update()
 	{
 		DrawRope();
-		Simulate();
+		if(!useJobSystem)
+			Simulate();
+		else
+		{
+			_ropeSegmentsNative = new NativeArray<RopeSegment>(_ropeSegments.ToArray(), Allocator.TempJob);
+			var segmentsJob = new RopeSegmentsJob()
+			{
+				_endPoint = _endPoint.position,
+				_ropeSegments = _ropeSegmentsNative,
+				_ropeSegmentLength = _ropeSegmentLength,
+				_startPoint = _startPoint.position
+			};
+			var constraintJob = new ApplyConstraintJob()
+			{
+				_endPoint = _endPoint.position,
+				_ropeSegments = _ropeSegmentsNative,
+				_ropeSegmentLength = _ropeSegmentLength,
+				_startPoint = _startPoint.position
+			};
+			var handle = segmentsJob.Schedule();
+			this.handle = constraintJob.Schedule(handle);
+		}
+	}
+
+	private void LateUpdate()
+	{
+		if (useJobSystem)
+		{
+			handle.Complete();
+			for (int i = 0; i < _ropeSegmentsNative.Length; i++)
+			{
+				_ropeSegments[i] = _ropeSegmentsNative[i];
+			}
+			_ropeSegmentsNative.Dispose();
+		}
 	}
 
 	private void DrawRope()
 	{
 		try
 		{
-			Vector3[] array = new Vector3[_segmentCount];
+			if (array == null || array.Length != _segmentCount)
+			{
+				array = new Vector3[_segmentCount];
+			}
 			for (int i = 0; i < _segmentCount; i++)
 			{
 				array[i] = _ropeSegments[i].currentPosition;
 			}
 			_lineRenderer.positionCount = array.Length;
+			
 			_lineRenderer.SetPositions(array);
 		}
 		catch (Exception value)
@@ -184,6 +226,72 @@ public class RopeFHB : MonoBehaviour
 			{
 				value4.currentPosition += vector;
 				_ropeSegments[i + 1] = value4;
+			}
+		}
+	}
+
+	struct RopeSegmentsJob : IJob
+	{
+		public float _ropeSegmentLength;
+		public Vector2 _startPoint;
+		public Vector2 _endPoint;
+		public NativeArray<RopeSegment> _ropeSegments;
+		public void Execute(int i)
+		{
+			RopeSegment value = _ropeSegments[i];
+			Vector2 vector = new Vector2(0f, -1f);
+			Vector2 vector2 = value.currentPosition - value.previousPosition;
+			value.previousPosition = value.currentPosition;
+			value.currentPosition += vector2;
+			value.currentPosition += vector * Time.deltaTime;
+			_ropeSegments[i] = value;
+		}
+
+		public void Execute()
+		{
+			for (int i = 0; i < _ropeSegments.Length; i++)
+			{
+				Execute(i);
+			}
+		}
+	}
+	struct ApplyConstraintJob : IJob
+	{
+		public float _ropeSegmentLength;
+		public Vector2 _startPoint;
+		public Vector2 _endPoint;
+		public NativeArray<RopeSegment> _ropeSegments;
+		public void Execute()
+		{
+			for (int j = 0; j < 200; j++)
+			{
+				RopeSegment value = _ropeSegments[0];
+				
+				value.currentPosition = _startPoint;
+				_ropeSegments[0] = value;
+				var _segmentCount = _ropeSegments.Length;
+				RopeSegment value2 = _ropeSegments[_segmentCount - 1];
+				value2.currentPosition = _endPoint;
+				_ropeSegments[_segmentCount - 1] = value2;
+				for (int i = 0; i < _segmentCount - 1; i++)
+				{
+					RopeSegment value3 = _ropeSegments[i];
+					RopeSegment value4 = _ropeSegments[i + 1];
+					float num = (value3.currentPosition - value4.currentPosition).magnitude - _ropeSegmentLength;
+					Vector2 vector = (value3.currentPosition - value4.currentPosition).normalized * num;
+					if (i != 0)
+					{
+						value3.currentPosition -= vector * 0.5f;
+						_ropeSegments[i] = value3;
+						value4.currentPosition += vector * 0.5f;
+						_ropeSegments[i + 1] = value4;
+					}
+					else
+					{
+						value4.currentPosition += vector;
+						_ropeSegments[i + 1] = value4;
+					}
+				}
 			}
 		}
 	}
