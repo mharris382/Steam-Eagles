@@ -30,20 +30,36 @@ public class CharacterController : MonoBehaviour
     private Vector2 lastFramePosition;
     private Vector2 lastFrameDelta;
     private bool wasInteracting;
+    private Vector2 newVelocity;
+    private Vector2 slopeNormalPerp;
+    private float slopeDownAngle;
+    private float slopeDownAngleOld;
+
+    private bool isOnSlope;
+    private float lastDropTime;
+    private bool _wasJumping;
+    [SerializeField] private float threshold = 25;
+    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
+
+    private Collider2D _collider;
+
+    private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
+
     #region Private variables
+
     private CharacterState State
     {
         get => _state;
         set => _state = value;
     }
 
-
     private bool JumpPressed => State.JumpPressed;
     private bool IsGrounded => _groundCheck.IsGrounded;
     private bool IsInteracting => State.IsInteracting;
     private bool JumpHeld => State.JumpHeld;
     private GroundCheck GroundCheck => _groundCheck;
-    
+
+
     private bool IsJumping
     {
         get => State.IsJumping;
@@ -53,7 +69,6 @@ public class CharacterController : MonoBehaviour
     private Rigidbody2D rb => State.Rigidbody;
 
     private Vector2 AnimatorDelta => State.AnimatorDelta;
-   
 
 
     public float JumpTime
@@ -67,6 +82,7 @@ public class CharacterController : MonoBehaviour
             return State.config.jumpTime;
         }
     }
+
     public float JumpForce
     {
         get
@@ -169,10 +185,21 @@ public class CharacterController : MonoBehaviour
 
     void ApplyMovement()
     {
-        newVelocity.Set(State.MoveX * moveSpeed, State.VelocityY);
+        newVelocity.Set(State.MoveX * MoveSpeed, State.VelocityY);
         State.Velocity = newVelocity;
-        
-        if (IsGrounded && !isOnSlope)
+        if (_wasJumping)
+        {
+            if(State.VelocityY < 0)
+            {
+                _wasJumping = false;
+            }
+        }
+        else if (!IsGrounded)
+        {
+            newVelocity.Set(Mathf.Clamp(State.MoveX, -1, 1) * MoveSpeed, State.VelocityY + State.LiftForce);
+            State.Velocity = newVelocity;
+        }
+        else if (IsGrounded && !isOnSlope)
         {
             newVelocity.Set(State.MoveX * MoveSpeed, IsJumping ? State.VelocityY : 0);
             DoExternalForces(ref newVelocity);
@@ -183,15 +210,15 @@ public class CharacterController : MonoBehaviour
             float xComponent = MoveSpeed * slopeNormalPerp.x * -State.MoveX;
             float yComponent = MoveSpeed * slopeNormalPerp.y * -State.MoveX;
             newVelocity.Set(xComponent, yComponent);
-            DoExternalForces(ref newVelocity);
+            //DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
-        else if (!IsGrounded)
+
+        if (State.Velocity.magnitude > this.threshold)
         {
-            newVelocity.Set(State.MoveX * MoveSpeed, State.VelocityY + State.LiftForce);
-            State.Velocity = newVelocity;
+            Debug.Log("Velocity: " + State.Velocity);
         }
-}
+    }
 
     private bool IsSlopeWalkable()
     {
@@ -216,7 +243,7 @@ public class CharacterController : MonoBehaviour
         {
             var contactPoint = contactPoint2Ds[i];
             var coll = contactPoint.collider;
-            if(!coll.attachedRigidbody || detected.Contains(coll.attachedRigidbody)) continue;
+            if(!coll.attachedRigidbody || detected.Contains(coll.attachedRigidbody)  || coll.isTrigger) continue;
             
             if (CheckCollider(coll, contactPoint.normal, ref currentVelocity)) 
                 detected.Add(coll.attachedRigidbody);
@@ -226,7 +253,7 @@ public class CharacterController : MonoBehaviour
 
     private static bool CheckCollider(Collider2D coll, Vector2 normal, ref Vector2 currentVelocity)
     {
-        
+        if(coll.isTrigger)return false;
         if (coll.attachedRigidbody != null && coll.gameObject.CompareTag("Moving Platform"))
         {
             var contactPointNormal = normal;
@@ -241,12 +268,6 @@ public class CharacterController : MonoBehaviour
         return false;
     }
 
-    private Vector2 newVelocity;
-    private Vector2 slopeNormalPerp;
-    private float slopeDownAngle;
-    private float slopeDownAngleOld;
-
-    private bool isOnSlope;
 
     private void SlopeCheckVertical()
     {
@@ -257,6 +278,7 @@ public class CharacterController : MonoBehaviour
     {
         if (hit) SlopeCheckVertical(hit.normal);
     }
+
     private void SlopeCheckVertical(Vector2 groundNormal)
     {
         slopeNormalPerp = Vector2.Perpendicular(groundNormal).normalized;
@@ -267,55 +289,6 @@ public class CharacterController : MonoBehaviour
         }
         slopeDownAngleOld = slopeDownAngle;
         Debug.DrawRay(transform.position, slopeNormalPerp*5, Color.magenta);
-    }
-    private void DoGroundedMovement()
-    {
-        Vector2 DoExternalForces(Vector2 vector2)
-        {
-            int count = State.Rigidbody.GetContacts(contactPoint2Ds);
-            for (int i = 0; i < count; i++)
-            {
-                var contactPoint = contactPoint2Ds[i];
-                if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.gameObject.CompareTag("Moving Platform"))
-                {
-                    var contactPointNormal = contactPoint.normal;
-                    if (Vector2.Dot(contactPointNormal, Vector2.up) > 0.1f)
-                    {
-                        var movingPlatformVelocity = contactPoint.collider.attachedRigidbody.velocity;
-                        vector2 += movingPlatformVelocity * Time.fixedDeltaTime;
-                    }
-                }
-            }
-
-            return vector2;
-        }
-
-        Vector2 externalForces=Vector2.zero; 
-        
-        externalForces = DoExternalForces(externalForces);
-        var normal = Vector2.up;
-        var tangent = Vector3.Cross(normal, Vector3.forward);
-     
-        newVelocity = State.MoveX * moveSpeed * Time.fixedDeltaTime * tangent.normalized;
-        rb.velocity = newVelocity + externalForces;
-    }
-
-    private void DoForces(ref Vector2 velocity)
-    {
-        if (State.Forces.Count > 0)
-        {
-            foreach (var forceData in State.Forces)
-            {
-                float forceStartTime = forceData.w;
-                float forceDuration = forceData.z;
-                Vector2 force = new Vector2(forceData.x, forceData.y);
-                if ((Time.time - forceStartTime) < forceDuration)
-                {
-                    Debug.DrawRay(transform.position, force, Color.cyan, 1);
-                    velocity += force;
-                }
-            }
-        }
     }
 
     #endregion
@@ -330,12 +303,8 @@ public class CharacterController : MonoBehaviour
 
     private void DoAerialMovement(ref Vector2 velocity)
     {
-        velocity.Set(State.MoveX * moveSpeed * Time.fixedDeltaTime, velocity.y);
+        velocity.Set(State.MoveX * MoveSpeed * Time.fixedDeltaTime, velocity.y);
     }
-
-    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
-    private Collider2D _collider;
-    private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
 
 
     private void HandleInteractionFixedUpdate(float dt)
@@ -373,13 +342,64 @@ public class CharacterController : MonoBehaviour
         }
     }
 
+    private void DoGroundedMovement()
+    {
+        Vector2 DoExternalForces(Vector2 vector2)
+        {
+            int count = State.Rigidbody.GetContacts(contactPoint2Ds);
+            for (int i = 0; i < count; i++)
+            {
+                var contactPoint = contactPoint2Ds[i];
+                if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.gameObject.CompareTag("Moving Platform"))
+                {
+                    var contactPointNormal = contactPoint.normal;
+                    if (Vector2.Dot(contactPointNormal, Vector2.up) > 0.1f)
+                    {
+                        var movingPlatformVelocity = contactPoint.collider.attachedRigidbody.velocity;
+                        vector2 += movingPlatformVelocity * Time.fixedDeltaTime;
+                    }
+                }
+            }
+
+            return vector2;
+        }
+
+        Vector2 externalForces=Vector2.zero; 
+        
+        externalForces = DoExternalForces(externalForces);
+        var normal = Vector2.up;
+        var tangent = Vector3.Cross(normal, Vector3.forward);
+     
+        newVelocity = State.MoveX * MoveSpeed * Time.fixedDeltaTime * tangent.normalized;
+        rb.velocity = newVelocity + externalForces;
+    }
+
+    private void DoForces(ref Vector2 velocity)
+    {
+        if (State.Forces.Count > 0)
+        {
+            foreach (var forceData in State.Forces)
+            {
+                float forceStartTime = forceData.w;
+                float forceDuration = forceData.z;
+                Vector2 force = new Vector2(forceData.x, forceData.y);
+                if ((Time.time - forceStartTime) < forceDuration)
+                {
+                    Debug.DrawRay(transform.position, force, Color.cyan, 1);
+                    velocity += force;
+                }
+            }
+        }
+    }
+
 
     private void HandleJump()
     {
         if (Time.time - lastDropTime < 0.5f) return;
         if (CheckForDropThroughPlatform()) return;
-        if ((IsGrounded || CheckForWater()) && JumpPressed) {
+        if (((IsGrounded || CheckForWater()) && JumpPressed)) {
             IsJumping = true;
+            _wasJumping = true; 
             _jumpTimeCounter = jumpTime;
             rb.velocity = Vector2.up * jumpForce;
             State.onJumped.OnNext(Unit.Default);
@@ -414,8 +434,6 @@ public class CharacterController : MonoBehaviour
         return false;
     }
 
-    private float lastDropTime;
-    
     IEnumerator DropThroughPlatform()
     {
         
@@ -445,5 +463,11 @@ public class CharacterController : MonoBehaviour
         return IsGrounded && !IsJumping;
     }
     
+    
+    float lastX = 0;
+    private float newX = 0;
+
+   
+
     #endregion
 }

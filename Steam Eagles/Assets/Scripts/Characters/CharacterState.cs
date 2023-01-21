@@ -101,7 +101,7 @@ public class CharacterState : MonoBehaviour
 
     public bool IsGrounded
     {
-        get => _isGroundedProperty.Value || alwaysGrounded;
+        get => _isGroundedProperty.Value;
         set => _isGroundedProperty.Value = value;
     }
 

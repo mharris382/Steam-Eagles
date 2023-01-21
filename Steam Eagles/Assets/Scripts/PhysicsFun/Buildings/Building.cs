@@ -10,7 +10,7 @@ namespace PhysicsFun.Buildings
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-    [RequireComponent(typeof(StructureState))]
+    [RequireComponent(typeof(StructureState), typeof(BuildingPlayerTracker))]
     public class Building : MonoBehaviour, IStructure
     {
         #region [Inspector Fields]
