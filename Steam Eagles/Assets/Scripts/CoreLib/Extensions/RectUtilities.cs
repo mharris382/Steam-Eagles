@@ -111,7 +111,7 @@ namespace CoreLib
         public static void DrawGizmos(this Rect rect, Transform transform =null)
         {
             var pointsE =  rect.GetPoints(true);
-            if(transform != null) pointsE = pointsE.Select(p => (Vector2) transform.TransformPoint(p));
+            if(transform != null) pointsE = pointsE.Select(p => (Vector2) transform.TransformVector(p));
             var points = pointsE.ToArray();
             for (int i = 1; i < points.Length; i++)
             {
@@ -119,7 +119,7 @@ namespace CoreLib
                 var p1 = points[i];
                 if (transform != null)
                 {
-                    Gizmos.DrawLine(transform.TransformPoint(p0), transform.TransformPoint(p1));
+                    Gizmos.DrawLine(transform.TransformVector(p0), transform.TransformVector(p1));
                 }
                 else
                 {

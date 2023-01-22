@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UniRx;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 [RequireComponent(typeof(CharacterState))]
 public class CharacterController : MonoBehaviour
 {
+    private const string CHARACTER_CONFIG_ADDRESS = "CharacterConfig";
     #region Public variables
 
+    public bool debugMovement = true;
     public float jumpForce = 25;
     public float jumpTime = 1;
     public float moveSpeed = 15f;
-
+    public AnimationCurve jumpCurve = AnimationCurve.Linear(0, 0, 1, 1);
     #endregion
 
    
@@ -39,11 +44,37 @@ public class CharacterController : MonoBehaviour
     private float lastDropTime;
     private bool _wasJumping;
     [SerializeField] private float threshold = 25;
-    List<ContactPoint2D> contactPoint2Ds = new List<ContactPoint2D>();
+    List<ContactPoint2D> _contactPoint2Ds = new List<ContactPoint2D>();
+
+    float lastX = 0;
+    private float newX = 0;
+    private AsyncOperationHandle<CharacterConfig> _configLoadHandle;
+
+    void LoadCharacterConfig()
+    {
+        if (_configLoadHandle.IsValid())
+        {
+            return;
+        }
+        
+        this._configLoadHandle = Addressables.LoadAssetAsync<CharacterConfig>(CHARACTER_CONFIG_ADDRESS);
+        _configLoadHandle.Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                State.config = handle.Result;
+            }
+            else
+            {
+                Debug.LogError($"No Config found at address {CHARACTER_CONFIG_ADDRESS}");
+            }
+        };
+    }
 
     private Collider2D _collider;
 
     private Collider2D collider => _collider == null ? (_collider = GetComponent<Collider2D>()) : _collider;
+
 
     #region Private variables
 
@@ -54,9 +85,13 @@ public class CharacterController : MonoBehaviour
     }
 
     private bool JumpPressed => State.JumpPressed;
+
     private bool IsGrounded => _groundCheck.IsGrounded;
+
     private bool IsInteracting => State.IsInteracting;
+
     private bool JumpHeld => State.JumpHeld;
+
     private GroundCheck GroundCheck => _groundCheck;
 
 
@@ -77,6 +112,7 @@ public class CharacterController : MonoBehaviour
         {
             if (State.config == null)
             {
+                LoadCharacterConfig();
                 return jumpTime;
             }
             return State.config.jumpTime;
@@ -89,6 +125,8 @@ public class CharacterController : MonoBehaviour
         {
             if (State.config == null)
             {
+                LoadCharacterConfig();
+                Debug.LogError($"No Character Config on Character State {this.name}", this);
                 return jumpForce;
             }
 
@@ -102,6 +140,7 @@ public class CharacterController : MonoBehaviour
         {
             if (State.config == null)
             {
+                LoadCharacterConfig();
                 return moveSpeed;
             }
             return State.config.moveSpeed;
@@ -117,7 +156,7 @@ public class CharacterController : MonoBehaviour
         _health = GetComponent<Health>();
         State = GetComponent<CharacterState>();
         _groundCheck = GetComponent<GroundCheck>();
-        contactPoint2Ds = new List<ContactPoint2D>(100);
+        _contactPoint2Ds = new List<ContactPoint2D>(100);
     }
 
     private void Start()
@@ -176,6 +215,12 @@ public class CharacterController : MonoBehaviour
         }
         SlopeCheckVertical();
         ApplyMovement();
+        if (debugMovement)
+        {
+            var pos = transform.position;
+            var vel = rb.velocity;
+            Debug.DrawRay(pos, vel*Time.fixedDeltaTime, Color.red, 0.1f);
+        }
     }
 
     private void HandleAttachedBody()
@@ -194,7 +239,7 @@ public class CharacterController : MonoBehaviour
                 _wasJumping = false;
             }
         }
-        else if (!IsGrounded)
+        else if (!IsGrounded || State.IsDropping)
         {
             newVelocity.Set(Mathf.Clamp(State.MoveX, -1, 1) * MoveSpeed, State.VelocityY + State.LiftForce);
             State.Velocity = newVelocity;
@@ -238,10 +283,10 @@ public class CharacterController : MonoBehaviour
         }
         
         
-        var count = State.Rigidbody.GetContacts(contactPoint2Ds);
+        var count = State.Rigidbody.GetContacts(_contactPoint2Ds);
         for (int i = 0; i < count; i++)
         {
-            var contactPoint = contactPoint2Ds[i];
+            var contactPoint = _contactPoint2Ds[i];
             var coll = contactPoint.collider;
             if(!coll.attachedRigidbody || detected.Contains(coll.attachedRigidbody)  || coll.isTrigger) continue;
             
@@ -346,10 +391,10 @@ public class CharacterController : MonoBehaviour
     {
         Vector2 DoExternalForces(Vector2 vector2)
         {
-            int count = State.Rigidbody.GetContacts(contactPoint2Ds);
+            int count = State.Rigidbody.GetContacts(_contactPoint2Ds);
             for (int i = 0; i < count; i++)
             {
-                var contactPoint = contactPoint2Ds[i];
+                var contactPoint = _contactPoint2Ds[i];
                 if (contactPoint.collider.attachedRigidbody != null && contactPoint.collider.gameObject.CompareTag("Moving Platform"))
                 {
                     var contactPointNormal = contactPoint.normal;
@@ -405,9 +450,18 @@ public class CharacterController : MonoBehaviour
             State.onJumped.OnNext(Unit.Default);
         }
 
-        if (IsJumping) {
-            if (JumpHeld && _jumpTimeCounter > 0.0f) {
-                rb.velocity = Vector2.up * (JumpForce + State.ExtraJumpForce);
+        if (IsJumping) 
+        {
+            if (CheckForCeiling())
+            {
+                _jumpTimeCounter = 0;
+            }
+            if (JumpHeld && _jumpTimeCounter > 0.0f) 
+            {
+                float jumpForce = this.jumpForce;
+                float t = _jumpTimeCounter / JumpTime;
+                float jumpForceMultiplier = jumpCurve.Evaluate(t);
+                rb.velocity = Vector2.up * ((jumpForce * jumpForceMultiplier) + State.ExtraJumpForce);
                 _jumpTimeCounter -= Time.deltaTime;
                 if (State.ExtraJumpTime > 0) State.ExtraJumpTime = Mathf.Max(0, State.ExtraJumpTime - Time.deltaTime);
                 
@@ -416,6 +470,21 @@ public class CharacterController : MonoBehaviour
                 IsJumping = false;
             }
         }
+    }
+
+    private bool CheckForCeiling()
+    {
+        int contacts = rb.GetContacts(_contactPoint2Ds);
+        for (int i = 0; i < contacts; i++)
+        {
+            var contactPoint = _contactPoint2Ds[i];
+            if (contactPoint.normal.y < -0.1f && contactPoint.point.y > transform.position.y)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool CheckForDropThroughPlatform()
@@ -445,6 +514,7 @@ public class CharacterController : MonoBehaviour
             yield break;
         }
 
+        
         lastDropTime = Time.time;
         State.VelocityY = -5;
         
@@ -462,12 +532,6 @@ public class CharacterController : MonoBehaviour
     {
         return IsGrounded && !IsJumping;
     }
-    
-    
-    float lastX = 0;
-    private float newX = 0;
-
-   
 
     #endregion
 }

@@ -5,17 +5,15 @@ using UnityEngine.U2D;
 namespace PhysicsFun.SoftBody2D
 {
     [ExecuteAlways]
-    [RequireComponent(typeof(PhysicsFun.SoftBody2D.SoftBody2D))]
     public class SoftBodySpriteShape : MonoBehaviour
     {
         private const float SPLINE_OFFSET = .5f;
         public SpriteShapeController spriteShapeController;
       
 
-        private PhysicsFun.SoftBody2D.SoftBody2D _softBody;
-        public PhysicsFun.SoftBody2D.SoftBody2D softBody2D => _softBody ? _softBody : _softBody = GetComponent<PhysicsFun.SoftBody2D.SoftBody2D>();
 
         public bool checkForBreaks = true;
+        private CircleCollider2D _circle;
 
         bool HasResources()
         {
@@ -27,6 +25,7 @@ namespace PhysicsFun.SoftBody2D
         {
             if (!HasResources()) return;
             UpdateVertices();
+            _circle = GetComponent<CircleCollider2D>();
         }
 
         void CheckForBreaks()
@@ -58,7 +57,7 @@ namespace PhysicsFun.SoftBody2D
                 var child = transform.GetChild(i);
                 var vert = child.localPosition;
                 var toCenter = -vert.normalized;
-                var radius = softBody2D.bodyRadius;
+                var radius = child.GetComponent<CircleCollider2D>().radius;
                 try
                 {
                     spriteShapeController.spline.SetPosition(i, vert + (vert.normalized * radius));

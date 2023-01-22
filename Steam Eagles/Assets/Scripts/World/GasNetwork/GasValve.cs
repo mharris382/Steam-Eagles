@@ -106,7 +106,7 @@ namespace GasSim
             //}
 
             Debug.Assert(targetGasSim != null, this);
-            grid = targetGasSim.Grid;
+            //grid = targetGasSim.Grid;
             _sink = new Sink(this);
             _source = new Source(this);
 

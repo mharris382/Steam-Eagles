@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 namespace Characters
 {
-    
+   
     [RequireComponent(typeof(PlayerInputManager))]
     public class PlayerCharacterManager : MonoBehaviour
     {
@@ -32,6 +32,10 @@ namespace Characters
         
         [Obsolete("the player character manager should not be handling character spawning and character assignment")]
         private LinkedList<CharacterInputState> _unassignedCharacters = new LinkedList<CharacterInputState>();
+
+        private Dictionary<CharacterInputState, CharacterAssignment> _characterAssignmentLookup =
+            new Dictionary<CharacterInputState, CharacterAssignment>();
+        
         private Dictionary<PlayerCharacterInput, CharacterInputState> _joinedPlayers = new Dictionary<PlayerCharacterInput, CharacterInputState>();
         private Dictionary<CharacterInputState, PlayerCharacterInput> _assignedCharacters = new Dictionary<CharacterInputState, PlayerCharacterInput>();
 
@@ -48,7 +52,12 @@ namespace Characters
             
             _inputManager.onPlayerJoined += OnPlayerJoined;
             _inputManager.onPlayerLeft += OnPlayerLeft;
-            
+            SpawnCharacters();
+            //Invoke(nameof(SpawnCharacters), 0.1f);
+        }
+
+        void SpawnCharacters()
+        {
             foreach (var characterAssignment in characterAssignments)
             {
                 var character = characterAssignment.InstantiateCharacter();
@@ -59,7 +68,6 @@ namespace Characters
                 Enqueue(character);
             }
         }
-        
         private void OnPlayerLeft(PlayerInput obj)
         {
             Debug.Log($"Player left, {obj.playerIndex}");
@@ -86,7 +94,7 @@ namespace Characters
             
 
             characterInputState = characterInputState == null ? Dequeue(): characterInputState;
-            
+            characterInputState.gameObject.SetActive(true);
             _joinedPlayers.Add(playerCharacterInput, characterInputState);
             _assignedCharacters.Add(characterInputState, playerCharacterInput);
             playerCharacterInput.Assign(characterInputState);
@@ -158,16 +166,18 @@ namespace Characters
         }
 
         
-        [Obsolete("this can be removed, instead use the playerInputManager's limit number of players")]
+        
         private  CharacterInputState Dequeue()
         {
             var ret = _unassignedCharacters.First.Value;
             _unassignedCharacters.RemoveFirst();
+            ret.gameObject.SetActive(true);
             return ret;
         }
-        [Obsolete("this can be removed, instead use the playerInputManager's limit number of players")]
+        
         private void Enqueue(CharacterInputState characterInputState)
         {
+           // characterInputState.gameObject.SetActive(false);
             _unassignedCharacters.AddLast(characterInputState);
         }
 

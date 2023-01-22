@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PhysicsFun.Buildings;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -14,6 +15,7 @@ namespace Buildings.BuildingTilemaps
         
         public abstract BuildingLayers Layer { get; }
         
+        [Obsolete("Removed automatic update")]
         public virtual void UpdateTilemap(Building building)
         {
             name = $"{building.buildingName} {GetType().Name}";

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -175,15 +176,16 @@ namespace PhysicsFun.SoftBody2D
     #if UNITY_EDITOR
 
     [CustomEditor(typeof(SoftBody2D))]
-    public class SoftBody2DEditor : Editor
+    public class SoftBody2DEditor : OdinEditor
     {
         private SerializedProperty _bodyRadius;
         private SerializedProperty _numBodies;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _numBodies = serializedObject.FindProperty("numBodies");
             _bodyRadius = serializedObject.FindProperty("bodyRadius");
+            base.OnEnable();
         }
 
         SoftBody2DCollider CreateNewSoftBodyCollider()
@@ -202,28 +204,28 @@ namespace PhysicsFun.SoftBody2D
         }
 
         
-        public override void OnInspectorGUI()
-        {
-            if (Application.isPlaying)
-            {
-                EditorGUILayout.HelpBox("Cannot edit in play mode", MessageType.Warning);
-                return;
-            }
-            var softBody = target as SoftBody2D;
-            
-            DrawButtonBar(softBody);
-            UpdateBodyCount(softBody);
-            EditorGUI.BeginChangeCheck();
-            base.OnInspectorGUI();
-            if (EditorGUI.EndChangeCheck())
-            {
-                UpdateBodies(softBody);
-                if (softBody.autoPosition)
-                {
-                    softBody.AutoPositionBodies();
-                }
-            }
-        }
+        // public override void OnInspectorGUI()
+        // {
+        //     if (Application.isPlaying)
+        //     {
+        //         EditorGUILayout.HelpBox("Cannot edit in play mode", MessageType.Warning);
+        //         return;
+        //     }
+        //     var softBody = target as SoftBody2D;
+        //     
+        //     DrawButtonBar(softBody);
+        //     UpdateBodyCount(softBody);
+        //     EditorGUI.BeginChangeCheck();
+        //     base.OnInspectorGUI();
+        //     if (EditorGUI.EndChangeCheck())
+        //     {
+        //         UpdateBodies(softBody);
+        //         if (softBody.autoPosition)
+        //         {
+        //             softBody.AutoPositionBodies();
+        //         }
+        //     }
+        // }
 
         private void UpdateBodyCount(SoftBody2D softBody)
         {

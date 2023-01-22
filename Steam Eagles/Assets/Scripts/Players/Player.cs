@@ -22,6 +22,7 @@ namespace Players
         
         public SharedTransform characterTransform;
         
+        
         public SharedTilemap foundationTilemap;
         public SharedTilemap wallTilemap;
         public SharedTilemap solidTilemap;
@@ -29,9 +30,13 @@ namespace Players
         public SharedTilemap decorTilemap;
         
         public PlayerCharacterInput CharacterInput { get; private set; }
+        public CharacterState State { get; private set; }
         
-        public void AssignPlayer(PlayerCharacterInput playerCharacterInput, Camera assignedCamera, CharacterState assignedCharacter)
+        
+        public void AssignPlayer(PlayerCharacterInput playerCharacterInput, SharedCamera assignedCamera, CharacterState assignedCharacter)
         {
+            this.State = assignedCharacter;
+            this.CharacterInput = playerCharacterInput;
             
         }
 

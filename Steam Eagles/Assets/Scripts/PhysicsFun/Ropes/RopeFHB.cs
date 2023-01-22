@@ -127,7 +127,8 @@ public class RopeFHB : MonoBehaviour
 				_endPoint = _endPoint.position,
 				_ropeSegments = _ropeSegmentsNative,
 				_ropeSegmentLength = _ropeSegmentLength,
-				_startPoint = _startPoint.position
+				_startPoint = _startPoint.position,
+				deltaTime = Time.deltaTime,
 			};
 			var constraintJob = new ApplyConstraintJob()
 			{
@@ -236,6 +237,7 @@ public class RopeFHB : MonoBehaviour
 		public Vector2 _startPoint;
 		public Vector2 _endPoint;
 		public NativeArray<RopeSegment> _ropeSegments;
+		public float deltaTime;
 		public void Execute(int i)
 		{
 			RopeSegment value = _ropeSegments[i];
@@ -243,7 +245,7 @@ public class RopeFHB : MonoBehaviour
 			Vector2 vector2 = value.currentPosition - value.previousPosition;
 			value.previousPosition = value.currentPosition;
 			value.currentPosition += vector2;
-			value.currentPosition += vector * Time.deltaTime;
+			value.currentPosition += vector * deltaTime;
 			_ropeSegments[i] = value;
 		}
 

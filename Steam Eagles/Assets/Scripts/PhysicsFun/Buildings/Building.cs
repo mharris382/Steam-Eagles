@@ -17,7 +17,7 @@ namespace PhysicsFun.Buildings
 
         public string buildingName;
         
-        [OnValueChanged(nameof(UpdateTilemaps))]
+        
         public int orderInLayer;
         
         public Rect sizeWorldSpace;
@@ -87,29 +87,13 @@ namespace PhysicsFun.Buildings
             }
         }
 
-        public void Update()
-        {
-            UpdateTilemaps();
-        }
+        
 
         #endregion
 
         #region [Public Methods]
 
-        #region [Update Methods]
-
-        /// <summary>
-        /// currently used in the tilemap impl to update the tilemap sorting order relative to the buildings order
-        /// </summary>
-        public void UpdateTilemaps()
-        {
-            foreach (var buildingLayer in GetAllBuildingLayers())
-            {
-                buildingLayer.UpdateTilemap(this);
-            }
-        }
-
-        #endregion
+        
 
         [Button("Save"), DisableInPlayMode]
         public void SaveBuilding()

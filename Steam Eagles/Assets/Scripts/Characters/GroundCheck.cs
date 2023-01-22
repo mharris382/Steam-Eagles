@@ -81,11 +81,46 @@ public class GroundCheck : MonoBehaviour, IGroundCheck
     private float _lastGroundedTime;
     private CharacterState _state;
 
+    List<Raycast2D> _leftOrderedPoints = new List<Raycast2D>();
+    List<Raycast2D> _rightOrderedPoints = new List<Raycast2D>();
+    List<Raycast2D> _middleOrderedPoints = new List<Raycast2D>();
+    Raycast2D _rightMostPoint;
+    Raycast2D _leftMostPoint;
     private void Awake()
     {
         _state = GetComponent<CharacterState>();
         _points = groundCheckParent.GetComponentsInChildren<Raycast2D>();
+        _leftOrderedPoints = new List<Raycast2D>(_points.OrderBy(t => t.transform.position.x));
+        _rightOrderedPoints = new List<Raycast2D>(_points.OrderByDescending(t => t.transform.position.x));
+        _middleOrderedPoints = new List<Raycast2D>(_points.OrderByDescending(t => Mathf.Abs(t.transform.position.x)));
+        _rightMostPoint = _rightOrderedPoints[0];
+        _leftMostPoint = _leftOrderedPoints[0];
+
+        DebugOrder();
         hits = new RaycastHit2D?[_points.Length];
+
+        void DebugOrder()
+        {
+            string leftDebug = $"{name} Left Ordered Points: ";
+            foreach (var leftOrderedPoint in _leftOrderedPoints)
+            {
+                leftDebug += leftOrderedPoint.name + ", ";
+            }
+
+            string rightDebug = "Right Ordered Points: ";
+            foreach (var rightOrderedPoint in _rightOrderedPoints)
+            {
+                rightDebug += rightOrderedPoint.name + ", ";
+            }
+
+            string middleDebug = "Middle Ordered Points: ";
+            foreach (var midOrderedPoint in _middleOrderedPoints)
+            {
+                middleDebug += midOrderedPoint.name + ", ";
+            }
+
+            Debug.Log($"{leftDebug}\n{rightDebug}\n{middleDebug}");
+        }
     }
 
     private IEnumerator Start()
@@ -97,23 +132,36 @@ public class GroundCheck : MonoBehaviour, IGroundCheck
     protected virtual void Update()
     {
         if (_state == null) return;
-
-        if ((_state.IsJumping && (_state.VelocityY > verticalVelocityThreshold)) || _state.IsDropping)
+        int hitCount = 0;
+        List<Raycast2D> orderedPoints = null;
+        if (_state.IsDropping)
         {
-            IsGrounded = false;
-            GroundPercent = 0;
+            _state.IsGrounded = false;
             return;
         }
-        int hitCount = 0;
-        for (int i = 0; i < _points.Length; i++)
+
+        if (Mathf.Abs(_state.MoveX) <= 0.1f)
         {
-            var pnt = _points[i];
+            orderedPoints = _middleOrderedPoints;
+        }
+        else if (_state.MoveX > 0)
+        {
+            orderedPoints = _rightOrderedPoints;
+        }
+        else
+        {
+            orderedPoints = _leftOrderedPoints;
+        }
+        for (int i = 0; i < orderedPoints.Count; i++)
+        {
+            var pnt = orderedPoints[i];
             if (pnt.CheckForHit())
             {
                 IsGrounded = true;
                 Hit = pnt.Hit2D;
                 hitCount++;
                 hits[i] = Hit;
+                break;
             }
             else
             {
