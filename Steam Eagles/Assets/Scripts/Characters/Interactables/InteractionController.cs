@@ -1,4 +1,5 @@
 ﻿using System;
+using Players;
 using UniRx;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Characters.Interactables
         private CharacterState _state;
         private Transform _target;
         public float interactionRadius = 4;
+        public Player player;
+        
         
         public Transform Target
         {

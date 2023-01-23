@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,6 +14,7 @@ namespace Characters
     public class CharacterInputState : MonoBehaviour
     {
         [SerializeField] private bool useEventsForJump;
+        
         private CharacterState _characterState;
         private PlayerInput _playerInput;
 
@@ -103,10 +105,10 @@ namespace Characters
         private void Update()
         {
             if (PlayerInput == null) return;
-
+            
             MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
             AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
-
+            
             if (useEventsForJump) return;
 
             JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();

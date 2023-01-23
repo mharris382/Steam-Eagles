@@ -30,6 +30,11 @@ namespace Characters
             
         }
 
+        private void OnDisable()
+        {
+            abilityUI.HideAllAbilityPreviews();
+        }
+
         private void Update()
         {
 

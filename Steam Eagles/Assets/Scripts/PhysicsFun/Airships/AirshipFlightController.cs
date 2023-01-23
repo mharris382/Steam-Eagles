@@ -14,7 +14,10 @@ namespace PhysicsFun.Airships
         public Rigidbody2D airshipBody;
 
         public Transform heightTarget;
-
+        public float raiseSpeed = 1f;
+        public float lowerSpeed = 1f;
+        public float minHeight = 10;
+        private Rigidbody2D _balloonCounterLiftEffectorRigidbody2D;
         private BoxCollider2D _airshipArea;
         private BoxCollider2D _liftArea;
         private Rect _airshipRect;
@@ -25,7 +28,7 @@ namespace PhysicsFun.Airships
             {
                 Debug.LogError("Airship Flight controller missing required values", this);
             }
-
+            _balloonCounterLiftEffectorRigidbody2D = balloonCounterLiftEffector.GetComponent<Rigidbody2D>();
             _airshipArea = airshipBody.GetComponent<BoxCollider2D>();
             _liftArea = balloonCounterLiftEffector.GetComponent<BoxCollider2D>();
             _airshipRect = new Rect(_airshipArea.offset.x, _airshipArea.offset.y, _airshipArea.size.x, _airshipArea.size.y);
@@ -35,7 +38,21 @@ namespace PhysicsFun.Airships
         private void Update()
         {
             if(!HasRequiredValues())return;
+           
+            var targetPosition = heightTarget.position;
+            var airshipPosition = airshipBody.worldCenterOfMass;
+            var targetY = targetPosition.y;
+            targetY = Mathf.Max(minHeight, targetY);
+            var airshipY = airshipPosition.y;
+            bool isTargetAbove = targetY > airshipY;
+            float speed = isTargetAbove ? raiseSpeed : lowerSpeed;
+
+            var liftPosition = _balloonCounterLiftEffectorRigidbody2D.position;
+            var liftY = liftPosition.y;
+            var newLiftY = Mathf.MoveTowards(liftY, targetY, speed * Time.deltaTime);
             
+            Vector2 newPosition = new Vector2(airshipPosition.x, newLiftY);
+            _balloonCounterLiftEffectorRigidbody2D.position = newPosition;
         }
 
         private void OnDrawGizmos()
@@ -47,6 +64,7 @@ namespace PhysicsFun.Airships
             
             Gizmos.color = Color.blue;
             RectUtilities.DrawGizmos(_liftRect, balloonCounterLiftEffector.transform);
+            
         }
 
         bool HasRequiredValues()

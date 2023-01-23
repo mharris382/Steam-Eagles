@@ -33,7 +33,7 @@ namespace Characters.Interactables
             {
                 onInteractionAvailable?.Invoke();
                 //inputLabel?.Invoke(controller.inputButton);
-                interactionLabel?.Invoke(t.description);
+                interactionLabel?.Invoke(t.Description);
             }).AddTo(this);
         }
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Characters.Actions.UI
 {
@@ -6,6 +7,11 @@ namespace Characters.Actions.UI
     {
         public AbilityPreview primaryAbilityPreview;
         public AbilityPreview secondaryAbilityPreview;
+
+        private void OnDisable()
+        {
+            HideAllAbilityPreviews();
+        }
 
         public void HideAllAbilityPreviews()
         {

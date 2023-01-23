@@ -246,19 +246,28 @@ public class CharacterController : MonoBehaviour
         }
         else if (IsGrounded && !isOnSlope)
         {
-            newVelocity.Set(State.MoveX * MoveSpeed, IsJumping ? State.VelocityY : 0);
+          
+            
+            newVelocity.Set((State.MoveX) * MoveSpeed, IsJumping ? State.VelocityY : 0);
             DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
         else if (IsGrounded && isOnSlope && IsSlopeWalkable())
         {
-            float xComponent = MoveSpeed * slopeNormalPerp.x * -State.MoveX;
-            float yComponent = MoveSpeed * slopeNormalPerp.y * -State.MoveX;
+            
+            float xComponent = MoveSpeed * slopeNormalPerp.x * -(State.MoveX);
+            float yComponent = MoveSpeed * slopeNormalPerp.y * -(State.MoveX);
             newVelocity.Set(xComponent, yComponent);
-            //DoExternalForces(ref newVelocity);
+            DoExternalForces(ref newVelocity);
             State.Velocity = newVelocity;
         }
-
+        bool isTryingToMove = Mathf.Abs(State.MoveX) > 0.1f;
+        float offset = isTryingToMove ? Mathf.Sign(State.MoveX) : 0; 
+        bool isMoving = Mathf.Abs(rb.velocity.x) > threshold;
+        if (isTryingToMove && !isMoving && IsGrounded)
+        {
+            rb.AddForce(Vector2.up * 0.1f, ForceMode2D.Impulse);
+        }
         if (State.Velocity.magnitude > this.threshold)
         {
             Debug.Log("Velocity: " + State.Velocity);

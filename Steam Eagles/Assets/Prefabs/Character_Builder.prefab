@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &25565472697634532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4179333224432108135}
+  - component: {fileID: 7243277971814678123}
+  m_Layer: 10
+  m_Name: Ability Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4179333224432108135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25565472697634532}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2023073604413840133}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7243277971814678123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25565472697634532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce0332c9462144ed9ffb4c94e51fbc8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 11400000, guid: 260621dddbb04dd499633e01394e9402, type: 2}
+  abilityController: {fileID: 3563770837039748583}
 --- !u!1 &77032216588363044
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,6 +413,7 @@ Transform:
   - {fileID: 4517598139358484628}
   - {fileID: 8325147943598006388}
   - {fileID: 2987270429853948779}
+  - {fileID: 4179333224432108135}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -517,7 +564,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  threshold: 25
+  threshold: 0.8
 --- !u!114 &822289114925148332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,7 +617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0519fa13af894a4d8a75e51ab9508f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useEventsForJump: 0
+  useEventsForJump: 1
   onJump:
     m_PersistentCalls:
       m_Calls: []

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace Characters.Interactables
@@ -8,8 +7,8 @@ namespace Characters.Interactables
     public class InteractableObject : MonoBehaviour
     {
         public Vector2 Position => transform.position;
-        
-        public string description = "Flip Lever";
+        [SerializeField]
+        private string description = "Flip Lever";
         public InteractionType interactionType;
         public UnityEvent onInteraction;
         
@@ -18,6 +17,8 @@ namespace Characters.Interactables
             INSTANT,
             ANALOG
         }
+        
+        public virtual string Description => description;
         
         
 
