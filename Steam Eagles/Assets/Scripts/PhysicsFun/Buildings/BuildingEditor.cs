@@ -30,6 +30,7 @@ namespace PhysicsFun.Buildings
                 if (building1.FoundationTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.FOUNDATION));
                 if (building1.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PIPE));
                 if (building1.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.COVER));
+                if(building1.PlatformTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PLATFORM));
             }
             void AddToBuilding(BuildingTilemap buildingTilemap)
             {
@@ -71,7 +72,12 @@ namespace PhysicsFun.Buildings
                 case BuildingLayers.WALL:
                     go.layer = LayerMask.NameToLayer("Air");
                     go.tag = "Wall";
-                    return go.AddComponent<WallTilemap>();
+                    
+                    var wallTM = go.AddComponent<WallTilemap>();
+                    var tm = wallTM.Tilemap;
+                    var tmr = tm.GetComponent<TilemapRenderer>();
+                    tmr.sortingLayerName = "Near BG";
+                    return wallTM;
                     break;
                 
                 case BuildingLayers.FOUNDATION:
@@ -95,7 +101,12 @@ namespace PhysicsFun.Buildings
                     AddCollider(go, asTrigger: true);
                     go.layer = LayerMask.NameToLayer("Triggers");
                     go.AddComponent<BuildingFaderTrigger>();
-                    return go.AddComponent<CoverTilemap>();
+                    var coverTM = go.AddComponent<CoverTilemap>();
+                    var tm2 = coverTM.Tilemap;
+                    var tmr2 = tm2.GetComponent<TilemapRenderer>();
+                    tmr2.sortingLayerName = "Near FG";
+                    return coverTM;
+                
 
                 case BuildingLayers.DECOR:
                     throw new NotImplementedException();

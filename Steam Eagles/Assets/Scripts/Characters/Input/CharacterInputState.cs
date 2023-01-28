@@ -30,6 +30,8 @@ namespace Characters
 
         private PlayerInput PlayerInput => _playerInput;
         
+        
+        
         public bool JumpPressed
         {
             get => CharacterState.JumpPressed;
@@ -67,6 +69,7 @@ namespace Characters
 
         public Vector2 AimInput { get; set; }
 
+        public bool IsAssigned() => PlayerInput != null;
 
         
 

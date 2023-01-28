@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Buildings;
 using Buildings.BuildingTilemaps;
 using CoreLib;
@@ -15,6 +16,7 @@ namespace PhysicsFun.Buildings
     {
         #region [Inspector Fields]
 
+        [OnValueChanged(nameof(UpdateName))]
         public string buildingName;
         
         
@@ -36,7 +38,7 @@ namespace PhysicsFun.Buildings
         private SolidTilemap _solidTilemap;
         private PipeTilemap _pipeTilemap;
         private CoverTilemap _coverTilemap;
-        
+        private PlatformTilemap _platformTilemap;
 
         #endregion
         
@@ -54,6 +56,8 @@ namespace PhysicsFun.Buildings
         public PipeTilemap PipeTilemap => _pipeTilemap ? _pipeTilemap : _pipeTilemap = GetComponentInChildren<PipeTilemap>();
         public CoverTilemap CoverTilemap => _coverTilemap ? _coverTilemap : _coverTilemap = GetComponentInChildren<CoverTilemap>();
         public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
+
+        public PlatformTilemap PlatformTilemap => (_platformTilemap) ? _platformTilemap : _platformTilemap = GetComponentInChildren<PlatformTilemap>();
 
         public bool HasResources =>
             WallTilemap != null
@@ -117,6 +121,32 @@ namespace PhysicsFun.Buildings
         
         #region [Editor Stuff]
 
+        private void UpdateName(string n)
+        {
+            var st = string.IsNullOrEmpty(n) ? name : n;
+            Dictionary<Type, List<BuildingTilemap>> buildingTilemaps = new Dictionary<Type, List<BuildingTilemap>>();
+            foreach (var buildingTilemap in GetAllBuildingLayers())
+            {
+                var type = buildingTilemap.GetType();
+                if (!buildingTilemaps.ContainsKey(type))
+                    buildingTilemaps.Add(type, new List<BuildingTilemap>());
+                buildingTilemaps[type].Add(buildingTilemap);                
+            }
+
+            foreach (var kvp in buildingTilemaps)
+                for (int i = 0; i < kvp.Value.Count; i++)
+                {
+                    var buildingTilemap = kvp.Value[i];
+                    if (kvp.Value.Count > 1)
+                    {
+                        buildingTilemap.name = $"{st} {kvp.Key.Name} {i}";
+                    }
+                    else
+                    {
+                        buildingTilemap.name = $"{st} {kvp.Key.Name}";
+                    }
+                }
+        }
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

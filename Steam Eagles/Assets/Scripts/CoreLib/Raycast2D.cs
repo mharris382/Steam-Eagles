@@ -10,6 +10,7 @@ public class Raycast2D : MonoBehaviour
     public LayerMask layerMask;
     public float distance = 100;
 
+    public bool debug = false;
 
     public RaycastHit2D Hit2D
     {
@@ -40,6 +41,7 @@ public class Raycast2D : MonoBehaviour
     {
        // if (Application.isPlaying)
        // {
+       if (!debug) return;
             Gizmos.color = Hit2D ? Color.green : Color.red;
             var t = transform;
             var p0 = (Vector2) t.position;

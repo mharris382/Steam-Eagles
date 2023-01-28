@@ -183,13 +183,6 @@ public class CharacterController : MonoBehaviour
         HandleJump();
     }
 
-    bool CheckForWater()
-    {
-        Vector2 pos = rb.position;
-        LayerMask waterLayers = LayerMask.GetMask("Water");
-        return Physics2D.OverlapPoint(pos, waterLayers) != null;
-    }
-
     private void FixedUpdate()
     {
         if (State.IsDead) return;
@@ -221,6 +214,13 @@ public class CharacterController : MonoBehaviour
             var vel = rb.velocity;
             Debug.DrawRay(pos, vel*Time.fixedDeltaTime, Color.red, 0.1f);
         }
+    }
+
+    bool CheckForWater()
+    {
+        Vector2 pos = rb.position;
+        LayerMask waterLayers = LayerMask.GetMask("Water");
+        return Physics2D.OverlapPoint(pos, waterLayers) != null;
     }
 
     private void HandleAttachedBody()
@@ -330,7 +330,10 @@ public class CharacterController : MonoBehaviour
 
     private void SlopeCheckVertical(RaycastHit2D hit)
     {
-        if (hit) SlopeCheckVertical(hit.normal);
+        if (hit)
+        {
+            SlopeCheckVertical(hit.normal);
+        }
     }
 
     private void SlopeCheckVertical(Vector2 groundNormal)
