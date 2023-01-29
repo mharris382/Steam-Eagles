@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Characters.Actions.Selectors
 {
+    [Obsolete("the InputSelector has this functionality, plus it adds controller support")]
     public class MouseSelector : SelectorBase
     {
         public override bool CanSelectCells()

@@ -5,6 +5,7 @@ using Characters.Actions.UI;
 using CoreLib;
 using Players;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Characters
 {
@@ -14,7 +15,7 @@ namespace Characters
     public class CharacterTilemapAbilityManager : MonoBehaviour
     {
         [SerializeField] private Player player;
-        [SerializeField] private SharedCamera camera;
+        
         [SerializeField] private AbilityUI abilityUI;
         
         private SelectorBase _selector;
@@ -37,24 +38,23 @@ namespace Characters
 
         private void Update()
         {
-
             if (!IsAbleToUseAbilities())
             {
                 abilityUI.HideAllAbilityPreviews();
                 return;
             }
             
-            _selector.TargetCamera = camera.Value;
-            var primaryAbility = _abilitySet.GetAbility(0);
-            var secondaryAbility = _abilitySet.GetAbility(1);
+            _selector.TargetCamera = player.playerCamera.Value;
             int targetAbilityIndex = 0;
+            
             Vector3 wsPos = Vector3.zero;
             Vector3Int cellPos = Vector3Int.zero;
+            
             foreach (var ability in _abilitySet)
             {
                 if (TrySelectCell(ability, out wsPos, out cellPos))
                 {
-                    abilityUI.ShowAbilityPreview(wsPos, targetAbilityIndex);
+                    abilityUI.ShowAbilityPreviewForAbility(ability, wsPos);
                     if (TryInputOnCell(ability, cellPos, targetAbilityIndex))
                     {
                         Debug.Log("Ability  used");
@@ -71,11 +71,48 @@ namespace Characters
 
         private bool TryInputOnCell(CellAbility ability, Vector3Int cellPos, int targetAbilityIndex)
         {
-            if (Input.GetMouseButton(targetAbilityIndex))
+            var action = ability.InputActionName;
+            bool HasValidInput(out PlayerInput playerInput)
+            {
+                playerInput = null;
+                var characterInput = player.CharacterInput;
+                if (characterInput == null) return false;
+                 playerInput = characterInput.PlayerInput;
+                if (playerInput == null) return false;
+                if(playerInput.actions.FindAction(action) == null) return false;
+                return true;
+            }
+
+            if (!HasValidInput(out var playerInput))
+                return false;
+            
+            if (ability.ReadInput(playerInput))
             {
                 ability.PerformAbilityOnCell(_user, cellPos);
                 return true;
             }
+
+            switch (ability.InputMode)
+            {
+                case CellAbilityInputMode.DRAG:
+                    if (playerInput.actions[action].IsPressed())
+                    {
+                        ability.PerformAbilityOnCell(_user, cellPos);
+                        return true;
+                    }
+                    break;
+                case CellAbilityInputMode.CLICK:
+                    if (playerInput.actions[action].WasPerformedThisFrame())
+                    {
+                        ability.PerformAbilityOnCell(_user, cellPos);
+                        return true;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
             return false;
         }
 
@@ -102,10 +139,10 @@ namespace Characters
             }
             return false;
         }
-
+        
         
 
-        bool HasAbilities()
+        private bool HasAbilities()
         {
             bool hasAbilities = false;
             foreach (var ability in _abilitySet)
@@ -116,7 +153,7 @@ namespace Characters
             return hasAbilities;
         }
 
-        bool DoAbilitiesHaveTargets()
+        private bool DoAbilitiesHaveTargets()
         {
             if(!HasAbilities())return false;
             foreach (var ability in _abilitySet)
@@ -129,10 +166,10 @@ namespace Characters
             }
             return true;
         }
-        bool IsAbleToUseAbilities()
+        private bool IsAbleToUseAbilities()
         {
-            if (camera == null || !camera.HasValue) return false;
             if (player == null) return false;
+            if (player.playerCamera == null || !player.playerCamera.HasValue) return false;
             if (!HasAbilities()) return false;
             if (!DoAbilitiesHaveTargets()) return false;
             if (_selector == null) return false;

@@ -2,20 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using World;
 
 
 public abstract class CellAbility : MonoBehaviour
 {
+    public string inputActionName = "Primary";
+
+    [SerializeField] CellAbilityInputMode inputMode = CellAbilityInputMode.DRAG;
+
+
     [SerializeField] private AbilityUser abilityUser;
+
     [SerializeField] protected SharedTilemap tilemap;
-    [SerializeField] private SharedTilemaps tilemaps;
+
+    [FoldoutGroup("Obsolete")]  [SerializeField] private SharedTilemaps tilemaps;
+
     [SerializeField] public SharedTilemap blockingMap;
-    
-    [SerializeField] public List<SharedTilemap> blockingMaps;
-    [SerializeField] public List<Tilemap> sceneBlockingMaps;
+
+    [FoldoutGroup("Obsolete")][SerializeField] public List<SharedTilemap> blockingMaps;
+
+    [FoldoutGroup("Obsolete")][SerializeField] public List<Tilemap> sceneBlockingMaps;
 
     public virtual Tilemap Tilemap
     {
@@ -42,6 +53,13 @@ public abstract class CellAbility : MonoBehaviour
         }
     }
 
+    public virtual CellAbilityInputMode InputMode => inputMode;
+
+    /// <summary>
+    /// overrideable for multi-input step abilities where action, or if action is dynamic based on context 
+    /// </summary>
+    public virtual string InputActionName => inputActionName;
+
     Tilemap GetSelectedTilemapFromTargetTilemaps()
     {
         if (tilemaps == null)
@@ -63,7 +81,10 @@ public abstract class CellAbility : MonoBehaviour
     protected virtual bool IsCellBlocked(Vector3Int cell)
     {
         if (!tilemap.HasValue) return false;
-        foreach (var sharedTilemap in blockingMaps.Where(t=> t.HasValue).Select(t => t.Value).Concat(sceneBlockingMaps.Where(t=>t!=null)))
+        foreach (var sharedTilemap in blockingMaps
+                     .Where(t=> t.HasValue)
+                     .Select(t => t.Value)
+                     .Concat(sceneBlockingMaps.Where(t=>t!=null)))
         {
             if (sharedTilemap.HasTile(cell))
             {
@@ -97,4 +118,20 @@ public abstract class CellAbility : MonoBehaviour
         if (!cValid2) return 1;
         return 0;
     }
+
+    /// <summary>
+    /// defer to cell ability to determine if input is consumed or not
+    /// </summary>
+    /// <param name="playerInput"></param>
+    /// <returns>true if input is consumed and should use on cell</returns>
+    public virtual bool ReadInput(PlayerInput playerInput)
+    {
+        return false;
+    }
+}
+
+public enum CellAbilityInputMode
+{
+    DRAG,
+    CLICK
 }

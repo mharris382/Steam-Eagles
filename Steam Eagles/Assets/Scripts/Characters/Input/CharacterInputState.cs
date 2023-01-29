@@ -1,5 +1,5 @@
 ﻿using System;
-
+using NaughtyAttributes;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,16 +13,44 @@ namespace Characters
     [RequireComponent(typeof(CharacterState))]
     public class CharacterInputState : MonoBehaviour
     {
+        [Serializable]
+        public class DebugVariables
+        {
+            public bool hasPlayerAssigned;
+            
+            
+            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Move")] public float xInput;
+            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Move")] public float yInput;
+
+            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Jump")] public bool jumpPressed;
+            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Jump")] public bool jumpHeld;
+
+            public void Update(CharacterState State)
+            {
+                xInput = State.MoveX;
+                yInput = State.MoveY;
+                jumpHeld = State.JumpHeld;
+                jumpPressed = State.JumpPressed;
+            }
+        }
+        [SerializeField] private DebugVariables debugVariables;
         [SerializeField] private bool useEventsForJump;
         
         private CharacterState _characterState;
         private PlayerInput _playerInput;
 
+
+        
         public UnityEvent<InputAction.CallbackContext> onJump = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onInteract = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onPickup = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onValve = new UnityEvent<InputAction.CallbackContext>();
 
+        
+        
+        
+        
+        
         public CharacterState CharacterState => _characterState == null
             ? (_characterState = GetComponent<CharacterState>())
             : _characterState;
@@ -93,7 +121,6 @@ namespace Characters
                 characterInput.AssignPlayer(playerInput);
             }
         }
-
         public void UnAssignPlayer()
         {
             if(this == null)return;
@@ -107,15 +134,19 @@ namespace Characters
 
         private void Update()
         {
-            if (PlayerInput == null) return;
-            
+            debugVariables.hasPlayerAssigned = PlayerInput != null;
+            if (PlayerInput == null)
+                return;
+
+
             MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
             AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
             
-            if (useEventsForJump) return;
+            
 
             JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             JumpHeld = PlayerInput.actions["Jump"].IsPressed();
+            debugVariables.Update(_characterState);
         }
 
         public void OnJump(InputAction.CallbackContext context)

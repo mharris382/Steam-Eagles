@@ -24,6 +24,7 @@ namespace Characters
 
         private void Awake()
         {
+            _playerInput = GetComponent<PlayerInput>();
             PlayerInput.onDeviceLost += input =>
             {
                 Debug.Log("Device Lost");
@@ -52,7 +53,11 @@ namespace Characters
 
         private void Update()
         {
-            if (_characterInput == null) return;
+            if (_characterInput == null)
+            {
+                Debug.LogWarning("CharacterInputState is null", this);
+                return;
+            }
             _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
             _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
            // _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();

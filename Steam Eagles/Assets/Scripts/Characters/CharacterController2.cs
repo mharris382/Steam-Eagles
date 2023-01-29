@@ -2,18 +2,21 @@
 using System.Collections;
 using DefaultNamespace;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using StateMachine = FSM.StateMachine;
 
 namespace Characters
 {
     public class CharacterController2 : MonoBehaviour
     {
         private const string CHARACTER_CONFIG_ADDRESS = "CharacterConfig";
+
+        #region [Fields]
+
         [SerializeField] private float slopeCheckDistance =1;
-        public bool debugInput = true;
-        public float debugXInput;
         public bool NormalizeXInput = true;
+        
+        
         public Transform groundCheck;
         private CharacterState _state;
         private Rigidbody2D _rigidbody2D;
@@ -22,11 +25,11 @@ namespace Characters
         private PhysicsMaterial2D _fullFriction;
         private PhysicsMaterial2D _noFriction;
         private PhysicsMaterial2D _walkingFriction;
+        private AsyncOperationHandle<CharacterConfig> _configLoadHandle;
 
 
         private bool _isGrounded;
         private bool _canJumpBecauseGrounded;
-        private AsyncOperationHandle<CharacterConfig> _configLoadHandle;
         private Vector2 _slopeNormalPerp;
         private float _slopeDownAngle;
         private float _slopeDownAngleOld;
@@ -43,11 +46,15 @@ namespace Characters
         private bool _wasJumping;
         private float _jumpTimeCounter;
         private RaycastHit2D _verticalHit;
+        private Collider2D _onOneWay;
+
+        #endregion
+        #region [Properties]
+
         private CharacterState State => _state;
         public CharacterConfig Config => State.config;
         public Rigidbody2D rb => _rigidbody2D;
-        public float xInput => debugInput ? debugXInput :
-            (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
+        public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
         public LayerMask whatIsGround => Config.GetGroundLayers();
         public float MoveSpeed => Config.moveSpeed;
         public float JumpForce => Config.jumpForce;
@@ -56,6 +63,13 @@ namespace Characters
 
         
         public float MoveDirection => Mathf.Sign(xInput);
+        public PhysicsMaterial2D FrictionlessPhysicsMaterial => _noFriction;
+        public PhysicsMaterial2D FullFrictionPhysicsMaterial => _fullFriction;
+
+        public Collider2D OneWayCollider => _onOneWay;
+        #endregion
+
+        #region [Unity Methods]
 
         private void Awake()
         {
@@ -70,6 +84,7 @@ namespace Characters
             _walkingFriction = State.config.GetWalkingFrictionMaterial();
         }
 
+#if FALSE
         private void Update()
         {
             UpdateJumpTimer(Time.deltaTime);
@@ -81,14 +96,17 @@ namespace Characters
             CheckFacingDirection();
             CheckGround();
             CheckWater();
-            SlopeCheck();
+            CheckSlopes();
             UpdatePhysMat();
             ApplyMovement();
             ApplyJumpMovement();
             ApplyGravity();
         }
+#endif
 
-        void ApplyMovement()
+        #endregion
+
+        public void ApplyMovement()
         {
             if (_isGrounded && !_isOnSlope && !_isJumping)
             {
@@ -105,7 +123,14 @@ namespace Characters
             rb.velocity = _newVelocity;
         }
 
-        private void ApplyJumpMovement()
+
+        public void ApplyHorizontalMovement()
+        {
+            _newVelocity.Set(MoveSpeed * xInput, rb.velocity.y);
+            rb.velocity = _newVelocity;
+        }
+
+        public void ApplyJumpMovement()
         {
             if (_isJumping)
             {
@@ -120,7 +145,7 @@ namespace Characters
             }
         }
 
-        private void ApplyGravity()
+        public void ApplyGravity()
         {
             if (_isGrounded && !_verticalHit.rigidbody.isKinematic)
             {
@@ -129,29 +154,132 @@ namespace Characters
             }
         }
 
-        void CheckGround()
+        public void CheckGround()
         {
-            _isGrounded = Physics2D.OverlapCircle(groundCheck.position, Config.groundCheckRadius, whatIsGround);
-
+            //_isGrounded = Physics2D.OverlapCircle(groundCheck.position, Config.groundCheckRadius, whatIsGround);
+            var groundLayers = LayerMask.GetMask("Ground", "Solids", "Balloons");
+            var oneWayLayer = LayerMask.GetMask("Platforms", "Pipes");
+            var pos = groundCheck.position;
+            var radius = Config.groundCheckRadius;
+            var onGround = Physics2D.OverlapCircle(pos, radius, groundLayers);
+            _onOneWay = Physics2D.OverlapCircle(pos, radius, oneWayLayer);
+            _isGrounded = onGround || ((_onOneWay != null) && _rigidbody2D.velocity.y <= 0 && !_isJumping);
             if (_isGrounded && rb.velocity.y <= 0.01f)
             {
                 _canJumpBecauseGrounded = true;   
             }
         }
 
-        void CheckFacingDirection()
+        public void CheckJumping()
+        {
+            if (!_isJumping)
+            {
+                if (CheckForDrop()) return;
+                if ((_canJumpBecauseGrounded || _inWater) && State.JumpPressed)
+                {
+                    _isJumping = true;
+                    _canJumpBecauseGrounded = false;
+                    _jumpTimeCounter = Config.jumpTime;
+                }
+            }
+            else if (!State.JumpHeld)
+            {
+                _jumpTimeCounter = 0;
+                _isJumping = false;
+            }
+        }
+
+        public void CheckFacingDirection()
         {
             if(Mathf.Abs(xInput) > 0.1f)
                 _facingRight = xInput > 0;
         }
 
-        private void SlopeCheck()
+        public void CheckSlopes()
         {
             Vector2 checkPos = transform.position - new Vector3(0.0f, colliderSize.y/2f, 0.0f);
             SlopeCheckHorizontal(checkPos);
             
             SlopeCheckVertical(checkPos);
             CheckSlopeWalkable();
+        }
+
+        public void UpdatePhysMat()
+        {
+            if (!_isGrounded)
+            {
+                SetPhysicsMaterial(FrictionlessPhysicsMaterial);
+            }
+            else if (Mathf.Abs(xInput) < 0.1f)
+            {
+                SetPhysicsMaterial(FullFrictionPhysicsMaterial);
+            }
+            else
+            {
+                SetPhysicsMaterial(_walkingFriction);
+            }
+        }
+
+        public void SetPhysicsMaterial(PhysicsMaterial2D physicsMaterial2D)
+        {
+            _capsuleCollider.sharedMaterial = physicsMaterial2D;
+        }
+
+        public void UpdateJumpTimer(float dt)
+        {
+            if (_isJumping)
+            {
+                if (_jumpTimeCounter > 0 && State.JumpHeld)
+                {
+                    _jumpTimeCounter -= dt;
+                }
+                else
+                {
+                    _jumpTimeCounter = 0;
+                    _isJumping = false;
+                }
+            }
+        }
+
+        public void CheckWater()
+        {
+            Vector2 pos = rb.position;
+            pos.y -= colliderSize.y / 2f;
+            LayerMask waterLayers = LayerMask.GetMask("Water");
+            _inWater = Physics2D.OverlapPoint(pos, waterLayers) != null;
+        }
+
+        public bool CheckForDrop()
+        {
+            if (!_isGrounded) return false;
+            if (Time.time - _lastDropTime < 0.5f) return false;
+            if (State.JumpHeld && State.MoveY < 0 && Mathf.Abs(State.MoveY) > Mathf.Abs(State.MoveX))
+            {
+                var hit = Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.GetMask("Pipes", "Platforms"));
+                if (hit)
+                {
+                    _lastDropTime = Time.time;
+                    State.IsDropping = true;
+                    //StartCoroutine(DropThroughPlatform(hit));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool CheckForCeiling()
+        {
+            int contacts = rb.GetContacts(_contactPoint2Ds);
+            for (int i = 0; i < contacts; i++)
+            {
+                var contactPoint = _contactPoint2Ds[i];
+                if (contactPoint.normal.y < -0.1f && contactPoint.point.y > transform.position.y)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void SlopeCheckHorizontal(Vector2 checkPos)
@@ -208,73 +336,6 @@ namespace Characters
             }
         }
 
-        private void UpdatePhysMat()
-        {
-            if (!_isGrounded)
-            {
-                _capsuleCollider.sharedMaterial = _noFriction;
-            }
-            else if (Mathf.Abs(xInput) < 0.1f)
-            {
-                _capsuleCollider.sharedMaterial = _fullFriction;
-            }
-            else
-            {
-                _capsuleCollider.sharedMaterial = _walkingFriction;
-            }
-        }
-
-        private void UpdateJumpTimer(float dt)
-        {
-            if (_isJumping)
-            {
-                if (_jumpTimeCounter > 0)
-                {
-                    _jumpTimeCounter -= dt;
-                }
-                else
-                {
-                    _isJumping = false;
-                }
-            }
-        }
-
-        private void CheckJumping()
-        {
-            if (!_isJumping)
-            {
-                if (CheckForDrop()) return;
-                if ((_canJumpBecauseGrounded || _inWater) && State.JumpPressed)
-                {
-                    _isJumping = true;
-                    _canJumpBecauseGrounded = false;
-                    _jumpTimeCounter = Config.jumpTime;
-                }
-            }
-            else if (!State.JumpHeld)
-            {
-                _jumpTimeCounter = 0;
-                _isJumping = false;
-            }
-        }
-
-        private bool CheckForDrop()
-        {
-            if (!_isGrounded) return false;
-            if (Time.time - _lastDropTime < 0.5f) return false;
-            if (State.JumpHeld && State.MoveY < 0 && Mathf.Abs(State.MoveY) > Mathf.Abs(State.MoveX))
-            {
-                var hit = Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.GetMask("Pipes", "Platforms"));
-                if (hit)
-                {
-                    _lastDropTime = Time.time;
-                    StartCoroutine(DropThroughPlatform(hit));
-                    return true;
-                }
-            }
-            return false;
-        }
-
         IEnumerator DropThroughPlatform(RaycastHit2D hit)
         {
             var col = hit.collider;
@@ -287,47 +348,8 @@ namespace Characters
             State.IsDropping = false;
             Physics2D.IgnoreCollision(col, _capsuleCollider, false);
         }
-        
-        private void CheckWater()
-        {
-            Vector2 pos = rb.position;
-            pos.y -= colliderSize.y / 2f;
-            LayerMask waterLayers = LayerMask.GetMask("Water");
-            _inWater = Physics2D.OverlapPoint(pos, waterLayers) != null;
-        }
-        private bool CheckForCeiling()
-        {
-            int contacts = rb.GetContacts(_contactPoint2Ds);
-            for (int i = 0; i < contacts; i++)
-            {
-                var contactPoint = _contactPoint2Ds[i];
-                if (contactPoint.normal.y < -0.1f && contactPoint.point.y > transform.position.y)
-                {
-                    return true;
-                }
-            }
 
-            return false;
-        }
-        void LoadCharacterConfig()
-        {
-            if (_configLoadHandle.IsValid())
-            {
-                return;
-            }
+
         
-            this._configLoadHandle = Addressables.LoadAssetAsync<CharacterConfig>(CHARACTER_CONFIG_ADDRESS);
-            _configLoadHandle.Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    State.config = handle.Result;
-                }
-                else
-                {
-                    Debug.LogError($"No Config found at address {CHARACTER_CONFIG_ADDRESS}");
-                }
-            };
-        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Characters.Actions;
 using UnityEngine;
 
-[Obsolete("Refactoring system to use new input system")]
+[Obsolete("using new input system")]
 public class AbilityButtonInput : MonoBehaviour
 {
     private CharacterState _characterState;
@@ -46,12 +46,7 @@ public class AbilityButtonInput : MonoBehaviour
         if (_inCooldown) return;
         foreach (var ability in GetAbilityCheckOrder())
         {
-            if (ability.TryAbility())
-            {
-                _inCooldown = true;
-                Invoke(nameof(ResetCooldown), cooldownTime);
-                return;
-            }
+            
         }
     }
 

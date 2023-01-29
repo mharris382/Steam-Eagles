@@ -28,7 +28,7 @@ namespace Characters.Animations
 
         public void UpdateState(CharacterSkeletonAnimator.States newState)
         {
-            Debug.Log(newState);
+//            Debug.Log(newState);
             if(newState == CharacterSkeletonAnimator.States.JUMP)
                 _skeleton.SetSkin(jumpHands);
             else

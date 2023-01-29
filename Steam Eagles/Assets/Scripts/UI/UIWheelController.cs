@@ -53,6 +53,7 @@ namespace UI
         void OpenWheel()
         {
             wheel.enabled = true;
+            if (player.CharacterInput == null) return;
             var input = player.CharacterInput.PlayerInput;
             input.SwitchCurrentActionMap("Wheel");
             Debug.Assert(input.currentActionMap.name == "Wheel", $"Did not switch to wheel action map! Current ActionMap = {input.currentActionMap.name}", this);
@@ -61,6 +62,7 @@ namespace UI
         void CloseWheel()
         {
             wheel.enabled = false;
+            if (player.CharacterInput == null) return;
             var input = player.CharacterInput.PlayerInput;
             if(input.currentActionMap.name == "Wheel")
                 input.SwitchCurrentActionMap("Gameplay");

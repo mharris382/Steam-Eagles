@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace Characters.Actions.UI
 {
+    /// <summary>
+    /// abstraction hides the fact that the returned values are changed when the player
+    /// selects a different block type
+    /// </summary>
     public class CellAbilitySet : MonoBehaviour, ICellAbilitySet
     {
         [SerializeField]

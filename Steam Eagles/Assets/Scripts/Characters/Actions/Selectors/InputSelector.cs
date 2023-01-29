@@ -49,8 +49,8 @@ namespace Characters.Actions.Selectors
                 var characterPos = player.characterTransform.Value.position;
                 //get aim position from controller
                 var aimVector = PlayerInput.actions["Aim"].ReadValue<Vector2>();
-                controllerAimOffset+= (aimVector * (controllerAimSensitivity * Time.deltaTime));
-                controllerAimOffset = Vector2.ClampMagnitude(controllerAimOffset, maxAimDistance);
+                controllerAimOffset += (aimVector * (controllerAimSensitivity * Time.deltaTime));
+                ClampAimToScreen(characterPos);
                 selectorPos = characterPos + new Vector3(controllerAimOffset.x,controllerAimOffset.y);
                 UpdateAimTransformForJoystick(selectorPos);
             }
@@ -72,6 +72,23 @@ namespace Characters.Actions.Selectors
             cellPos.z = 0;
             wsPos.z = 0;
             yield return (cellPos, wsPos); 
+        }
+
+        private void ClampAimToScreen(Vector3 characterPos)
+        {
+            Debug.Assert(player.playerCamera.HasValue, "Player camera is null!", player);
+            var camera = player.playerCamera.Value;
+            var selectorPos = characterPos + new Vector3(controllerAimOffset.x,controllerAimOffset.y);
+            var screenPos = camera.WorldToViewportPoint(selectorPos);
+            if (camera.rect.Contains(screenPos))
+            {
+                return;
+            }
+
+            var rect = new Rect(0, 0, 1, 1);
+            var clampedScreenPos = new Vector3(Mathf.Clamp(screenPos.x, rect.min.x, rect.max.x ), Mathf.Clamp(screenPos.y, rect.min.y, rect.max.y), screenPos.z);
+            var worldPos = camera.ViewportToWorldPoint(clampedScreenPos);
+            controllerAimOffset = worldPos - characterPos;
         }
 
         void UpdateAimTransformForJoystick(Vector2 vec)

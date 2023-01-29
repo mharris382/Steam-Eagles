@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [Obsolete("using new input system")]
     public class MouseAbilityInputHandler : MonoBehaviour
     {
         public Camera camera;
@@ -21,20 +22,20 @@ namespace Characters
            
             var wp = ActiveCam.ScreenToWorldPoint(Input.mousePosition);
             wp.z = 0;
-            leftMouseButton.selector.transform.position = wp;
-            righttMouseButton.selector.transform.position = wp;
-            leftMouseButton.ShowAbilityPreviewFromMouse(wp);
-            if (Input.GetMouseButton(0))
-            {
-                leftMouseButton.TryAbility(wp);
-            }
-
-            if (righttMouseButton == null) return;
-            righttMouseButton.ShowAbilityPreviewFromMouse(wp);
-            if (Input.GetMouseButton(1))
-            {
-                righttMouseButton.TryAbility(wp);
-            }
+           // leftMouseButton.selector.transform.position = wp;
+           // righttMouseButton.selector.transform.position = wp;
+           // leftMouseButton.ShowAbilityPreviewFromMouse(wp);
+           // if (Input.GetMouseButton(0))
+           // {
+           //     leftMouseButton.TryAbility(wp);
+           // }
+//
+           // if (righttMouseButton == null) return;
+           // righttMouseButton.ShowAbilityPreviewFromMouse(wp);
+           // if (Input.GetMouseButton(1))
+           // {
+           //     righttMouseButton.TryAbility(wp);
+           // }
         }
     }
 

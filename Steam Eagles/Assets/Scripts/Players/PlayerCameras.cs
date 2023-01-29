@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerCameras : MonoBehaviour
+public class PlayerCameras : MonoBehaviour, IPlayerDependencyResolver<Camera>
 {
     [SerializeField]
     private Camera[] cameras;
-
+    
     private void OnEnable()
     {
         for (int i = 0; i < cameras.Length; i++)
@@ -36,4 +36,11 @@ public class PlayerCameras : MonoBehaviour
                 throw new IndexOutOfRangeException(ERROR_MSG + " " + playerNumber);
         }
     }
+    
+    public Camera GetDependency(int playerNumber)
+    {
+        return GetCamera(playerNumber);
+    }
 }
+
+

@@ -21,23 +21,23 @@ namespace Players
         
         
         public SharedTransform characterTransform;
+        public SharedCamera playerCamera;
         
-        
-        public SharedTilemap foundationTilemap;
-        public SharedTilemap wallTilemap;
-        public SharedTilemap solidTilemap;
-        public SharedTilemap pipeTilemap;
-        public SharedTilemap decorTilemap;
+        [FoldoutGroup("Tilemaps")]public SharedTilemap foundationTilemap;
+        [FoldoutGroup("Tilemaps")]public SharedTilemap wallTilemap;
+        [FoldoutGroup("Tilemaps")]public SharedTilemap solidTilemap;
+        [FoldoutGroup("Tilemaps")]public SharedTilemap pipeTilemap;
+        [FoldoutGroup("Tilemaps")]public SharedTilemap decorTilemap;
         
         public PlayerCharacterInput CharacterInput { get; private set; }
         public CharacterState State { get; private set; }
         
         
-        public void AssignPlayer(PlayerCharacterInput playerCharacterInput, SharedCamera assignedCamera, CharacterState assignedCharacter)
+        public void AssignPlayer(PlayerCharacterInput playerCharacterInput,CharacterState assignedCharacter)
         {
             this.State = assignedCharacter;
             this.CharacterInput = playerCharacterInput;
-            
+            playerCharacterInput.Assign(State.GetComponent<CharacterInputState>());
         }
 
         public void EnableStructureEditing(EditableTilemapStructure structure)

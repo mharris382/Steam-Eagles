@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,5 +13,12 @@ namespace Characters.Actions.Selectors
 
         public abstract bool CanSelectCells();
         public abstract IEnumerable<(Vector3Int cellPos, Vector3 wsPos)> GetSelectableCells();
+
+        public virtual Vector3 GetSelectedWorldSpacePosition()
+        {
+            var selectableCells = GetSelectableCells();
+            if(selectableCells == null)return Vector3.zero;
+            return selectableCells.First().wsPos;
+        }
     }
 }

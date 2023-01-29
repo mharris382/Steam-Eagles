@@ -4,7 +4,7 @@ using Characters;
 using Characters.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+[Obsolete("using new input system")]
 public class AbilityInputHandler : MonoBehaviour
 {
 
@@ -34,22 +34,22 @@ public class AbilityInputHandler : MonoBehaviour
 
     public void OnActionLeft(InputAction.CallbackContext context)
     {
-        leftAbility.TryAbility();
+       // leftAbility.TryAbility();
     }
     
     public void OnActionRight(InputAction.CallbackContext context)
     {
-        rightAbility.TryAbility();
+       // rightAbility.TryAbility();
     }
     
     public void OnActionUp(InputAction.CallbackContext context)
     {
-        upAbility.TryAbility();
+       // upAbility.TryAbility();
     }
     
     public void OnActionDown(InputAction.CallbackContext context)
     {
-        downAbility.TryAbility();
+      //  downAbility.TryAbility();
     }
 
     private void Update()
@@ -64,19 +64,19 @@ public class AbilityInputHandler : MonoBehaviour
     {
         if (Input.GetKeyDown(keyUp))
         {
-            upAbility.TryAbility();
+         //   upAbility.TryAbility();
         }
         else if (Input.GetKeyDown(keyDown))
         {
-            downAbility.TryAbility();
+         //   downAbility.TryAbility();
         }
         else if (Input.GetKeyDown(keyLeft))
         {
-            leftAbility.TryAbility();
+        //    leftAbility.TryAbility();
         }
         else if (Input.GetKeyDown(keyRight))
         {
-            rightAbility.TryAbility();
+        //    rightAbility.TryAbility();
         }
     }
 }

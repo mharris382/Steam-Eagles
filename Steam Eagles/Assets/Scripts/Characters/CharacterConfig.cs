@@ -26,7 +26,7 @@ namespace DefaultNamespace
 
         public LayerMask GetGroundLayers()
         {
-            return overrideGroundMask ? groundMask : LayerMask.GetMask("Ground", "Solids");
+            return groundMask;
         }
 
         public PhysicsMaterial2D GetNoFrictionMaterial()

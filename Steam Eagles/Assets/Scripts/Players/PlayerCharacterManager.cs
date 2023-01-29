@@ -2,22 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Characters;
-using CoreLib;
 using Players;
 using StateMachine;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Object = UnityEngine.Object;
 
 namespace Characters
 {
-   
     [RequireComponent(typeof(PlayerInputManager))]
     public class PlayerCharacterManager : MonoBehaviour
     {
-
+        [SerializeField] private PlayerWrapper[] playerWrappers;
         [SerializeField] private CameraAssignments cameraAssignments;
         [SerializeField] private List<SharedTransform> playerInputs;
         [SerializeField] List<CharacterAssignment> characterAssignments;
@@ -215,160 +212,5 @@ namespace Characters
             Debug.Log($"Changed Character {characterInputState.name} to {newCharacterAssignment.characterName} for Player #{playerCharacterInput.PlayerInput.playerIndex}");
         }
 
-    }   
-    
-    
-        
-
-
-    [Serializable]
-    public class CharacterAssignment
-        {
-            public string characterName;
-            [SerializeField] CharacterState prefab;
-            [Tooltip("This variable is required to support the dynamic split-screen feature")]
-            public SharedCamera playerCamera;
-            
-            [Header("Spawn Position")]
-            public SharedTransform spawnPoint;
-            public Vector3 defaultPosition;
-            
-            [Header("Debugging")]
-            public Color characterColor = Color.red;
-            public bool hideTransformInEditor = false;
-            
-            
-            
-            private CharacterInputState _spawnedCharacter;
-            
-            
-            
-            public Vector3 SpawnPosition => SpawnTransform.position;
-
-            
-            
-            
-            /// <summary>
-            /// used to move the character's spawn point in the world
-            /// </summary>
-            public Transform SpawnTransform
-            {
-                get
-                {
-                    if (spawnPoint == null) spawnPoint = ScriptableObject.CreateInstance<SharedTransform>();
-                    if (!spawnPoint.HasValue)
-                    {
-                        spawnPoint.Value = new GameObject($"{characterName} Spawn Transform").transform;
-                        if(hideTransformInEditor)spawnPoint.Value.hideFlags = HideFlags.HideInHierarchy;
-                        spawnPoint.Value.position = defaultPosition;
-                        spawnPoint.name = $"{characterName} Spawn Transform";
-                    }
-                    return spawnPoint.Value;
-                }
-            }
-
-            public CharacterInputState InstantiateCharacter()
-            {
-                if (_spawnedCharacter != null) return _spawnedCharacter;
-                var character = Object.Instantiate(prefab, SpawnPosition, Quaternion.identity);
-                character.name = characterName;
-                CharacterInputState characterInputState;
-                if (!character.gameObject.TryGetComponent(out characterInputState))
-                {
-                    characterInputState = character.gameObject.AddComponent<CharacterInputState>();
-                }
-                _spawnedCharacter = characterInputState;
-                return characterInputState;
-            }
-        
-            
-            public void DestroyCharacter(CharacterState character)
-            {
-                Object.Destroy(character.gameObject);
-            }
-            
-            public void MoveCharacterToSpawn(CharacterState character) => character.transform.position = SpawnPosition;
-
-            public void ResetSpawnPosition()
-            {
-                SpawnTransform.position = defaultPosition;
-            }
-            
-            public void OnDrawGizmos()
-            {
-                Gizmos.color = characterColor;
-                Gizmos.DrawSphere(defaultPosition, 0.125f);
-            }
-        }
-    
-    [Serializable]
-    public class CameraAssignments
-    {
-        [SerializeField] 
-        enum CameraModes
-        {
-            SINGLE_PLAYER,
-            SPLIT_SCREEN,
-            MULTI_MONITOR
-        }
-    #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.OnValueChanged(nameof(OnModeChanged))]
-        [Sirenix.OdinInspector.EnumPaging]
-    #endif
-        [SerializeField] CameraModes cameraMode = CameraModes.SPLIT_SCREEN;
-
-        [SerializeField] private PlayerCameras splitScreenCameras;
-        [SerializeField] private PlayerCameras dualMonitorCameras;
-        [SerializeField] private PlayerCameras singlePlayerCamera;
-
-        IEnumerable<(PlayerCameras, CameraModes)> GetAllPlayerCameras()
-        {
-            if(splitScreenCameras != null)
-                yield return (splitScreenCameras, CameraModes.SPLIT_SCREEN);
-            if(dualMonitorCameras != null)
-                yield return (dualMonitorCameras, CameraModes.MULTI_MONITOR);
-            if(singlePlayerCamera != null)
-                yield return (singlePlayerCamera, CameraModes.SINGLE_PLAYER);
-        }
-        public PlayerCameras GetPlayerCameras()
-        {
-            switch (cameraMode)
-            {
-                case CameraModes.SPLIT_SCREEN:
-                    return ActivateCamera(splitScreenCameras);
-                case CameraModes.MULTI_MONITOR:
-                    return ActivateCamera(dualMonitorCameras);
-                default:
-                    return ActivateCamera(singlePlayerCamera);
-            }
-        }
-        PlayerCameras ActivateCamera(PlayerCameras playerCameras)
-        {
-            foreach (var allPlayerCamera in GetAllPlayerCameras())
-            {
-                allPlayerCamera.Item1.gameObject.SetActive(allPlayerCamera.Item1 == playerCameras);
-            }
-            return playerCameras;
-        }
-
-
-        void OnModeChanged()
-        {
-            switch (cameraMode)
-            {
-                case CameraModes.SPLIT_SCREEN:
-                    ActivateCamera(splitScreenCameras);
-                    break;
-                case CameraModes.MULTI_MONITOR:
-                    ActivateCamera(dualMonitorCameras);
-                    break;
-                default:
-                    ActivateCamera(singlePlayerCamera);
-                    break;
-            }
-        }
     }
-
-
-
 }

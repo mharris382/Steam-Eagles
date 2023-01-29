@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Characters;
 using DefaultNamespace;
 using UniRx;
 using UnityEngine;
@@ -10,7 +11,7 @@ public enum InteractionPhysicsMode
     Mixed = 1,      //root motion is added with gravity
     FullPhysics = 2 //root motion is applied as a force
 }
-
+[RequireComponent(typeof(CharacterInputState))]
 [RequireComponent(typeof(GroundCheck))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterState : MonoBehaviour
@@ -18,11 +19,13 @@ public class CharacterState : MonoBehaviour
 
     public CharacterConfig config;
     public bool alwaysGrounded = false;
-   
 
-    
+    private CapsuleCollider2D _capsuleCollider;
+    private Rigidbody2D _rb;
 
     #region Public variables
+
+    public CapsuleCollider2D Collider => _capsuleCollider;
     public Vector2 MoveInput
     {
         get => _moveInput;
@@ -177,6 +180,8 @@ public class CharacterState : MonoBehaviour
         JumpPressed = false;
         VelocityX = 0;
         VelocityY = 0;
+        _capsuleCollider = GetComponent<CapsuleCollider2D>();
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     #endregion
@@ -280,6 +285,7 @@ public class CharacterState : MonoBehaviour
     
     
     private Rigidbody2D _attachedBody;
+
     public Rigidbody2D AttachedBody
     {
         get => _attachedBody;
