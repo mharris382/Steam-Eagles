@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreLib;
+using StateMachine;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,10 @@ namespace UI
         [Header("Settings")]
         [SerializeField] private bool pauseTime = true;
 
+        public SharedTransform tpTransform;
+        public SharedTransform tpSpawnTransform;
+        public SharedTransform bdTransform;
+        public SharedTransform bdSpawnTransform;
 
         private void Awake()
         {
@@ -50,12 +55,31 @@ namespace UI
         {
             isPaused.Value = false;
         }
+
+
+        public void RespawnTP()
+        {
+            if(!tpTransform.HasValue || !tpSpawnTransform.HasValue)
+                return;
+            tpTransform.Value.position = tpSpawnTransform.Value.position;
+        }
+
+        public void RespawnBD()
+        {
+            if (bdTransform.HasValue == false || bdSpawnTransform.HasValue == false)
+                return;
+            bdTransform.Value.position = bdSpawnTransform.Value.position;
+        }
         
-        
-        
+        public void RespawnBoth()
+        {
+            RespawnBD();
+            RespawnTP();
+        }
         public void RestartScene()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            RespawnBoth();
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     
         public void QuitToMainMenu()

@@ -99,7 +99,10 @@ namespace GasSim.Lighting
             }
         }
 
-       
+        private void Update()
+        {
+            UpdateTime(this.currentTime);
+        }
     }
     
     #if UNITY_EDITOR

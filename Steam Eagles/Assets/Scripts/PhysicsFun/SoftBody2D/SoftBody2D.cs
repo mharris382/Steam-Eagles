@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
+#if UNITY_EDITOR
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace PhysicsFun.SoftBody2D

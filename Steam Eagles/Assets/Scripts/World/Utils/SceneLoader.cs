@@ -13,6 +13,21 @@ public class SceneLoader : MonoBehaviour
     {
 
         if (SceneManager.sceneCount > 1) return;
-        if(autoLoadScene ) this._loadOp = SceneManager.LoadSceneAsync(autoLoadSceneID, LoadSceneMode.Additive);
+        if (autoLoadScene)
+        {
+            TriggerLoad();
+        }
+    }
+
+    public void TriggerLoad()
+    {
+        
+            
+        if (_loadOp != null)
+        {
+            return;
+        }
+        
+        this._loadOp = SceneManager.LoadSceneAsync(autoLoadSceneID, LoadSceneMode.Additive);
     }
 }
