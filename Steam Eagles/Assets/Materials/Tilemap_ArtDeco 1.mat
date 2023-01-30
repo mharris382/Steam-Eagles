@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Tilemap_ArtDeco 1
   m_Shader: {fileID: -6465566751694194690, guid: 690011843637acc46b7b6787600ae0c1, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _UV_MODE_OBJECT_SPACE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -52,6 +53,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _UV_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -66,6 +71,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _UV_MODE: 1
     - _UseSecondaryTex: 1
     - _WorldSpaceUV: 0
     - _debug: 0

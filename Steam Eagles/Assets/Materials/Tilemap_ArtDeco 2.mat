@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Tilemap_ArtDeco 2
   m_Shader: {fileID: -6465566751694194690, guid: 690011843637acc46b7b6787600ae0c1, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _UV_MODE_WORLD_SPACE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -25,11 +26,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DiffuseTexture1:
-        m_Texture: {fileID: 2800000, guid: 2d5bfbfc99f9d864bba1fff49f363960, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1e6f92b0a1d74ed4b98bf704bb5b4c5d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DiffuseTexture2:
-        m_Texture: {fileID: 2800000, guid: 4e751fee23d59a4418e5517c100e1577, type: 3}
+        m_Texture: {fileID: 2800000, guid: af7cc5d78633d2642a137fd50a048796, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -41,14 +42,18 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTexture1:
-        m_Texture: {fileID: 2800000, guid: 083d59c07c70e114e9f9ae94899c12d6, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1db4c4eac46de214980e882b22b15dc8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTexture2:
-        m_Texture: {fileID: 2800000, guid: e2a1148a58269a4429d6310c64ba0f0d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 26d5198ed8982954f8f9c9572d627da4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TexMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UV_Tex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -66,11 +71,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _UV_MODE: 0
     - _UseSecondaryTex: 1
     - _WorldSpaceUV: 0
     - _debug: 0
     m_Colors:
     - _Tiling: {r: 0.25, g: 0.25, b: 0, a: 0}
-    - _Tiling1: {r: 8, g: 8, b: 0, a: 0}
+    - _Tiling1: {r: 1, g: 1, b: 0, a: 0}
     - _Tiling2: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
