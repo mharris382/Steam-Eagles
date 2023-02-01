@@ -37,6 +37,10 @@ namespace Buildings
         }
 
         public override BuildingLayers Layer { get; }
+        public override string GetSaveID()
+        {
+            return "FIXED";
+        }
 
         public override int GetSortingOrder(Building building)
         {

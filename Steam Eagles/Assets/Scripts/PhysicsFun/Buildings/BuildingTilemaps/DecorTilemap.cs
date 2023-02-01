@@ -8,6 +8,10 @@ namespace Buildings
     {
         
         public override BuildingLayers Layer => BuildingLayers.DECOR;
+        public override string GetSaveID()
+        {
+            return "Decor";
+        }
 
         public override BuildingLayers GetBlockingLayers()
         {

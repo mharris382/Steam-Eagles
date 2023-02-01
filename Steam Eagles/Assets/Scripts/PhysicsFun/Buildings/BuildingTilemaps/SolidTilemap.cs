@@ -8,6 +8,10 @@ namespace Buildings.BuildingTilemaps
     {
         public const int ORDER_IN_LAYER = -2;
         public override BuildingLayers Layer => BuildingLayers.SOLID;
+        public override string GetSaveID()
+        {
+            return "Solid";
+        }
 
         public override BuildingLayers GetBlockingLayers()
         {

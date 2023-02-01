@@ -99,13 +99,13 @@ namespace PhysicsFun.Buildings
 
         
 
-        [Button("Save"), DisableInPlayMode]
+        
         public void SaveBuilding()
         {
             
         }
 
-        [Button("Load"), DisableInPlayMode]
+        
         public void LoadBuilding()
         {
             
@@ -115,7 +115,7 @@ namespace PhysicsFun.Buildings
 
         #region [Helper Methods]
 
-        private IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
+        public IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
 
         #endregion
         

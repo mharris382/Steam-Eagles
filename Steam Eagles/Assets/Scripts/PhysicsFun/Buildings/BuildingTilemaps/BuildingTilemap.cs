@@ -14,6 +14,8 @@ namespace Buildings.BuildingTilemaps
         public Tilemap Tilemap => _tm ? _tm : _tm = GetComponent<Tilemap>();
         
         public abstract BuildingLayers Layer { get; }
+
+        public abstract string GetSaveID();
         
         [Obsolete("Removed automatic update")]
         public virtual void UpdateTilemap(Building building)

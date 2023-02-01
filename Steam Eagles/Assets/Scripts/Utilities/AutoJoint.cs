@@ -43,7 +43,7 @@ namespace Utilities
             var wp = autoJoint.transform.TransformPoint(autoJoint.targetPosition);
             Handles.color = Color.blue;
             Handles.DrawSolidDisc(wp, Vector3.forward, 0.25f);
-            var newWP =Handles.FreeMoveHandle(wp, Quaternion.identity, 0.04f, Vector3.zero, Handles.DotHandleCap);
+            var fmh_46_51_638107055392908464 = Quaternion.identity; var newWP =Handles.FreeMoveHandle(wp, 0.04f, Vector3.zero, Handles.DotHandleCap);
             if (wp != newWP)
             {
                 serializedObject.Update();

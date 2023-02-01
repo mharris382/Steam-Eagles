@@ -196,7 +196,7 @@ public class GroundCheckEditor : OdinEditor
             var gndCheck = parent.GetChild(i);
             var pos = gndCheck.position;
             Handles.DrawWireDisc(pos, Vector3.forward, 0.2f);
-            gndCheck.position = Handles.FreeMoveHandle(pos, Quaternion.identity, 0.03f, Vector3.zero, Handles.DotHandleCap);
+            var fmh_199_61_638107055393666229 = Quaternion.identity; gndCheck.position = Handles.FreeMoveHandle(pos, 0.03f, Vector3.zero, Handles.DotHandleCap);
         }
     }
 }

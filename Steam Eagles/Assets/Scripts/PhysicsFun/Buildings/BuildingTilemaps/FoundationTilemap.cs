@@ -7,6 +7,11 @@ namespace Buildings
     public class FoundationTilemap : RenderedTilemap
     {
         public override BuildingLayers Layer => BuildingLayers.FOUNDATION;
+        public override string GetSaveID()
+        {
+            return "Foundation";
+        }
+
         public override int GetSortingOrder(Building building)
         {
             return building.orderInLayer + SolidTilemap.ORDER_IN_LAYER + 2;

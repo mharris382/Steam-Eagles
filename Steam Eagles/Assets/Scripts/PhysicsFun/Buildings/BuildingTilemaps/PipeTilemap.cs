@@ -6,7 +6,11 @@ namespace Buildings.BuildingTilemaps
     public class PipeTilemap : EditableTilemap
     {
         public override BuildingLayers Layer => BuildingLayers.PIPE;
-        
+        public override string GetSaveID()
+        {
+            return "Pipe";
+        }
+
         public override BuildingLayers GetBlockingLayers()
         {
             return base.GetBlockingLayers() | 

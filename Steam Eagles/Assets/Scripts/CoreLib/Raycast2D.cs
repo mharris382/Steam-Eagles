@@ -89,7 +89,7 @@ public class Raycast2DEditor : Editor
         
         EditorGUI.BeginChangeCheck();
         
-        var pos = Handles.FreeMoveHandle(handlePos, Quaternion.identity, 0.05f * HandleUtility.GetHandleSize(origin), Vector3.zero,
+        var fmh_92_53_638107055393994547 = Quaternion.identity; var pos = Handles.FreeMoveHandle(handlePos, 0.05f * HandleUtility.GetHandleSize(origin), Vector3.zero,
             Handles.DotHandleCap);
         
         if (EditorGUI.EndChangeCheck())

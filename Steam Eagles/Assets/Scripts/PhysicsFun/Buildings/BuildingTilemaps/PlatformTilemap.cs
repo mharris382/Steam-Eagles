@@ -19,6 +19,11 @@ namespace Buildings
         }
 
         public override BuildingLayers Layer => BuildingLayers.PLATFORM;
+        public override string GetSaveID()
+        {
+            return "Platform";
+        }
+
         public override int GetSortingOrder(Building building)
         {
             return building.orderInLayer - SolidTilemap.ORDER_IN_LAYER - 1;
