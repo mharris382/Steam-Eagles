@@ -58,35 +58,35 @@ namespace Characters
                 Debug.LogWarning("CharacterInputState is null", this);
                 return;
             }
-            _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
-            _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
-           // _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
-            _characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
-            _characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();
+            //_characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            //_characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+           //// _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
+            //_characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
+            //_characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();
         }
         public void OnJump(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
-            _characterInput.JumpPressed = context.performed;
-            _characterInput.JumpHeld = context.started;
+            //_characterInput.JumpPressed = context.performed;
+            //_characterInput.JumpHeld = context.started;
         }
         
         public void OnAim(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
-            _characterInput.AimInput = context.ReadValue<Vector2>();
+            //_characterInput.AimInput = context.ReadValue<Vector2>();
         }
         
         public void OnMove(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
-            _characterInput.MoveInput = context.ReadValue<Vector2>();
+            //_characterInput.MoveInput = context.ReadValue<Vector2>();
         }
         
         public void OnInteract(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
-            _characterInput.onInteract?.Invoke(context);
+            //_characterInput.onInteract?.Invoke(context);
             MessageBroker.Default.Publish(new InteractActionEvent()
             {
                 context = context,
@@ -100,7 +100,7 @@ namespace Characters
         {
             Debug.Log("OnPickup called");
             if (_characterInput == null) return;
-            _characterInput.onPickup?.Invoke(context);
+            //_characterInput.onPickup?.Invoke(context);
             MessageBroker.Default.Publish(new PickupActionEvent()
             {
                 context = context,
@@ -113,7 +113,7 @@ namespace Characters
         public void OnValve(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
-            _characterInput.onValve?.Invoke(context);
+            //_characterInput.onValve?.Invoke(context);
             MessageBroker.Default.Publish(new ValveActionEvent()
             {
                 context = context,

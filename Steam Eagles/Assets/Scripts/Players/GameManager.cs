@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Characters;
 using Sirenix.OdinInspector;
 using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
-namespace Characters
+namespace Players
 {
     public class GameManager : MonoBehaviour
     {
@@ -14,7 +16,8 @@ namespace Characters
         [BoxGroup("Players")]  public List<PlayerWrapper> players;
         [BoxGroup("Players")]  public CameraAssignments cameraAssignments;
         [BoxGroup("Players")]  public CharacterAssignments characterAssignments;
-
+        [BoxGroup("Players")] public EventSystemAssignments eventSystemAssignments;
+        
         public GameObject waitingForFirstPlayerToJoinGUI;
         public GameObject playerDisconnectedGUI;
         
@@ -116,7 +119,7 @@ namespace Characters
         }
 
 
-        void SwitchToSinglePlayerCamera()
+        private void SwitchToSinglePlayerCamera()
         {
             if (_singlePlayerCameraSubscription != null)
             {
@@ -132,7 +135,7 @@ namespace Characters
             _singlePlayerCameraSubscription = cd;
         }
 
-        void SwitchToMultiPlayerCamera()
+        private void SwitchToMultiPlayerCamera()
         {
             if (_singlePlayerCameraSubscription != null)
             {
@@ -162,4 +165,18 @@ namespace Characters
             return character.GetComponent<CharacterState>();
         }
     }
+
+
+    [Serializable]
+    public class EventSystemAssignments : IPlayerDependencyResolver<InputSystemUIInputModule>
+    {
+        public InputSystemUIInputModule[] eventSystems;
+        public InputSystemUIInputModule GetDependency(int playerNumber)
+        {
+            var eventSystem = eventSystems[playerNumber];
+            eventSystem.gameObject.SetActive(true);
+            return eventSystem;
+        }
+    }
 }
+

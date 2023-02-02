@@ -891,6 +891,7 @@ GameObject:
   - component: {fileID: 4306269446272269580}
   - component: {fileID: 4306269446272269581}
   - component: {fileID: 4306269446272269570}
+  - component: {fileID: 1866493857821266234}
   m_Layer: 0
   m_Name: Softbody Test 1
   m_TagString: Untagged
@@ -953,7 +954,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 480b7a08b212aba49b8b101db147262d, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -970,8 +971,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c410138acb264cc59066832e2823350f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numBodies: 8
   autoPosition: 1
+  numBodies: 8
+  overrideDistance: 0
+  distance: 1
   springFrequency: 3.52
   springDamping: 0
   uniformRadius: 1
@@ -994,6 +997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteShapeController: {fileID: 4306269446272269570}
+  checkForBreaks: 1
 --- !u!1971053207 &4306269446272269581
 SpriteShapeRenderer:
   m_ObjectHideFlags: 0
@@ -1052,6 +1056,7 @@ SpriteShapeRenderer:
   m_LocalAABB:
     m_Center: {x: 0, y: -0.21502519, z: 0}
     m_Extent: {x: 2.96, y: 3.1750247, z: 0}
+  m_SpriteSortPoint: 0
 --- !u!114 &4306269446272269570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1072,8 +1077,6 @@ MonoBehaviour:
       rightTangent: {x: -0, y: 0.684765, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1082,8 +1085,6 @@ MonoBehaviour:
       rightTangent: {x: -0.4935668, y: 0.49356678, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1092,8 +1093,6 @@ MonoBehaviour:
       rightTangent: {x: -0.69138134, y: 0.000000041209542, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1102,8 +1101,6 @@ MonoBehaviour:
       rightTangent: {x: -0.48909983, y: -0.48909974, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1112,8 +1109,6 @@ MonoBehaviour:
       rightTangent: {x: 0.000000060442495, y: -0.6913816, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1122,8 +1117,6 @@ MonoBehaviour:
       rightTangent: {x: 0.53033566, y: -0.4435674, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1132,8 +1125,6 @@ MonoBehaviour:
       rightTangent: {x: 0.6913816, y: 0.000000034120823, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1142,8 +1133,6 @@ MonoBehaviour:
       rightTangent: {x: 0.53033584, y: 0.44356725, z: 0}
       mode: 1
       height: 1
-      bevelCutoff: 0
-      bevelSize: 0
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
@@ -1155,7 +1144,7 @@ MonoBehaviour:
   m_StretchUV: 0
   m_WorldSpaceUV: 0
   m_CornerAngleThreshold: 30
-  m_ColliderDetail: 16
+  m_ColliderDetail: 4
   m_ColliderOffset: 0.5
   m_UpdateCollider: 1
   m_OptimizeCollider: 1
@@ -1163,6 +1152,71 @@ MonoBehaviour:
   m_EnableTangents: 0
   m_GeometryCached: 0
   m_UTess2D: 0
+  m_Creator: {fileID: 0}
+  m_Modifiers: []
+--- !u!68 &1866493857821266234
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4306269446272269575}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 3b1c6f49e57284b45b58fbc32a17ea9a, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 1.6
+  m_Points:
+  - {x: 2.7399998, y: 0}
+  - {x: 2.7018528, y: 0.4026515}
+  - {x: 2.5924647, y: 0.82606673}
+  - {x: 2.4211228, y: 1.2415533}
+  - {x: 2.1986685, y: 1.62112}
+  - {x: 1.9374527, y: 1.9374923}
+  - {x: 1.6215961, y: 2.198779}
+  - {x: 1.2433093, y: 2.421197}
+  - {x: 0.8288822, y: 2.5924788}
+  - {x: 0.26676667, y: 2.7228723}
+  - {x: -0.1313375, y: 2.735632}
+  - {x: -0.68808985, y: 2.6354492}
+  - {x: -1.1094093, y: 2.482946}
+  - {x: -1.538187, y: 2.2529233}
+  - {x: -1.8413986, y: 2.0273588}
+  - {x: -2.1140883, y: 1.7363548}
+  - {x: -2.3503613, y: 1.3765411}
+  - {x: -2.5403857, y: 0.97069687}
+  - {x: -2.6722813, y: 0.5462626}
+  - {x: -2.7356322, y: 0.13133733}
+  - {x: -2.720086, y: -0.29889965}
+  - {x: -2.629406, y: -0.79023564}
+  - {x: -2.4669895, y: -1.3192942}
+  - {x: -2.3255868, y: -1.6519449}
+  - {x: -2.1628113, y: -1.944612}
+  - {x: -1.9852264, y: -2.1765473}
+  - {x: -1.557765, y: -2.5258896}
+  - {x: -1.1836752, y: -2.7730756}
+  - {x: -0.7876776, y: -2.9792469}
+  - {x: -0.2558354, y: -3.1469684}
+  - {x: 0.00000016387855, y: -3.1700497}
+  - {x: 0.25583592, y: -3.1469684}
+  - {x: 0.65378606, y: -3.0344324}
+  - {x: 1.0532746, y: -2.8476353}
+  - {x: 1.557764, y: -2.5258899}
+  - {x: 1.8906848, y: -2.2664423}
+  - {x: 2.075234, y: -2.0692637}
+  - {x: 2.2464511, y: -1.8036802}
+  - {x: 2.3992233, y: -1.4875332}
+  - {x: 2.582499, y: -0.9643775}
+  - {x: 2.6994567, y: -0.44465443}
+  - {x: 2.735446, y: -0.13530603}
+  - {x: 2.7399998, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &4306269446464899484
 GameObject:
   m_ObjectHideFlags: 0

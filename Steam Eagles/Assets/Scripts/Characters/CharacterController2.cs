@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using CoreLib;
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -47,7 +48,53 @@ namespace Characters
         private float _jumpTimeCounter;
         private RaycastHit2D _verticalHit;
         private Collider2D _onOneWay;
+        
+        private bool _onOneWayPlatform;
+        private Collider2D[] _oneWayColliders = new Collider2D[10];
+        private Collider2D[] _droppingColliders = new Collider2D[10];
 
+        public bool OnBalloon
+        {
+            get => _onBalloon;
+            set
+            {
+                _onBalloon = value;
+                if (value && !_isGrounded)
+                {
+                    _wasOnBalloon = true;
+                    _timeOnBalloon = Time.time;
+                }
+
+                if (!value && _wasOnBalloon)
+                {
+                    if (Time.time - _timeOnBalloon > Config.balloonJumpCoyoteTime)
+                    {
+                        BalloonCollider = null;
+                        _wasOnBalloon = false;
+                    }
+                }
+            }
+        }
+        private bool _onBalloon;
+        private bool _wasOnBalloon;
+        private float _timeOnBalloon;
+        private bool _isBalloonJumping;
+
+        public Collider2D BalloonCollider
+        {
+            get => _wasOnBalloon ?  BalloonCollider : null;
+            set
+            {
+                if (value != null)
+                {
+                    __balloonCollider = value;
+                }
+            }
+        }
+
+        public bool IsBalloonJumping => _isBalloonJumping;
+        
+        private Collider2D __balloonCollider;
         #endregion
         #region [Properties]
 
@@ -108,6 +155,10 @@ namespace Characters
 
         public void ApplyMovement()
         {
+            if (State.IsDropping)
+            {
+                StopDropping();
+            }
             if (_isGrounded && !_isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * xInput, 0.0f);
@@ -124,12 +175,13 @@ namespace Characters
         }
 
 
-        public void ApplyHorizontalMovement()
+        public void ApplyHorizontalMovement(float multiplier = 1)
         {
-            _newVelocity.Set(MoveSpeed * xInput, rb.velocity.y);
+            _newVelocity.Set(MoveSpeed * xInput * multiplier, rb.velocity.y);
             rb.velocity = _newVelocity;
         }
 
+        [Obsolete("Use Apply Jump Force")]
         public void ApplyJumpMovement()
         {
             if (_isJumping)
@@ -145,36 +197,78 @@ namespace Characters
             }
         }
 
+        public void ApplyJumpForce()
+        {
+            if (_isJumping)
+            {
+                if (CheckForCeiling())
+                {
+                    _jumpTimeCounter = 0;
+                }
+                if (_jumpTimeCounter > 0)
+                {
+                    float jumpForce = Config.jumpForce;
+                    if(_isBalloonJumping)jumpForce *= Config.balloonJumpMultiplier;
+                    
+                    float t = _jumpTimeCounter / Config.jumpTime;
+                    jumpForce *= (t * t);
+                    rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                }
+            }
+        }
+
+        [Obsolete]
         public void ApplyGravity()
         {
-            if (_isGrounded && !_verticalHit.rigidbody.isKinematic)
-            {
-                var forceOfGravity = Physics2D.gravity;
-                rb.AddForce(forceOfGravity * rb.mass);
-            }
+           //if (_isGrounded && !_verticalHit.rigidbody.isKinematic)
+           //{
+           //    var forceOfGravity = Physics2D.gravity;
+           //    rb.AddForce(forceOfGravity * rb.mass);
+           //}
         }
 
         public void CheckGround()
         {
-            //_isGrounded = Physics2D.OverlapCircle(groundCheck.position, Config.groundCheckRadius, whatIsGround);
-            var groundLayers = LayerMask.GetMask("Ground", "Solids", "Balloons");
+            var queriesHitTriggersPrev = Physics2D.queriesHitTriggers; 
+            var groundLayers = LayerMask.GetMask("Ground", "Solids");
+            var balloonLayers = LayerMask.GetMask("Balloons");
             var oneWayLayer = LayerMask.GetMask("Platforms", "Pipes");
+            
             var pos = groundCheck.position;
             var radius = Config.groundCheckRadius;
+            
+            Physics2D.queriesHitTriggers = false;
             var onGround = Physics2D.OverlapCircle(pos, radius, groundLayers);
+            
+            var onBalloon = Physics2D.OverlapCircle(pos, radius, balloonLayers);
+            this.OnBalloon = onBalloon != null;
+            BalloonCollider = onBalloon;
+            
+            
             _onOneWay = Physics2D.OverlapCircle(pos, radius, oneWayLayer);
-            _isGrounded = onGround || ((_onOneWay != null) && _rigidbody2D.velocity.y <= 0 && !_isJumping);
+            var cnt = Physics2D.OverlapCircleNonAlloc(pos, radius, _oneWayColliders, oneWayLayer);
+            _onOneWayPlatform = cnt > 0;
+            
+            _isGrounded = (onGround || _onOneWayPlatform) &&
+                          !_isJumping;
             if (_isGrounded && rb.velocity.y <= 0.01f)
             {
                 _canJumpBecauseGrounded = true;   
             }
+
+
+            Physics2D.queriesHitTriggers = queriesHitTriggersPrev;
+        }
+
+        private void ResetBalloonTimer()
+        {
+            
         }
 
         public void CheckJumping()
         {
             if (!_isJumping)
             {
-                if (CheckForDrop()) return;
                 if ((_canJumpBecauseGrounded || _inWater) && State.JumpPressed)
                 {
                     _isJumping = true;
@@ -189,10 +283,15 @@ namespace Characters
             }
         }
 
+        
+
         public void CheckFacingDirection()
         {
-            if(Mathf.Abs(xInput) > 0.1f)
+            if (Mathf.Abs(xInput) > 0.1f)
+            {
                 _facingRight = xInput > 0;
+                State.FacingRight = _facingRight;
+            }
         }
 
         public void CheckSlopes()
@@ -249,22 +348,95 @@ namespace Characters
             _inWater = Physics2D.OverlapPoint(pos, waterLayers) != null;
         }
 
+        public bool AbleToDrop()
+        {
+            if (!_isGrounded)
+            {
+                return false;
+            }
+            if (Time.time - _lastDropTime < 0.5f)
+            {
+                return false;
+            }
+            return _onOneWay;
+        }
+
+        public bool AbleToJump()
+        {
+            if (_isGrounded || _inWater || _wasOnBalloon)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public bool CheckForDrop()
         {
             if (!_isGrounded) return false;
             if (Time.time - _lastDropTime < 0.5f) return false;
-            if (State.JumpHeld && State.MoveY < 0 && Mathf.Abs(State.MoveY) > Mathf.Abs(State.MoveX))
+            if (State.DropPressed)
             {
+                
+                return true;
                 var hit = Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.GetMask("Pipes", "Platforms"));
                 if (hit)
                 {
                     _lastDropTime = Time.time;
                     State.IsDropping = true;
                     //StartCoroutine(DropThroughPlatform(hit));
-                    return true;
                 }
             }
             return false;
+        }
+
+        public void BeginJump()
+        {
+            if (_wasOnBalloon)
+            {
+                _isBalloonJumping = true;
+            }
+            _isJumping = true;
+            State.IsJumping = true;
+            _jumpTimeCounter = Config.jumpTime;
+        }
+        public void EndJump()
+        {
+            _isBalloonJumping = false;
+            _isJumping = false;
+            State.IsJumping = false;
+            _jumpTimeCounter = 0;
+        }
+        
+        public void BeginDropping()
+        {
+            if (!AbleToDrop())
+            {
+                Debug.LogError($"{name} Cannot Drop because not grounded, not on one way platform or not enough time has passed since last drop", this);
+                return;
+            }
+
+            if (_droppingColliders != null) 
+                StopDropping();
+            
+            State.IsDropping = true;
+            _lastDropTime = Time.time;
+            _droppingColliders = _oneWayColliders;
+            foreach (var oneWayCollider in _droppingColliders)
+            {
+                if (oneWayCollider == null) continue;
+                Physics2D.IgnoreCollision(_capsuleCollider, oneWayCollider, true);
+            }
+        }
+
+        public void StopDropping()
+        {
+            State.IsDropping = false;
+            foreach (var droppingCollider in _droppingColliders)
+            {
+                if (droppingCollider == null) continue;
+                Physics2D.IgnoreCollision(_capsuleCollider, droppingCollider, false);
+            }
+            _droppingColliders = null;
         }
 
         public bool CheckForCeiling()
@@ -333,6 +505,24 @@ namespace Characters
             else
             {
                 _canWalkOnSlope = true;
+            }
+        }
+
+
+        private void OnDrawGizmosSelected()
+        {
+            if (Config != null)
+            {
+                var color = _isGrounded ? Color.green : Color.red;
+                Gizmos.color = color.SetAlpha(0.8f);
+                var pos = groundCheck.position;
+                Gizmos.DrawSphere( groundCheck.position, Config.groundCheckRadius);
+                if (_onOneWayPlatform)
+                {
+                    Gizmos.color = Color.blue.SetAlpha(0.8f);
+                    pos.z -= Config.groundCheckRadius;
+                    Gizmos.DrawSphere(pos, Config.groundCheckRadius/2f);
+                }
             }
         }
 

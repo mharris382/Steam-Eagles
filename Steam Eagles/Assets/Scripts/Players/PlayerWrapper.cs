@@ -4,7 +4,9 @@ using Players;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 namespace Characters
 {
@@ -16,15 +18,19 @@ namespace Characters
         private CharacterState _characterState;
         private PlayerCharacterInput _playerCharacterInput;
         private Camera _playerCamera;
-
+        private InputSystemUIInputModule _eventSystem;
+        private GameObject _localMultiplayerUIRoot;
 
         public bool IsInputBound => _playerCharacterInput != null;
 
         public bool IssCameraBound => _playerCamera != null;
 
         public bool IsCharacterBound => _characterState != null;
+        
+        public bool IsUIModuleBound => _eventSystem != null;
+        public bool IsUIRootBound => _localMultiplayerUIRoot != null;
 
-        public bool IsFullyBound => IsInputBound && IssCameraBound && IsCharacterBound;
+        public bool IsFullyBound => IsInputBound && IssCameraBound && IsCharacterBound;// && IsUIModuleBound;
 
         private void Awake()
         {
@@ -72,6 +78,11 @@ namespace Characters
             InitializeIfFullyBound();
         }
 
+        public void AssignUIModule(InputSystemUIInputModule uiInputModule)
+        {
+            
+        }
+
         public void BindToPlayer(PlayerCharacterInput playerInput)
         {
             _playerCharacterInput =playerInput;
@@ -98,6 +109,11 @@ namespace Characters
                 if(!player.playerCamera.HasValue)
                     player.playerCamera.Value = _playerCamera;
                 player.playerCamera.onValueChanged.AsObservable().Subscribe(OnCameraChanged).AddTo(this);
+            }
+
+            void InitEventSystem()
+            {
+                
             }
 
             

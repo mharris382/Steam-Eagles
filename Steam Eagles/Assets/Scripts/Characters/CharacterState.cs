@@ -49,6 +49,12 @@ public class CharacterState : MonoBehaviour
         set;
     }
 
+    public bool DropPressed
+    {
+        get;
+        set;
+    }
+
     public bool AttackPressed { get; set; }
 
     public bool JumpHeld
@@ -149,6 +155,11 @@ public class CharacterState : MonoBehaviour
     public Vector2 AnimatorAccel { get; set; }
     public bool StunLocked { get; set; }
 
+    public bool FacingRight
+    {
+        get;
+        set;
+    }
 
     #region [RxStreams]
 

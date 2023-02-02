@@ -69,6 +69,12 @@ namespace StateMachine
             if (HasValue)
                 Position = position;
         }
+
+        public Vector3 RespawnPosition
+        {
+            get;
+            set;
+        }
     }
     
         

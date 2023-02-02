@@ -20,6 +20,8 @@ namespace Characters
         public CharacterController2 Controller => _controller;
         public CharacterState State => _state;
         
+         
+        
         private void Awake()
         {
             _controller = GetComponent<CharacterController2>();
@@ -58,52 +60,79 @@ namespace Characters
                 Controller.CheckSlopes();
                 Controller.UpdatePhysMat();
                 Controller.ApplyMovement();
-                Controller.ApplyJumpMovement();
                 Controller.ApplyGravity();
             });
             
             _physicsStateMachine.AddState(
                 "Dropping",
-                onEnter: t =>
-                {
-                    Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
-                    Physics2D.IgnoreCollision(State.Collider, Controller.OneWayCollider, true);
-                },
-                onLogic: t =>
-                {
-                    if (t.timer.Elapsed > dropTime)
-                        t.fsm.StateCanExit();
-                    else
+                onEnter: OnPlatformDropEnter,
+                onLogic: OnPlatformDropLogic,
+                onExit: OnPlatformDropExit, 
+                needsExitTime:true);
+            
+            _physicsStateMachine.AddState("Jumping",
+                onEnter: t => {
+                    Controller.BeginJump();
+                    if (Controller.IsBalloonJumping && Controller.BalloonCollider != null &&
+                        Controller.BalloonCollider.attachedRigidbody != null)
                     {
-                        Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
-                        Controller.ApplyHorizontalMovement();
+                        var force = Vector2.down * Controller.Config.balloonImpactForce * Controller.rb.mass;
+                        Controller.BalloonCollider.attachedRigidbody.AddForceAtPosition(Controller.groundCheck.position, force, ForceMode2D.Impulse);
                     }
                 },
+                onLogic: t => {
+                    Controller.CheckFacingDirection();
+                    Controller.ApplyHorizontalMovement();
+                    Controller.ApplyJumpForce();
+                }, 
                 onExit: t =>
                 {
-                    Controller.UpdatePhysMat();
-                    Physics2D.IgnoreCollision(State.Collider, Controller.OneWayCollider, false);
-                    State.IsDropping = false;
-                }, 
-                needsExitTime:true);
-            _physicsStateMachine.AddTransition("Default", "Dropping", (t) => State.IsDropping);
+                    Controller.EndJump();
+                });
+            _physicsStateMachine.AddTransition("Default", "Jumping", t => CheckJumpCondition());
+            _physicsStateMachine.AddTransition("Jumping", "Default", t => !State.IsJumping || !State.JumpHeld);
+            _physicsStateMachine.AddTransition("Default", "Dropping", (t) => CheckDropCondition());
             _physicsStateMachine.AddTransition("Dropping", "Default");
             _physicsStateMachine.SetStartState("Default");
             _physicsStateMachine.Init();
         }
 
-        private bool CanDrop()
+        private void OnPlatformDropEnter(State<string, string> t)
         {
-
-            if (Controller.OneWayCollider == null) return false;
-            if (!State.IsGrounded) return false;
-
-            return true;
+            Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
+            Controller.BeginDropping();
+            State.IsDropping = true;
         }
 
+        private void OnPlatformDropExit(State<string, string> t)
+        {
+            Controller.UpdatePhysMat();
+            Controller.StopDropping();
+            State.IsDropping = false;
+        }
+
+        private void OnPlatformDropLogic(State<string, string> t)
+        {
+            if (t.timer.Elapsed > dropTime)
+            {
+                t.fsm.StateCanExit();
+                t.fsm.RequestStateChange("Default");
+            }
+            else
+            {
+                Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
+                Controller.ApplyHorizontalMovement();
+            }
+        }
+
+
+        public bool CheckJumpCondition()
+        {
+            return Controller.AbleToJump() && (State.JumpHeld || State.JumpPressed);
+        }
         public bool CheckDropCondition()
         {
-            return false;
+            return Controller.AbleToDrop() && State.DropPressed;
         }
 
         private void Update()

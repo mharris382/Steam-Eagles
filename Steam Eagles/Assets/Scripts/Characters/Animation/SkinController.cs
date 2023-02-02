@@ -15,10 +15,12 @@ namespace Characters.Animations
         [SpineSkin()]public string bodySkinName;
         [SpineSkin()]public string closedHandsSkin;
         [SpineSkin()]public string jumpHandsSkin;
-        
+        private SkeletonAnimation _skeletonAnimation;
+
         private void Start()
         {
-            _skeleton = GetComponent<SkeletonAnimation>().Skeleton;
+            _skeletonAnimation = GetComponent<SkeletonAnimation>();
+            _skeleton = _skeletonAnimation.Skeleton;
             _skeletonData = _skeleton.Data;
 
             CreateSkins();

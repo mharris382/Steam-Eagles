@@ -1,5 +1,6 @@
 ﻿using System;
-using NaughtyAttributes;
+
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,17 +14,19 @@ namespace Characters
     [RequireComponent(typeof(CharacterState))]
     public class CharacterInputState : MonoBehaviour
     {
+        
+        
         [Serializable]
         public class DebugVariables
         {
             public bool hasPlayerAssigned;
             
             
-            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Move")] public float xInput;
-            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Move")] public float yInput;
+            [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Move")] public float xInput;
+            [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Move")] public float yInput;
 
-            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Jump")] public bool jumpPressed;
-            [HideIf(nameof(hasPlayerAssigned))][BoxGroup("Jump")] public bool jumpHeld;
+            [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpPressed;
+            [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpHeld;
 
             public void Update(CharacterState State)
             {
@@ -97,12 +100,19 @@ namespace Characters
 
         public Vector2 AimInput { get; set; }
 
+        public bool DropPressed
+        {
+            get => CharacterState.DropPressed;
+            set => CharacterState.DropPressed = value;
+        }
+
         public bool IsAssigned() => PlayerInput != null;
 
         
 
         private void Awake()
         {
+            _characterState = GetComponent<CharacterState>();
             if (onJump == null) onJump = new UnityEvent<InputAction.CallbackContext>();
             if (onInteract == null) onInteract = new UnityEvent<InputAction.CallbackContext>();
             if (onPickup == null) onPickup = new UnityEvent<InputAction.CallbackContext>();
@@ -134,18 +144,22 @@ namespace Characters
 
         private void Update()
         {
-            debugVariables.hasPlayerAssigned = PlayerInput != null;
-            if (PlayerInput == null)
-                return;
-
-
-            MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
-            AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
-            
-            
-
-            JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
-            JumpHeld = PlayerInput.actions["Jump"].IsPressed();
+            // //if (_playerInput == null && player.CharacterInput != null)
+            // //{
+            // //    _playerInput = player.CharacterInput.PlayerInput;
+            // //}
+            // debugVariables.hasPlayerAssigned = PlayerInput != null;
+            // if (PlayerInput == null)
+            //     return;
+            //
+            //
+            // MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            // AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+            //
+            //
+            //
+            // JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
+            // JumpHeld = PlayerInput.actions["Jump"].IsPressed();
             debugVariables.Update(_characterState);
         }
 

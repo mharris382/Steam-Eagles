@@ -12,6 +12,14 @@ namespace PhysicsFun.Buildings.SaveLoad
     {
         BuildingTilemap   _tilemap;
         private BuildingTilemap tilemap => _tilemap ? _tilemap : _tilemap = GetComponent<BuildingTilemap>();
+
+        
+        public SaveSlot GetSaveSlot()
+        {
+            var slot = SaveLoadHandler.Instance.GetCurrentSaveSlot();
+            return slot;
+        }
+        
         [Button]
         void SaveLevel()
         {

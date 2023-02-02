@@ -17,6 +17,9 @@ namespace DefaultNamespace
         public float gravityScaleFall = 3;
         public float gravityScaleJump = 5;
 
+        public float balloonJumpCoyoteTime = 0.2f;
+        public float balloonJumpMultiplier = 2;
+        public float balloonImpactForce = 20;
         [SerializeField] private bool overrideGroundMask = false;
         
         [SerializeField] private LayerMask groundMask = 1;

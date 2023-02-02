@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering.Universal;
@@ -17,6 +18,9 @@ namespace GasSim.Lighting
         [Wrap(0, 24), OnValueChanged(nameof(UpdateTime))]
         public float currentTime = 0;
 
+        public SharedBool isNighttime;
+        [MinMaxSlider(0, 24)]
+        public Vector2 dayNightCycle = new Vector2(6, 18);
         string Label
         {
             get
@@ -31,6 +35,12 @@ namespace GasSim.Lighting
         public Material skyboxMaterial;
         private static readonly int DayTime = Shader.PropertyToID("_DayTime");
 
+        /// <summary>
+        /// Returns value between 0 and 1 representing the time of day
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="fullDay"></param>
+        /// <returns></returns>
        static float GetSamplerTime(float time, bool fullDay = false)
         {
             float t = time / (fullDay ? 24 : 12);
@@ -53,6 +63,14 @@ namespace GasSim.Lighting
             foreach (var nighttimeLight in nightLights)
             {
                 nighttimeLight.UpdateLight(GetSamplerTime(currentTime, true));
+            }
+            if(currentTime > dayNightCycle.x && currentTime < dayNightCycle.y)
+            {
+                isNighttime.Value = false;
+            }
+            else
+            {
+                isNighttime.Value = true;
             }
         }
         
