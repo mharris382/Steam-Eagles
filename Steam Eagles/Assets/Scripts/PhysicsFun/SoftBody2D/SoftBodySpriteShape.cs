@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -40,7 +41,7 @@ namespace PhysicsFun.SoftBody2D
         }
 
         
-
+        [Button]
         private void UpdateVertices()
         {
             if (spriteShapeController.spline.GetPointCount() != transform.childCount)

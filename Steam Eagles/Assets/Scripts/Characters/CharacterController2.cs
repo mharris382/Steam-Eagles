@@ -409,14 +409,14 @@ namespace Characters
         
         public void BeginDropping()
         {
+            if (_droppingColliders != null) 
+                StopDropping();
+            
             if (!AbleToDrop())
             {
                 Debug.LogError($"{name} Cannot Drop because not grounded, not on one way platform or not enough time has passed since last drop", this);
                 return;
             }
-
-            if (_droppingColliders != null) 
-                StopDropping();
             
             State.IsDropping = true;
             _lastDropTime = Time.time;

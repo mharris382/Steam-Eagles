@@ -105,7 +105,6 @@ namespace GasSim
             //    targetGasSim = GameObject.FindWithTag("Gas Sim").GetComponent<IGasSim>();
             //}
 
-            Debug.Assert(targetGasSim != null, this);
             //grid = targetGasSim.Grid;
             _sink = new Sink(this);
             _source = new Source(this);

@@ -421,6 +421,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -553,6 +554,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -875,7 +877,7 @@ MonoBehaviour:
   characterAssignments:
     characterAssignments:
     - characterName: Builder
-      prefab: {fileID: 2023073604413840134, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
+      prefab: {fileID: 2505405561842614733, guid: 13a4d69ae1cd6584595c80b52035be61, type: 3}
       spawnPoint: {fileID: 11400000, guid: 08c906a2340276e4b90e77af5f9cafbc, type: 2}
       defaultPosition: {x: 14.9, y: 3.7, z: 0}
       characterColor: {r: 0, g: 0.2533313, b: 0.4811321, a: 1}
@@ -886,6 +888,8 @@ MonoBehaviour:
       defaultPosition: {x: 24.88, y: 3.55, z: 0}
       characterColor: {r: 1, g: 0.44950724, b: 0, a: 1}
       hideTransformInEditor: 0
+  eventSystemAssignments:
+    eventSystems: []
   waitingForFirstPlayerToJoinGUI: {fileID: 1204513529}
   playerDisconnectedGUI: {fileID: 957288007}
 --- !u!1 &2007201907045349883
@@ -1049,6 +1053,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 6223957722347153099}
     m_Modifications:
     - target: {fileID: 1058082334761696448, guid: f303731e61b7fad4693e02957f79b632, type: 3}
@@ -1100,6 +1105,7 @@ PrefabInstance:
       value: Spawn TP (P2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: f303731e61b7fad4693e02957f79b632, type: 3}
 --- !u!4 &1545881705806128834 stripped
 Transform:
@@ -1111,6 +1117,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 2007201906275935060}
     m_Modifications:
     - target: {fileID: 809923307, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
@@ -1178,6 +1185,7 @@ PrefabInstance:
       value: Input Manager (Co-op)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
 --- !u!114 &2007201905163289610 stripped
 MonoBehaviour:
@@ -1222,6 +1230,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 6223957722347153099}
     m_Modifications:
     - target: {fileID: 7799336295040241673, guid: 1ee80c1b31d5e944a8a952af3dece5d3, type: 3}
@@ -1273,6 +1282,7 @@ PrefabInstance:
       value: 'Spawn BD (P1) '
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ee80c1b31d5e944a8a952af3dece5d3, type: 3}
 --- !u!4 &8640099218987254817 stripped
 Transform:
@@ -1284,6 +1294,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 348805371}
     m_Modifications:
     - target: {fileID: 4820146299249260142, guid: 3e71d44cf0abe3a498502ac0f5f9b556, type: 3}
@@ -1375,6 +1386,7 @@ PrefabInstance:
       value: Press any button to join
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e71d44cf0abe3a498502ac0f5f9b556, type: 3}
 --- !u!224 &835136630578299149 stripped
 RectTransform:
@@ -1386,6 +1398,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 348805371}
     m_Modifications:
     - target: {fileID: 1409423041840427806, guid: 95a81986b0f0fd740995bd511b3af8c9, type: 3}
@@ -1477,6 +1490,7 @@ PrefabInstance:
       value: Press any button to join (P2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 95a81986b0f0fd740995bd511b3af8c9, type: 3}
 --- !u!224 &8157077388334449805 stripped
 RectTransform:

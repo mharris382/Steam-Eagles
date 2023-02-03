@@ -22,20 +22,22 @@ namespace GasSim
         private Grid _grid;
         private Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
 
-        private NativeArray<Unity.Mathematics.Random> _rngs;
+        private double baseTime;
 
+        
         private void Awake()
         {
-            _rngs = new NativeArray<Unity.Mathematics.Random>(Unity.Jobs.LowLevel.Unsafe.JobsUtility.MaxJobThreadCount, Allocator.Persistent);
-            for (int i = 0; i < _rngs.Length; i++)
-            {
-                _rngs[i] = new Unity.Mathematics.Random((uint)UnityEngine.Random.Range(1, int.MaxValue));
-            }
+            baseTime = System.DateTime.Now.TimeOfDay.TotalSeconds;
+            // _rngs = new NativeArray<Unity.Mathematics.Random>(Unity.Jobs.LowLevel.Unsafe.JobsUtility.MaxJobThreadCount, Allocator.Persistent);
+            // for (int i = 0; i < _rngs.Length; i++)
+            // {
+            //     _rngs[i] = new Unity.Mathematics.Random((uint)UnityEngine.Random.Range(1, int.MaxValue));
+            // }
         }
 
         private void OnDestroy()
         {
-            _rngs.Dispose();
+           // _rngs.Dispose();
         }
 
         ParticleSystem.Particle GetParticleForPressureCell(Vector2Int cell, int pressure, float updateRate)
@@ -91,11 +93,18 @@ namespace GasSim
                     positionData[i] = Grid.GetCellCenterWorld(coord);
                     i++;
                 }
-                
-                var calculateRandomSeedJob = new CalculateRandomSeedJob() {
+
+                var calculateRandomSeedJobNonParallel = new CalculateRandomSeedJobNonParallel()
+                {
                     randomData = randomData,
-                    rngs = _rngs
+                    randomSeed = (int)(Time.realtimeSinceStartup * 100 + baseTime)
                 };
+                
+                //var calculateRandomSeedJob = new CalculateRandomSeedJob() {
+                //    randomData = randomData,
+                //    time = (int)(Time.realtimeSinceStartup* 100 +baseTime)
+                //    //rngs = _rngs
+                //};
                 var particleUpdateJob = new ParticleUpdateJob() {
                     cellSize = Grid.cellSize,
                     sizeMultiplier = sizeMultiplier,
@@ -106,8 +115,8 @@ namespace GasSim
                     positionData = positionData,
                     randomData = randomData
                 };
-                
-                var calculateRandomSeedJobHandle = calculateRandomSeedJob.Schedule(particleCount, 64);
+                var calculateRandomSeedJobHandle = calculateRandomSeedJobNonParallel.Schedule();
+               // var calculateRandomSeedJobHandle = calculateRandomSeedJob.Schedule(particleCount, 64);
 
                 particleUpdateJob.Schedule(PS, calculateRandomSeedJobHandle).Complete();
                 PS.Emit(cells.Count);
@@ -122,16 +131,32 @@ namespace GasSim
             }
         }
 
-
+        struct CalculateRandomSeedJobNonParallel : IJob
+        {
+            [Unity.Collections.LowLevel.Unsafe.NativeSetThreadIndex] public int threadId;
+            [WriteOnly] public NativeArray<uint> randomData;
+            public int randomSeed;
+            public void Execute()
+            {
+                var random = new Unity.Mathematics.Random((uint)((threadId+1) * randomSeed));
+                for (int i = 0; i < randomData.Length; i++)
+                {
+                    randomData[i] = random.NextUInt();
+                }
+            }
+        }
+        
 
         struct CalculateRandomSeedJob : IJobParallelFor
         {
-            [Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestriction] public NativeArray<Unity.Mathematics.Random> rngs;
+            ///[Unity.Collections.LowLevel.Unsafe.NativeDisableContainerSafetyRestriction] public NativeArray<Unity.Mathematics.Random> rngs;
             [Unity.Collections.LowLevel.Unsafe.NativeSetThreadIndex] private int threadId;
             [WriteOnly] public NativeArray<uint> randomData;
+            public int time;
             public void Execute(int index)
             {
-                randomData[index] = rngs[threadId].NextUInt();   
+               // randomData[index] = rngs[threadId].NextUInt();   
+               var random = new Unity.Mathematics.Random((uint)((threadId+1) * time + index));
             }
         }
 
