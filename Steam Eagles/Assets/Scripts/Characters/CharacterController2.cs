@@ -256,7 +256,7 @@ namespace Characters
                 _canJumpBecauseGrounded = true;   
             }
 
-
+            State.IsOnSolidGround = _isGrounded;
             Physics2D.queriesHitTriggers = queriesHitTriggersPrev;
         }
 

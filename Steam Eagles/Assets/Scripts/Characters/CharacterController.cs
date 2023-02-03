@@ -86,7 +86,10 @@ public class CharacterController : MonoBehaviour
 
     private bool JumpPressed => State.JumpPressed;
 
+    [Obsolete("Use IsOnSolidGround")]
     private bool IsGrounded => _groundCheck.IsGrounded;
+
+    
 
     private bool IsInteracting => State.IsInteracting;
 

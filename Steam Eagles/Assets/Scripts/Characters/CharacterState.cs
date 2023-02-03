@@ -105,9 +105,14 @@ public class CharacterState : MonoBehaviour
         set => _isInteractingProperty.Value = value;
     }
     
-    
+    public bool IsOnSolidGround
+    {
+        get;
+        set;
+    }
 
 
+    [Obsolete("Use IsOnSolidGround instead")]
     public bool IsGrounded
     {
         get => _isGroundedProperty.Value;

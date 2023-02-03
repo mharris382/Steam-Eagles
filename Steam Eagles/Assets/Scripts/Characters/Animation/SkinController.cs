@@ -17,7 +17,7 @@ namespace Characters.Animations
         [SpineSkin()]public string jumpHandsSkin;
         private SkeletonAnimation _skeletonAnimation;
 
-        private void Start()
+        private void Awake()
         {
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
             _skeleton = _skeletonAnimation.Skeleton;
