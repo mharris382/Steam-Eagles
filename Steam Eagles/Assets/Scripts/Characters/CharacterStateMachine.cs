@@ -4,6 +4,7 @@ using FSMStateMachine = FSM.StateMachine;
 using FSM;
 namespace Characters
 {
+    [System.Obsolete("Use CharacterFSM instead")]
     [RequireComponent(typeof(CharacterState))]
     public class CharacterStateMachine : MonoBehaviour
     {

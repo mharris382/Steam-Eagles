@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using FSM;
+using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor.Modules;
 using Spine.Unity;
 using Fsm = FSM.StateMachine;
 namespace Characters.Animations
 {
+    [InfoBox("State Names are:\n Idle, Run, Jump, Fall")]
     [RequireComponent(typeof(SpineAnimationHandler))]
     public class CharacterAnimatorController : MonoBehaviour
     {
@@ -14,12 +16,14 @@ namespace Characters.Animations
         [SpineAnimation()] public string runAnimationName;
         [SpineAnimation()] public string jumpAnimationName;
         
+        public bool debug = true;
+        
         private SpineAnimationHandler _animationHandler;
         private CharacterState _characterState;
         private SkeletonAnimation _skeletonAnimation;
         private Fsm _stateMachine;
-        public bool useAnimationHandler = true;
-        private void Awake()
+        
+        private void Start()
         {
             _characterState = GetComponentInParent<CharacterState>();
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
@@ -36,6 +40,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Idle", 0);
+                    LogState("Idle");
                 },
                 onLogic: state =>
                 {
@@ -47,6 +52,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                    _animationHandler.PlayAnimationForState("Run", 0);
+                   LogState("Run");
                 },
                 onLogic: state => 
                 {
@@ -67,6 +73,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Jump", 0);
+                    LogState("Jump");
                 }, 
                 onLogic: state =>
                 {
@@ -74,17 +81,18 @@ namespace Characters.Animations
                 });
             
             aerialFsm.AddState(
-                "Falling",
+                "Fall",
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Fall", 0);
+                    LogState("Fall");
                 },
                 onLogic: state =>
                 {
                     UpdateFacingDirection();
                 });
             
-            aerialFsm.AddTransition("Jump", "Falling", t => !_characterState.IsJumping);
+            aerialFsm.AddTransition("Jump", "Fall", t => !_characterState.IsJumping);
             aerialFsm.AddTransition("Falling", "Jump", t => _characterState.IsJumping);
             aerialFsm.SetStartState("Jump");
             
@@ -93,11 +101,18 @@ namespace Characters.Animations
             _stateMachine.AddState("Air", aerialFsm);
             _stateMachine.AddState("Grounded", groundedFsm);
             
-            _stateMachine.AddTransition("Grounded", "Air", t => !IsGrounded());
+            _stateMachine.AddTransition("Grounded", "Air", t => CheckAirCondition());
             _stateMachine.AddTransition("Air", "Grounded", t => IsGrounded());
             
             _stateMachine.SetStartState("Grounded");
             _stateMachine.Init();
+        }
+
+        bool CheckAirCondition()
+        {
+            if (_characterState.IsJumping)
+                return true;
+            return !_characterState.IsGrounded;
         }
 
         private void Update()
@@ -118,7 +133,16 @@ namespace Characters.Animations
 
         bool IsGrounded()
         {
-            return _characterState.IsOnSolidGround;
+            return _characterState.IsGrounded && !_characterState.IsJumping;
+        }
+
+
+        void LogState(string stateName)
+        {
+            if (debug)
+            {
+                Debug.Log($"Animator {name} Entered State: " + stateName);
+            }
         }
     }
 }

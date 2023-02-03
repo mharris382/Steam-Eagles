@@ -112,7 +112,7 @@ public class CharacterState : MonoBehaviour
     }
 
 
-    [Obsolete("Use IsOnSolidGround instead")]
+    
     public bool IsGrounded
     {
         get => _isGroundedProperty.Value;
@@ -159,6 +159,8 @@ public class CharacterState : MonoBehaviour
     
     public Vector2 AnimatorAccel { get; set; }
     public bool StunLocked { get; set; }
+    public bool InWater { get; set; }
+
 
     public bool FacingRight
     {
@@ -173,7 +175,7 @@ public class CharacterState : MonoBehaviour
     public IObservable<bool> IsGroundedEventStream => !alwaysGrounded ? _isGroundedProperty : Observable.Return(true);
 
     #endregion
-    
+
     #endregion
 
     #region [Private variables]
@@ -215,8 +217,7 @@ public class CharacterState : MonoBehaviour
     }
 
     #endregion
-    
-    
+
 
     /// <summary>
     /// extends the duration that the player is allowed to 
@@ -233,7 +234,8 @@ public class CharacterState : MonoBehaviour
     }
 
     [NonSerialized,SerializeField] private float extraJumpForce = 0;
-     
+
+
     public float ExtraJumpForceConsumed
     {
         get => extraJumpConsumedValue.ConsumeValue();
@@ -280,27 +282,23 @@ public class CharacterState : MonoBehaviour
 
     #region [RxStreams]
 
-
     internal Subject<Unit> onLanded = new Subject<Unit>();
     public IObservable<Unit> OnCharacterLanded => onJumped;
-    
+
     internal Subject<Unit> onJumped = new Subject<Unit>();
     public IObservable<Unit> OnCharacterJumped => onJumped;
-    
+
     internal ReactiveProperty<Rigidbody2D> heldObject = new ReactiveProperty<Rigidbody2D>();
     public IObservable<Rigidbody2D> HeldObject => heldObject;
 
     #endregion
 
-    
-
     public Rigidbody2D toAttach;
     private FixedJoint2D _fixedJoint;
 
- 
-    
-    
+
     private Rigidbody2D _attachedBody;
+
 
     public Rigidbody2D AttachedBody
     {

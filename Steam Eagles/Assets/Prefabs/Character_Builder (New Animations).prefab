@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4474991731590832513}
   - component: {fileID: 53590043}
   - component: {fileID: 4651088277946556652}
+  - component: {fileID: 7527658672694296535}
   m_Layer: 0
   m_Name: Spine GameObject (Builder)
   m_TagString: Untagged
@@ -140,7 +141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   idleAnimationName: idle
   runAnimationName: run
-  jumpAnimationName: jump
+  jumpAnimationName: jump/jump-full
+  useAnimationHandler: 1
 --- !u!114 &4651088277946556652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,15 +155,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be3f6da22609c84b8ca684cb9b2e015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodySkinName: Builder - Body
+  bodySkinName: default
   closedHandsSkin: Builder Hands/Builder - Hands Closed
   jumpHandsSkin: Builder Hands/Builder - Hands Jump
+--- !u!114 &7527658672694296535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8875810250456541792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d11aea275042b6af10311d99949e3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statesAndAnimations:
+  - stateName: Idle
+    animation: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
+  - stateName: Run
+    animation: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
+  - stateName: Jump
+    animation: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
+  - stateName: Fall
+    animation: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+  transitions:
+  - from: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
+    to: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+    transition: {fileID: 11400000, guid: 6a1ee14f80c4fb349b9c2fdf3b126fbb, type: 2}
+  - from: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+    to: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
+    transition: {fileID: 11400000, guid: 93c96bd6ed63d2e47a6989b60a3b0268, type: 2}
+  - from: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+    to: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
+    transition: {fileID: 11400000, guid: 93c96bd6ed63d2e47a6989b60a3b0268, type: 2}
+  - from: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
+    to: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
+    transition: {fileID: 11400000, guid: e4d2cc6d3445bf146a0a99993688d39c, type: 2}
+  - from: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
+    to: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
+    transition: {fileID: 11400000, guid: e4d2cc6d3445bf146a0a99993688d39c, type: 2}
 --- !u!1001 &4528259117313465035
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 17681680371273725, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
@@ -301,10 +340,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2023073604413840133, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1377388843258237254}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
 --- !u!4 &2505405561842614734 stripped
 Transform:

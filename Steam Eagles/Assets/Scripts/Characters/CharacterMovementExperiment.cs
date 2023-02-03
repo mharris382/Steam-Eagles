@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [Obsolete]
     public class CharacterMovementExperiment : MonoBehaviour
     {
         private CharacterState state;
