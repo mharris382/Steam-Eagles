@@ -6,6 +6,7 @@ using Spine.Unity;
 using Fsm = FSM.StateMachine;
 namespace Characters.Animations
 {
+    [RequireComponent(typeof(SpineAnimationHandler))]
     public class CharacterAnimatorController : MonoBehaviour
     {
         
@@ -13,49 +14,84 @@ namespace Characters.Animations
         [SpineAnimation()] public string runAnimationName;
         [SpineAnimation()] public string jumpAnimationName;
         
-        
+        private SpineAnimationHandler _animationHandler;
         private CharacterState _characterState;
         private SkeletonAnimation _skeletonAnimation;
         private Fsm _stateMachine;
-
+        public bool useAnimationHandler = true;
         private void Awake()
         {
             _characterState = GetComponentInParent<CharacterState>();
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
+            _animationHandler = GetComponent<SpineAnimationHandler>();
             _stateMachine = new Fsm();
+            
+            //---------------------------
+            //Grounded State Machine
+            
             var groundedFsm = new Fsm(needsExitTime:false);
-            groundedFsm.AddState("Idle",
+            
+            groundedFsm.AddState(
+                "Idle",
                 onEnter: state =>
                 {
-                    _skeletonAnimation.AnimationName = idleAnimationName;
+                    _animationHandler.PlayAnimationForState("Idle", 0);
                 },
                 onLogic: state =>
                 {
                     UpdateFacingDirection();
                 });
-            groundedFsm.AddState("Run",
+            
+            groundedFsm.AddState(
+                "Run",
                 onEnter: state =>
                 {
-                    _skeletonAnimation.AnimationName = runAnimationName;
+                   _animationHandler.PlayAnimationForState("Run", 0);
                 },
-                onLogic: state =>
+                onLogic: state => 
                 {
                     UpdateFacingDirection();
                 });
+            
             groundedFsm.AddTransition("Idle", "Run",t=> IsMoving());
             groundedFsm.AddTransition("Run", "Idle",t=> !IsMoving());
             groundedFsm.SetStartState("Idle");
-            _stateMachine.AddState("Grounded", groundedFsm);
             
+            //---------------------------
+            //Aerial State Machine
+
+            var aerialFsm = new Fsm();
             
-            _stateMachine.AddState("Air", 
-                onEnter: t =>
+            aerialFsm.AddState(
+                "Jump", 
+                onEnter: state =>
                 {
-                    _skeletonAnimation.AnimationName = jumpAnimationName;
-                },onLogic: state =>
+                    _animationHandler.PlayAnimationForState("Jump", 0);
+                }, 
+                onLogic: state =>
                 {
                     UpdateFacingDirection();
                 });
+            
+            aerialFsm.AddState(
+                "Falling",
+                onEnter: state =>
+                {
+                    _animationHandler.PlayAnimationForState("Fall", 0);
+                },
+                onLogic: state =>
+                {
+                    UpdateFacingDirection();
+                });
+            
+            aerialFsm.AddTransition("Jump", "Falling", t => !_characterState.IsJumping);
+            aerialFsm.AddTransition("Falling", "Jump", t => _characterState.IsJumping);
+            aerialFsm.SetStartState("Jump");
+            
+            //---------------------------
+            
+            _stateMachine.AddState("Air", aerialFsm);
+            _stateMachine.AddState("Grounded", groundedFsm);
             
             _stateMachine.AddTransition("Grounded", "Air", t => !IsGrounded());
             _stateMachine.AddTransition("Air", "Grounded", t => IsGrounded());
