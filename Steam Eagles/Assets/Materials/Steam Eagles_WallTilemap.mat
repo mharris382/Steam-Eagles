@@ -8,10 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Steam Eagles_WallTilemap
-  m_Shader: {fileID: -6465566751694194690, guid: f361f500e0bc6ff4586c2a1fcb189053, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 690011843637acc46b7b6787600ae0c1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _UV_MODE_OBJECT_SPACE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -27,6 +28,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DiffuseTexture1:
+        m_Texture: {fileID: 2800000, guid: 7207f2fe2cd847e47b29e29d15e3aa56, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseTexture2:
+        m_Texture: {fileID: 2800000, guid: d2534c6c3ad3db24182856d2f72a1ac1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -36,6 +45,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTexture1:
+        m_Texture: {fileID: 2800000, guid: c5ed7ee9569918c42a60a2265e538c1b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTexture2:
+        m_Texture: {fileID: 2800000, guid: 558a68b595158bc41b6173d36f1d4a21, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TexMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UV_Tex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -52,10 +77,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _UV_MODE: 1
+    - _UseSecondaryTex: 0
+    - _WorldSpaceUV: 1
+    - _debug: 0
     m_Colors:
     - _Offset: {r: 0, g: 0.16, b: 0, a: 0}
     - _Tiling: {r: 16, g: 15, b: 0, a: 0}
+    - _Tiling1: {r: 1, g: 1, b: 0, a: 0}
+    - _Tiling2: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &359773587049740927
 MonoBehaviour:

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 2f6efc0288474004c9d358c122bc6da6, type: 2}
-  initialSkinName: 
+  initialSkinName: Builder - Body
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
@@ -209,35 +209,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7746d7b7a997034c8972abffbe6ad45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  removeAttachmentsForBodySkin:
-  - FH Carry
-  - BH Carry
-  bodySkinName: default
+  bodySkinName: Builder - Body
   stateNameToSkins:
   - stateName: Jump
-    handSkin: Builder Hands/Builder - Hands Jump
+    handSkin:
+    - Builder Hands/Builder - Hands Jump
     overrideBodySkin: 0
     bodySkin: 
-    removeAttachment1: 
-    removeAttachment2: 
   - stateName: Fall
-    handSkin: Builder Hands/Builder - Hands Jump
+    handSkin:
+    - Builder Hands/Builder - Hands Jump
     overrideBodySkin: 0
     bodySkin: 
-    removeAttachment1: 
-    removeAttachment2: 
   - stateName: Idle
-    handSkin: Builder Hands/Builder - Hands Closed
+    handSkin:
+    - Builder Hands/Builder - Hands Closed
     overrideBodySkin: 0
     bodySkin: 
-    removeAttachment1: 
-    removeAttachment2: 
   - stateName: Run
-    handSkin: Builder Hands/Builder - Hands Closed
+    handSkin:
+    - Builder Hands/Builder - Hands Closed
     overrideBodySkin: 0
     bodySkin: 
-    removeAttachment1: 
-    removeAttachment2: 
 --- !u!1001 &4528259117313465035
 PrefabInstance:
   m_ObjectHideFlags: 0

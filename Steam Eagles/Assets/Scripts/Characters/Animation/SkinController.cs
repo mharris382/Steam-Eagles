@@ -9,14 +9,13 @@ namespace Characters.Animations
 {
     public class SkinController : MonoBehaviour
     {
-        [SpineAttachment()]
-        public string[] removeAttachmentsForBodySkin;
+        
         [Serializable]
         public class StateNameToSkin
         {
             public string stateName;
 
-            [SpineSkin()]public string handSkin;
+            [SpineSkin()]public string[] handSkin;
             
             public bool overrideBodySkin = false;
             
@@ -25,28 +24,22 @@ namespace Characters.Animations
             public string bodySkin;
 
             public string GetBodySkinName(SkinController controller) => overrideBodySkin ? bodySkin : controller.bodySkinName;
-
-            [SpineAttachment()]
-            public string removeAttachment1;
-            [SpineAttachment()]
-            public string removeAttachment2;
+            
             public Skin Skin {get; private set; }
 
             public void InitSkin(SkinController controller)
             {
                 var bodySkin = controller._skeletonData.FindSkin(GetBodySkinName(controller));
-                var handSkin = controller._skeletonData.FindSkin(this.handSkin);
                 
                 Debug.Assert(bodySkin != null, $"Missing Body skin named {bodySkin} for Skin Controller {controller.name}", controller);
                 Debug.Assert(handSkin != null, $"Missing Hand skin named {handSkin} for Skin Controller {controller.name}", controller);
                 
                 var skin = new Skin($"Skin {stateName}");
                 skin.AddSkin(bodySkin);
-                foreach (var s in controller.removeAttachmentsForBodySkin)
+                foreach (var skinName in this.handSkin)
                 {
-                    skin.RemoveAttachment(0, s);
+                    skin.AddSkin(controller._skeletonData.FindSkin(skinName));
                 }
-                skin.AddSkin(handSkin);
                 this.Skin = skin;
             }
             
