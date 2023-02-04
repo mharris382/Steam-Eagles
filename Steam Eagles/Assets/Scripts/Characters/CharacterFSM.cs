@@ -14,6 +14,7 @@ namespace Characters
         
         private CharacterInputState _input;
         private CharacterController2 _controller;
+        
         private FSM.StateMachine _physicsStateMachine;
         private CharacterState _state;
 

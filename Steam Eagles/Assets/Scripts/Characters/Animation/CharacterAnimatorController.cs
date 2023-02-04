@@ -4,6 +4,7 @@ using FSM;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor.Modules;
 using Spine.Unity;
+using UnityEngine.Events;
 using Fsm = FSM.StateMachine;
 namespace Characters.Animations
 {
@@ -11,7 +12,7 @@ namespace Characters.Animations
     [RequireComponent(typeof(SpineAnimationHandler))]
     public class CharacterAnimatorController : MonoBehaviour
     {
-        
+        [SerializeField] private UnityEvent<string> onStateChange;
         [SpineAnimation()] public string idleAnimationName;
         [SpineAnimation()] public string runAnimationName;
         [SpineAnimation()] public string jumpAnimationName;
@@ -21,6 +22,7 @@ namespace Characters.Animations
         private SpineAnimationHandler _animationHandler;
         private CharacterState _characterState;
         private SkeletonAnimation _skeletonAnimation;
+        private SkinController _skinController;
         private Fsm _stateMachine;
         
         private void Start()
@@ -28,6 +30,7 @@ namespace Characters.Animations
             _characterState = GetComponentInParent<CharacterState>();
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
             _animationHandler = GetComponent<SpineAnimationHandler>();
+            
             _stateMachine = new Fsm();
             
             //---------------------------
@@ -40,6 +43,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Idle", 0);
+                    onStateChange?.Invoke("Idle");
                     LogState("Idle");
                 },
                 onLogic: state =>
@@ -52,6 +56,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                    _animationHandler.PlayAnimationForState("Run", 0);
+                     onStateChange?.Invoke("Run");
                    LogState("Run");
                 },
                 onLogic: state => 
@@ -73,6 +78,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Jump", 0);
+                    onStateChange?.Invoke("Jump");
                     LogState("Jump");
                 }, 
                 onLogic: state =>
@@ -85,6 +91,7 @@ namespace Characters.Animations
                 onEnter: state =>
                 {
                     _animationHandler.PlayAnimationForState("Fall", 0);
+                    onStateChange?.Invoke("Fall");
                     LogState("Fall");
                 },
                 onLogic: state =>

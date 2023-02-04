@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5191528668067078135}
   - component: {fileID: 4474991731590832513}
   - component: {fileID: 53590043}
-  - component: {fileID: 4651088277946556652}
   - component: {fileID: 7527658672694296535}
+  - component: {fileID: 8842447251057606262}
   m_Layer: 0
   m_Name: Spine GameObject (Builder)
   m_TagString: Untagged
@@ -105,7 +105,9 @@ MonoBehaviour:
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
-  separatorSlotNames: []
+  separatorSlotNames:
+  - BH Closed
+  - BH-Jump
   zSpacing: 0
   useClipping: 1
   immutableTriangles: 0
@@ -139,25 +141,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0ad53065694c94ace7d7d0b05febcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onStateChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8842447251057606262}
+        m_TargetAssemblyTypeName: Characters.Animations.SkinController, SteamEagles.Characters.Animation
+        m_MethodName: UpdateState
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   idleAnimationName: idle
   runAnimationName: run
   jumpAnimationName: jump/jump-full
-  useAnimationHandler: 1
---- !u!114 &4651088277946556652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8875810250456541792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1be3f6da22609c84b8ca684cb9b2e015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bodySkinName: default
-  closedHandsSkin: Builder Hands/Builder - Hands Closed
-  jumpHandsSkin: Builder Hands/Builder - Hands Jump
+  debug: 1
 --- !u!114 &7527658672694296535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +197,47 @@ MonoBehaviour:
   - from: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
     to: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
     transition: {fileID: 11400000, guid: e4d2cc6d3445bf146a0a99993688d39c, type: 2}
+--- !u!114 &8842447251057606262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8875810250456541792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7746d7b7a997034c8972abffbe6ad45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  removeAttachmentsForBodySkin:
+  - FH Carry
+  - BH Carry
+  bodySkinName: default
+  stateNameToSkins:
+  - stateName: Jump
+    handSkin: Builder Hands/Builder - Hands Jump
+    overrideBodySkin: 0
+    bodySkin: 
+    removeAttachment1: 
+    removeAttachment2: 
+  - stateName: Fall
+    handSkin: Builder Hands/Builder - Hands Jump
+    overrideBodySkin: 0
+    bodySkin: 
+    removeAttachment1: 
+    removeAttachment2: 
+  - stateName: Idle
+    handSkin: Builder Hands/Builder - Hands Closed
+    overrideBodySkin: 0
+    bodySkin: 
+    removeAttachment1: 
+    removeAttachment2: 
+  - stateName: Run
+    handSkin: Builder Hands/Builder - Hands Closed
+    overrideBodySkin: 0
+    bodySkin: 
+    removeAttachment1: 
+    removeAttachment2: 
 --- !u!1001 &4528259117313465035
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -322,6 +365,10 @@ PrefabInstance:
     - target: {fileID: 4692317797618482866, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.7180023
+      objectReference: {fileID: 0}
+    - target: {fileID: 6836221353217358559, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7568282407114908441, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: m_IsActive
