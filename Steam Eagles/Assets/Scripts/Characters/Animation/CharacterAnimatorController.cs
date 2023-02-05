@@ -2,7 +2,6 @@
 using UnityEngine;
 using FSM;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor.Modules;
 using Spine.Unity;
 using UnityEngine.Events;
 using Fsm = FSM.StateMachine;
