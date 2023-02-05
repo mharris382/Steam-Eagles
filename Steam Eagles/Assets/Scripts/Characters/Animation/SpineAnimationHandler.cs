@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
 using UnityEngine;
+using Animation = Spine.Animation;
 using Fsm = FSM.StateMachine;
 namespace Characters.Animations
 {
@@ -17,10 +18,12 @@ namespace Characters.Animations
 		public List<StateNameToAnimationReference> statesAndAnimations = new List<StateNameToAnimationReference>();
 		[TableList]
 		public List<AnimationTransition> transitions = new List<AnimationTransition>(); // Alternately, an AnimationPair-Animation Dictionary (commented out) can be used for more efficient lookups.
-
+		private Dictionary<string, StateNameToAnimationReference> _stateNameToAnimationReferenceDictionary;
 		[System.Serializable]
-		public class StateNameToAnimationReference {
+		public class StateNameToAnimationReference
+		{
 			public string stateName;
+			public bool loop = true;
 			public AnimationReferenceAsset animation;
 		}
 
@@ -39,8 +42,10 @@ namespace Characters.Animations
 		void Awake () {
 			skeletonAnimation = GetComponent<SkeletonAnimation>();
 			// Initialize AnimationReferenceAssets
+			_stateNameToAnimationReferenceDictionary = new Dictionary<string, StateNameToAnimationReference>();
 			foreach (StateNameToAnimationReference entry in statesAndAnimations) {
 				entry.animation.Initialize();
+				_stateNameToAnimationReferenceDictionary.Add(entry.stateName, entry);
 			}
 			foreach (AnimationTransition entry in transitions) {
 				entry.from.Initialize();
@@ -63,16 +68,16 @@ namespace Characters.Animations
 
 		/// <summary>Plays an animation based on the state name.</summary>
 		public void PlayAnimationForState (string stateShortName, int layerIndex) {
-			PlayAnimationForState(StringToHash(stateShortName), layerIndex);
+			PlayAnimationForState(StringToHash(stateShortName), layerIndex, _stateNameToAnimationReferenceDictionary[stateShortName].loop);
 		}
 
 		/// <summary>Plays an animation based on the hash of the state name.</summary>
-		public void PlayAnimationForState (int shortNameHash, int layerIndex) {
+		public void PlayAnimationForState (int shortNameHash, int layerIndex, bool loop) {
 			Spine.Animation foundAnimation = GetAnimationForState(shortNameHash);
 			if (foundAnimation == null)
 				return;
 
-			PlayNewAnimation(foundAnimation, layerIndex);
+			PlayNewAnimation(foundAnimation, layerIndex, loop);
 		}
 
 		/// <summary>Gets a Spine Animation based on the state name.</summary>
@@ -87,7 +92,7 @@ namespace Characters.Animations
 		}
 
 		/// <summary>Play an animation. If a transition animation is defined, the transition is played before the target animation being passed.</summary>
-		public void PlayNewAnimation (Spine.Animation target, int layerIndex) {
+		public void PlayNewAnimation(Animation target, int layerIndex, bool loop) {
 			Spine.Animation transition = null;
 			Spine.Animation current = null;
 
@@ -97,9 +102,9 @@ namespace Characters.Animations
 
 			if (transition != null) {
 				skeletonAnimation.AnimationState.SetAnimation(layerIndex, transition, false);
-				skeletonAnimation.AnimationState.AddAnimation(layerIndex, target, true, 0f);
+				skeletonAnimation.AnimationState.AddAnimation(layerIndex, target, loop, 0f);
 			} else {
-				skeletonAnimation.AnimationState.SetAnimation(layerIndex, target, true);
+				skeletonAnimation.AnimationState.SetAnimation(layerIndex, target, loop);
 			}
 
 			this.TargetAnimation = target;

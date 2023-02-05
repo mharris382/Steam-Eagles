@@ -174,29 +174,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statesAndAnimations:
   - stateName: Idle
+    loop: 1
     animation: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
   - stateName: Run
+    loop: 1
     animation: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
   - stateName: Jump
-    animation: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
+    loop: 0
+    animation: {fileID: 11400000, guid: 8203994a1338b46488a43c83a1bd17e6, type: 2}
   - stateName: Fall
-    animation: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+    loop: 0
+    animation: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
   transitions:
-  - from: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
-    to: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
-    transition: {fileID: 11400000, guid: 6a1ee14f80c4fb349b9c2fdf3b126fbb, type: 2}
-  - from: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+  - from: {fileID: 11400000, guid: 8203994a1338b46488a43c83a1bd17e6, type: 2}
+    to: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
+    transition: {fileID: 11400000, guid: 0ef05e2a09941fe469ed93a198555e1a, type: 2}
+  - from: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
     to: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
-    transition: {fileID: 11400000, guid: 93c96bd6ed63d2e47a6989b60a3b0268, type: 2}
-  - from: {fileID: 11400000, guid: 6af22623b3cd9d84d8b200f6826804c3, type: 2}
+    transition: {fileID: 11400000, guid: 2b10823844f525c479c3b570db1660fa, type: 2}
+  - from: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
     to: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
-    transition: {fileID: 11400000, guid: 93c96bd6ed63d2e47a6989b60a3b0268, type: 2}
+    transition: {fileID: 11400000, guid: 2b10823844f525c479c3b570db1660fa, type: 2}
   - from: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
-    to: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
-    transition: {fileID: 11400000, guid: e4d2cc6d3445bf146a0a99993688d39c, type: 2}
+    to: {fileID: 11400000, guid: 6fb301ce61318db43b7ec1d1ee0fbef6, type: 2}
+    transition: {fileID: 11400000, guid: a37f505183372d54281c1901929379ac, type: 2}
   - from: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
-    to: {fileID: 11400000, guid: d3ee0602cc47c81459d41a60ff88817d, type: 2}
-    transition: {fileID: 11400000, guid: e4d2cc6d3445bf146a0a99993688d39c, type: 2}
+    to: {fileID: 11400000, guid: 6fb301ce61318db43b7ec1d1ee0fbef6, type: 2}
+    transition: {fileID: 11400000, guid: a37f505183372d54281c1901929379ac, type: 2}
 --- !u!114 &8842447251057606262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +240,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 3
+    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 17681680371273725, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
@@ -380,12 +384,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2023073604413840133, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1377388843258237254}
-    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
 --- !u!4 &2505405561842614734 stripped
 Transform:
