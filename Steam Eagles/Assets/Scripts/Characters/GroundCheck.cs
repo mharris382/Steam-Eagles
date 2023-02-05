@@ -131,6 +131,7 @@ public class GroundCheck : MonoBehaviour, IGroundCheck
 
     protected virtual void Update()
     {
+        return;
         if (_state == null) return;
         int hitCount = 0;
         List<Raycast2D> orderedPoints = null;

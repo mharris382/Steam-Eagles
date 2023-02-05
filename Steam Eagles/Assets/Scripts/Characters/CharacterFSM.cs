@@ -10,9 +10,11 @@ namespace Characters
     {
         [Range(0.001f, 1), SerializeField] private float dropTime = 0.25f;
         [SerializeField] private float dropSpeed = 5f;
+        [SerializeField] private bool debug = true;
         
         private CharacterInputState _input;
         private CharacterController2 _controller;
+        
         private FSM.StateMachine _physicsStateMachine;
         private CharacterState _state;
 
@@ -70,6 +72,36 @@ namespace Characters
                 onExit: OnPlatformDropExit, 
                 needsExitTime:true);
             
+            void OnPlatformDropEnter(State<string, string> t)
+            {
+                LogStateEntered("Platform Drop");
+                Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
+                Controller.BeginDropping();
+                State.IsDropping = true;
+            }
+
+            void OnPlatformDropExit(State<string, string> t)
+            {
+                Controller.UpdatePhysMat();
+                Controller.StopDropping();
+                State.IsDropping = false;
+            }
+
+            void OnPlatformDropLogic(State<string, string> t)
+            {
+                if (t.timer.Elapsed > dropTime)
+                {
+                    t.fsm.StateCanExit();
+                    t.fsm.RequestStateChange("Default");
+                }
+                else
+                {
+                    Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
+                    Controller.ApplyHorizontalMovement();
+                }
+            }
+            
+            
             _physicsStateMachine.AddState("Jumping",
                 onEnter: t => {
                     Controller.BeginJump();
@@ -97,33 +129,7 @@ namespace Characters
             _physicsStateMachine.Init();
         }
 
-        private void OnPlatformDropEnter(State<string, string> t)
-        {
-            Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
-            Controller.BeginDropping();
-            State.IsDropping = true;
-        }
-
-        private void OnPlatformDropExit(State<string, string> t)
-        {
-            Controller.UpdatePhysMat();
-            Controller.StopDropping();
-            State.IsDropping = false;
-        }
-
-        private void OnPlatformDropLogic(State<string, string> t)
-        {
-            if (t.timer.Elapsed > dropTime)
-            {
-                t.fsm.StateCanExit();
-                t.fsm.RequestStateChange("Default");
-            }
-            else
-            {
-                Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
-                Controller.ApplyHorizontalMovement();
-            }
-        }
+       
 
 
         public bool CheckJumpCondition()
@@ -144,6 +150,15 @@ namespace Characters
         private void FixedUpdate()
         {
             _physicsStateMachine.OnLogic();
+        }
+
+
+        private void LogStateEntered(string stateName)
+        {
+            if (debug)
+            {
+                Debug.Log($"{name} Entered State: {stateName}", this);
+            }
         }
     }
 }

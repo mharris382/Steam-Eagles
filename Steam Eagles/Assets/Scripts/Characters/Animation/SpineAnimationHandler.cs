@@ -12,8 +12,10 @@ namespace Characters.Animations
     [RequireComponent(typeof(SkeletonAnimation))]
     public class SpineAnimationHandler : MonoBehaviour
     {
-        public SkeletonAnimation skeletonAnimation;
+        private SkeletonAnimation skeletonAnimation;
+        [TableList]
 		public List<StateNameToAnimationReference> statesAndAnimations = new List<StateNameToAnimationReference>();
+		[TableList]
 		public List<AnimationTransition> transitions = new List<AnimationTransition>(); // Alternately, an AnimationPair-Animation Dictionary (commented out) can be used for more efficient lookups.
 
 		[System.Serializable]
@@ -22,6 +24,7 @@ namespace Characters.Animations
 			public AnimationReferenceAsset animation;
 		}
 
+		
 		[System.Serializable]
 		public class AnimationTransition {
 			public AnimationReferenceAsset from;
@@ -34,6 +37,7 @@ namespace Characters.Animations
 		public Spine.Animation TargetAnimation { get; private set; }
 
 		void Awake () {
+			skeletonAnimation = GetComponent<SkeletonAnimation>();
 			// Initialize AnimationReferenceAssets
 			foreach (StateNameToAnimationReference entry in statesAndAnimations) {
 				entry.animation.Initialize();

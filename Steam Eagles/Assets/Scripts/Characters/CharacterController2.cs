@@ -29,29 +29,45 @@ namespace Characters
         private AsyncOperationHandle<CharacterConfig> _configLoadHandle;
 
 
-        private bool _isGrounded;
         private bool _canJumpBecauseGrounded;
         private Vector2 _slopeNormalPerp;
         private float _slopeDownAngle;
         private float _slopeDownAngleOld;
         private bool _isOnSlope;
         private float _slopSideAngle;
-        private bool _isJumping;
-        private Vector2 _newVelocity;
-        private bool _canWalkOnSlope;
-        private bool _facingRight = true;
-        private float _lastDropTime;
-        private bool _isDropping;
-        private ContactPoint2D[] _contactPoint2Ds = new ContactPoint2D[10];
-        private bool _inWater;
-        private bool _wasJumping;
-        private float _jumpTimeCounter;
-        private RaycastHit2D _verticalHit;
-        private Collider2D _onOneWay;
-        
+
+
+        private bool __isGrounded;
+        private bool __isJumping;
+        private bool __facingRight = true;
+        private bool __isDropping;
+        private bool __inWater;
+        private bool _onBalloon;
         private bool _onOneWayPlatform;
+
+        private bool _canWalkOnSlope;
+        private bool _wasJumping;
+        private bool _wasOnBalloon;
+        private bool _isBalloonJumping;
+        private float _timeOnBalloon;
+
+        private Vector2 _newVelocity;
+        private float _lastDropTime;
+        private float _jumpTimeCounter;
+        private ContactPoint2D[] _contactPoint2Ds = new ContactPoint2D[10];
+        
+        private Collider2D _onOneWay;
         private Collider2D[] _oneWayColliders = new Collider2D[10];
         private Collider2D[] _droppingColliders = new Collider2D[10];
+
+
+        public bool IsBalloonJumping => _isBalloonJumping;
+
+        private Collider2D __balloonCollider;
+
+        #endregion
+
+        #region [Properties]
 
         public bool OnBalloon
         {
@@ -75,11 +91,58 @@ namespace Characters
                 }
             }
         }
-        private bool _onBalloon;
-        private bool _wasOnBalloon;
-        private float _timeOnBalloon;
-        private bool _isBalloonJumping;
 
+        
+        private bool _isGrounded
+        {
+            get => __isGrounded;
+            set
+            {
+                __isGrounded = value;
+                _state.IsGrounded = _state.IsOnSolidGround = value;
+            }
+        }
+        
+        private bool _isJumping
+        {
+            get => __isJumping;
+            set
+            {
+                __isJumping = value;
+                _state.IsJumping = value;
+            }
+        }
+        
+        private bool _isDropping
+        {
+            get => __isDropping;
+            set
+            {
+                __isDropping = value;
+                _state.IsDropping = value;
+            }
+        }
+        
+        private bool _inWater
+        {
+            get => __inWater;
+            set
+            {
+                __inWater = value;
+                _state.InWater = value;
+            }
+        }
+
+        public bool _facingRight
+        {
+            get => __facingRight;
+            set
+            {
+                __facingRight = value;
+                _state.FacingRight = value;
+            }
+        }
+        
         public Collider2D BalloonCollider
         {
             get => _wasOnBalloon ?  BalloonCollider : null;
@@ -91,12 +154,6 @@ namespace Characters
                 }
             }
         }
-
-        public bool IsBalloonJumping => _isBalloonJumping;
-        
-        private Collider2D __balloonCollider;
-        #endregion
-        #region [Properties]
 
         private CharacterState State => _state;
         public CharacterConfig Config => State.config;
@@ -479,7 +536,6 @@ namespace Characters
         private void SlopeCheckVertical(Vector2 checkPos)
         {
             RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, whatIsGround);
-            _verticalHit = hit;
             if (!hit)
             {
                 return;

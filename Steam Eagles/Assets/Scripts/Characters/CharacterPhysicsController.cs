@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [System.Obsolete("Use CharacterController2 instead")]
     /// <summary>
     /// replacement for CharacterController which is huge and buggy.
     /// <see cref="https://www.youtube.com/watch?v=QPiZSTEuZnw&t=1308s&ab_channel=Bardent"/>
