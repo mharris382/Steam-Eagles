@@ -268,7 +268,7 @@ namespace Characters
                     if(_isBalloonJumping)jumpForce *= Config.balloonJumpMultiplier;
                     
                     float t = _jumpTimeCounter / Config.jumpTime;
-                    jumpForce *= (t * t);
+                    //jumpForce *= (t * t);
                     rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 }
             }

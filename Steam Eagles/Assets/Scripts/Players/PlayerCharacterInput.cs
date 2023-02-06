@@ -67,6 +67,13 @@ namespace Characters
         public void OnJump(InputAction.CallbackContext context)
         {
             if (_characterInput == null) return;
+            MessageBroker.Default.Publish(new JumpActionEvent()
+            {
+                context = context,
+                tag = _characterInput.gameObject.tag,
+                characterState = _characterInput.CharacterState,
+                transform = _characterInput.transform
+            });
             //_characterInput.JumpPressed = context.performed;
             //_characterInput.JumpHeld = context.started;
         }

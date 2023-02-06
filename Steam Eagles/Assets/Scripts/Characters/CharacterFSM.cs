@@ -21,9 +21,9 @@ namespace Characters
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
         public CharacterState State => _state;
-        
-         
-        
+
+        private bool _jumped;
+        private float _jumpTime;
         private void Awake()
         {
             _controller = GetComponent<CharacterController2>();
@@ -53,7 +53,16 @@ namespace Characters
                 }
                 
             });
-            
+            MessageBroker.Default.Receive<JumpActionEvent>().Where(t => t.transform == transform)
+                .Subscribe(t =>
+                {
+                    //if (t.context.performed && Controller.AbleToJump())
+                    //{
+                    //    _state.IsJumping = true;
+                    //    _jumpTime = Time.time;
+                    //    _physicsStateMachine.Trigger("Jump");
+                    //}
+                }).AddTo(this);
             _physicsStateMachine.AddState("Default", onLogic: t =>
             {
                 Controller.CheckFacingDirection();
@@ -105,6 +114,7 @@ namespace Characters
             _physicsStateMachine.AddState("Jumping",
                 onEnter: t => {
                     Controller.BeginJump();
+                    _jumpTime = Time.time;
                     if (Controller.IsBalloonJumping && Controller.BalloonCollider != null &&
                         Controller.BalloonCollider.attachedRigidbody != null)
                     {
@@ -120,12 +130,13 @@ namespace Characters
                 onExit: t =>
                 {
                     Controller.EndJump();
-                });
+                }, needsExitTime:false);
             _physicsStateMachine.AddTransition("Default", "Jumping", t => CheckJumpCondition());
             _physicsStateMachine.AddTransition("Jumping", "Default", t => !State.IsJumping || !State.JumpHeld);
             _physicsStateMachine.AddTransition("Default", "Dropping", (t) => CheckDropCondition());
             _physicsStateMachine.AddTransition("Dropping", "Default");
             _physicsStateMachine.SetStartState("Default");
+            //_physicsStateMachine.AddTriggerTransition("Jump", "Default", "Jumping");
             _physicsStateMachine.Init();
         }
 
@@ -134,7 +145,7 @@ namespace Characters
 
         public bool CheckJumpCondition()
         {
-            return Controller.AbleToJump() && (State.JumpHeld || State.JumpPressed);
+            return Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
         }
         public bool CheckDropCondition()
         {
@@ -143,6 +154,7 @@ namespace Characters
 
         private void Update()
         {
+          
             Controller.UpdateJumpTimer(Time.deltaTime);
             Controller.CheckJumping();
         }
