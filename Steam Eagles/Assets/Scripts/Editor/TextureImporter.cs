@@ -4,7 +4,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace SteamEagles.CustomEditor
 {
     public class CustomTextureImporter : AssetPostprocessor
     {

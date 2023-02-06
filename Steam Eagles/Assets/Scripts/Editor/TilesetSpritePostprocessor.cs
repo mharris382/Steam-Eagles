@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace Editor
+namespace SteamEagles.CustomEditor
 {
     public class TilesetSpritePostprocessor : AssetPostprocessor
     {

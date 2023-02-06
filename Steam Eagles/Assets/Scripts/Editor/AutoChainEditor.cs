@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace SteamEagles.CustomEditor
 {
     public class AutoChain : MonoBehaviour
     {
@@ -11,7 +11,7 @@ namespace Editor
         public Color color = Color.magenta;
         
     }
-    [CustomEditor(typeof(AutoChain))]
+    [UnityEditor.CustomEditor(typeof(AutoChain))]
     public class AutoChainEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()

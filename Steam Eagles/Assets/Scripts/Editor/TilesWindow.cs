@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace SteamEagles.CustomEditor
 {
     public class TilesWindow : EditorWindow
     {

@@ -5,7 +5,7 @@ using UnityEditor;
 
 using UnityEngine;
 
-namespace Editor
+namespace SteamEagles.CustomEditor
 {
     public class SceneOrganizationHelper : EditorWindow
     {
