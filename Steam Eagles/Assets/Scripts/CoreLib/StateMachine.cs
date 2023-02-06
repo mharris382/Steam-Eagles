@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StateMachine;
 using UnityEngine;
 
-namespace StateMachine
+namespace CoreLib
 {
+    [System.Obsolete("Use HFSM instead")]
     public class StateMachine<T>
     {
         private IState<T> _defaultState = null;

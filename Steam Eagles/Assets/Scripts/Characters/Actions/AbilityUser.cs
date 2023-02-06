@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
+using CoreLib.SharedVariables;
 using StateMachine;
 using UniRx;
 using UnityEngine;

@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreLib;
+using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
 using StateMachine;
 using UnityEngine;

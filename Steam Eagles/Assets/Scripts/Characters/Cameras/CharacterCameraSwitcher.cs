@@ -2,6 +2,7 @@
 using System.Collections;
 using Characters.Cameras;
 using CoreLib;
+using CoreLib.SharedVariables;
 using DG.Tweening;
 using StateMachine;
 using UniRx;

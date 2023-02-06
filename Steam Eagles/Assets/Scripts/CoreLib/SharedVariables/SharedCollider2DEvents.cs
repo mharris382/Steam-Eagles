@@ -1,7 +1,6 @@
-﻿using CoreLib;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace StateMachine
+namespace CoreLib.SharedVariables
 {
     public class SharedCollider2DEvents : SharedVariableEvents<PolygonCollider2D, SharedCollider2D> { }
 }

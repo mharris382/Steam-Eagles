@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using CoreLib.SharedVariables;
 using Puzzles;
 using StateMachine;
 using UniRx;

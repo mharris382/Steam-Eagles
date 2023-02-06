@@ -1,7 +1,6 @@
-﻿using CoreLib;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace StateMachine
+namespace CoreLib.SharedVariables
 {
     [RequireComponent(typeof(PolygonCollider2D))]
     public class SharedCollider2DAssigner : SharedVariableAssigner<PolygonCollider2D, SharedCollider2D>

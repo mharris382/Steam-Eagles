@@ -1,7 +1,6 @@
-﻿using CoreLib;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace StateMachine
+namespace CoreLib.SharedVariables
 {
     public class SharedTransformAssigner : SharedVariableAssigner<Transform, SharedTransform>
     {

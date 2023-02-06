@@ -1,9 +1,8 @@
 ﻿using System;
-using CoreLib;
 using UnityEditor;
 using UnityEngine;
 
-namespace StateMachine
+namespace CoreLib.SharedVariables
 {
     [CreateAssetMenu(menuName = "Shared Variables/Create Shared Transform", fileName = "SharedTransform", order = 0)]
     public class SharedTransform : SharedVariable<Transform>

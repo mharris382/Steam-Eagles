@@ -1,5 +1,6 @@
 ﻿using System;
 using CoreLib;
+using CoreLib.SharedVariables;
 using StateMachine;
 using UnityEngine;
 using UnityEngine.Tilemaps;

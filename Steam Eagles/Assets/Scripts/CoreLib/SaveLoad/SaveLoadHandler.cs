@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using CoreLib;
+using CoreLib.SharedVariables;
 using StateMachine;
 
 using UnityEngine;

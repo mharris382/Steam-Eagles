@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
+using CoreLib.SharedVariables;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using StateMachine;
