@@ -60,6 +60,7 @@ namespace Characters
         private Collider2D[] _oneWayColliders = new Collider2D[10];
         private Collider2D[] _droppingColliders = new Collider2D[10];
 
+        private DynamicBodyState _dynamicBody;
 
         public bool IsBalloonJumping => _isBalloonJumping;
 
@@ -181,13 +182,14 @@ namespace Characters
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _capsuleCollider = GetComponent<CapsuleCollider2D>();
-            
+            _dynamicBody = GetComponent<DynamicBodyState>();
             Debug.Assert(State.config != null, "NO CHARACTER CONFIG", this);
             _fullFriction = State.config.GetFullFrictionMaterial();
             _noFriction = State.config.GetNoFrictionMaterial();
             _walkingFriction = State.config.GetWalkingFrictionMaterial();
         }
 
+        
 #if FALSE
         private void Update()
         {
@@ -219,16 +221,18 @@ namespace Characters
             if (_isGrounded && !_isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * xInput, 0.0f);
+                _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
             else if (_isGrounded && _isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * _slopeNormalPerp.x * -xInput, MoveSpeed * _slopeNormalPerp.y * -xInput);
+                _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
             else if(!_isGrounded)
             {
                 _newVelocity.Set(MoveSpeed * xInput, rb.velocity.y);
             }
-            rb.velocity = _newVelocity;
+            rb.velocity = _newVelocity ;
         }
 
 
@@ -596,6 +600,25 @@ namespace Characters
         }
 
 
-        
+        public void ClearParent()
+        {
+            transform.parent.SetParent(null);
+        }
+
+        public void CheckParent()
+        {
+            if (_dynamicBody.RoomBody != null)
+            {
+                transform.SetParent(_dynamicBody.RoomBody.transform);
+            }
+            else if (_dynamicBody.BuildingBody != null)
+            {
+                transform.SetParent(_dynamicBody.BuildingBody.transform);
+            }
+            else
+            {
+                transform.parent.SetParent(null);
+            }
+        }
     }
 }

@@ -16,6 +16,18 @@ namespace Buildings
         
         public IObservable<int> PlayerCountChanged => _playerCountChanged;
         private IStructure _structure;
+        
+        
+        public bool HasPlayersInBuilding()
+        {
+            return playersInBuilding[0] || playersInBuilding[1];
+        }
+        
+        public bool HasPlayerInBuilding(int playerIndex)
+        {
+            return playersInBuilding[playerIndex];
+        }
+        
         private void Awake()
         {
             playersInBuilding = new bool[2]

@@ -6,7 +6,10 @@ namespace Spaces
     public abstract class PuzzleTile : RuleTile
     {
         public bool debug;
+        public bool alwaysMatchNeighbors = true;
+        
         public abstract bool CanTileBeDisconnected();
+
 
         public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject instantiatedGameObject)
         {
@@ -24,6 +27,21 @@ namespace Spaces
             }
 
             return false;
+        }
+
+        public override bool RuleMatch(int neighbor, TileBase other)
+        {
+            if (alwaysMatchNeighbors)
+            {
+                switch (neighbor)
+                {
+                    case RuleTile.TilingRuleOutput.Neighbor.This:
+                        return  other != null;
+                    case RuleTile.TilingRuleOutput.Neighbor.NotThis:
+                        return other != this;
+                }
+            }
+            return base.RuleMatch(neighbor, other);
         }
     }
 }

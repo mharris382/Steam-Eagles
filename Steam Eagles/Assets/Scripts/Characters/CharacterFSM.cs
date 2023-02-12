@@ -72,6 +72,7 @@ namespace Characters
                 Controller.UpdatePhysMat();
                 Controller.ApplyMovement();
                 Controller.ApplyGravity();
+                Controller.CheckParent();
             });
             
             _physicsStateMachine.AddState(
@@ -86,6 +87,7 @@ namespace Characters
                 LogStateEntered("Platform Drop");
                 Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
                 Controller.BeginDropping();
+                Controller.ClearParent();
                 State.IsDropping = true;
             }
 
@@ -126,6 +128,7 @@ namespace Characters
                     Controller.CheckFacingDirection();
                     Controller.ApplyHorizontalMovement();
                     Controller.ApplyJumpForce();
+                    Controller.ClearParent();
                 }, 
                 onExit: t =>
                 {
