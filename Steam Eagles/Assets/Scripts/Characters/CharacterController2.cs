@@ -560,7 +560,7 @@ namespace Characters
             }
             else
             {
-                transform.parent.SetParent(null);
+                transform.SetParent(null);
             }
         }
     }
