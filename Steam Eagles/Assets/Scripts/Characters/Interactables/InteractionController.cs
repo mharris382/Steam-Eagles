@@ -2,6 +2,7 @@
 using Players;
 using UniRx;
 using UnityEngine;
+using Observable = UnityEngine.InputSystem.Utilities.Observable;
 
 namespace Characters.Interactables
 {
@@ -37,18 +38,38 @@ namespace Characters.Interactables
         public Vector2 Position => Target.position;
 
         internal ReactiveProperty<InteractableObject> _currentAvailableInteractable = new ReactiveProperty<InteractableObject>();
-        
-        public InteractableObject CurrentAvailableInteractable
+        IDisposable _currentAvailableInteractableDisposable;
+        Subject<string> _emptyDescription = new Subject<string>();
+        public InteractableObject CurrentAvailableInteractable  
         {
             get => _currentAvailableInteractable.Value;
             set
             {
-                _currentAvailableInteractable.Value = value;
-                OnCurrentInteractableChanged(value);
+                if (value != _currentAvailableInteractable.Value)
+                {
+                    if(_currentAvailableInteractableDisposable != null)
+                        _currentAvailableInteractableDisposable.Dispose();
+                    _currentAvailableInteractable.Value = value;
+                    OnCurrentInteractableChanged(value);
+                    if (value != null)
+                    {
+                        _currentAvailableInteractableDisposable =
+                            value.OnDescriptionChange.Subscribe(OnInteractableDescriptionChanged);
+                    }
+                    else
+                    {
+                        _emptyDescription.OnNext("");    
+                    }
+                }
             }
         }
+
         
-        
+
+        void OnInteractableDescriptionChanged(string description)
+        {
+        }
+
 
         private void Awake()
         {

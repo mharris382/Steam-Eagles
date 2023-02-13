@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,6 +35,14 @@ namespace Characters.Interactables
                 onInteractionAvailable?.Invoke();
                 //inputLabel?.Invoke(controller.inputButton);
                 interactionLabel?.Invoke(t.Description);
+            }).AddTo(this);
+       
+            MessageBroker.Default.Receive<InteractionLabelChanged>().Subscribe(t =>
+            {
+                if (t.interactable == controller._currentAvailableInteractable.Value)
+                {
+                    interactionLabel?.Invoke(controller._currentAvailableInteractable.Value.Description);
+                }
             }).AddTo(this);
         }
     }

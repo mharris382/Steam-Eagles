@@ -24,11 +24,11 @@ namespace Players
         public SharedTransform characterTransform;
         public SharedCamera playerCamera;
         
-        [FoldoutGroup("Tilemaps")]public SharedTilemap foundationTilemap;
-        [FoldoutGroup("Tilemaps")]public SharedTilemap wallTilemap;
-        [FoldoutGroup("Tilemaps")]public SharedTilemap solidTilemap;
-        [FoldoutGroup("Tilemaps")]public SharedTilemap pipeTilemap;
-        [FoldoutGroup("Tilemaps")]public SharedTilemap decorTilemap;
+        [FoldoutGroup("Tilemaps"), SerializeField]public SharedTilemap foundationTilemap;
+        [FoldoutGroup("Tilemaps"), SerializeField]public SharedTilemap wallTilemap;
+        [FoldoutGroup("Tilemaps"), SerializeField]public SharedTilemap solidTilemap;
+        [FoldoutGroup("Tilemaps"), SerializeField]public SharedTilemap pipeTilemap;
+        [FoldoutGroup("Tilemaps"), SerializeField]public SharedTilemap decorTilemap;
         
         public PlayerCharacterInput CharacterInput { get; private set; }
         public CharacterState State { get; private set; }
@@ -41,6 +41,7 @@ namespace Players
             playerCharacterInput.Assign(State.GetComponent<CharacterInputState>());
         }
 
+        
         public void EnableStructureEditing(EditableTilemapStructure structure)
         {
             pipeTilemap.Value = structure.pipeTilemap;
@@ -65,6 +66,38 @@ namespace Players
             this.CharacterInput = characterInput;
         }
 
+
+        public Tilemap SolidTilemap
+        {
+            get => solidTilemap.Value;
+            set => solidTilemap.Value = value;
+        }
+
+        public Tilemap PipeTilemap
+        {
+            get => pipeTilemap.Value;
+            set => pipeTilemap.Value = value;
+        }
+        
+        public Tilemap WallTilemap
+        {
+            get => wallTilemap.Value;
+            set => wallTilemap.Value = value;
+        }
+        
+        public Tilemap DecorTilemap
+        {
+            get => decorTilemap.Value;
+            set => decorTilemap.Value = value;
+        }
+        
+        public Tilemap FoundationTilemap
+        {
+            get => foundationTilemap.Value;
+            set => foundationTilemap.Value = value;
+        }
+        
+        
 
         #region [Editor]
 

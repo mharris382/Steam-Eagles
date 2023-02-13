@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 
 namespace Characters.Interactables
 {
@@ -12,7 +13,7 @@ namespace Characters.Interactables
         public List<InteractionController> controllers;
         public List<InteractableObject> interactableObjects;
 
-        
+
         private static InteractionManager _instance;
 
         public static InteractionManager Instance
@@ -27,6 +28,7 @@ namespace Characters.Interactables
                         _instance = new GameObject("InteractionManager").AddComponent<InteractionManager>();
                     }
                 }
+
                 return _instance;
             }
         }
@@ -58,7 +60,7 @@ namespace Characters.Interactables
             {
                 float smallestDistSqr = float.MaxValue;
                 InteractableObject bestObj = null;
-                
+
                 foreach (var obj in interactableObjects)
                 {
                     Vector2 diff = (obj.Position - controller.Position);
@@ -73,6 +75,6 @@ namespace Characters.Interactables
             }
         }
 
-       
+      
     }
 }

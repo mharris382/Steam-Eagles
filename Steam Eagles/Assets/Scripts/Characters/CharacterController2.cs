@@ -242,22 +242,6 @@ namespace Characters
             rb.velocity = _newVelocity;
         }
 
-        [Obsolete("Use Apply Jump Force")]
-        public void ApplyJumpMovement()
-        {
-            if (_isJumping)
-            {
-                if (CheckForCeiling()) _jumpTimeCounter = 0;
-                if (State.JumpHeld && _jumpTimeCounter > 0)
-                {
-                    float jumpForce = Config.jumpForce;
-                    float t = _jumpTimeCounter / Config.jumpTime;
-                    jumpForce *= t;
-                    rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                }
-            }
-        }
-
         public void ApplyJumpForce()
         {
             if (_isJumping)
@@ -278,17 +262,7 @@ namespace Characters
             }
         }
 
-        [Obsolete]
-        public void ApplyGravity()
-        {
-           //if (_isGrounded && !_verticalHit.rigidbody.isKinematic)
-           //{
-           //    var forceOfGravity = Physics2D.gravity;
-           //    rb.AddForce(forceOfGravity * rb.mass);
-           //}
-        }
-
-        public void CheckGround()
+        public void UpdateGround()
         {
             var queriesHitTriggersPrev = Physics2D.queriesHitTriggers; 
             var groundLayers = LayerMask.GetMask("Ground", "Solids");
@@ -321,10 +295,6 @@ namespace Characters
             Physics2D.queriesHitTriggers = queriesHitTriggersPrev;
         }
 
-        private void ResetBalloonTimer()
-        {
-            
-        }
 
         public void CheckJumping()
         {
@@ -346,7 +316,7 @@ namespace Characters
 
         
 
-        public void CheckFacingDirection()
+        public void UpdateFacingDirection()
         {
             if (Mathf.Abs(xInput) > 0.1f)
             {
@@ -355,7 +325,7 @@ namespace Characters
             }
         }
 
-        public void CheckSlopes()
+        public void UpdateSlopes()
         {
             Vector2 checkPos = transform.position - new Vector3(0.0f, colliderSize.y/2f, 0.0f);
             SlopeCheckHorizontal(checkPos);
@@ -431,24 +401,7 @@ namespace Characters
             return false;
         }
 
-        public bool CheckForDrop()
-        {
-            if (!_isGrounded) return false;
-            if (Time.time - _lastDropTime < 0.5f) return false;
-            if (State.DropPressed)
-            {
-                
-                return true;
-                var hit = Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.GetMask("Pipes", "Platforms"));
-                if (hit)
-                {
-                    _lastDropTime = Time.time;
-                    State.IsDropping = true;
-                    //StartCoroutine(DropThroughPlatform(hit));
-                }
-            }
-            return false;
-        }
+        
 
         public void BeginJump()
         {
@@ -586,18 +539,8 @@ namespace Characters
             }
         }
 
-        IEnumerator DropThroughPlatform(RaycastHit2D hit)
-        {
-            var col = hit.collider;
-            State.VelocityY = -5;
-            Physics2D.IgnoreCollision(col, _capsuleCollider, true);
-            State.IsDropping = true;
-            _isDropping = true;
-            yield return new WaitForSeconds(0.25f);
-            _isDropping = false;
-            State.IsDropping = false;
-            Physics2D.IgnoreCollision(col, _capsuleCollider, false);
-        }
+        
+        
 
 
         public void ClearParent()
