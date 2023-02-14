@@ -5,11 +5,21 @@ using UnityEngine.UI;
 
 namespace Items.UI
 {
-    public class ItemIcon : HUDElement
+    public class ItemIcon : UIItemElement
     {
         public Image icon;
 
 
+        protected override void Awake()
+        {
+            base.Awake();
+            IsVisible = false;
+        }
+
+        public override void OnItemChanged(Item item)
+        {
+            icon.sprite = item.icon;
+        }
     }
 
     public abstract class UIItemElement : UIElement, IItemUI

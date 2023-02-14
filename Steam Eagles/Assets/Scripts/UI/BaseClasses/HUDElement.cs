@@ -18,8 +18,9 @@ namespace UI
 
         protected virtual bool IsInteractable => true;
         protected virtual bool BlocksRaycasts => true;
-        private void Awake()
+        protected virtual void Awake()
         {
+            _isVisible = true;
             SetVisible(false);
         }
 

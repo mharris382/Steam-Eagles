@@ -29,8 +29,10 @@ namespace Items.UI
             counter.IsVisible = true;
             foreach (var uiItemElement in itemUIItemElements)
             {
-                uiItemElement.IsVisible = true;
+                uiItemElement.IsVisible = false;
                 uiItemElement.Item = itemStack.item;
+                uiItemElement.OnItemChanged(itemStack.item);
+                uiItemElement.IsVisible = true;
             }
         }
     }
