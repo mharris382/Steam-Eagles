@@ -7,8 +7,10 @@ namespace UI
     public abstract class UIElement : MonoBehaviour
     {
         private CanvasGroup _canvasGroup;
+        private RectTransform _rectTransform;
         private bool _isVisible;
         public CanvasGroup CanvasGroup => _canvasGroup ? _canvasGroup : _canvasGroup = GetComponent<CanvasGroup>();
+        public RectTransform RectTransform => _rectTransform ? _rectTransform : _rectTransform = GetComponent<RectTransform>();
 
         public bool IsVisible
         {

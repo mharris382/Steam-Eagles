@@ -76,7 +76,7 @@ namespace UI
         
         private ConfirmationWindow GetConfirmationWindow()
         {
-            var confirmationWindow = WindowManager.GetWindow<ConfirmationWindow>();
+            var confirmationWindow = WindowLoader.GetWindow<ConfirmationWindow>();
             confirmationWindow.transform.SetParent(canvas);
             confirmationWindow.RectTransform.anchoredPosition = Vector2.zero;
             return confirmationWindow;
@@ -89,7 +89,7 @@ namespace UI
         
         public void OnQuitToMainMenu()
         {
-            if (WindowManager.Instance.IsFinishedLoading())
+            if (WindowLoader.Instance.IsFinishedLoading())
             {
                 if(_quitToMainMenuAction == null)
                     CreateQuitActions();
@@ -103,7 +103,7 @@ namespace UI
         
         public void OnQuitButton()
         {
-            if (WindowManager.Instance.IsFinishedLoading())
+            if (WindowLoader.Instance.IsFinishedLoading())
             {
                 if(_quitToDesktopAction == null)
                     CreateQuitActions();
