@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Items
 {
@@ -6,5 +8,11 @@ namespace Items
     public class Tool : ItemBase
     {
         public override int MaxStackSize => 1;
+
+
+        [ToggleGroup(nameof(usesRecipes), "Recipes")]
+        [SerializeField] private bool usesRecipes;
+        [ToggleGroup(nameof(usesRecipes)), InlineEditor(Expanded = true)]
+        [SerializeField] private List<Recipe> recipes;
     }
 }

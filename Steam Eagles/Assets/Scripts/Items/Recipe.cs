@@ -7,8 +7,12 @@ namespace Items
     [CreateAssetMenu(menuName = "Steam Eagles/Items/Recipe")]
     public class Recipe : ScriptableObject
     {
+        [HorizontalGroup("Recipe", width:0.2f, marginLeft:15)]
+        [PreviewField(height:150)]
+        [HideLabel]
         public Sprite icon;
-        [TableList]
+        [HorizontalGroup("Recipe", width:0.8f)]
+        [TableList(AlwaysExpanded = true)]
         public List<ItemStack> components;
     }
 }
