@@ -24,7 +24,7 @@ namespace Items
         public bool canDrop;
         [HorizontalGroup("Item Info/Name_Desc/Dropping", width: 0.7f), ShowIf(nameof(canDrop))]
         public string dropKey;
-        public bool IsStackable => MaxStackSize > 1;
+        public virtual bool IsStackable => MaxStackSize > 1;
         public abstract int MaxStackSize { get; }
     }
 }

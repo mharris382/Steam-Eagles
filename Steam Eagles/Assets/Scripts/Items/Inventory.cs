@@ -3,16 +3,6 @@ using UnityEngine;
 
 namespace Items
 {
-    public class InventorySlot : MonoBehaviour
-    {
-        public IInventory inventory
-        {
-            get;
-            set;
-        }
-        public ItemStack itemStack;
-    }
-
     public interface IInventory
     {
         
@@ -24,7 +14,7 @@ namespace Items
 
 
 
-        public IEnumerable<ItemStack> items
+        public IEnumerable<InventorySlot> itemSlots
         {
             get
             {
@@ -33,12 +23,21 @@ namespace Items
                     var child = slotParent.GetChild(i);
                     var slot = child.GetComponent<InventorySlot>();
                     slot.inventory = this;
-                    yield return slot.itemStack;
+                    yield return slot;
                 }
             }
         }
         
-        
+        public IEnumerable<ItemStack> items
+        {
+            get
+            {
+                foreach (var inventorySlot in itemSlots)
+                {
+                    yield return inventorySlot.itemStack;
+                }
+            }
+        }
         
         public int SlotCount => slotParent.childCount;
         public void AddSlot()

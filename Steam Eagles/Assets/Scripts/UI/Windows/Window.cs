@@ -5,9 +5,10 @@ namespace UI
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class Window : MonoBehaviour
     {
-
+        private bool _isOpen;
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
+
         public RectTransform RectTransform
         {
             get
@@ -16,13 +17,31 @@ namespace UI
                 {
                     _rectTransform = GetComponent<RectTransform>();
                 }
+
                 return _rectTransform;
             }
         }
 
         public CanvasGroup CanvasGroup => _canvasGroup ? _canvasGroup : _canvasGroup = GetComponent<CanvasGroup>();
 
+
         protected virtual bool BlockRaycastsWhenVisible => true;
+
+        public virtual void Open()
+        {
+            IsVisible = true;
+        }
+
+        public virtual void Close()
+        {
+            IsVisible = false;
+        }
+
+        public bool IsVisible
+        {
+            get  => CanvasGroup.alpha > 0;
+            set => SetWindowVisible(value);
+        }
         
         public void SetWindowVisible(bool visible)
         {

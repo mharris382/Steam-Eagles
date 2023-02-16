@@ -1,10 +1,16 @@
-﻿namespace Items
+﻿using Sirenix.OdinInspector;
+
+namespace Items
 {
+    [InlineProperty(LabelWidth = 45)]
     [System.Serializable]
     public struct ItemStack : ICountable
     {
-        public Item item;
+        [HideLabel, LabelWidth(45)]
+        public ItemBase item;
+        [LabelText("Count"), LabelWidth(45)]
         public int itemCount;
         public int Count => itemCount;
+        
     }
 }

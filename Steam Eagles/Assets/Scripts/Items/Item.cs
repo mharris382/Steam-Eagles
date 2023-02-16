@@ -13,6 +13,7 @@ namespace Items
         [ShowIf(nameof(isStackable))]
         public int maxStack = 1;
 
+        
         public override int MaxStackSize => isStackable ? maxStack : 1;
     }
 }

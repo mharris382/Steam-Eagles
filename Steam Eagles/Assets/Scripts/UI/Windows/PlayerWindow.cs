@@ -26,7 +26,12 @@ namespace UI
         private void OnPlayerCountChanged(int playerCount)
         {
             var parent = UIWindowCanvasManager.Instance.GetScreenParent(GetScreenSide(playerCount, PlayerIndex));
-            transform.SetParent(parent,false);
+            if(parent != null)
+                transform.SetParent(parent,false);
+            else
+            {
+                Debug.LogWarning("Parent is null!");
+            }
         }
 
         private static ScreenSide GetScreenSide(int playerCount, int playerIndex)

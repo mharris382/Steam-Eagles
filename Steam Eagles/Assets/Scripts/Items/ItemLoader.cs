@@ -9,12 +9,12 @@ namespace Items
     {
         private class LoadedItem
         {
-            private readonly AsyncOperationHandle<Item> _loadOp;
-            public Item Item => _loadOp.IsDone ? _loadOp.Result : null;
+            private readonly AsyncOperationHandle<ItemBase> _loadOp;
+            public ItemBase Item => _loadOp.IsDone ? _loadOp.Result : null;
             public bool IsLoaded => _loadOp.IsDone && _loadOp.Status == AsyncOperationStatus.Succeeded;
             public LoadedItem(string address)
             {
-                this._loadOp = Addressables.LoadAssetAsync<Item>(address);
+                this._loadOp = Addressables.LoadAssetAsync<ItemBase>(address);
             }
         }
 
@@ -25,13 +25,13 @@ namespace Items
         {
             foreach (var autoLoadItem in autoLoadItems)
             {
-                _loadedItems.Add(autoLoadItem, new LoadedItem(autoLoadItem));
+                _loadedItems.Add(autoLoadItem, new LoadedItem(GetAddressFromKey(autoLoadItem)));
             }
         }
 
         private static string GetAddressFromKey(string key)
         {
-            return key;
+            return $"{key}_item";
         }
         
         public void LoadItem(string key)
@@ -39,7 +39,7 @@ namespace Items
             if (_loadedItems.ContainsKey(key)) return;
             Debug.Log($"Now Loading Pickup: {key}\nAddress:{GetAddressFromKey(key)}");
             
-            _loadedItems.Add(key, new LoadedItem(key));
+            _loadedItems.Add(key, new LoadedItem(GetAddressFromKey(key)));
         }
      
 
@@ -52,7 +52,7 @@ namespace Items
             return _loadedItems[itemName].IsLoaded;
         }
 
-        public Item GetItem(string itemName)
+        public ItemBase GetItem(string itemName)
         {
             if (!IsItemLoaded(itemName))
             {

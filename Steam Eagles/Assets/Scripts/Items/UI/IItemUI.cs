@@ -2,6 +2,6 @@
 {
     public interface IItemUI
     {
-        void OnItemChanged(Item item);
+        void OnItemChanged(ItemBase item);
     }
 }

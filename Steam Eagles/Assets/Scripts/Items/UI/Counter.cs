@@ -23,11 +23,7 @@ public class Counter : HUDElement
 
     protected override void OnBecameVisible()
     {
-        if (Countable == null)
-        {
-            Hide();
-            return;
-        }
+       
         if(_updateCoroutine != null)
             StopCoroutine(_updateCoroutine);
         _updateCoroutine = StartCoroutine(UpdateCounter());
@@ -50,10 +46,12 @@ public class Counter : HUDElement
         {
             if (Countable == null)
             {
-                Hide();
-                yield break;
+                _countText.Value = "";
             }
-            _countText.Value = GetCountText(Countable.Count);
+            else
+            {
+                _countText.Value = GetCountText(Countable.Count);    
+            }
             yield return null;
         }
     }
