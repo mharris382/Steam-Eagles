@@ -34,7 +34,7 @@ namespace Items
             {
                 foreach (var inventorySlot in itemSlots)
                 {
-                    yield return inventorySlot.itemStack;
+                    yield return inventorySlot.ItemStack;
                 }
             }
         }

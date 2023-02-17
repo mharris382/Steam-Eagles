@@ -26,7 +26,7 @@ public class Counter : HUDElement
        
         if(_updateCoroutine != null)
             StopCoroutine(_updateCoroutine);
-        _updateCoroutine = StartCoroutine(UpdateCounter());
+        _updateCoroutine = StartCoroutine(UpdateCounterRoutine());
     }
 
     protected override void OnBecameHidden()
@@ -40,21 +40,26 @@ public class Counter : HUDElement
 
     private void OnTextChanged(string newText) => counterText.text = newText;
 
-    private IEnumerator UpdateCounter()
+    private IEnumerator UpdateCounterRoutine()
     {
         while (true)
         {
-            if (Countable == null)
-            {
-                _countText.Value = "";
-            }
-            else
-            {
-                _countText.Value = GetCountText(Countable.Count);    
-            }
+            UpdateCounter();
             yield return null;
         }
     }
-    
+
+    public void UpdateCounter()
+    {
+        if (Countable == null)
+        {
+            _countText.Value = "";
+        }
+        else
+        {
+            _countText.Value = GetCountText(Countable.Count);
+        }
+    }
+
     private string GetCountText(int cnt) => cnt > maxDisplayCount ? maxDisplayText : cnt.ToString();
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Items.UI
 {
+    [System.Obsolete("Replacing this with a generic display system. Use UIItem")]
     public class UIInventoryItem : MonoBehaviour
     {
         public ItemIcon icon;
@@ -19,9 +20,9 @@ namespace Items.UI
             {
                 isCleared = false;
                 icon.IsVisible = true;
-                icon.Item = itemSlot.itemStack.item;
-                stackCounter.IsVisible = itemSlot.itemStack.item.IsStackable;
-                stackCounter.Countable = itemSlot.itemStack;
+                icon.Item = itemSlot.ItemStack.item;
+                stackCounter.IsVisible = itemSlot.ItemStack.item.IsStackable;
+                stackCounter.Countable = itemSlot.ItemStack;
                 StartCoroutine(DelayedDisplay(itemSlot));
             }
         }
@@ -33,10 +34,10 @@ namespace Items.UI
             while (!isCleared)
             {
                 icon.IsVisible = true;
-                bool stackable = inventorySlot.itemStack.item.IsStackable;
+                bool stackable = inventorySlot.ItemStack.item.IsStackable;
                 if (stackable)
                 {
-                    stackCounter.Countable = inventorySlot.itemStack;
+                    stackCounter.Countable = inventorySlot.ItemStack;
                     stackCounter.IsVisible = true;
                 }
                 else

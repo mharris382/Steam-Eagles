@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Items
 {
@@ -14,9 +15,22 @@ namespace Items
         public bool IsEmpty => itemStack.item == null;
 
 
-        [OnValueChanged(nameof(OnStackChanged))]
-        public ItemStack itemStack;
+        public UnityEvent<ItemStack> onStackChanged;
 
+        [SerializeField]
+        [OnValueChanged(nameof(OnStackChanged))]
+        private ItemStack itemStack;
+
+        
+        public ItemStack ItemStack
+        {
+            get => itemStack;
+            set
+            {
+                itemStack = value;
+                OnStackChanged(value);
+            }
+        }
         
 
         void OnStackChanged(ItemStack stack)
@@ -35,8 +49,8 @@ namespace Items
                 {
                     name = $"SLOT:{stack.item.name}";
                 }
-                
             }
+            onStackChanged?.Invoke(stack);
         }
     }
 }

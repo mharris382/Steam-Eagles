@@ -12,5 +12,8 @@ namespace Items
         public int itemCount;
         public int Count => itemCount;
         
+        
+        public bool IsEmpty => item == null || itemCount <= 0;
+        
     }
 }
