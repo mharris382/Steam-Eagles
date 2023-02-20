@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Items
@@ -7,11 +8,38 @@ namespace Items
     {
         
     }
+
+    public class ItemContainer : MonoBehaviour
+    {
+         string containerName = "Container";
+         int numberOfSlots = 9;
+
+        private void Awake()
+        {
+            if (string.IsNullOrEmpty(containerName)) 
+                containerName = "Container";
+            
+            for (int i = 0; i < numberOfSlots; i++)
+            {
+                var slot = new GameObject($"{containerName} Slot " + i);
+                slot.transform.SetParent(transform);
+            }
+        }
+    }
+    
     public class Inventory : MonoBehaviour, IInventory
     {
         public Transform slotParent;
 
 
+        void Start()
+        {
+            if (slotParent == null)
+            {
+                slotParent = new GameObject("Slots").transform;
+                slotParent.SetParent(transform, false);
+            }
+        }
 
 
         public IEnumerable<InventorySlot> itemSlots
@@ -40,22 +68,13 @@ namespace Items
         }
         
         public int SlotCount => slotParent.childCount;
-        public void AddSlot()
+
+        public void AddItem(ItemBase item, int amount)
         {
-            var newSlotGo = new GameObject("Slot");
-            newSlotGo.transform.SetParent(slotParent);
-            newSlotGo.AddComponent<InventorySlot>();
-        }
-        
-        
-        
-        
-        public void AddItem(Item item, int amount)
-        {
-            
+            throw new NotImplementedException();
         }
 
-        public int GetItemCount(Item item)
+        public int GetItemCount(ItemBase item)
         {
             int cnt = 0;
             foreach (var itemStack in items)
@@ -76,17 +95,39 @@ namespace Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public bool RemoveItem(Item item, int amount)
+        public bool RemoveItem(ItemBase item, int amount)
         {
             int cnt = GetItemCount(item);
             if(amount > cnt)
                 return false;
-            if (amount > item.MaxStackSize)
-            {
-                int stacksToRemove = amount / item.MaxStackSize;
-                int itemsLeft = amount % item.MaxStackSize;
-            }
+            throw new NotImplementedException();
             return false;
+        }
+
+
+        public int GetEmptySlotCount()
+        {
+            int cnt = 0;
+            foreach (var inventorySlot in itemSlots)
+            {
+                if (inventorySlot.IsEmpty)
+                {
+                    cnt++;
+                }
+            }
+            return cnt;
+        }
+
+        public bool CanRemoveItem(ItemBase itemBase, int countToRemove = 1)
+        {
+            int cnt = GetItemCount(itemBase);
+            return cnt >= countToRemove;
+        }
+        
+        public bool CanAddItem(ItemBase itemBase, int countToAdd = 1)
+        {
+            int cnt = GetItemCount(itemBase);
+            return cnt + countToAdd <= itemBase.MaxStackSize;
         }
     }
 

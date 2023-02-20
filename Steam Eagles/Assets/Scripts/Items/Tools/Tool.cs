@@ -8,6 +8,7 @@ namespace Items
     public class Tool : ItemBase
     {
         public override int MaxStackSize => 1;
+        public override bool IsStackable => false;
 
 
         [ToggleGroup(nameof(usesRecipes), "Recipes")]

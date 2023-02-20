@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -30,11 +32,18 @@ namespace CoreLib.Pickups
                     spawner = res.Result;
                 };
             }
+
+            public async UniTask<Pickup> GetPickup()
+            {
+                await loadOp.Task;
+                return spawner;
+            }
         }
 
         protected override void Init()
         {
             _loadedPickupSpawners = new List<LoadedPickupSpawner>();
+            if (autoLoadPickups == null) return;
             foreach (var autoLoadPickup in autoLoadPickups)
             {
                 var spawner = new LoadedPickupSpawner(autoLoadPickup);
@@ -43,7 +52,7 @@ namespace CoreLib.Pickups
             }
         }
 
-        protected internal static string GetAddressFromKey(string key)
+        public static string GetAddressFromKey(string key)
         {
             return $"{key}_pickup";
         }
@@ -95,6 +104,31 @@ namespace CoreLib.Pickups
                 return null;
             }
             return _pickupSpawners[pickupName].spawner;
+        }
+
+        public IEnumerator LoadAndWaitForPickup(string itemName)
+        {
+            if (IsPickupLoaded(itemName))
+            {
+                yield break;
+            }
+            LoadPickup(itemName);
+            while (!IsPickupLoaded(itemName))
+            {
+                yield return null;
+            }
+            
+        }
+
+        public async UniTask<Pickup> LoadPickupAsync(string key)
+        {
+            if (IsPickupLoaded(key))
+            {
+                return _pickupSpawners[key].spawner;
+            }
+            LoadPickup(key);
+            var pickup = await _pickupSpawners[key].GetPickup();
+            return pickup;
         }
     }
 }

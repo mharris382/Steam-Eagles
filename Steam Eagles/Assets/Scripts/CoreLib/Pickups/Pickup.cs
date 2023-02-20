@@ -28,7 +28,8 @@ namespace CoreLib.Pickups
         public PickupBody SpawnPickup(Vector3 position)
         {
             var inst = Instantiate(prefab, position, Quaternion.identity);
-
+            var pickupID = inst.gameObject.AddComponent<PickupID>();
+            pickupID.Key = key;
             return inst;
         }
 

@@ -8,14 +8,14 @@ namespace UI
     public class TooltipWindow : UIElement
     {
         public EventSystem eventSystem;
-        private RectTransform _rectTransform;
+        private RectTransform _rect;
         public bool followCursor;
 
         public Vector2 preferredOffsetDirection = Vector2.right;
 
         private void Awake()
         {
-            _rectTransform = GetComponent<RectTransform>();
+            _rect = GetComponent<RectTransform>();
             if(eventSystem == null)
                 eventSystem = FindObjectOfType<EventSystem>();
         }
@@ -48,13 +48,13 @@ namespace UI
                 tooltipPos.x += selectedSize.x * preferredOffsetDirection.x;
                 tooltipPos.y += selectedSize.y * preferredOffsetDirection.y;
                 // If the tooltip would be off the screen, move it to the other side of the selected object.
-                if (tooltipPos.x + _rectTransform.sizeDelta.x > Screen.width)
+                if (tooltipPos.x + _rect.sizeDelta.x > Screen.width)
                 {
-                    tooltipPos.x = selectedPos.x - _rectTransform.sizeDelta.x;
+                    tooltipPos.x = selectedPos.x - _rect.sizeDelta.x;
                 }
-                if (tooltipPos.y + _rectTransform.sizeDelta.y > Screen.height)
+                if (tooltipPos.y + _rect.sizeDelta.y > Screen.height)
                 {
-                    tooltipPos.y = selectedPos.y - _rectTransform.sizeDelta.y;
+                    tooltipPos.y = selectedPos.y - _rect.sizeDelta.y;
                 }
                 // If the tooltip is still off the screen, move it to the center of the screen.
                 if (tooltipPos.x < 0)
@@ -66,11 +66,11 @@ namespace UI
                     tooltipPos.y = Screen.height / 2f;
                 }
                 // Set the position of the tooltip.
-                _rectTransform.position = tooltipPos;
+                _rect.position = tooltipPos;
             }
             else
             {
-                _rectTransform.position = mousePos;
+                _rect.position = mousePos;
                 // if the cursor is not over the selected object, hide the tooltip.
                 if (!RectTransformUtility.RectangleContainsScreenPoint(selectedRect, mousePos))
                 {
@@ -80,13 +80,13 @@ namespace UI
                 {
                     IsVisible = true;
                     // If the tooltip would be off the screen, move it to the other side of the mouse.
-                    if (mousePos.x + _rectTransform.sizeDelta.x > Screen.width)
+                    if (mousePos.x + _rect.sizeDelta.x > Screen.width)
                     {
-                        _rectTransform.position = new Vector2(mousePos.x - _rectTransform.sizeDelta.x, mousePos.y);
+                        _rect.position = new Vector2(mousePos.x - _rect.sizeDelta.x, mousePos.y);
                     }
-                    if (mousePos.y + _rectTransform.sizeDelta.y > Screen.height)
+                    if (mousePos.y + _rect.sizeDelta.y > Screen.height)
                     {
-                        _rectTransform.position = new Vector2(mousePos.x, mousePos.y - _rectTransform.sizeDelta.y);
+                        _rect.position = new Vector2(mousePos.x, mousePos.y - _rect.sizeDelta.y);
                     }
                 }
            
