@@ -17,7 +17,12 @@ public class Counter : HUDElement
     public string maxDisplayText = "99+";
     private ReactiveProperty<string> _countText = new ReactiveProperty<string>();
     private Coroutine _updateCoroutine;
-    public ICountable Countable { get; set; }
+
+    public ICountable Countable
+    {
+        get;
+        set;
+    }
 
     private void Start() => _countText.Subscribe(OnTextChanged).AddTo(this);
 

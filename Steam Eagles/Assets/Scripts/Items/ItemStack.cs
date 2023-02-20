@@ -23,8 +23,8 @@ namespace Items
 
 
         private static ItemBase _nullItem;
-        private static ItemStack _emptyStack;
-        public static ItemStack EmptyStack => _emptyStack;
+        private static ItemStack _empty;
+        public static ItemStack Empty => _empty;
         public ItemBase Item
         {
             get

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -24,6 +25,16 @@ namespace UI
         protected override bool BlocksRaycasts => false;
         protected override bool IsInteractable => false;
 
+        protected virtual bool IsValidSelectableForTooltip(GameObject selectable)
+        {
+            return true;
+        }
+
+        protected virtual void UpdateContent(GameObject selected)
+        {
+            
+        }
+
         public void Update()
         {
             var mousePos = Input.mousePosition;
@@ -38,6 +49,13 @@ namespace UI
             {
                 return;
             }
+            if (!IsValidSelectableForTooltip(selected))
+            {
+                IsVisible = false;
+                return;
+            }
+            IsVisible = true;
+            UpdateContent(selected);
             if (!followCursor)
             {
                 var selectedPos = selectedRect.position;
@@ -91,7 +109,6 @@ namespace UI
                 }
            
             }
-        
         }
     }
 }
