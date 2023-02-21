@@ -15,5 +15,6 @@ namespace Items
 
         
         public override int MaxStackSize => isStackable ? maxStack : 1;
+        public override ItemType ItemType => ItemType.RESOURCE;
     }
 }

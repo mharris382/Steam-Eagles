@@ -102,9 +102,9 @@ namespace Items
                 LoadItemAsync(key3));
             
         }
-        public async UniTaskVoid LoadItemsParallel(string key1, string key2, string key3, string key4)
+        public async UniTask<(ItemBase item1, ItemBase item2, ItemBase item3, ItemBase item4)> LoadItemsParallel(string key1, string key2, string key3, string key4)
         {
-            var (a, b, c, d) = await UniTask.WhenAll(
+            return await UniTask.WhenAll(
                 LoadItemAsync(key1),
                 LoadItemAsync(key2),
                 LoadItemAsync(key3),

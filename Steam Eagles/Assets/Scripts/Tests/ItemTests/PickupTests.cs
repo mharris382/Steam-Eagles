@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using CoreLib.Pickups;
+using Cysharp.Threading.Tasks;
+using Items;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -38,6 +40,15 @@ namespace Tests.ItemTests
         {
             yield return AssertPickupLoadsCorrectly(key);
             AssertPickupSpawnsCorrectly(key);
+            yield return UniTask.ToCoroutine(async () =>
+            {
+                var item = await key.LoadItemAsync();
+                Assert.NotNull(item);
+                //because pickup was already loaded, we should not have to load it a second time and calling this should always return true
+                Assert.IsTrue(item.GetPickup(out var p));
+                //the item identified as the spawned pickup should then return the same pickup, verifying the pickup was spawned and identified correctly 
+                Assert.AreEqual(p, pickup);
+            });
         }
 
         void AssertPickupSpawnsCorrectly(string key)
@@ -48,6 +59,7 @@ namespace Tests.ItemTests
             Assert.NotNull(pickupId);
             Assert.IsTrue(pickupId.HasKeyBeenAssigned);
             Assert.AreEqual(key, pickupId.Key);
+            
         }
 
         IEnumerator AssertPickupLoadsCorrectly(string key)

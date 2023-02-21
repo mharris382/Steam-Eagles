@@ -34,5 +34,7 @@ namespace Items
         
         public virtual bool IsStackable => MaxStackSize > 1;
         public abstract int MaxStackSize { get; }
+        
+        public abstract ItemType ItemType { get; }
     }
 }

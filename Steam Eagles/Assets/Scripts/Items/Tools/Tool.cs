@@ -15,5 +15,7 @@ namespace Items
         [SerializeField] private bool usesRecipes;
         [ToggleGroup(nameof(usesRecipes)), InlineEditor(Expanded = true)]
         [SerializeField] private List<Recipe> recipes;
+
+        public override ItemType ItemType => ItemType.TOOL;
     }
 }
