@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Characters;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace Players
 {
     public class GameManager : MonoBehaviour
     {
+        [Required]
+        public SharedInt activePlayerCount;
         [ValidateInput(nameof(ValidateWrappers))]
         [BoxGroup("Players")]  public List<PlayerWrapper> players;
         [BoxGroup("Players")]  public CameraAssignments cameraAssignments;
@@ -26,59 +29,11 @@ namespace Players
 
         IDisposable _singlePlayerCameraSubscription;
         IPlayerDependencyResolver<Camera> CameraResolver => cameraAssignments;
-        
-        bool ValidateWrappers(List<PlayerWrapper> wrappers)
-        {
-            if (wrappers.Count < 2) return false;
-            for (int i = 0; i < wrappers.Count; i++)
-            {
-                if (wrappers[i] == null) return false;
-                if(wrappers[i].player == null) return false;
-                if(wrappers[i].player.characterTransform==null) return false;
-                if(wrappers[i].player.playerNumber != i) return false;
-            }
-            return true;
-        }
 
-
-        public void OnPlayerLeft(PlayerInput obj)
+        private void Awake()
         {
-            Debug.Log($"Player {obj.playerIndex} Left");
-            _joinedPlayers.Remove(players[obj.playerIndex]);
+            activePlayerCount.Value = 0;
         }
-        public void OnPlayerJoined(PlayerInput obj)
-        {
-            var id = obj.playerIndex;
-            if (_joinedPlayers.Count > 0)
-            {
-                SwitchToMultiPlayerCamera();
-            }
-            try
-            {
-                var wrapper = players[id];
-                var input = obj.GetComponent<PlayerCharacterInput>();
-                
-                var camera = cameraAssignments.GetDependency(id);
-                Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
-                Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
-                
-                var character = characterAssignments.GetDependency(id);
-                Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
-                
-                wrapper.BindToPlayer(input);
-                wrapper.AssignCamera(camera.Value);
-                wrapper.AssignCharacter(character);
-                Debug.Assert(wrapper.IsFullyBound);
-                
-                _joinedPlayers.Add(wrapper);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Player {obj.playerIndex} failed to join\n{e.GetType()} \n{e.Message}");
-                throw;
-            }
-        }
-
 
         private void Start()
         {
@@ -112,10 +67,63 @@ namespace Players
                 .Subscribe(_ =>
                 {
                     HideMessageGUIs();
-                    
-                    
                 })
                 .AddTo(this);
+            
+            _joinedPlayers.ObserveCountChanged().Subscribe(cnt => activePlayerCount.Value = cnt).AddTo(this);
+        }
+
+        bool ValidateWrappers(List<PlayerWrapper> wrappers)
+        {
+            if (wrappers.Count < 2) return false;
+            for (int i = 0; i < wrappers.Count; i++)
+            {
+                if (wrappers[i] == null) return false;
+                if(wrappers[i].player == null) return false;
+                if(wrappers[i].player.characterTransform==null) return false;
+                if(wrappers[i].player.playerNumber != i) return false;
+            }
+            return true;
+        }
+
+
+        public void OnPlayerLeft(PlayerInput obj)
+        {
+            Debug.Log($"Player {obj.playerIndex} Left");
+            _joinedPlayers.Remove(players[obj.playerIndex]);
+        }
+
+        public void OnPlayerJoined(PlayerInput obj)
+        {
+            var id = obj.playerIndex;
+            if (_joinedPlayers.Count > 0)
+            {
+                SwitchToMultiPlayerCamera();
+            }
+            try
+            {
+                var wrapper = players[id];
+                var input = obj.GetComponent<PlayerCharacterInput>();
+                
+                var camera = cameraAssignments.GetDependency(id);
+                Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
+                Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
+                
+                var character = characterAssignments.GetDependency(id);
+                Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
+                
+                wrapper.BindToPlayer(input);
+                wrapper.AssignCamera(camera.Value);
+                wrapper.AssignCharacter(character);
+                Debug.Assert(wrapper.IsFullyBound);
+                
+                _joinedPlayers.Add(wrapper);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Player {obj.playerIndex} failed to join\n{e.GetType()} \n{e.Message}");
+                throw;
+            }
         }
 
 

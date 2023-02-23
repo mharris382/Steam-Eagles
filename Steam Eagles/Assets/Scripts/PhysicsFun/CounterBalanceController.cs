@@ -45,5 +45,10 @@ namespace PhysicsFun
                 counterBalance.density = _currentDensity;
             }
         }
+        
+        public void SetDensityControl(float density)
+        {
+            densityControl = density;
+        }
     }
 }

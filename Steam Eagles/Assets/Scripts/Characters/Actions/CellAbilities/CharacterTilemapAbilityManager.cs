@@ -160,7 +160,7 @@ namespace Characters
             {
                 if (ability.Tilemap == null)
                 {
-                    Debug.LogError($"Ability {ability.name} has no tilemap!", ability);
+                    Debug.LogWarning($"Ability {ability.name} has no tilemap!", ability);
                     return false;
                 }
             }

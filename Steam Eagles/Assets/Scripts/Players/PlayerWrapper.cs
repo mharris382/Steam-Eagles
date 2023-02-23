@@ -101,6 +101,11 @@ namespace Characters
                 var characterInputState = _characterState.GetComponent<CharacterInputState>();
                 _playerCharacterInput.Assign(characterInputState);
                 player.AssignPlayer(_playerCharacterInput, _characterState);
+                MessageBroker.Default.Publish(new PlayerJoinedInfo()
+                {
+                    playerNumber = player.playerNumber,
+                    playerObject = player
+                });
             }
 
             //ensure player has camera bound at all times

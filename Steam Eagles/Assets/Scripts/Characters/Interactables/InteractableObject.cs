@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using CoreLib;
+using UniRx;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Characters.Interactables
@@ -20,7 +23,9 @@ namespace Characters.Interactables
         
         public virtual string Description => description;
         
+        private Subject<string> _onDescriptionChange = new Subject<string>();
         
+        public IObservable<string> OnDescriptionChange => _onDescriptionChange;
 
         public bool inUse;
         private void Awake()
@@ -33,6 +38,15 @@ namespace Characters.Interactables
             onInteraction?.Invoke();   
         }
         
+        
+        public void NotifyDescriptionChange()
+        {
+            _onDescriptionChange.OnNext(Description);
+            MessageBroker.Default.Publish(new InteractionLabelChanged()
+            {
+                interactable = this
+            });
+        }
         
     }
 }

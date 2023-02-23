@@ -53,6 +53,7 @@ namespace UI
         void OpenWheel()
         {
             wheel.enabled = true;
+            wheel.UpdateChildImages();
             if (player.CharacterInput == null) return;
             var input = player.CharacterInput.PlayerInput;
             input.SwitchCurrentActionMap("Wheel");
