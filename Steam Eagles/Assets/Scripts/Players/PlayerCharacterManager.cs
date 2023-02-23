@@ -34,12 +34,12 @@ namespace Characters
         private Dictionary<CharacterInputState, CharacterAssignment> _characterAssignmentLookup =
             new Dictionary<CharacterInputState, CharacterAssignment>();
         
-        private Dictionary<PlayerCharacterInput, CharacterInputState> _joinedPlayers = new Dictionary<PlayerCharacterInput, CharacterInputState>();
-        private Dictionary<CharacterInputState, PlayerCharacterInput> _assignedCharacters = new Dictionary<CharacterInputState, PlayerCharacterInput>();
+        private Dictionary<PlayerInputWrapper, CharacterInputState> _joinedPlayers = new Dictionary<PlayerInputWrapper, CharacterInputState>();
+        private Dictionary<CharacterInputState, PlayerInputWrapper> _assignedCharacters = new Dictionary<CharacterInputState, PlayerInputWrapper>();
 
        
         [Obsolete("this can be removed, instead use the playerInputManager's limit number of players")]
-        private Queue<PlayerCharacterInput> _unassignedPlayers = new Queue<PlayerCharacterInput>(); //TODO: this can be removed, instead use the playerInputManager's limit number of players
+        private Queue<PlayerInputWrapper> _unassignedPlayers = new Queue<PlayerInputWrapper>(); //TODO: this can be removed, instead use the playerInputManager's limit number of players
         
         
      
@@ -47,7 +47,6 @@ namespace Characters
         private void Awake()
         {
             _inputManager = GetComponent<PlayerInputManager>();
-            
             _inputManager.onPlayerJoined += OnPlayerJoined;
             _inputManager.onPlayerLeft += OnPlayerLeft;
             SpawnCharacters();
@@ -72,11 +71,11 @@ namespace Characters
             var characterInput = GetCharacterInput(obj);
             if (characterInput == null) return;
             
-            PlayerCharacterInput playerCharacterInput = GetCharacterInput(obj);
+            PlayerInputWrapper playerInputWrapper = GetCharacterInput(obj);
             
             
             //if the player is assigned to a character, remove them from the dictionary
-            UnAssignCharacterToPlayer(playerCharacterInput);
+            UnAssignCharacterToPlayer(playerInputWrapper);
         }
 
         private void OnPlayerJoined(PlayerInput obj)
@@ -87,35 +86,31 @@ namespace Characters
             players[obj.playerIndex].SetCharacterInput(characterInput);
         }
 
-        private void AssignCharacterToPlayer(PlayerCharacterInput playerCharacterInput, CharacterInputState characterInputState = null)
+        private void AssignCharacterToPlayer(PlayerInputWrapper playerInputWrapper, CharacterInputState characterInputState = null)
         {
-            
-
             characterInputState = characterInputState == null ? Dequeue(): characterInputState;
             characterInputState.gameObject.SetActive(true);
-            _joinedPlayers.Add(playerCharacterInput, characterInputState);
-            _assignedCharacters.Add(characterInputState, playerCharacterInput);
-            playerCharacterInput.Assign(characterInputState);
-            Debug.Log($"Assigned {characterInputState.name} to Player #{playerCharacterInput.PlayerInput.playerIndex}");
+            _joinedPlayers.Add(playerInputWrapper, characterInputState);
+            _assignedCharacters.Add(characterInputState, playerInputWrapper);
+            playerInputWrapper.Assign(characterInputState);
+            Debug.Log($"Assigned {characterInputState.name} to Player #{playerInputWrapper.PlayerInput.playerIndex}");
         }
         
-        private void UnAssignCharacterToPlayer(PlayerCharacterInput playerCharacterInput)
+        private void UnAssignCharacterToPlayer(PlayerInputWrapper playerInputWrapper)
         {
-            if (!_joinedPlayers.ContainsKey(playerCharacterInput)) return;
+            if (!_joinedPlayers.ContainsKey(playerInputWrapper)) return;
             
-            CharacterInputState characterInputState = _joinedPlayers[playerCharacterInput];
-            playerCharacterInput.UnAssign(characterInputState);
+            CharacterInputState characterInputState = _joinedPlayers[playerInputWrapper];
+            playerInputWrapper.UnAssign(characterInputState);
             
-            _joinedPlayers.Remove(playerCharacterInput);
+            _joinedPlayers.Remove(playerInputWrapper);
             _assignedCharacters.Remove(characterInputState);
             
             Enqueue(characterInputState);
             if (_unassignedPlayers.Count > 0) AssignCharacterToPlayer(_unassignedPlayers.Dequeue());
-            
-            Debug.Log($"Unassigned Character {characterInputState.name} from Player #{playerCharacterInput.PlayerInput.playerIndex}");
+            Debug.Log($"Unassigned Character {characterInputState.name} from Player #{playerInputWrapper.PlayerInput.playerIndex}");
         }
-
-        
+       
 
         /// <summary>
         /// respawns and reassigns a character if the character GameObject is destroyed for some reason.  the character
@@ -144,12 +139,12 @@ namespace Characters
         /// </summary>
         /// <param name="playerInput"></param>
         /// <returns></returns>
-        public PlayerCharacterInput GetCharacterInput(PlayerInput playerInput)
+        public PlayerInputWrapper GetCharacterInput(PlayerInput playerInput)
         {
-            PlayerCharacterInput characterInput;
-            if (!playerInput.gameObject.TryGetComponent(out characterInput))
+            PlayerInputWrapper inputWrapper;
+            if (!playerInput.gameObject.TryGetComponent(out inputWrapper))
             {
-                characterInput = playerInput.gameObject.AddComponent<PlayerCharacterInput>();
+                inputWrapper = playerInput.gameObject.AddComponent<PlayerInputWrapper>();
             }
 
             var player = playerInputs.FirstOrDefault(t => !t.HasValue || t.Value == playerInput.transform);
@@ -160,7 +155,7 @@ namespace Characters
 
             player.Value = playerInput.transform;
 
-            return characterInput;
+            return inputWrapper;
         }
 
         
@@ -197,20 +192,20 @@ namespace Characters
         #endregion
         
            
-        private void ChangeAssignment(PlayerCharacterInput playerCharacterInput, CharacterAssignment newCharacterAssignment)
+        private void ChangeAssignment(PlayerInputWrapper playerInputWrapper, CharacterAssignment newCharacterAssignment)
         {
-            if (!_joinedPlayers.ContainsKey(playerCharacterInput)) return;
+            if (!_joinedPlayers.ContainsKey(playerInputWrapper)) return;
             
-            CharacterInputState characterInputState = _joinedPlayers[playerCharacterInput];
-            playerCharacterInput.UnAssign(characterInputState);
+            CharacterInputState characterInputState = _joinedPlayers[playerInputWrapper];
+            playerInputWrapper.UnAssign(characterInputState);
             
-            _joinedPlayers.Remove(playerCharacterInput);
+            _joinedPlayers.Remove(playerInputWrapper);
             _assignedCharacters.Remove(characterInputState);
             
             Enqueue(characterInputState);
-            AssignCharacterToPlayer(playerCharacterInput, newCharacterAssignment.InstantiateCharacter());
+            AssignCharacterToPlayer(playerInputWrapper, newCharacterAssignment.InstantiateCharacter());
             
-            Debug.Log($"Changed Character {characterInputState.name} to {newCharacterAssignment.characterName} for Player #{playerCharacterInput.PlayerInput.playerIndex}");
+            Debug.Log($"Changed Character {characterInputState.name} to {newCharacterAssignment.characterName} for Player #{playerInputWrapper.PlayerInput.playerIndex}");
         }
 
     }

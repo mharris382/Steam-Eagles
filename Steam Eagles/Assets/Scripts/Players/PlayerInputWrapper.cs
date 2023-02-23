@@ -12,7 +12,7 @@ namespace Characters
     /// component responsible for the PlayerInput side of the PlayerController, this component will be attached to the PlayerInput GameObject
     /// </summary>
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerCharacterInput : MonoBehaviour
+    public class PlayerInputWrapper : MonoBehaviour
     {
         
         

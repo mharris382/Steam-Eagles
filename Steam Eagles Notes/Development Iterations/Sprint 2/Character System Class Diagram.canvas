@@ -1,0 +1,12 @@
+{
+	"nodes":[
+		{"id":"7421058dcabf3a9a","x":-335,"y":-158,"width":250,"height":131,"type":"text","text":"CharacterInputProcessor\n\nwrites to character state input values each frame"},
+		{"id":"4b10cf5fe0ba8609","x":98,"y":-220,"width":222,"height":330,"type":"text","text":"CharacterState\n\nbool jumpPressed\nbool jumpHeld \nfloat moveX \nfloat moveY \n\nbool isGrounded\nbool isDropping\nbool isJumping\nfloat velocityX \nfloat velocityY "},
+		{"id":"497dd54a84da0b0c","x":-367,"y":16,"width":314,"height":189,"type":"text","text":"CharacterController\n\nreads from input from character state and applies physics to character's rigidbody. \n\nAlso writes to movement state values "},
+		{"id":"098bdb8746179598","x":-299,"y":289,"width":442,"height":580,"type":"text","text":"CharacterController2\n\nApplyMovement()\nApplyJumpMovement()\nApplyJumpForce()\n\nCheckJumping()\nCheckFacingDirection()\nCheckSlopes()\nCheckGround()\nUpdatePhysMat()\nSetPhysMat(PhysicsMaterial2D mat)\n\nAbleToJump()\nBeginJump()\nApplyJumpForces()\nEndJump()\n\nAbleToDrop()\nBeginDrop()\nEndDrop()\n\nClearParent()\nCheckParent()"}
+	],
+	"edges":[
+		{"id":"0908b61e952a1ecb","fromNode":"4b10cf5fe0ba8609","fromSide":"left","toNode":"7421058dcabf3a9a","toSide":"right"},
+		{"id":"310613113e62d82a","fromNode":"4b10cf5fe0ba8609","fromSide":"left","toNode":"497dd54a84da0b0c","toSide":"right"}
+	]
+}

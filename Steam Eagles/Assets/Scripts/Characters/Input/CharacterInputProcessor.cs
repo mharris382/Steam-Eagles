@@ -21,7 +21,7 @@ public class CharacterInputProcessor : MonoBehaviour
 
     bool HasInput()
     {
-        return player.CharacterInput != null && player.CharacterInput.PlayerInput != null;
+        return player.InputWrapper != null && player.InputWrapper.PlayerInput != null;
     }
     private void Update()
     {
@@ -30,7 +30,7 @@ public class CharacterInputProcessor : MonoBehaviour
             return;
         }
 
-        var inputPlayer = player.CharacterInput.PlayerInput;
+        var inputPlayer = player.InputWrapper.PlayerInput;
         var moveInput = inputPlayer.actions["Move"].ReadValue<Vector2>();
         
         

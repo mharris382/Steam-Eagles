@@ -40,7 +40,17 @@ namespace Players
                 }
             }
         }
-
+        
+        [System.Serializable]
+        public class Tilemaps
+        {
+            [SerializeField, Required] public SharedTilemap foundationTilemap;
+            [SerializeField, Required] public SharedTilemap wallTilemap;
+            [SerializeField, Required] public SharedTilemap solidTilemap;
+            [SerializeField, Required] public SharedTilemap pipeTilemap;
+            [SerializeField, Required] public SharedTilemap decorTilemap;
+        }
+        
         [Range(0, 1)] public int playerNumber = 0;
 
         //TODO: rename this to default character, and add a character selection system
@@ -49,6 +59,7 @@ namespace Players
 
 
         public Events events;
+        public Tilemaps tilemaps;
         public SharedTransform characterTransform;
         public SharedCamera playerCamera;
 
@@ -57,26 +68,21 @@ namespace Players
 
         #region [TILEMAPS]
 
-        [FoldoutGroup("Tilemaps"), SerializeField]
-        public SharedTilemap foundationTilemap;
+        public SharedTilemap foundationTilemap => tilemaps.foundationTilemap;
 
-        [FoldoutGroup("Tilemaps"), SerializeField]
-        public SharedTilemap wallTilemap;
+        public SharedTilemap wallTilemap => tilemaps.wallTilemap;
 
-        [FoldoutGroup("Tilemaps"), SerializeField]
-        public SharedTilemap solidTilemap;
+        public SharedTilemap solidTilemap => tilemaps.solidTilemap;
 
-        [FoldoutGroup("Tilemaps"), SerializeField]
-        public SharedTilemap pipeTilemap;
+        public SharedTilemap pipeTilemap => tilemaps.solidTilemap;
 
-        [FoldoutGroup("Tilemaps"), SerializeField]
-        public SharedTilemap decorTilemap;
+        public SharedTilemap decorTilemap => tilemaps.decorTilemap;
 
         #endregion
 
-        public PlayerCharacterInput CharacterInput { get; private set; }
+        public PlayerInputWrapper InputWrapper { get; private set; }
 
-        public PlayerInput PlayerInput => CharacterInput == null ? null : CharacterInput.PlayerInput;
+        public PlayerInput PlayerInput => InputWrapper == null ? null : InputWrapper.PlayerInput;
         public CharacterState State { get; private set; }
 
         
@@ -100,11 +106,11 @@ namespace Players
             }
         }
 
-        public void AssignPlayer(PlayerCharacterInput playerCharacterInput,CharacterState assignedCharacter)
+        public void AssignPlayer(PlayerInputWrapper playerInputWrapper,CharacterState assignedCharacter)
         {
             this.State = assignedCharacter;
-            this.CharacterInput = playerCharacterInput;
-            playerCharacterInput.Assign(State.GetComponent<CharacterInputState>());
+            this.InputWrapper = playerInputWrapper;
+            playerInputWrapper.Assign(State.GetComponent<CharacterInputState>());
             events.Update(this);
         }
 
@@ -128,9 +134,9 @@ namespace Players
         } 
         
         
-        public void SetCharacterInput(PlayerCharacterInput characterInput)
+        public void SetCharacterInput(PlayerInputWrapper inputWrapper)
         {
-            this.CharacterInput = characterInput;
+            this.InputWrapper = inputWrapper;
         }
 
 
