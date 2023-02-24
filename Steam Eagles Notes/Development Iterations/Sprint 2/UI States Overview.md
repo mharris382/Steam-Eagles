@@ -1,3 +1,5 @@
+#ui #systems-design 
+
 I usually don't like having a assembly that has it's hands in every jar, but I think the best way to integrate the various game states is through a UI controller, which can act as a coordinator for all the other game and UI systems.  Basically it's a UI state machine, but I'm going to go for explict coupling here, rather than the loose coupling I've been using for this project, mainly so that the UI controller code can explicitly tell the various systems when they should be active or not.   
 
 
