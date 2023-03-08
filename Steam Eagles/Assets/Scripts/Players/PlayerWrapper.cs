@@ -16,12 +16,12 @@ namespace Characters
         public Player player;
 
         private CharacterState _characterState;
-        private PlayerCharacterInput _playerCharacterInput;
+        private PlayerInputWrapper _playerInputWrapper;
         private Camera _playerCamera;
         private InputSystemUIInputModule _eventSystem;
         private GameObject _localMultiplayerUIRoot;
 
-        public bool IsInputBound => _playerCharacterInput != null;
+        public bool IsInputBound => _playerInputWrapper != null;
 
         public bool IssCameraBound => _playerCamera != null;
 
@@ -83,9 +83,10 @@ namespace Characters
             
         }
 
-        public void BindToPlayer(PlayerCharacterInput playerInput)
+        public void BindToPlayer(PlayerInputWrapper playerInputWrapper)
         {
-            _playerCharacterInput =playerInput;
+            _playerInputWrapper =playerInputWrapper;
+            
             InitializeIfFullyBound();
         }
 
@@ -99,8 +100,8 @@ namespace Characters
             void InitInput()
             {
                 var characterInputState = _characterState.GetComponent<CharacterInputState>();
-                _playerCharacterInput.Assign(characterInputState);
-                player.AssignPlayer(_playerCharacterInput, _characterState);
+                _playerInputWrapper.Assign(characterInputState);
+                player.AssignPlayer(_playerInputWrapper, _characterState);
                 MessageBroker.Default.Publish(new PlayerJoinedInfo()
                 {
                     playerNumber = player.playerNumber,

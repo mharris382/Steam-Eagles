@@ -33,6 +33,7 @@ namespace Players
         private void Awake()
         {
             activePlayerCount.Value = 0;
+            
         }
 
         private void Start()
@@ -103,7 +104,7 @@ namespace Players
             try
             {
                 var wrapper = players[id];
-                var input = obj.GetComponent<PlayerCharacterInput>();
+                var input = obj.GetComponent<PlayerInputWrapper>();
                 
                 var camera = cameraAssignments.GetDependency(id);
                 Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);

@@ -1,0 +1,39 @@
+{
+	"nodes":[
+		{"id":"2bd283afd25a472f","x":-482,"y":-415,"width":593,"height":258,"color":"#61c2ff","type":"text","text":"# Player\n\n`int playerNumber`\n`string characterTag`\n\n---\n`EnableStructureEditing(EditableTilemapStructure structure)`\n`DisableStructureEditing()`\n"},
+		{"id":"9a69555e59a52e4c","x":-1012,"y":-452,"width":323,"height":89,"color":"#61c2ff","type":"text","text":"AssignedCamera\n`Camera value { get; set; }`"},
+		{"id":"ab871de3264d8859","x":-1012,"y":-363,"width":323,"height":77,"color":"#61c2ff","type":"text","text":"AssignedCharacter\n`Transform value { get; set; }`"},
+		{"id":"e9b30a0437a26088","x":-1010,"y":18,"width":323,"height":149,"color":"#61c2ff","type":"text","text":"Player.Tilemaps\n```\nSharedTilemap wallTilemap\nSharedTilemap solidTilemap\nSharedTilemap pipeTilemap\nSharedTilemap foundationTilemap\nSharedTilemap decorTilemap\n```"},
+		{"id":"cfad2a85352a13f7","x":-1011,"y":167,"width":323,"height":147,"color":"#61c2ff","type":"text","text":"Player.Events\n```\nUnityEvent<PlayerInput> onPlayerInputAssigned;  \nUnityEvent<Transform> onPlayerCharacterChanged;\n```"},
+		{"id":"a1fd543ce3b83994","x":-2575,"y":-1153,"width":425,"height":83,"type":"text","text":"UnityEngine.InputSystem.PlayerInputManager"},
+		{"id":"91f626bb8c9c414b","x":-1936,"y":-1153,"width":374,"height":96,"type":"text","text":"SteamEagles.Players.PlayerInputManager"},
+		{"id":"67e4e9c3da7170d7","x":-1936,"y":-1016,"width":494,"height":153,"color":"#61c2ff","type":"text","text":"PlayerInputWrapper\n\n`Update()`\n`Assign(CharacterInputState characterInputState)`\n`UnAssign(CharacterInputState characterInputState)`\n"},
+		{"id":"9abc2e08328dcba6","x":-2522,"y":-996,"width":372,"height":112,"type":"text","text":"PlayerInput"},
+		{"id":"26d2b04e8b3b1e9d","x":-1012,"y":-753,"width":389,"height":70,"type":"text","text":"CameraAssignments"},
+		{"id":"6bbbb611d369dd2e","x":-1048,"y":-829,"width":389,"height":76,"type":"text","text":"CharacterAssignments"},
+		{"id":"2b7e65525a592628","x":-380,"y":-888,"width":389,"height":118,"type":"text","text":"GameManager"},
+		{"id":"785f62bc1931db5f","x":-1081,"y":-897,"width":389,"height":68,"type":"text","text":"EventSystemAssignments"},
+		{"id":"4cb1db780c133a5b","x":-340,"y":-683,"width":309,"height":112,"type":"text","text":"PlayerWrapper\n"},
+		{"id":"dd8db84b841cb1eb","x":542,"y":-396,"width":323,"height":220,"type":"text","text":"EditableTilemapStructure\n\nTilemap wallTilemap\nTilemap solidTilemap\nTilemap pipeTilemap\nTilemap foundationTilemap\nTilemap decorTilemap"},
+		{"id":"61629f70a5e83273","x":-1010,"y":-286,"width":323,"height":77,"color":"#61c2ff","type":"text","text":"AssignedEventSystem\n`Transform value { get; set; }`"},
+		{"id":"44540367e7183459","x":-1749,"y":-247,"width":270,"height":131,"type":"text","text":"CharacterInputState"}
+	],
+	"edges":[
+		{"id":"7cc30c0088378e5c","fromNode":"cfad2a85352a13f7","fromSide":"right","toNode":"2bd283afd25a472f","toSide":"left","color":"#4c8fba"},
+		{"id":"d18012226b1994c1","fromNode":"9a69555e59a52e4c","fromSide":"right","toNode":"2bd283afd25a472f","toSide":"left","color":"#4c8fba"},
+		{"id":"48c1c4b4e33a872d","fromNode":"ab871de3264d8859","fromSide":"right","toNode":"2bd283afd25a472f","toSide":"left","color":"#4c8fba"},
+		{"id":"dbb2d7dab52a517c","fromNode":"e9b30a0437a26088","fromSide":"right","toNode":"2bd283afd25a472f","toSide":"left","color":"#4c8fba"},
+		{"id":"d2bf9d4952f3638e","fromNode":"dd8db84b841cb1eb","fromSide":"left","toNode":"2bd283afd25a472f","toSide":"right"},
+		{"id":"aab6a905405a2393","fromNode":"9abc2e08328dcba6","fromSide":"right","toNode":"67e4e9c3da7170d7","toSide":"left","label":"ReqC"},
+		{"id":"27766972fdca5558","fromNode":"6bbbb611d369dd2e","fromSide":"right","toNode":"2b7e65525a592628","toSide":"left"},
+		{"id":"eba3e46520610caf","fromNode":"26d2b04e8b3b1e9d","fromSide":"right","toNode":"2b7e65525a592628","toSide":"left"},
+		{"id":"5ff7178ad4223f91","fromNode":"785f62bc1931db5f","fromSide":"right","toNode":"2b7e65525a592628","toSide":"left"},
+		{"id":"157f464b0eaaf0a6","fromNode":"2bd283afd25a472f","fromSide":"top","toNode":"4cb1db780c133a5b","toSide":"bottom"},
+		{"id":"024b89a9c15c6f68","fromNode":"4cb1db780c133a5b","fromSide":"top","toNode":"2b7e65525a592628","toSide":"bottom"},
+		{"id":"94f626a4b57c2e78","fromNode":"61629f70a5e83273","fromSide":"right","toNode":"2bd283afd25a472f","toSide":"left","color":"#4d91bc"},
+		{"id":"485bf027672aab74","fromNode":"785f62bc1931db5f","fromSide":"left","toNode":"61629f70a5e83273","toSide":"left"},
+		{"id":"30c3546c252ed088","fromNode":"6bbbb611d369dd2e","fromSide":"left","toNode":"ab871de3264d8859","toSide":"left"},
+		{"id":"34c0bb86d566bbfb","fromNode":"26d2b04e8b3b1e9d","fromSide":"left","toNode":"9a69555e59a52e4c","toSide":"left"},
+		{"id":"91a69aedaae6a234","fromNode":"a1fd543ce3b83994","fromSide":"right","toNode":"91f626bb8c9c414b","toSide":"left","label":"ReqC"}
+	]
+}

@@ -1,0 +1,23 @@
+{
+	"nodes":[
+		{"id":"546a423b868cf3d7","x":-473,"y":-877,"width":1426,"height":1396,"type":"group","label":"Generic UI Wheel"},
+		{"id":"0cae725ab8c6bc9b","x":-453,"y":-857,"width":316,"height":273,"color":"6","type":"text","text":"UIWheelSelectable\n\n_responsibiliites_\n- abstract data packet representing an option which wil be displayed and can be selected "},
+		{"id":"a90350de58aede41","x":49,"y":-857,"width":316,"height":273,"type":"text","text":"UIBuilder\n\n_responsibiliites_\n- entry point for any external UI systems which want to use the wheel \n- manages lifetime of wheel when it is opened/closed"},
+		{"id":"e879de42858e4e59","x":87,"y":-347,"width":388,"height":273,"type":"text","text":"UIWheelSegment\n\n_responsibilites_\n- display a single option on the wheel\n- manage UI elements used to render the segment"},
+		{"id":"86550aaeb507635e","x":-364,"y":-347,"width":316,"height":273,"type":"text","text":"UIWheel\n\n_responsibiliites_\n- compute the size/positions of UIWheelSegments"},
+		{"id":"130e8c50de104221","x":617,"y":-347,"width":316,"height":273,"type":"text","text":"UIWheelData\n\n_responsibilites_\n- store data relating to UI Wheel"},
+		{"id":"dbd5ef44437b823a","x":365,"y":143,"width":387,"height":356,"type":"text","text":"UIWheelInputProcessor\n\n_responsibiliites_\n- processes Player input while wheel is open\n- notifies UIWheelSegements when they are selected while wheel is open\n- invokes the selection callback if selection is made while wheel is open"},
+		{"id":"d58bf384b020f23f","x":752,"y":617,"width":250,"height":60,"type":"text","text":"Player"}
+	],
+	"edges":[
+		{"id":"cd4ec7585031aae1","fromNode":"0cae725ab8c6bc9b","fromSide":"right","toNode":"a90350de58aede41","toSide":"left","label":"2..n"},
+		{"id":"1dffabc5796617da","fromNode":"86550aaeb507635e","fromSide":"top","toNode":"a90350de58aede41","toSide":"bottom"},
+		{"id":"67766a79484f4fe1","fromNode":"130e8c50de104221","fromSide":"top","toNode":"a90350de58aede41","toSide":"bottom"},
+		{"id":"460371ec0bf9202a","fromNode":"130e8c50de104221","fromSide":"bottom","toNode":"dbd5ef44437b823a","toSide":"top"},
+		{"id":"6beeae3fb7ea3db4","fromNode":"e879de42858e4e59","fromSide":"top","toNode":"a90350de58aede41","toSide":"bottom"},
+		{"id":"eb033a9ef2e2a8df","fromNode":"e879de42858e4e59","fromSide":"bottom","toNode":"dbd5ef44437b823a","toSide":"top"},
+		{"id":"9daffbf028e376e6","fromNode":"e879de42858e4e59","fromSide":"right","toNode":"130e8c50de104221","toSide":"left","label":"0..n"},
+		{"id":"48c27843e691dea4","fromNode":"e879de42858e4e59","fromSide":"left","toNode":"86550aaeb507635e","toSide":"right","label":"0..n"},
+		{"id":"2105efcb42077324","fromNode":"d58bf384b020f23f","fromSide":"top","toNode":"dbd5ef44437b823a","toSide":"right"}
+	]
+}

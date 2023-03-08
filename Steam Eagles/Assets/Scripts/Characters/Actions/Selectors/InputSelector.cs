@@ -11,8 +11,8 @@ namespace Characters.Actions.Selectors
         [SerializeField] private float controllerAimSensitivity = 0.5f;
         [SerializeField] private float maxAimDistance = 10;
         public Transform aimTransform;
-        private PlayerInput PlayerInput => player.CharacterInput.PlayerInput;
-        private PlayerCharacterInput PlayerCharacterInput => player.CharacterInput;
+        private PlayerInput PlayerInput => player.InputWrapper.PlayerInput;
+        private PlayerInputWrapper PlayerInputWrapper => player.InputWrapper;
         
         
         Vector2 controllerAimOffset = Vector2.zero;
@@ -20,19 +20,19 @@ namespace Characters.Actions.Selectors
         public override bool CanSelectCells()
         {
             if (player == null) return false;
-            if (player.CharacterInput == null)
+            if (player.InputWrapper == null)
             {
                 Debug.LogWarning($"Player {player.name} has no input",this);
                 return false;
             }
-            if (player.CharacterInput.PlayerInput.camera == null)
+            if (player.InputWrapper.PlayerInput.camera == null)
             {
-                player.CharacterInput.PlayerInput.camera = TargetCamera;
+                player.InputWrapper.PlayerInput.camera = TargetCamera;
             }
-            else if (TargetCamera != null && player.CharacterInput.PlayerInput.camera != TargetCamera)
+            else if (TargetCamera != null && player.InputWrapper.PlayerInput.camera != TargetCamera)
             {
-                Debug.LogWarning($"Player input camera ({player.CharacterInput.PlayerInput.camera.name}) is not the same as the selector camera ({TargetCamera.name})!",this);
-                player.CharacterInput.PlayerInput.camera = TargetCamera;
+                Debug.LogWarning($"Player input camera ({player.InputWrapper.PlayerInput.camera.name}) is not the same as the selector camera ({TargetCamera.name})!",this);
+                player.InputWrapper.PlayerInput.camera = TargetCamera;
             }
             return TargetCamera != null && TargetGrid != null;
         }

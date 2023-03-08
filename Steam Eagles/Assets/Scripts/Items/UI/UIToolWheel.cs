@@ -13,8 +13,8 @@ namespace Items.UI
 
         bool HasResources()
         {
-            if(player.CharacterInput==null) return false;
-            if(player.CharacterInput.PlayerInput == null) return false;
+            if(player.InputWrapper==null) return false;
+            if(player.InputWrapper.PlayerInput == null) return false;
             
             return true;
         }

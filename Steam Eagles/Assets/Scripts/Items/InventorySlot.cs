@@ -1,10 +1,11 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Items
 {
-    public class InventorySlot : MonoBehaviour
+    public class InventorySlot : MonoBehaviour, IComparable<InventorySlot>
     {
         public IInventory inventory
         {
@@ -37,6 +38,22 @@ namespace Items
         public bool IsSlotStackable => !IsSlotEmpty && Item.IsStackable;
         public int StackSize => IsSlotStackable ? ItemStack.Count : (IsSlotEmpty ? 0 : 1);
 
+        public bool IsFull
+        {
+            get
+            {
+                if (ItemStack.item == null) return false;
+                return ItemStack.Count >= ItemStack.item.MaxStackSize;
+            }
+        }
+
+
+        public int GetRemainingStackableSpace()
+        {
+            if (IsSlotEmpty) return 0;
+            if (!IsSlotStackable) return 0;
+            return Item.MaxStackSize - ItemStack.Count;
+        }
         public void OnStackChanged(ItemStack stack)
         {
             if (stack.item == null)
@@ -85,6 +102,11 @@ namespace Items
             return true;
         }
 
+        public bool SetItemStack(ItemBase itemBase, int cnt)
+        {
+            return SetItemStack(new ItemStack(itemBase, cnt));
+        }
+        
         public void SetItemStackSafe(ItemStack itemStack)
         {
             if (itemStack.item == null || itemStack.Count <= 0)
@@ -105,6 +127,10 @@ namespace Items
             }
         }
 
+        public void SetItemStackSafe(ItemBase itemBase, int cnt)
+        {
+            SetItemStackSafe(new ItemStack(itemBase, cnt));
+        }
 
         public bool AddCount(int amount)
         {
@@ -124,10 +150,26 @@ namespace Items
             ItemStack = new ItemStack(ItemStack.item, newCount);
             return true;
         }
-        
+
+        public void Clear()
+        {
+            SetItemStack(new ItemStack());
+        }
         public void SwapSlots(InventorySlot other)
         {
             (ItemStack, other.ItemStack) = (other.ItemStack, ItemStack);
+        }
+
+        public override string ToString()
+        {
+            return $"{transform.GetSiblingIndex()} - {name} - {ItemStack}";
+        }
+
+        public int CompareTo(InventorySlot other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return itemStack.CompareTo(other.itemStack);
         }
     }
 }

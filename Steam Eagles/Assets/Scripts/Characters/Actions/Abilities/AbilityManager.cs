@@ -18,7 +18,7 @@ namespace Characters.Actions.Abilities
                 return;
             }
 
-            var input = player.CharacterInput.PlayerInput;
+            var input = player.InputWrapper.PlayerInput;
             if (input.currentActionMap.name != "Gameplay")
             {
                 if(abilityController.gameObject.activeSelf)
@@ -38,7 +38,7 @@ namespace Characters.Actions.Abilities
                 return false;
             if(abilityController == null)
                 return false;
-            if (player.CharacterInput == null)
+            if (player.InputWrapper == null)
                 return false;
             return true;
         }

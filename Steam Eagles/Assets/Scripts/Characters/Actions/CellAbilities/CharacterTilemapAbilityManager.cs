@@ -75,7 +75,7 @@ namespace Characters
             bool HasValidInput(out PlayerInput playerInput)
             {
                 playerInput = null;
-                var characterInput = player.CharacterInput;
+                var characterInput = player.InputWrapper;
                 if (characterInput == null) return false;
                  playerInput = characterInput.PlayerInput;
                 if (playerInput == null) return false;

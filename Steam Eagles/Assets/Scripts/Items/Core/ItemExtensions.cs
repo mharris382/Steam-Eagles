@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using CoreLib.Pickups;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -106,6 +108,17 @@ namespace Items
                 return false;
             
             return false;
+        }
+
+
+        public static void Log(this IEnumerable<InventorySlot> slots)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var inventorySlot in slots)
+            {
+                stringBuilder.AppendLine(inventorySlot.ToString());
+            }
+            Debug.Log(stringBuilder.ToString());
         }
     }
 }

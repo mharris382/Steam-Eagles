@@ -1,0 +1,11 @@
+{
+	"nodes":[
+		{"id":"4786632b9abe131c","x":-45,"y":73,"width":348,"height":178,"type":"text","text":"UIMainMenuFSM\n\n- UI substate which handles different UI states accessed from the Main Menu"},
+		{"id":"2122f1efd7e31d38","x":388,"y":73,"width":348,"height":178,"type":"text","text":"UIGameplayFSM\n\n- UI substate which handles different UI states accessed from the Main Menu"},
+		{"id":"8235a78a1e68a0de","x":129,"y":-437,"width":366,"height":256,"type":"text","text":"UIStateMachineRoot\n\n- entry point for the UI State Machine\n\n_responsibilities_\n- initialization logic for all UI states\n- calls update on state machine"},
+		{"id":"856d605c9306d561","x":449,"y":393,"width":348,"height":178,"type":"text","text":"UIGameplayFSM\n\n- UI substate which handles different UI states accessed from the Main Menu"},
+		{"id":"dbb0d1fa20b9e0ea","x":1126,"y":73,"width":333,"height":232,"color":"3","type":"text","text":"UI states can be\n- player non-specific\n- player specific (blocking)\n- player specific (concurrent)"},
+		{"id":"c2c40fb63d0efc13","x":-500,"y":-437,"width":366,"height":336,"type":"text","text":"UIPlayerMachineRoot\n\n- entry point for player specific state machine states (1 player state machine runs for each local player)\n\n_responsibilities_\n- initialization logic for player UI states\n- recieves calls from root state machine and passes them into nested state machine"}
+	],
+	"edges":[]
+}

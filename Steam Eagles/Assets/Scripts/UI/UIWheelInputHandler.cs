@@ -65,9 +65,9 @@ namespace UI
 
         void UpdateWheel()
         {
-            Debug.Assert(player.CharacterInput != null, "Missing character input");
-            Debug.Assert(player.CharacterInput.PlayerInput != null, "Missing player input");
-            var playerInput = player.CharacterInput.PlayerInput;
+            Debug.Assert(player.InputWrapper != null, "Missing character input");
+            Debug.Assert(player.InputWrapper.PlayerInput != null, "Missing player input");
+            var playerInput = player.InputWrapper.PlayerInput;
             Vector2 aimDirection;
             if (playerInput.currentControlScheme.Contains("Keyboard"))
             {
