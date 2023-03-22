@@ -15,7 +15,8 @@ namespace Characters
         private CharacterInputState _input;
         private CharacterController2 _controller;
         
-        private FSM.StateMachine _physicsStateMachine;
+        
+        private FSM.StateMachine _stateMachine;
         private CharacterState _state;
 
         public CharacterInputState Input => _input;
@@ -32,12 +33,10 @@ namespace Characters
         private void Awake()
         {
             _controller = GetComponent<CharacterController2>();
-            _physicsStateMachine = new FSM.StateMachine();
+            
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
-
-            _input.onJump.AsObservable().Subscribe(t =>
-            {
+            _input.onJump.AsObservable().Subscribe(t => {
                 
                 switch (t.phase)
                 {
@@ -59,9 +58,6 @@ namespace Characters
                 
             });
             
-            
-           
-
             #region DROP METHODS
 
             void OnPlatformDropEnter(State<string, string> t)
@@ -90,7 +86,7 @@ namespace Characters
                 else
                 {
                     Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
-                    Controller.ApplyHorizontalMovement();
+                    Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
                 }
             }
 
@@ -113,7 +109,7 @@ namespace Characters
             void OnJumpLogic(State<string, string> t)
             {
                 Controller.UpdateFacingDirection();
-                Controller.ApplyHorizontalMovement();
+                Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
                 Controller.ApplyJumpForce();
                 Controller.ClearParent();
             }
@@ -124,40 +120,47 @@ namespace Characters
             }
 
             #endregion
+
+            _stateMachine = new FSM.StateMachine();
+            var physicsFSM = new FSM.StateMachine();
             
-            _physicsStateMachine.AddState(DEFAULT, onLogic: t =>
+            physicsFSM.AddState(DEFAULT, onLogic: t =>
             {
                 Controller.UpdateFacingDirection();
                 Controller.UpdateGround();
                 Controller.CheckWater();
                 Controller.UpdateSlopes();
                 Controller.UpdatePhysMat();
-                Controller.ApplyMovement();
+                Controller.ApplyMovement(Time.fixedDeltaTime);
                 Controller.CheckParent();
             });
             
-            _physicsStateMachine.AddState(
+            physicsFSM.AddState(
                 DROPPING,
                 onEnter: OnPlatformDropEnter,
                 onLogic: OnPlatformDropLogic,
                 onExit: OnPlatformDropExit, 
                 needsExitTime:true);
             
-            _physicsStateMachine.AddState(
+            physicsFSM.AddState(
                 JUMPING,
                 onEnter: OnJumpEnter,
                 onLogic: OnJumpLogic, 
                 onExit: OnJumpExit, 
                 needsExitTime:false);
 
-            _physicsStateMachine.AddTransition(DEFAULT, JUMPING, t => CheckJumpCondition());
-            _physicsStateMachine.AddTransition(JUMPING, DEFAULT, t => !State.IsJumping || !State.JumpHeld);
+            physicsFSM.AddTransition(DEFAULT, JUMPING, t => CheckJumpCondition());
+            physicsFSM.AddTransition(JUMPING, DEFAULT, t => !State.IsJumping || !State.JumpHeld);
 
-            _physicsStateMachine.AddTransition(DEFAULT, DROPPING, (t) => CheckDropCondition());
-            _physicsStateMachine.AddTransition(DROPPING, DEFAULT);
+            physicsFSM.AddTransition(DEFAULT, DROPPING, (t) => CheckDropCondition());
+            physicsFSM.AddTransition(DROPPING, DEFAULT);
 
-            _physicsStateMachine.SetStartState(DEFAULT);
-            _physicsStateMachine.Init();
+            physicsFSM.SetStartState(DEFAULT);
+            physicsFSM.Init();
+            
+            _stateMachine.AddState("Default", physicsFSM);
+            _stateMachine.SetStartState("Default");
+            _stateMachine.Init();
         }
 
        
@@ -175,7 +178,7 @@ namespace Characters
 
         private void FixedUpdate()
         {
-            _physicsStateMachine.OnLogic();
+            _stateMachine.OnLogic();
         }
 
 

@@ -57,8 +57,8 @@ namespace PhysicsFun.SoftBody2D
         }
 
         
-        
-        private void INTERNAL_UpdateBodies_EDITOR()
+        [Button()]
+        internal void INTERNAL_UpdateBodies_EDITOR()
         {
             if (transform.childCount <= 1) return;
             for (int i = 0; i < transform.childCount; i++)
@@ -108,9 +108,14 @@ namespace PhysicsFun.SoftBody2D
             s0.connectedBody = child1.rigidbody;
             s1.connectedBody = child0.rigidbody;
             
+            var s02 = child0.GetSpringToMiddle();
+            var s12 = child1.GetSpringToMiddle();
+            
             s0.frequency = s1.frequency = this.springFrequency;
             s0.dampingRatio = s1.dampingRatio = this.springDamping;
-            
+            if(_rb == null)
+                this._rb = GetComponent<Rigidbody2D>();
+            s02.connectedBody = s12.connectedBody = this._rb;
         }
 
 
@@ -155,6 +160,7 @@ namespace PhysicsFun.SoftBody2D
             }
         }
 
+        [Button()]
         public void AutoPositionBodies()
         {
             float anglePerBody = 360f / numBodies;
@@ -206,28 +212,19 @@ namespace PhysicsFun.SoftBody2D
         }
 
         
-        // public override void OnInspectorGUI()
-        // {
-        //     if (Application.isPlaying)
-        //     {
-        //         EditorGUILayout.HelpBox("Cannot edit in play mode", MessageType.Warning);
-        //         return;
-        //     }
-        //     var softBody = target as SoftBody2D;
-        //     
-        //     DrawButtonBar(softBody);
-        //     UpdateBodyCount(softBody);
-        //     EditorGUI.BeginChangeCheck();
-        //     base.OnInspectorGUI();
-        //     if (EditorGUI.EndChangeCheck())
-        //     {
-        //         UpdateBodies(softBody);
-        //         if (softBody.autoPosition)
-        //         {
-        //             softBody.AutoPositionBodies();
-        //         }
-        //     }
-        // }
+        public override void OnInspectorGUI()
+        {
+            if (Application.isPlaying)
+            {
+                EditorGUILayout.HelpBox("Cannot edit in play mode", MessageType.Warning);
+                return;
+            }
+            var softBody = target as SoftBody2D;
+            softBody.INTERNAL_UpdateBodies_EDITOR();
+            DrawButtonBar(softBody);
+            UpdateBodyCount(softBody);
+            base.OnInspectorGUI();
+        }
 
         private void UpdateBodyCount(SoftBody2D softBody)
         {

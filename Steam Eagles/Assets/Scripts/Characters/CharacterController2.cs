@@ -2,6 +2,7 @@
 using System.Collections;
 using CoreLib;
 using DefaultNamespace;
+using UniRx;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using StateMachine = FSM.StateMachine;
@@ -56,14 +57,24 @@ namespace Characters
         private float _jumpTimeCounter;
         private ContactPoint2D[] _contactPoint2Ds = new ContactPoint2D[10];
         
+        private FixedJoint2D _buildingJoint;
+        
+        private Rigidbody2D _buildingRigidbody;
         private Collider2D _onOneWay;
         private Collider2D[] _oneWayColliders = new Collider2D[10];
+        private Collider2D[] _triggerColliders = new Collider2D[10];
         private Collider2D[] _droppingColliders = new Collider2D[10];
+        
+        
 
         private DynamicBodyState _dynamicBody;
 
         public bool IsBalloonJumping => _isBalloonJumping;
 
+        public bool ForceDisableBuildingAttach { get; set; }
+        
+        public bool IsAttachedToBuilding => _buildingRigidbody != null && _buildingJoint.enabled && IsGrounded;
+        
         private Collider2D __balloonCollider;
 
         #endregion
@@ -76,7 +87,7 @@ namespace Characters
             set
             {
                 _onBalloon = value;
-                if (value && !_isGrounded)
+                if (value && !IsGrounded)
                 {
                     _wasOnBalloon = true;
                     _timeOnBalloon = Time.time;
@@ -94,7 +105,7 @@ namespace Characters
         }
 
         
-        private bool _isGrounded
+        private bool IsGrounded
         {
             get => __isGrounded;
             set
@@ -178,6 +189,11 @@ namespace Characters
 
         private void Awake()
         {
+            if (!gameObject.TryGetComponent(out _buildingJoint ))
+            {
+                _buildingJoint = gameObject.AddComponent<FixedJoint2D>();
+            }
+            _buildingJoint.enabled = false;
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -189,57 +205,86 @@ namespace Characters
             _walkingFriction = State.config.GetWalkingFrictionMaterial();
         }
 
-        
-#if FALSE
         private void Update()
         {
-            UpdateJumpTimer(Time.deltaTime);
-            CheckJumping();
+            var buildingLayer = LayerMask.GetMask("Triggers");
+            var pos = transform.position;
+            var hits = Physics2D.OverlapPointNonAlloc(pos, _triggerColliders, buildingLayer);
+            
+            if (IsGrounded)
+            {
+                _buildingJoint.connectedBody = _buildingRigidbody;
+                _buildingJoint.enabled = true;
+            }
+            else
+            {
+                _buildingJoint.enabled = false;
+            }
+            
+            for (int i = 0; i < hits; i++)
+            {
+                if (_triggerColliders[i].gameObject.CompareTag("Building"))
+                {
+                    _buildingRigidbody = GetComponent<Rigidbody2D>();
+                    _buildingJoint.connectedBody = _buildingRigidbody;
+                    return;
+                }
+            }
+            _buildingRigidbody = null;
+          
         }
-
-        private void FixedUpdate()
-        {
-            CheckFacingDirection();
-            CheckGround();
-            CheckWater();
-            CheckSlopes();
-            UpdatePhysMat();
-            ApplyMovement();
-            ApplyJumpMovement();
-            ApplyGravity();
-        }
-#endif
 
         #endregion
 
-        public void ApplyMovement()
+        public void ApplyMovement(float dt)
         {
             if (State.IsDropping)
             {
                 StopDropping();
             }
-            if (_isGrounded && !_isOnSlope && !_isJumping)
+
+            _buildingJoint.enabled = IsGrounded && _buildingRigidbody != null;
+            if (IsGrounded && !_isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * xInput, 0.0f);
                 _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
-            else if (_isGrounded && _isOnSlope && !_isJumping)
+            else if (IsGrounded && _isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * _slopeNormalPerp.x * -xInput, MoveSpeed * _slopeNormalPerp.y * -xInput);
                 _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
-            else if(!_isGrounded)
+            else if(!IsGrounded)
             {
                 _newVelocity.Set(MoveSpeed * xInput, rb.velocity.y);
             }
-            rb.velocity = _newVelocity ;
+            ApplyVelocity(dt);
+        }
+
+        private void ApplyVelocity(float dt)
+        {
+            if (IsAttachedToBuilding)
+            {
+                var connectedAnchor = _buildingJoint.connectedAnchor;
+                connectedAnchor += (_newVelocity / dt);
+                _buildingJoint.connectedAnchor = connectedAnchor;
+            }
+            
+
+            rb.velocity = _newVelocity;
         }
 
 
-        public void ApplyHorizontalMovement(float multiplier = 1)
+        public void ApplyHorizontalMovement(float dt, float multiplier = 1)
         {
             _newVelocity.Set(MoveSpeed * xInput * multiplier, rb.velocity.y);
-            rb.velocity = _newVelocity;
+            if (IsAttachedToBuilding)
+            {
+                return;                
+            }
+            
+            rb.velocity = _newVelocity;    
+            
         }
 
         public void ApplyJumpForce()
@@ -256,8 +301,13 @@ namespace Characters
                     if(_isBalloonJumping)jumpForce *= Config.balloonJumpMultiplier;
                     
                     float t = _jumpTimeCounter / Config.jumpTime;
-                    //jumpForce *= (t * t);
-                    rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                    
+                    var x = rb.velocity.x;
+                    //if (_buildingRigidbody != null)
+                    //{
+                    //    x += _buildingRigidbody.velocity.x;
+                    //}
+                    rb.velocity = new Vector2(x, jumpForce);
                 }
             }
         }
@@ -268,6 +318,7 @@ namespace Characters
             var groundLayers = LayerMask.GetMask("Ground", "Solids");
             var balloonLayers = LayerMask.GetMask("Balloons");
             var oneWayLayer = LayerMask.GetMask("Platforms", "Pipes");
+            var buildingLayer = LayerMask.GetMask("Triggers");
             
             var pos = groundCheck.position;
             var radius = Config.groundCheckRadius;
@@ -280,18 +331,33 @@ namespace Characters
             BalloonCollider = onBalloon;
             
             
+            
             _onOneWay = Physics2D.OverlapCircle(pos, radius, oneWayLayer);
             var cnt = Physics2D.OverlapCircleNonAlloc(pos, radius, _oneWayColliders, oneWayLayer);
             _onOneWayPlatform = cnt > 0;
             
-            _isGrounded = (onGround || _onOneWayPlatform) &&
-                          !_isJumping;
-            if (_isGrounded && rb.velocity.y <= 0.01f)
+            Physics2D.queriesHitTriggers = true;
+            var hits = Physics2D.OverlapCircleNonAlloc(pos, radius, _triggerColliders, buildingLayer);
+            
+            _buildingRigidbody = null;
+            for (int i = 0; i < hits; i++)
+            {
+                if (_triggerColliders[i].gameObject.CompareTag("Building"))
+                {
+                    _buildingRigidbody = GetComponent<Rigidbody2D>();
+                    break;
+                }
+            }
+            
+            IsGrounded = (onGround || _onOneWayPlatform) &&
+                         !_isJumping;
+            
+            if (IsGrounded && rb.velocity.y <= 0.01f)
             {
                 _canJumpBecauseGrounded = true;   
             }
 
-            State.IsOnSolidGround = _isGrounded;
+            State.IsOnSolidGround = IsGrounded;
             Physics2D.queriesHitTriggers = queriesHitTriggersPrev;
         }
 
@@ -336,7 +402,7 @@ namespace Characters
 
         public void UpdatePhysMat()
         {
-            if (!_isGrounded)
+            if (!IsGrounded)
             {
                 SetPhysicsMaterial(FrictionlessPhysicsMaterial);
             }
@@ -381,7 +447,7 @@ namespace Characters
 
         public bool AbleToDrop()
         {
-            if (!_isGrounded)
+            if (!IsGrounded)
             {
                 return false;
             }
@@ -394,7 +460,7 @@ namespace Characters
 
         public bool AbleToJump()
         {
-            if (_isGrounded || _inWater || _wasOnBalloon)
+            if (IsGrounded || _inWater || _wasOnBalloon)
             {
                 return true;
             }
@@ -526,7 +592,7 @@ namespace Characters
         {
             if (Config != null)
             {
-                var color = _isGrounded ? Color.green : Color.red;
+                var color = IsGrounded ? Color.green : Color.red;
                 Gizmos.color = color.SetAlpha(0.8f);
                 var pos = groundCheck.position;
                 Gizmos.DrawSphere( groundCheck.position, Config.groundCheckRadius);
@@ -538,9 +604,6 @@ namespace Characters
                 }
             }
         }
-
-        
-        
 
 
         public void ClearParent()

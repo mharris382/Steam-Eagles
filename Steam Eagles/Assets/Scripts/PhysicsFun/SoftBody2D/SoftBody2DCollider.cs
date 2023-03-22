@@ -25,8 +25,12 @@ namespace PhysicsFun.SoftBody2D
         public SpringJoint2D[] Springs => _springs==null || _springs.Length < 3 ? _springs : _springs = GetComponents<SpringJoint2D>();
         public SpringJoint2D GetSpringToMiddle()
         {
-            if(_springs.Length < 3)
+            if (_springs == null || _springs.Length < 3)
+            {
                 _springs = GetComponents<SpringJoint2D>();
+                if(_springs.Length < 3)
+                    throw new Exception("Not enough springs");
+            }
             return Springs[1];
         }
         public SpringJoint2D GetSpringToNextBody()
