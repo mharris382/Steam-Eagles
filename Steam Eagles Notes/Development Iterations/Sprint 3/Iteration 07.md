@@ -3,7 +3,7 @@
 %%
 # Iteration 07: New Player Movement Mode on airship
 Previous Iteration: 
-Next Iteration: 
+Next Iteration: [[Iteration 08 ]]
 
 
 ## Goal
@@ -35,9 +35,11 @@ Several parts of the original movement code may still be used in the new movemen
 ----
 ## Result
 
+![[movie_111.mp4]]
 
+Modified the CharacterController class to keep track of whether or not the are inside a building.  If the character is inside a building and grounded, enable fixed joint.
 
-
+Whenever applying velocity, first check if attached to building, if so apply the velocity by moving the fixed joint anchor.  Otherwise apply velocity normally by setting it in the rigidbody
 
 ----
 ## Reflection
@@ -45,7 +47,13 @@ Several parts of the original movement code may still be used in the new movemen
 
 
 ### What was learned or accomplished?
-
+This technique works extremely well to make movement feel natural aboard the airship, even when the airship is moving very quickly.    The only issue is that currently aerial movement is still problematic b/c it uses the original movement code.  
 
 ### Where to go now?
+Fixing the aerial movement seems like a logical next step, although could instead add climbing state into the movement controller, since it accomplishes a similar objective to jumping.  
+
+- **Also need to verify that the current codes works on sloped ground**
+
+
+A possible jumping solution could be to use the same solution that was used for the grounded solution and use the fixed joint to effectively make the character kinematic when they are aboard the airship.  This would of course require implementing an aerial kinematic controller, but doing this could have some benefits.
 
