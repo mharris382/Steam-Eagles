@@ -93,6 +93,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerOffset: 8.78
+  infoRadius: 1.5
+  imageSize: 400
   maxCount: 7
   openCloseDuration: 0.5
   openCloseScale: {x: 0, y: 1}
@@ -279,7 +281,6 @@ GameObject:
   - component: {fileID: 1191408193}
   - component: {fileID: 1191408192}
   - component: {fileID: 1191408191}
-  - component: {fileID: 1191408194}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -358,22 +359,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   angle: 0
---- !u!114 &1191408194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1191408189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee158225ee1e59f4791627785501d950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shaderTypes: 0
-  normalStrength: 5
-  normalSmoothing: 1
-  computingNormal: 0
 --- !u!1 &2135776422
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,7 +484,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &6483365665097553562
@@ -575,7 +560,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20.448212, y: -19.809814}
+  m_AnchoredPosition: {x: -20.448242, y: -19.809814}
   m_SizeDelta: {x: 149.52, y: 144.85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8882084176838049377
@@ -650,7 +635,7 @@ RectTransform:
   m_Children:
   - {fileID: 2890710809063902880}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -675,6 +660,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 378778757
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -831,6 +817,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 37114433}
     m_Modifications:
     - target: {fileID: 2629546049168790882, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
@@ -938,6 +925,10 @@ PrefabInstance:
       value: Wheel Arc_01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3839180456102028502, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2135776423}
   m_SourcePrefab: {fileID: 100100000, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
 --- !u!224 &3839180455807011381 stripped
 RectTransform:
@@ -949,6 +940,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 37114433}
     m_Modifications:
     - target: {fileID: 2629546049168790882, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
@@ -1056,6 +1048,10 @@ PrefabInstance:
       value: Wheel Arc_02
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3839180456102028502, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1050987634}
   m_SourcePrefab: {fileID: 100100000, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
 --- !u!224 &3839180455633138120 stripped
 RectTransform:
@@ -1067,6 +1063,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 37114433}
     m_Modifications:
     - target: {fileID: 2629546049168790882, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
@@ -1174,6 +1171,10 @@ PrefabInstance:
       value: Wheel Arc
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3839180456102028502, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1191408190}
   m_SourcePrefab: {fileID: 100100000, guid: b49658c18977e5948a37d5f3b0a2f30d, type: 3}
 --- !u!114 &2088536859 stripped
 MonoBehaviour:
