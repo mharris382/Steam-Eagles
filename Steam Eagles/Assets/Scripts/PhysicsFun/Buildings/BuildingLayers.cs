@@ -13,7 +13,8 @@ namespace World
         COVER=16,
         PLATFORM=32,
         DECOR=64,
-        REQUIRED = FOUNDATION | SOLID | PIPE,
+        WIRES,
+        REQUIRED = FOUNDATION | SOLID | PIPE | WIRES,
     }
     
     

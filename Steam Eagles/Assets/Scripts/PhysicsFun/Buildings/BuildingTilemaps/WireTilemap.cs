@@ -5,7 +5,8 @@ namespace Buildings.BuildingTilemaps
 {
     public class WireTilemap : EditableTilemap
     {
-        public override BuildingLayers Layer { get; }
+        public override BuildingLayers Layer => BuildingLayers.WIRES;
+        
         public override string GetSaveID()
         {
             return "Wires";

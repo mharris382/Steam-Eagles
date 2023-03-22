@@ -19,6 +19,7 @@ namespace PhysicsFun.Buildings
         [OnValueChanged(nameof(UpdateName))]
         public string buildingName;
         
+        public Transform tilemapParent;
         
         public int orderInLayer;
         
@@ -39,6 +40,7 @@ namespace PhysicsFun.Buildings
         private PipeTilemap _pipeTilemap;
         private CoverTilemap _coverTilemap;
         private PlatformTilemap _platformTilemap;
+        private WireTilemap _wireTilemap;
 
         #endregion
         
@@ -58,6 +60,9 @@ namespace PhysicsFun.Buildings
         public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
 
         public PlatformTilemap PlatformTilemap => (_platformTilemap) ? _platformTilemap : _platformTilemap = GetComponentInChildren<PlatformTilemap>();
+        
+        public WireTilemap WireTilemap => (_wireTilemap) ? _wireTilemap : _wireTilemap = GetComponentInChildren<WireTilemap>();
+        
 
         public bool HasResources =>
             WallTilemap != null

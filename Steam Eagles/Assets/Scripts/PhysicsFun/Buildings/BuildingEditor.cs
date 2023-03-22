@@ -22,7 +22,7 @@ namespace PhysicsFun.Buildings
         public override void OnInspectorGUI()
         {
             var building = target as Building;
-            
+           
             void CreateBuildingTilemaps(Building building1)
             {
                 if (building1.SolidTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.SOLID));
@@ -31,16 +31,27 @@ namespace PhysicsFun.Buildings
                 if (building1.PipeTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PIPE));
                 if (building1.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.COVER));
                 if(building1.PlatformTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PLATFORM));
+                if(building1.WireTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.WIRES));
             }
             void AddToBuilding(BuildingTilemap buildingTilemap)
             {
-                buildingTilemap.transform.parent = building.transform;
+                buildingTilemap.transform.parent = building.tilemapParent == null ? building.transform : building.tilemapParent;
                 
             }
             
             
             serializedObject.Update();
-
+            if (building.tilemapParent == null && GUILayout.Button("Add Tilemap Parent"))
+            {
+                var tilemapParent = new GameObject("[Tilemaps]");
+                tilemapParent.transform.SetParent(building.transform);
+                tilemapParent.transform.localPosition = Vector3.zero;
+                building.tilemapParent = tilemapParent.transform;
+                foreach (var allBuildingLayer in building.GetAllBuildingLayers())
+                {
+                    allBuildingLayer.transform.parent = tilemapParent.transform;
+                }
+            }
             
             if (!building.HasResources)
             {
@@ -59,14 +70,19 @@ namespace PhysicsFun.Buildings
         public static BuildingTilemap CreateBuildingTilemapType(Building building, BuildingLayers type)
         {
             
-            var go = new GameObject($"{building}_{type.ToString().ToLower()}", typeof(Tilemap), typeof(TilemapRenderer));
-
+            
+            var go = new GameObject($"{building.buildingName}_{type.ToString().ToLower()}", typeof(Tilemap), typeof(TilemapRenderer));
+            go.transform.SetParent(building.tilemapParent != null ? building.tilemapParent : building.transform);
+            go.transform.localPosition = Vector3.zero;
             
             switch (type)
             {
                 case BuildingLayers.SOLID:
                     
-                    return CreateSolidTilemap(go);
+                    var solidTM = CreateSolidTilemap(go) as SolidTilemap;
+                    var solidTMR = solidTM.GetComponent<TilemapRenderer>();
+                    solidTMR.sortingOrder = solidTM.GetSortingOrder(building);
+                    return solidTM;
                     break;
                 
                 case BuildingLayers.WALL:
@@ -77,6 +93,7 @@ namespace PhysicsFun.Buildings
                     var tm = wallTM.Tilemap;
                     var tmr = tm.GetComponent<TilemapRenderer>();
                     tmr.sortingLayerName = "Near BG";
+                    
                     return wallTM;
                     break;
                 
@@ -84,18 +101,29 @@ namespace PhysicsFun.Buildings
                     go.layer = LayerMask.NameToLayer("Ground");
                     go.tag = "Solid Tilemap";
                     AddCollider(go);
-                    return go.AddComponent<FoundationTilemap>();
+                    var fTM = go.AddComponent<FoundationTilemap>();
+                    var fTMR = go.GetComponent<TilemapRenderer>();
+                    fTMR.sortingOrder = fTM.GetSortingOrder(building);
+                    return fTM;
 
                 case BuildingLayers.PLATFORM:
                     AddCollider(go, asPlatform: true);
                     go.layer = LayerMask.NameToLayer("Platforms");
-                    return go.AddComponent<PlatformTilemap>();
+                    var platTM = go.AddComponent<PlatformTilemap>();
+                    var platTMR = go.GetComponent<TilemapRenderer>();
+                    platTMR.sortingOrder = platTM.GetSortingOrder(building);
+                    return platTM;
                 
                 case BuildingLayers.PIPE:
                     AddCollider(go, asPlatform: true);
                     go.layer = LayerMask.NameToLayer("Pipes");
                     go.tag = "Pipe Tilemap";
-                    return go.AddComponent<PipeTilemap>();
+                    var tmrPipe = go.GetComponent<TilemapRenderer>();
+                    var pipeTM = go.AddComponent<PipeTilemap>();
+                    var pipeEffector = go.GetComponent<PlatformEffector2D>();
+                    pipeEffector.surfaceArc = 145;
+                    tmrPipe.sortingOrder = pipeTM.GetSortingOrder(building);
+                    return pipeTM;
                 
                 case BuildingLayers.COVER:
                     AddCollider(go, asTrigger: true);
@@ -104,9 +132,16 @@ namespace PhysicsFun.Buildings
                     var coverTM = go.AddComponent<CoverTilemap>();
                     var tm2 = coverTM.Tilemap;
                     var tmr2 = tm2.GetComponent<TilemapRenderer>();
+                    tmr2.sortingOrder = coverTM.GetSortingOrder(building);
                     tmr2.sortingLayerName = "Near FG";
                     return coverTM;
-                
+                case BuildingLayers.WIRES:
+                    AddCollider(go, asTrigger: true);
+                    go.layer = LayerMask.NameToLayer("Wires");
+                    var wireTM = go.AddComponent<WireTilemap>();
+                    var tm3 = go.GetComponent<TilemapRenderer>();
+                    tm3.sortingOrder = wireTM.GetSortingOrder(building);
+                    return wireTM;
 
                 case BuildingLayers.DECOR:
                     throw new NotImplementedException();
