@@ -1,9 +1,9 @@
 %%
-[[Sprint 1]] #iteration #unity
+[[Sprint 3]] #iteration #unity
 %%
-# Iteration 2:
-Previous Iteration: [[Iteration 01]]
-Next Iteration: [[Iteration 03]]
+# Iteration N:
+Previous Iteration: 
+Next Iteration: 
 
 
 ## Goal
