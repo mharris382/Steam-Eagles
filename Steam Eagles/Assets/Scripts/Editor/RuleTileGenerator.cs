@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Buildings.BuildingTilemaps;
 using Spaces;
 using UnityEngine;
 using UnityEditor;
@@ -358,6 +358,8 @@ public class RuleTileCopier : EditorWindow
                 return typeof(PipeTile);
             case TileType.SOLID:
                 return typeof(SolidTile);
+            case TileType.WIRE:
+                return typeof(WireTile);
             case TileType.ORIGINAL:
                 return original.GetType();
             case TileType.RULE_TILE:
@@ -398,7 +400,7 @@ public class RuleTileCopier : EditorWindow
             DoOverrideGOField(so);
             if (original.m_TilingRules.Count == sprites.Length)
             {
-                if (GUILayout.Button("Copy Rule Tile as Pipe Tile"))
+                if (GUILayout.Button($"Copy Rule Tile as {tileType} Tile"))
                 {
                     var newTileName = GetNewTileName();
                     SaveTile(GetRuleTileCopy(original),newTileName);
@@ -413,11 +415,12 @@ public class RuleTileCopier : EditorWindow
         SOLID,
         PUZZLE,    
         ORIGINAL,
+        WIRE,
         RULE_TILE
     }
     public static void SaveTile(RuleTile tile, string name)
     {
-        AssetDatabase.CreateAsset(tile, $"Assets/{name}.asset");
+        AssetDatabase.CreateAsset(tile, $"Assets/Tiles/{name}.asset");
         AssetDatabase.SaveAssets();
 
         EditorUtility.FocusProjectWindow();
@@ -464,7 +467,7 @@ public class RuleTileCopier : EditorWindow
     private RuleTile CopyRuleTile(RuleTile ruleTile, Type ruleTileType)
     {
         var tile = ScriptableObject.CreateInstance(ruleTileType) as RuleTile;
-        tile.m_DefaultSprite = ruleTile.m_DefaultSprite;
+        tile.m_DefaultSprite = sprites[0];
         tile.m_DefaultColliderType = ruleTile.m_DefaultColliderType;
         tile.m_DefaultGameObject = overrideDefaultGameobject == null ? ruleTile.m_DefaultGameObject : overrideDefaultGameobject;
         RuleTile.TilingRule[] ruleTiles = new RuleTile.TilingRule[ruleTile.m_TilingRules.Count];
