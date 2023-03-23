@@ -18,12 +18,17 @@ namespace CoreLib
                         Debug.LogWarning($"No Singleton: {typeof(T).Name} found. Creating one now");
                         var go = new GameObject(typeof(T).Name.ToUpper(), typeof(T));
                         _instance = go.GetComponent<T>();
+                        _instance.OnCreatedFromScript();
                     }
                 }
                 return _instance;
             }
         }
 
+        protected virtual void OnCreatedFromScript()
+        {
+            
+        }
 
         private void Awake()
         {

@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Buildings;
 using CoreLib;
 using Players;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+
 
 namespace PhysicsFun.Buildings
 {
@@ -13,10 +17,28 @@ namespace PhysicsFun.Buildings
         public Player[] players;
 
         private Dictionary<Player, List<StructureState>> _playerEditableStructures;
-        
+
+
+        protected override void OnCreatedFromScript()
+        {
+            
+        }
 
         protected override void Init()
         {
+           
+        }
+
+
+        private IEnumerator Start()
+        {
+            yield return null;
+            if (players == null)
+            {
+                var loadOp = Addressables.LoadAssetsAsync<Player>("player", obj => Debug.Log("Structure Manager found player: " + obj.name));
+                yield return loadOp;
+                players = loadOp.Result.ToArray();
+            }
             _playerEditableStructures = new Dictionary<Player, List<StructureState>>();
             foreach (var player in players)
             {
@@ -24,9 +46,7 @@ namespace PhysicsFun.Buildings
                 UpdatePlayerEditableStructure(player);
             }
         }
-        
-        
-      
+
 
         public void NotifyPlayerEnteredStructure(int playerNumber, StructureState structureState)
         {
