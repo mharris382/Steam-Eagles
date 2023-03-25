@@ -21,6 +21,7 @@ namespace Characters
         private InputSystemUIInputModule _eventSystem;
         private GameObject _localMultiplayerUIRoot;
 
+        public static event Action<Player> onPlayerInitialized;
         public bool IsInputBound => _playerInputWrapper != null;
 
         public bool IssCameraBound => _playerCamera != null;
@@ -128,6 +129,7 @@ namespace Characters
                 InitCam();
                 InitCharacter();
                 InitInput();
+                onPlayerInitialized?.Invoke(player);
             }
             else
             {
