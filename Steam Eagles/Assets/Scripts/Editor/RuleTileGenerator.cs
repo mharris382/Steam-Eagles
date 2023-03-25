@@ -362,6 +362,8 @@ public class RuleTileCopier : EditorWindow
                 return typeof(WireTile);
             case TileType.ORIGINAL:
                 return original.GetType();
+            case TileType.LADDER:
+                return typeof(LadderTile);
             case TileType.RULE_TILE:
                 return typeof(RuleTile);
             default:
@@ -416,6 +418,7 @@ public class RuleTileCopier : EditorWindow
         PUZZLE,    
         ORIGINAL,
         WIRE,
+        LADDER,
         RULE_TILE
     }
     public static void SaveTile(RuleTile tile, string name)

@@ -14,10 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNumber: 1
   characterTag: Transporter
+  events:
+    onPlayerInputAssigned:
+      m_PersistentCalls:
+        m_Calls: []
+    onPlayerCharacterChanged:
+      m_PersistentCalls:
+        m_Calls: []
+  tilemaps:
+    foundationTilemap: {fileID: 11400000, guid: 1b7dac506031d5d4883a8431ebdd2ddb, type: 2}
+    wallTilemap: {fileID: 11400000, guid: 982fcfcd1c0f1ab45aa38554c43fe5ae, type: 2}
+    solidTilemap: {fileID: 11400000, guid: e1b1d1b60b07f984792627574683a421, type: 2}
+    pipeTilemap: {fileID: 11400000, guid: 74d08503e75c1c844850b30c7581781b, type: 2}
+    decorTilemap: {fileID: 11400000, guid: d0faba449a30c304bbd50d71d949c848, type: 2}
   characterTransform: {fileID: 11400000, guid: 3660ec6625eb0ec498fbffd0c03034e8, type: 2}
   playerCamera: {fileID: 11400000, guid: 4f3882ca53f09f648a837e48d511eec2, type: 2}
-  foundationTilemap: {fileID: 11400000, guid: 1b7dac506031d5d4883a8431ebdd2ddb, type: 2}
-  wallTilemap: {fileID: 11400000, guid: 982fcfcd1c0f1ab45aa38554c43fe5ae, type: 2}
-  solidTilemap: {fileID: 11400000, guid: e1b1d1b60b07f984792627574683a421, type: 2}
-  pipeTilemap: {fileID: 11400000, guid: 74d08503e75c1c844850b30c7581781b, type: 2}
-  decorTilemap: {fileID: 11400000, guid: d0faba449a30c304bbd50d71d949c848, type: 2}

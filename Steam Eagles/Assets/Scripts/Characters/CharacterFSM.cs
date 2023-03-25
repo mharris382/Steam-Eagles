@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using FSM;
 using UniRx;
 using UnityEngine;
@@ -18,10 +19,13 @@ namespace Characters
         
         private FSM.StateMachine _stateMachine;
         private CharacterState _state;
-
+        private StructureState _structureState;
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
         public CharacterState State => _state;
+        
+        public StructureState StructureState => _structureState != null ? _structureState : _structureState = GetComponent<StructureState>();
+        
 
         private bool _jumped;
         private float _jumpTime;
@@ -29,8 +33,11 @@ namespace Characters
         private const string DEFAULT = "Default";
         private const string DROPPING = "Dropping";
         private const string JUMPING = "Jumping";
+        private const string CLIMBING = "Climbing";
+        private const string GROUNDED = "Grounded";
+        private const string AERIAL = "Aerial";
 
-        private void Awake()
+        private void Start()
         {
             _controller = GetComponent<CharacterController2>();
             
@@ -96,7 +103,8 @@ namespace Characters
 
             void OnJumpEnter(State<string, string> t)
             {
-                Controller.BeginJump();
+                Controller.BeginJump(); 
+                StructureState.Mode = StructureState.JointMode.DISABLED;
                 _jumpTime = Time.time;
                 if (Controller.IsBalloonJumping && Controller.BalloonCollider != null &&
                     Controller.BalloonCollider.attachedRigidbody != null)
@@ -123,17 +131,76 @@ namespace Characters
 
             _stateMachine = new FSM.StateMachine();
             var physicsFSM = new FSM.StateMachine();
+            var standardPhyiscsFSM = new FSM.StateMachine();
             
-            physicsFSM.AddState(DEFAULT, onLogic: t =>
-            {
-                Controller.UpdateFacingDirection();
-                Controller.UpdateGround();
-                Controller.CheckWater();
-                Controller.UpdateSlopes();
-                Controller.UpdatePhysMat();
-                Controller.ApplyMovement(Time.fixedDeltaTime);
-                Controller.CheckParent();
-            });
+            // physicsFSM.AddState(DEFAULT,
+            //     onEnter: t =>
+            //     {
+            //         StructureState.Mode = StructureState.JointMode.AUTOMATIC;  
+            //     },
+            //     onLogic: t =>
+            //     {
+            //         
+            //         Controller.UpdateFacingDirection();
+            //         Controller.UpdateGround();
+            //         Controller.CheckWater();
+            //         Controller.UpdateSlopes();
+            //         Controller.UpdatePhysMat();
+            //         Controller.ApplyMovement(Time.fixedDeltaTime);
+            //         Controller.CheckParent();
+            //     });
+            
+            standardPhyiscsFSM.AddState(AERIAL, 
+                onEnter: t =>
+                {
+                    StructureState.Mode = StructureState.JointMode.DISABLED;
+                    Controller.UpdatePhysMat();
+                },
+                onLogic: t =>
+                {
+                    Controller.UpdateFacingDirection();
+                    Controller.UpdateGround();
+                    Controller.CheckWater();
+                    Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
+                    Controller.CheckParent();
+                });
+            
+            standardPhyiscsFSM.AddState(GROUNDED, 
+                onEnter: t =>
+                {
+                    StructureState.CheckForStructures();
+                    StructureState.Mode = StructureState.JointMode.ENABLED;
+                },
+                onLogic: t =>
+                {
+                    StructureState.CheckForStructures();
+                    Controller.UpdateFacingDirection();
+                    Controller.UpdateGround();
+                    Controller.CheckWater();
+                    Controller.UpdateSlopes();
+                    Controller.UpdatePhysMat();
+                    Controller.ApplyMovement(Time.fixedDeltaTime);
+                    Controller.CheckParent();
+                });
+            
+            standardPhyiscsFSM.SetStartState(AERIAL);
+            standardPhyiscsFSM.AddTransition(AERIAL, GROUNDED, _ => State.IsGrounded);
+            standardPhyiscsFSM.AddTransition(GROUNDED, AERIAL, _ => !State.IsGrounded);
+            standardPhyiscsFSM.Init();
+            
+            physicsFSM.AddState(DEFAULT, standardPhyiscsFSM);
+            physicsFSM.AddState(CLIMBING,
+                onEnter: t =>
+                {
+                    StructureState.Mode = StructureState.JointMode.ENABLED;
+                },
+                onLogic: t =>
+                {
+                    StructureState.CheckForStructures();
+                    Controller.UpdateFacingDirection();
+                    Controller.UpdateGround();
+                    Controller.CheckParent();
+                });
             
             physicsFSM.AddState(
                 DROPPING,
@@ -149,11 +216,15 @@ namespace Characters
                 onExit: OnJumpExit, 
                 needsExitTime:false);
 
-            physicsFSM.AddTransition(DEFAULT, JUMPING, t => CheckJumpCondition());
-            physicsFSM.AddTransition(JUMPING, DEFAULT, t => !State.IsJumping || !State.JumpHeld);
-
-            physicsFSM.AddTransition(DEFAULT, DROPPING, (t) => CheckDropCondition());
+            physicsFSM.AddTransition(DEFAULT, JUMPING, _ => CheckJumpCondition());
+            physicsFSM.AddTransition(JUMPING, DEFAULT, _ => !State.IsJumping || !State.JumpHeld);
+            
+            physicsFSM.AddTransition(DEFAULT, DROPPING, _ => CheckDropCondition() );
             physicsFSM.AddTransition(DROPPING, DEFAULT);
+            
+            physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => !State.IsClimbing && !State.IsJumping);
+            physicsFSM.AddTransition(CLIMBING, JUMPING, _ => State.IsJumping);
+            physicsFSM.AddTransitionFromAny(CLIMBING, _ => CheckClimbStartCondition());
 
             physicsFSM.SetStartState(DEFAULT);
             physicsFSM.Init();
@@ -165,10 +236,14 @@ namespace Characters
 
        
 
+        public bool CheckClimbStartCondition()
+        {
+            return State.IsClimbing;
+        }
 
         public bool CheckJumpCondition() => Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
 
-        public bool CheckDropCondition() => Controller.AbleToDrop() && State.DropPressed;
+        public bool CheckDropCondition() => (Controller.AbleToDrop() && State.DropPressed);
 
         private void Update()
         {

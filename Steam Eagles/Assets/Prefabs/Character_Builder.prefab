@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 8546787809986255483}
   - component: {fileID: 7975492967524370468}
   - component: {fileID: 7159209795955936079}
+  - component: {fileID: 2162213781566309275}
   m_Layer: 10
   m_Name: Character_Builder
   m_TagString: Builder
@@ -764,6 +765,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de8f3dd529924fa8a3034ac7d3507035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2162213781566309275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023073604413840154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bca5fa28096be548abc06b6f6432f03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTriggerCount: 10
+  useOverlapArea: 1
+  overlapAreaP0: {x: -0.46, y: 1}
+  overlapAreaP1: {x: 0.44, y: -1}
 --- !u!1 &2462750353514555147
 GameObject:
   m_ObjectHideFlags: 0
@@ -6381,7 +6398,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228503711014204
@@ -6664,7 +6681,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228504241993967
@@ -6748,7 +6765,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228504564706715
@@ -6832,7 +6849,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228504829767176
@@ -6916,7 +6933,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228504830530778
@@ -7143,7 +7160,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8419228505211286646
@@ -12438,6 +12455,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ability Preview (Connect)
       objectReference: {fileID: 0}
+    - target: {fileID: 5755730236761505065, guid: 5747681a5a6d0d44d8be7328c327f7f5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5755730236761505066, guid: 5747681a5a6d0d44d8be7328c327f7f5, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -12966,6 +12987,10 @@ PrefabInstance:
     - target: {fileID: 2464898029460840983, guid: 8fcf6d21076c4be4b90a8cb30d00402b, type: 3}
       propertyPath: m_Name
       value: Ability Preview (Disconnect)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464898029460840983, guid: 8fcf6d21076c4be4b90a8cb30d00402b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

@@ -16,19 +16,18 @@ namespace Characters
         [TabGroup("Character")][GUIColor(nameof(GetGuiColor))][SerializeField] CharacterState prefab;
             
         
-        [TabGroup("Spawn Point")] 
+        [TabGroup("Spawn Point")][Obsolete("Use SpawnDatabase instead")]
         public SharedTransform spawnPoint;
-        [TabGroup("Spawn Point")]  public Vector3 defaultPosition;
+        
+        [TabGroup("Spawn Point")][Obsolete("Use SpawnDatabase instead")] 
+        public Vector3 defaultPosition;
             
         
         [TabGroup("Debugging")]    public Color characterColor = Color.red;
         [TabGroup("Debugging")]    public bool hideTransformInEditor = false;
 
-        private Color GetGuiColor()
-        {
-            return characterColor.Lighten(.5f);
-        }
-            
+        private Color GetGuiColor() => characterColor.Lighten(.5f);
+
         private CharacterInputState _spawnedCharacter;
             
             

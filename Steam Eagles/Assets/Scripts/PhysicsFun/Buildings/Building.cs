@@ -5,6 +5,7 @@ using Buildings.BuildingTilemaps;
 using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using World;
 
 namespace PhysicsFun.Buildings
 {
@@ -41,6 +42,8 @@ namespace PhysicsFun.Buildings
         private CoverTilemap _coverTilemap;
         private PlatformTilemap _platformTilemap;
         private WireTilemap _wireTilemap;
+        private LadderTilemap _ladderTilemap;
+        private DecorTilemap _decorTilemap;
 
         #endregion
         
@@ -63,7 +66,45 @@ namespace PhysicsFun.Buildings
         
         public WireTilemap WireTilemap => (_wireTilemap) ? _wireTilemap : _wireTilemap = GetComponentInChildren<WireTilemap>();
         
+        public LadderTilemap LadderTilemap => (_ladderTilemap) ? _ladderTilemap : _ladderTilemap = GetComponentInChildren<LadderTilemap>();
+        public DecorTilemap DecorTilemap => (_decorTilemap) ? _decorTilemap : _decorTilemap = GetComponentInChildren<DecorTilemap>();
 
+        public BuildingTilemap GetTilemap(BuildingLayers layers)
+        {
+            switch (layers)
+            {
+                case BuildingLayers.WALL:
+                    return WallTilemap;
+                    break;
+                case BuildingLayers.FOUNDATION:
+                    return FoundationTilemap;
+                    break;
+                case BuildingLayers.SOLID:
+                    return SolidTilemap;
+                    break;
+                case BuildingLayers.PIPE:
+                    return PipeTilemap;
+                    break;
+                case BuildingLayers.COVER:
+                    return CoverTilemap;
+                    break;
+                case BuildingLayers.PLATFORM:
+                    return PlatformTilemap;
+                    break;
+                case BuildingLayers.DECOR:
+                    return DecorTilemap;
+                    break;
+                case BuildingLayers.WIRES:
+                    return WireTilemap;
+                    break;
+                case BuildingLayers.LADDERS:
+                    return LadderTilemap;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(layers), layers, null);
+            }
+        }
+        
         public bool HasResources =>
             WallTilemap != null
             && FoundationTilemap != null

@@ -16,8 +16,11 @@ namespace PhysicsFun.Buildings
 
         public Player[] players;
 
-        private Dictionary<Player, List<StructureState>> _playerEditableStructures;
 
+        //the structures the players are currently inside (index is player id)
+        private List<StructureState>[] _playerStructures;
+        
+        private bool _isInitialized;
 
         protected override void OnCreatedFromScript()
         {
@@ -26,66 +29,82 @@ namespace PhysicsFun.Buildings
 
         protected override void Init()
         {
-           
+            _isInitialized = false;
+            _playerStructures = new List<StructureState>[2]
+            {
+                new List<StructureState>(),
+                new List<StructureState>()
+            };
         }
 
 
+        
         private IEnumerator Start()
         {
             yield return null;
             if (players == null)
             {
-                var loadOp = Addressables.LoadAssetsAsync<Player>("player", obj => Debug.Log("Structure Manager found player: " + obj.name));
+                var loadOp = Addressables.LoadAssetsAsync<Player>("players", obj => Debug.Log("Structure Manager found player: " + obj.name));
                 yield return loadOp;
                 players = loadOp.Result.ToArray();
             }
-            _playerEditableStructures = new Dictionary<Player, List<StructureState>>();
-            foreach (var player in players)
+            _isInitialized = true;
+            
+            for (int i = 0; i < _playerStructures.Length; i++)
             {
-                _playerEditableStructures.Add(player, new List<StructureState>());
-                UpdatePlayerEditableStructure(player);
+                if (_playerStructures[i] != null)
+                {
+                    foreach (var structureState in _playerStructures[i])
+                    {
+                        NotifyPlayerEnteredStructure(players[i], structureState);
+                    }
+                }
             }
         }
 
 
         public void NotifyPlayerEnteredStructure(int playerNumber, StructureState structureState)
         {
-            Debug.Assert(structureState != null);
-            NotifyPlayerEnteredStructure(players[playerNumber], structureState);
+            if(_playerStructures[playerNumber].Contains(structureState)) return;
+            _playerStructures[playerNumber].Add(structureState);
+            if (_isInitialized)
+            {
+                Debug.Assert(structureState != null);
+                NotifyPlayerEnteredStructure(players[playerNumber], structureState);
+            }
         }
         public void NotifyPlayerExitedStructure(int playerNumber, StructureState structureState)
         {
-            Debug.Assert(structureState != null);
-            NotifyPlayerExitedStructure(players[playerNumber], structureState);
+            if(!_playerStructures[playerNumber].Contains(structureState)) return;
+            _playerStructures[playerNumber].Remove(structureState);
+            if (_isInitialized)
+            {
+                Debug.Assert(structureState != null);
+                NotifyPlayerExitedStructure(players[playerNumber], structureState);
+            }
         }
         
         
         private void NotifyPlayerEnteredStructure(Player player, StructureState structureState)
         {
-            if (_playerEditableStructures[player].Contains(structureState))
+            if (_playerStructures[player.playerNumber].Contains(structureState))
             {
                 Debug.LogError($"Why is player {player.characterTag} entering a structure they can already edit?", structureState);
             }
             else
             {
-                _playerEditableStructures[player].Add(structureState);
+                _playerStructures[player.playerNumber].Add(structureState);
             }
             UpdatePlayerEditableStructure(player);
         }
         private void NotifyPlayerExitedStructure(Player player, StructureState structureState)
         {
-            if (!_playerEditableStructures[player].Contains(structureState))
-            {
-                Debug.LogError($"Why is player {player.characterTag} exiting a structure are not inside?", structureState);
-                return;
-            }
-            _playerEditableStructures[player].Remove(structureState);
             UpdatePlayerEditableStructure(player);
         }
 
         private void UpdatePlayerEditableStructure(Player player)
         {
-            if (_playerEditableStructures[player].Count == 0)
+            if (_playerStructures[player.playerNumber].Count == 0)
             {
                 Debug.Log($"Disabled Structure editing for player {player.name}({player.characterTag})");
                 player.DisableStructureEditing();
@@ -101,7 +120,7 @@ namespace PhysicsFun.Buildings
         
         private StructureState GetHighestPriorityStructure(Player p)
         {
-            var structures = _playerEditableStructures[p];
+            var structures = _playerStructures[p.playerNumber];
             if(structures.Count == 0) return null;
             return structures.OrderBy(t => t.structureEditPriority).First();
             throw new System.NotImplementedException();
