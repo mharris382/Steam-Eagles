@@ -26,6 +26,9 @@ public class CharacterState : MonoBehaviour
     #region Public variables
 
     public CapsuleCollider2D Collider => _capsuleCollider;
+   
+    public bool SprintHeld {get; set; }
+    
     public Vector2 MoveInput
     {
         get => _moveInput;
@@ -168,6 +171,12 @@ public class CharacterState : MonoBehaviour
         set;
     }
 
+    public bool IsClimbing
+    {
+        get => _isClimbing.Value;
+        set => _isClimbing.Value = value;
+    }
+
     #region [RxStreams]
 
     public BoolReactiveProperty IsJumpingProperty => _isJumping ??= new BoolReactiveProperty(false);
@@ -184,7 +193,8 @@ public class CharacterState : MonoBehaviour
     private BoolReactiveProperty _isJumping = new BoolReactiveProperty(false);
     private readonly BoolReactiveProperty _isGroundedProperty = new BoolReactiveProperty(false);
     private readonly BoolReactiveProperty _isInteractingProperty = new BoolReactiveProperty(false);
-
+    private BoolReactiveProperty _isClimbing = new BoolReactiveProperty(false);
+    
     #endregion
 
     #region [Unity events]

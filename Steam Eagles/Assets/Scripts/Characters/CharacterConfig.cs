@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -26,6 +27,8 @@ namespace DefaultNamespace
        public float groundCheckRadius = 0.2f;
         
         public float maxSlopeAngle = 75;
+        
+        [SerializeField] private ClimbConfig climbConfig = new ClimbConfig();
 
         public LayerMask GetGroundLayers()
         {
@@ -65,5 +68,31 @@ namespace DefaultNamespace
             mat.name = $"Full Friction Material {groundedFriction:F2}";
             return mat;
         }
+        
+        
+        [Serializable]
+        private class ClimbConfig
+        {
+            [SerializeField] protected internal float climbSpeedBase = 5;
+            [SerializeField] protected internal float climbUpSpeedMultiplier = 1;
+            [SerializeField] protected internal float climbUpSprintSpeedMultiplier = 1.5f;
+            [SerializeField] protected internal float climbDownSpeedMultiplier = 1.5f;
+            [SerializeField] protected internal float climbDownSprintSpeedMultiplier = 1.5f;
+            
+            [Tooltip("Force multiplier that is applied when player initiates a jump while climbing")]
+            [SerializeField] protected internal float climbJumpMultiplier = 0.8f;
+            
+        }
+
+        public float GetClimbSpeed(float climbDirection, bool isSprintDown)
+        {
+            var speed = climbConfig.climbSpeedBase;
+            if(climbDirection > 0)
+                speed *= isSprintDown ? climbConfig.climbUpSprintSpeedMultiplier : climbConfig.climbUpSpeedMultiplier;
+            else if(climbDirection < 0)
+                speed *= isSprintDown ? climbConfig.climbDownSprintSpeedMultiplier : climbConfig.climbDownSpeedMultiplier;
+            return speed;
+        }
+        
     }
 }

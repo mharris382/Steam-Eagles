@@ -107,7 +107,7 @@ namespace Players
             switch (gameMode)
             {
                 case GameMode.SINGLEPLAYER:
-                    SwitchToSinglePlayerCamera();
+                    
                     if (_joinedPlayers.Count == 0)
                     {
                         var wrapper = players[id];
@@ -126,6 +126,7 @@ namespace Players
                         Debug.Assert(wrapper.IsFullyBound);
                 
                         _joinedPlayers.Add(wrapper);
+                        SwitchToSinglePlayerCamera();
                     }
                     break;
                 case GameMode.LOCAL_COOP:

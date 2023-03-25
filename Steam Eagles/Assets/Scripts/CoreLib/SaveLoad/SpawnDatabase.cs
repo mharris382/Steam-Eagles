@@ -118,9 +118,14 @@ namespace CoreLib.SaveLoad
         if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
         
         string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.dat" : "/SpawnPoints.dat");
-        
+        if (!File.Exists(filepath))
+        {
+            return false;
+        }
         using (FileStream file = (File.Exists(filepath) ? File.Open(filepath, FileMode.Open) : File.Create(filepath)))
         {
+            if(file.Length == 0)
+                return false;
             SavedSpawnPoints savedSpawnPoints = (SavedSpawnPoints) new BinaryFormatter().Deserialize(file);
             foreach (var savedSpawnPoint in savedSpawnPoints.savedSpawnPoints)
             {
