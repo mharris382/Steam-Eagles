@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Buildings;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
 namespace PhysicsFun.Buildings.Rooms
@@ -25,8 +26,11 @@ namespace PhysicsFun.Buildings.Rooms
                 return GetComponentsInChildren<Room>();
             }
         }
-        
-        
+
+        public void UpdateRoomsList()
+        {
+            rooms = new List<Room>(GetComponentsInChildren<Room>());
+        }
         void OnBuildingAssigned(StructureState structureState)
         {
             if (structureState == null) return;
@@ -39,4 +43,7 @@ namespace PhysicsFun.Buildings.Rooms
             name = building.buildingName + " Rooms";
         }
     }
+
+
+    
 }

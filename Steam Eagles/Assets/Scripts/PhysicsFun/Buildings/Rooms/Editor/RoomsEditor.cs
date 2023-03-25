@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Buildings;
-using Sirenix.OdinInspector;
+using CoreLib;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor.IMGUI.Controls;
@@ -14,15 +14,76 @@ namespace PhysicsFun.Buildings.Rooms
     [CustomEditor(typeof(Rooms))]
     public class RoomsEditor : OdinEditor
     {
+        NewRoomDrawer _newRoomDrawer;
+        protected override void OnEnable()
+        {
+            _newRoomDrawer = new NewRoomDrawer(this.target as Rooms);
+            base.OnEnable();
+        }
+
+        public override void OnInspectorGUI()
+        {
+            if (_newRoomDrawer.IsValid)
+            {
+                if (!_newRoomDrawer.IsDrawing && GUILayout.Button("Add New Room"))
+                {
+                    _newRoomDrawer.StartDrawing();
+                }
+                else if(_newRoomDrawer.IsDrawing)
+                {
+                    if (GUILayout.Button("Cancel"))
+                    {
+                        _newRoomDrawer.IsDrawing = false;
+                    }
+                }
+                if(!RoomsEditorWindow.IsEditorOpen((Rooms) target) && GUILayout.Button("Open Rooms Editor"))
+                {
+                    RoomsEditorWindow.OpenWindow((Rooms) target);
+                }
+            }
+            base.OnInspectorGUI();
+        }
+
         private void OnSceneGUI()
         {
             Rooms rooms = (Rooms) target;
             if (rooms == null) return;
             if (!rooms.HasBuilding) return;
+           
+            Tools.hidden = _newRoomDrawer.IsDrawing;
+            if (_newRoomDrawer.IsDrawing)
+            {
+                _newRoomDrawer.OnSceneGUI();
+                if (_newRoomDrawer.IsFinished)
+                {
+                    CreateNewRoom(_newRoomDrawer.GetWorldSpaceRect());
+                    _newRoomDrawer.IsDrawing = false;
+                }
+            }
             foreach (var room in rooms.AllRooms)
             {
                 RoomEditor.DrawRoomArea(rooms, room);
             }
+        }
+
+        private void CreateNewRoom(Rect roomArea)
+        {
+            var targetRooms = (Rooms) target;
+            var buildingTransform = targetRooms.Building.transform;
+            var centerWs = roomArea.center;
+            var centerLs = buildingTransform.TransformPoint(centerWs);
+            roomArea = new Rect(centerLs, roomArea.size);
+            var roomGo = new GameObject("New Room");
+            var boxCollider = roomGo.AddComponent<BoxCollider2D>();
+            boxCollider.isTrigger = true;
+            var room = roomGo.AddComponent<Room>();
+            room.gameObject.layer = LayerMask.NameToLayer("Triggers");
+            room.tag = "Room";
+            room.roomColor = Color.HSVToRGB(UnityEngine.Random.value, 1, 1);
+            room.roomBounds = new Bounds(roomArea.center, roomArea.size);
+            roomGo.transform.SetParent(((Rooms) target).transform);
+            
+            targetRooms.UpdateRoomsList();
         }
 
         private void DrawRoomHandle(Rooms rooms, Room room)
@@ -69,174 +130,143 @@ namespace PhysicsFun.Buildings.Rooms
                 return _building.InverseTransformVector(size);
             }
         }
-    }
-
-    [CustomEditor(typeof(Room))]
-    public class RoomEditor : OdinEditor
-    {
-        private BoxBoundsHandle m_BoundsHandle = new BoxBoundsHandle();
-        private static Room m_selectedRoomCamera;
-        private bool m_isCameraSelected;
-
-        bool IsSelectedRoomCamera(Room room)
+        
+        
+        
+        public class NewRoomDrawer 
         {
-            return m_selectedRoomCamera == target;
-        }
-        public override void OnInspectorGUI()
-        {
+            public NewRoomDrawer(Rooms rooms)
+            {
+                _rooms = rooms;
+            }
             
-            Room room = (Room) target;
-            string errorMsg = "";
-            if (!IsRoomValid(ref errorMsg))
-            {
-                if (m_selectedRoomCamera == room) ChangeSelectedRoomCamera(null);
-                EditorGUILayout.HelpBox(errorMsg, MessageType.Error);
-                base.OnInspectorGUI();
-                return;
+            public bool IsFinished {
+                get; 
+                private set;
             }
 
-            if (IsSelectedRoomCamera(room) && GUILayout.Button("Disable Camera Preview"))
+            private bool _isDrawing;
+            public bool IsDrawing
             {
-                m_isCameraSelected = false;
-                ChangeSelectedRoomCamera(null);
+                get => _isDrawing;
+                set
+                {
+                    if (_isDrawing != value)
+                    {
+                        _isDrawing = value;
+                        if (value)
+                        {
+                            SceneView.beforeSceneGui += BeforeSceneGUI;
+                        }
+                        else
+                        {
+                            SceneView.beforeSceneGui -= BeforeSceneGUI;
+                        }
+                    }
+                }
             }
-            else if(!IsSelectedRoomCamera(room) && GUILayout.Button("Enable Camera Preview"))
+
+            private void BeforeSceneGUI(SceneView obj)
             {
-                ChangeSelectedRoomCamera(room);
-                m_isCameraSelected = true;
+                var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                position.z = 0;
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
+                {
+                    DoConfirmButton(position);
+                    Event.current.Use();
+                }
+                else if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
+                {
+                    DoCancelButton();
+                    Event.current.Use();
+                }
+                else
+                {
+                    DoPreviewAction(position);
+                }
             }
-            base.OnInspectorGUI();
 
-        }
-
-        protected override void OnEnable()
-        {
-            Room room = (Room) target;
-            string errorMsg = "";
-            m_isCameraSelected = false;
-            if (IsRoomValid(ref errorMsg))
-            {
-                ChangeSelectedRoomCamera(room);
-            }
-            base.OnEnable();
-        }
-
-        protected override void OnDisable()
-        {
-            Room room = (Room) target;
-            if(m_selectedRoomCamera == room && !m_isCameraSelected) 
-                ChangeSelectedRoomCamera(null);
-            base.OnDisable();
-        }
-
-        private void ChangeSelectedRoomCamera(Room o)
-        {
-            if (m_selectedRoomCamera != null && m_selectedRoomCamera.roomCamera != null)
-            {
-                m_selectedRoomCamera.roomCamera.gameObject.SetActive(false);
-            }
-            m_selectedRoomCamera = o;
-            if (m_selectedRoomCamera != null  && m_selectedRoomCamera.roomCamera != null)
-            {
-                m_selectedRoomCamera.roomCamera.gameObject.SetActive(true);
-            }
-        }
-
-        bool IsRoomValid(ref string msg)
-        {
-            Room room = (Room) target;
+            public bool IsDrawingSecondPoint { get; private set; }
             
-            if (room == null) return false;
-            Rooms rooms = room.GetComponentInParent<Rooms>();
-            if (rooms == null)
-            {
-                msg = "Room is not a child of a Rooms object";
-                return false;
-            }
+            public Vector3 FirstPoint { get; private set; }
+            public Vector3 SecondPoint { get; private set; }
 
-            if (!rooms.HasBuilding)
-            {
-                msg = "Rooms object does not have a building";
-                return false;
-            }
 
-            if (!room.isDynamic) return true;
-            if (room.isDynamic && room.dynamicBody == null)
+            public Rect GetWorldSpaceRect()
             {
-                msg = "Room is dynamic but does not have a dynamic body";
-                return false;
+                if (!IsFinished)
+                {
+                    throw new Exception();
+                }
+                var center = (FirstPoint + SecondPoint) / 2f;
+                var size = SecondPoint - FirstPoint;
+                return new Rect(center, size);
             }
-
-            return true;
-        }
-
-        private void OnSceneGUI()
-        {
-            Room room = (Room) target;
-            if (room == null) return;
-            Rooms rooms = room.GetComponentInParent<Rooms>();
-            if (rooms == null) return;
-            if (!rooms.HasBuilding) return;
-            var transform = rooms.Building.transform;
-            if (room.isDynamic)
-            {
-                if (room.dynamicBody == null) return;
-                transform = room.dynamicBody.transform;
-            }
-            var bounds = room.Bounds;
-            var center = transform.TransformPoint(room.roomBounds.center);
             
-            DrawRoomArea(center, bounds, room);
-            DrawRoomBounds(center, room, transform);
-        }
+            private readonly Rooms _rooms;
+            public bool IsValid => _rooms.HasBuilding;
 
-        private void DrawRoomBounds(Vector3 center, Room room, Transform transform)
-        {
-            m_BoundsHandle.center = center;
-            m_BoundsHandle.size = room.roomBounds.size;
 
-            m_BoundsHandle.midpointHandleSizeFunction = MidpointHandleSizeFunction;
-            m_BoundsHandle.handleColor = room.roomColor;
-            m_BoundsHandle.wireframeColor = room.roomColor;
-            Bounds newBounds = new Bounds();
-            EditorGUI.BeginChangeCheck();
-            m_BoundsHandle.DrawHandle();
-            if (EditorGUI.EndChangeCheck())
+            public void OnSceneGUI()
             {
-                Undo.RecordObject(room, "Changed Room Size");
-                newBounds.center = transform.InverseTransformPoint(m_BoundsHandle.center);
-                newBounds.size = (m_BoundsHandle.size);
-                room.roomBounds = newBounds;
+                var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                position.z = 0;
+                DoPreviewAction(position);
             }
-        }
 
-        public static void DrawRoomArea(Vector3 center, Bounds bounds, Room room)
-        {
-            var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
-                center.y + bounds.extents.y);
-            var color = room.roomColor;
-            color.a = 0.25f;
-            Handles.DrawSolidRectangleWithOutline(rect, color, color);
-        }
-        public static void DrawRoomArea(Rooms rooms, Room room)
-        {
-            var transform = rooms.Building.transform;
-            if (room.isDynamic)
+            private void DoPreviewAction(Vector3 position)
             {
-                if (room.dynamicBody == null) return;
-                transform = room.dynamicBody.transform;
+                Handles.color = Color.red;
+                if (IsDrawingSecondPoint)
+                {
+                    Handles.DrawWireDisc(FirstPoint, Vector3.forward, 0.5f);
+                    Handles.DrawWireDisc(position, Vector3.forward, 0.5f);
+                    Vector3[] verts = new Vector3[4] {
+                        new Vector3(FirstPoint.x, FirstPoint.y, 0),
+                        new Vector3(FirstPoint.x, position.y, 0),
+                        new Vector3(position.x, position.y, 0),
+                        new Vector3(position.x, FirstPoint.y, 0),
+                    };
+                    Handles.DrawSolidRectangleWithOutline(verts, new Color(1, 0, 0, 0.2f), Color.red.Lighten(0.5f));
+                }
+                else
+                {
+                    Handles.DrawWireDisc(position, Vector3.forward, 0.5f);
+                }
             }
-            var center = transform.TransformPoint(room.roomBounds.center);
-            var bounds = room.Bounds;
-            var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
-                center.y + bounds.extents.y);
-            var color = room.roomColor;
-            color.a = 0.25f;
-            Handles.DrawSolidRectangleWithOutline(rect, color, color);
-        }
-        static float MidpointHandleSizeFunction(Vector3 position)
-        {
-            return PrimitiveBoundsHandle.DefaultMidpointHandleSizeFunction(position) * 2f;
+
+            private void DoConfirmButton(Vector3 position)
+            {
+               
+                if (!IsDrawingSecondPoint)
+                {
+                    FirstPoint = position;
+                    IsDrawingSecondPoint = true;
+                    return;
+                }
+                else
+                {
+                    SecondPoint = position;
+                    IsFinished = true;
+                }
+            }
+            private void DoCancelButton()
+            {
+                if(IsDrawingSecondPoint)
+                {
+                    IsDrawingSecondPoint = false;
+                    return;
+                }
+                IsDrawing = false;
+            }
+
+            public void StartDrawing()
+            {
+                if(IsDrawing) return;
+                if(!IsValid) return;
+                IsDrawing = true;
+                IsDrawingSecondPoint = false;
+            }
         }
     }
 
