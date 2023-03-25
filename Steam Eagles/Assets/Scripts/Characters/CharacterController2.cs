@@ -233,34 +233,6 @@ namespace Characters
             _walkingFriction = State.config.GetWalkingFrictionMaterial();
         }
 
-        private void Update()
-        {
-
-            // var pos = transform.position;
-            //
-            // if (IsGrounded)
-            // {
-            //     buildingJoint.connectedBody = buildingRigidbody;
-            //     buildingJoint.enabled = true;
-            // }
-            // else
-            // {
-            //     buildingJoint.enabled = false;
-            // }
-            // var buildingLayer = LayerMask.GetMask("Triggers");
-            // var hits = Physics2D.OverlapPointNonAlloc(pos, _triggerColliders, buildingLayer);
-            // for (int i = 0; i < hits; i++)
-            // {
-            //     if (_triggerColliders[i].gameObject.CompareTag("Building"))
-            //     {
-            //         buildingRigidbody = GetComponent<Rigidbody2D>();
-            //         buildingJoint.connectedBody = buildingRigidbody;
-            //         return;
-            //     }
-            // }
-            // buildingRigidbody = null;
-        }
-
         #endregion
 
         public void ApplyMovement(float dt)

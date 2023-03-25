@@ -50,6 +50,8 @@ namespace Characters
         private Coroutine _autoJointCoroutine;
         private IDisposable _enableJointDisposable;
         public FixedJoint2D BuildingJoint => _buildingJoint;
+        
+        private CharacterState State => _state ??= GetComponent<CharacterState>();
 
         [ShowInInspector]
         public Rigidbody2D BuildingRigidbody
@@ -92,7 +94,7 @@ namespace Characters
         private Rigidbody2D ConnectedBody => PlatformRigidbody == null ? BuildingRigidbody : PlatformRigidbody;
 
         [ShowInInspector]
-        public bool IsGrounded => _characterState.IsGrounded;
+        public bool IsGrounded => State.IsGrounded;
 
         private void Awake()
         {

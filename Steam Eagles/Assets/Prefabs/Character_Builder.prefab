@@ -384,15 +384,11 @@ GameObject:
   - component: {fileID: 2023073604413840155}
   - component: {fileID: 2023073604413840135}
   - component: {fileID: 2023073604413840134}
-  - component: {fileID: 2023073604413840130}
   - component: {fileID: 2023073604413840128}
-  - component: {fileID: 2023073604413840129}
   - component: {fileID: 822289114925148332}
   - component: {fileID: 822289114925148323}
   - component: {fileID: 6739823951545541704}
-  - component: {fileID: 2472560228712964645}
   - component: {fileID: -731175683974856642}
-  - component: {fileID: 6836221353217358559}
   - component: {fileID: 8668965516950635739}
   - component: {fileID: 8039814150456290317}
   - component: {fileID: 8546787809986255483}
@@ -506,24 +502,6 @@ MonoBehaviour:
     consumptionRate: 4
     consumptionRateAccel: 1
   toAttach: {fileID: 0}
---- !u!114 &2023073604413840130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2023073604413840154}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d75b3f30b9d32654fa8d2c7c1b9563df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontalAxisName: horizontal_p2
-  verticalAxisName: vertical_p2
-  jumpButtonName: jump_p2
-  useAdditionalJumpInput: 1
-  additionalJumpInput: 32
-  useLegacyInput: 1
 --- !u!114 &2023073604413840128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,47 +517,6 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2023073604413840129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2023073604413840154}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50683243b6618e4c8f023a0f4bb5f82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugMovement: 1
-  jumpForce: 25
-  jumpTime: 0.8
-  moveSpeed: 15
-  jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.060000002
-      outSlope: 0.060000002
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.3125
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2.2400002
-      outSlope: 2.2400002
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.15625
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  threshold: 0.8
 --- !u!114 &822289114925148332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -651,18 +588,6 @@ MonoBehaviour:
   onValve:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2472560228712964645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2023073604413840154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 695ee9e78afc462b842132cd59a768bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!255 &-731175683974856642
 FixedJoint2D:
   m_ObjectHideFlags: 0
@@ -681,23 +606,6 @@ FixedJoint2D:
   m_ConnectedAnchor: {x: 0, y: 0}
   m_DampingRatio: 0
   m_Frequency: 0
---- !u!114 &6836221353217358559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2023073604413840154}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d690994b4db943a7856acc2242bfd455, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundCheckRadius: 0.25
-  groundCheck: {fileID: 2023073604337192668}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4160
 --- !u!114 &8668965516950635739
 MonoBehaviour:
   m_ObjectHideFlags: 0
