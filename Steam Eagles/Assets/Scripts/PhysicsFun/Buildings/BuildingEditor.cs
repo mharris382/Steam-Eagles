@@ -19,6 +19,23 @@ namespace PhysicsFun.Buildings
         OdinEditor
 #endif
     {
+
+        private static BuildingLayers[] ImportantTilemapLayers = new[]
+        {
+            BuildingLayers.SOLID,
+            BuildingLayers.WALL,
+            BuildingLayers.PIPE,
+            BuildingLayers.FOUNDATION,
+            BuildingLayers.PLATFORM,
+            BuildingLayers.WIRES,
+            BuildingLayers.LADDERS
+        };
+        
+        private static BuildingLayers[] BonusTilemapLayers = new[]
+        {
+            BuildingLayers.COVER,
+            BuildingLayers.DECOR,
+        };
         public override void OnInspectorGUI()
         {
             var building = target as Building;
@@ -32,6 +49,7 @@ namespace PhysicsFun.Buildings
                 if (building1.CoverTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.COVER));
                 if(building1.PlatformTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.PLATFORM));
                 if(building1.WireTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.WIRES));
+                if(building1.LadderTilemap == null) AddToBuilding(CreateBuildingTilemapType(building1, BuildingLayers.LADDERS));
             }
             void AddToBuilding(BuildingTilemap buildingTilemap)
             {
@@ -61,7 +79,8 @@ namespace PhysicsFun.Buildings
                     CreateBuildingTilemaps(building);
                 }
             }
-            
+            DrawAddImportantTilemapButtons(building);
+            DrawAddBonusTilemapButtons(building);
             
             serializedObject.ApplyModifiedProperties();
             base.OnInspectorGUI();
@@ -77,11 +96,22 @@ namespace PhysicsFun.Buildings
             
             switch (type)
             {
+                case BuildingLayers.LADDERS:
+                    var ladderTM = go.AddComponent<LadderTilemap>();
+                    var ladderTMR = go.GetComponent<TilemapRenderer>();
+                    var ladderTMC = go.GetComponent<TilemapCollider2D>();
+                    ladderTM.tag = "Ladder";
+                    ladderTMC.isTrigger = true;
+                    ladderTMR.sortingOrder = ladderTM.GetSortingOrder(building);
+                    ladderTMR.sortingLayerName = "Near FG";
+                    go.layer = LayerMask.NameToLayer("Triggers");
+                    return ladderTM;
                 case BuildingLayers.SOLID:
                     
                     var solidTM = CreateSolidTilemap(go) as SolidTilemap;
                     var solidTMR = solidTM.GetComponent<TilemapRenderer>();
                     solidTMR.sortingOrder = solidTM.GetSortingOrder(building);
+                    solidTMR.sortingLayerName = "Near BG";
                     return solidTM;
                     break;
                 
@@ -93,7 +123,7 @@ namespace PhysicsFun.Buildings
                     var tm = wallTM.Tilemap;
                     var tmr = tm.GetComponent<TilemapRenderer>();
                     tmr.sortingLayerName = "Near BG";
-                    
+                    tmr.sortingOrder = -25;
                     return wallTM;
                     break;
                 
@@ -112,6 +142,7 @@ namespace PhysicsFun.Buildings
                     var platTM = go.AddComponent<PlatformTilemap>();
                     var platTMR = go.GetComponent<TilemapRenderer>();
                     platTMR.sortingOrder = platTM.GetSortingOrder(building);
+                    platTMR.sortingLayerName = "Near BG";
                     return platTM;
                 
                 case BuildingLayers.PIPE:
@@ -123,6 +154,7 @@ namespace PhysicsFun.Buildings
                     var pipeEffector = go.GetComponent<PlatformEffector2D>();
                     pipeEffector.surfaceArc = 145;
                     tmrPipe.sortingOrder = pipeTM.GetSortingOrder(building);
+                    tmrPipe.sortingLayerName = "Near BG";
                     return pipeTM;
                 
                 case BuildingLayers.COVER:
@@ -141,6 +173,7 @@ namespace PhysicsFun.Buildings
                     var wireTM = go.AddComponent<WireTilemap>();
                     var tm3 = go.GetComponent<TilemapRenderer>();
                     tm3.sortingOrder = wireTM.GetSortingOrder(building);
+                    tm3.sortingLayerName = "Near BG";
                     return wireTM;
 
                 case BuildingLayers.DECOR:
@@ -172,6 +205,26 @@ namespace PhysicsFun.Buildings
                 go.AddComponent<PlatformEffector2D>();
             }
             return collider;
+        }
+
+
+        void DrawAddImportantTilemapButtons(Building building) => DrawAddTilemapButtons(building, ImportantTilemapLayers, MessageType.Warning);
+
+        void DrawAddBonusTilemapButtons(Building building) => DrawAddTilemapButtons(building, BonusTilemapLayers, MessageType.Info);
+
+        void DrawAddTilemapButtons(Building building, BuildingLayers[] layers, MessageType messageType)
+        {
+            foreach (var layer in layers)
+            {
+                if (building.GetTilemap(layer)==null)
+                {
+                    EditorGUILayout.HelpBox($"Missing {layer.ToString()}", messageType);
+                    if (GUILayout.Button($"Add {layer.ToString().ToLower()}"))
+                    {
+                        CreateBuildingTilemapType(building, layer);
+                    }
+                }
+            } 
         }
     }
 }
