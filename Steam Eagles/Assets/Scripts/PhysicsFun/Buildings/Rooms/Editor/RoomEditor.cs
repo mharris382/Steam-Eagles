@@ -105,7 +105,7 @@ namespace PhysicsFun.Buildings.Rooms
             return true;
         }
 
-        private void OnSceneGUI()
+        public void OnSceneGUI()
         {
             Room room = (Room) target;
             if (room == null) return;
