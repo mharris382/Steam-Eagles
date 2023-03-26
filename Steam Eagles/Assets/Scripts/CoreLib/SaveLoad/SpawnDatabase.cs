@@ -16,19 +16,9 @@ namespace CoreLib.SaveLoad
     public class SpawnDatabase : ScriptableObject
 {
     private static SpawnDatabase _instance;
- 
-    public static SpawnDatabase Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = Resources.Load<SpawnDatabase>("Spawn Database");
-            }
-            return _instance;
-        }
-    }
- 
+
+    public static SpawnDatabase Instance => _instance ??= Resources.Load<SpawnDatabase>("Spawn Database");
+
     [SerializeField]
     private List<SpawnPoint> spawnPoints;
     
@@ -38,10 +28,7 @@ namespace CoreLib.SaveLoad
     public class SpawnPoint
     {
         public string characterName;
-        public string spawnScene;
         public Vector3 defaultSpawnPosition;
-        
-        
     }
  
     [System.Serializable]
@@ -54,7 +41,6 @@ namespace CoreLib.SaveLoad
     public class SavedSpawnPoint
     {
         public string characterName;
-        public string spawnScene;
         public Vector3 spawnPosition;
     }
  
@@ -139,12 +125,6 @@ namespace CoreLib.SaveLoad
         return false;
     }
 
-    private SavedSpawnPoints LoadSpawnPoints()
-    {
-        
-        throw new NotImplementedException();
-    }
-
 
     public bool HasDefaultSpawnPosition(string characterName)
     {
@@ -191,12 +171,5 @@ namespace CoreLib.SaveLoad
             if (spawnDatabase == null) spawnDatabase = SpawnDatabase.Instance;
         }
     }
-    #if UNITY_EDITOR
     
-    [CustomEditor(typeof(SpawnDatabase))]
-    public class SpawnDBHelperEditor : OdinEditor
-    {
-        
-    }
-    #endif
 }

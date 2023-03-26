@@ -164,7 +164,7 @@ namespace Characters
                     if (body != null)
                     {
                         _buildingJoint.connectedBody = body;
-                        _buildingJoint.autoConfigureConnectedAnchor = true;
+                        _buildingJoint.connectedAnchor = body.transform.InverseTransformPoint(transform.position);
                         _isJointEnabled.Value = true;
                     }
                     else
@@ -194,6 +194,26 @@ namespace Characters
             if (Mode == JointMode.ENABLED )
             {
                 _buildingJoint.enabled = (_isJointEnabled.Value);
+            }
+
+           
+        }
+
+        private void FixedUpdate()
+        {
+            if (BuildingRigidbody != null)
+            {
+                //get the building's velocity and apply it to the character
+                var buildingVelocity = BuildingRigidbody.velocity;
+                var characterVelocity = State.Rigidbody.velocity;
+                var desiredVelocity = new Vector2(State.MoveX * State.config.moveSpeed, characterVelocity.y);
+                var normalVelocityMin = -State.config.moveSpeed;
+                var normalVelocityMax = State.config.moveSpeed;
+                var newVelocityMin = normalVelocityMin + buildingVelocity.x;
+                var newVelocityMax = normalVelocityMax + buildingVelocity.x;
+                var velocityResult= Mathf.Lerp(newVelocityMin, newVelocityMax,
+                    Mathf.InverseLerp(normalVelocityMin, normalVelocityMax, desiredVelocity.x));
+                State.Rigidbody.velocity = new Vector2(velocityResult, characterVelocity.y);
             }
         }
 
