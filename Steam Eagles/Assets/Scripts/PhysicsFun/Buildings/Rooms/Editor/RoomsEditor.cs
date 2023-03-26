@@ -18,6 +18,7 @@ namespace PhysicsFun.Buildings.Rooms
     {
         NewRoomDrawer _newRoomDrawer;
         private Dictionary<Room, Editor> _editors;
+
         protected override void OnEnable()
         {
             _newRoomDrawer = new NewRoomDrawer(this.target as Rooms);
@@ -26,6 +27,7 @@ namespace PhysicsFun.Buildings.Rooms
             {
                 _editors.Add(room, CreateEditor(room, typeof(RoomEditor)));
             }
+
             base.OnEnable();
         }
 
@@ -43,7 +45,7 @@ namespace PhysicsFun.Buildings.Rooms
                 {
                     _newRoomDrawer.StartDrawing();
                 }
-                else if(_newRoomDrawer.IsDrawing)
+                else if (_newRoomDrawer.IsDrawing)
                 {
                     if (GUILayout.Button("Cancel"))
                     {
@@ -59,17 +61,23 @@ namespace PhysicsFun.Buildings.Rooms
                 //    RoomsEditorWindow.OpenWindow((Rooms) target);
                 //}
             }
+            DrawCopyColorButton();
             base.OnInspectorGUI();
         }
 
-        
+
         private void OnSceneGUI()
         {
-            Rooms rooms = (Rooms) target;
+            Rooms rooms = (Rooms)target;
             if (rooms == null) return;
             if (!rooms.HasBuilding) return;
-           
-            Tools.hidden = _newRoomDrawer.IsDrawing;
+
+            
+            Tools.hidden = _newRoomDrawer.IsDrawing || isCopyingColor;
+            if (isCopyingColor)
+            {
+                DrawCopyColorOnScene();
+            }
             if (_newRoomDrawer.IsDrawing)
             {
                 _newRoomDrawer.OnSceneGUI();
@@ -93,16 +101,17 @@ namespace PhysicsFun.Buildings.Rooms
                     roomEditor.OnSceneGUI();
                 }
             }
+
             foreach (var room in rooms.AllRooms)
             {
                 RoomEditor.DrawRoomArea(rooms, room);
-                
+
             }
         }
 
         private void CreateNewRoom(Rect roomArea)
         {
-            var targetRooms = (Rooms) target;
+            var targetRooms = (Rooms)target;
             var buildingTransform = targetRooms.Building.transform;
             var centerWs = roomArea.center;
             var center = buildingTransform.InverseTransformPoint(centerWs);
@@ -116,14 +125,125 @@ namespace PhysicsFun.Buildings.Rooms
             room.tag = "Room";
             room.roomColor = Color.HSVToRGB(UnityEngine.Random.value, 1, 1);
             room.roomBounds = new Bounds(center, roomArea.size);
-            roomGo.transform.SetParent(((Rooms) target).transform);
-            
+            roomGo.transform.SetParent(((Rooms)target).transform);
+
             targetRooms.UpdateRoomsList();
             _newRoomDrawer.Dispose();
             var btnRect = GUIHelper.GetCurrentLayoutRect();
             OdinEditorWindow.InspectObject(roomGo);
         }
-        
+
+
+        bool _isCopyingColor;
+        Room _copyingFrom;
+        bool isCopyingColor
+        {
+            get => _isCopyingColor;
+            set
+            {
+                   if(_isCopyingColor != value)
+                   {
+                       _isCopyingColor = value;
+                       if(_isCopyingColor)
+                       {
+                           SceneView.beforeSceneGui += OnCopyColorSceneGUI;
+                       }
+                       else
+                       {
+                           SceneView.beforeSceneGui -= OnCopyColorSceneGUI;
+                       }
+                   }
+            }
+        }
+        public void DrawCopyColorButton()
+        {
+            if (isCopyingColor)
+            {
+                if(GUILayout.Button("Stop Copying Color"))
+                {
+                    isCopyingColor = false;
+                }
+                
+            }
+            else if (GUILayout.Button("Copy Color"))
+            {
+                isCopyingColor = true;
+            }
+            
+        }
+
+        public void DrawCopyColorOnScene()
+        {
+            var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+            var rooms = ((Rooms)target);
+            if (rooms == null) return;
+            if (!rooms.HasBuilding) return;
+            void DrawCopyTo()
+            {
+                var fromPosition =  rooms.Building.transform.TransformPoint(_copyingFrom.roomBounds.center);
+                var fromColor = _copyingFrom.roomColor;
+                using (new HandlesScope(fromColor))
+                {
+                    Handles.DrawWireDisc(fromPosition, Vector3.forward, 0.5f);
+                    Handles.DrawLine(position, fromPosition);
+                    Handles.DrawWireDisc(position, Vector3.forward, 0.5f);
+                }
+            }
+            void DrawCopyFrom()
+            {
+                var toRoom = rooms.GetRoomAtWS(position);
+                if (toRoom != null)
+                {
+                    var toPosition = rooms.Building.transform.TransformPoint(toRoom.roomBounds.center);
+                    var toColor = toRoom.roomColor;
+                    using (new HandlesScope(toColor))
+                    {
+                        Handles.DrawWireDisc(toPosition, Vector3.forward, 0.5f);
+                        Handles.DrawLine(position, toPosition);
+                        Handles.DrawWireDisc(position, Vector3.forward, 0.5f);
+                    }
+                }
+                else
+                {
+                    Handles.DrawWireDisc(position, Vector3.forward, 0.5f);
+                }
+            }
+            if (_copyingFrom != null)
+            {
+                DrawCopyTo();
+            }
+            else
+            {
+                DrawCopyFrom();
+            }
+        }
+
+        public void OnCopyColorSceneGUI(SceneView view)
+        {
+            if (Event.current.type == EventType.MouseDown)
+            {
+                if (Event.current.button == 0)
+                {
+                    var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                    var rooms = ((Rooms)target);
+                    if (_copyingFrom == null)
+                    {
+                        _copyingFrom = rooms.GetRoomAtWS(position);
+                    }
+                    else
+                    {
+                        var toRoom = rooms.GetRoomAtWS(position);
+                        if (toRoom != null)
+                        {
+                            toRoom.roomColor = _copyingFrom.roomColor;
+                        }
+                        _copyingFrom = null;
+                    }
+                    Event.current.Use();
+                }
+            }
+        }
+
         private class NewRoomPopupWindow
         {
             [ShowInInspector]
