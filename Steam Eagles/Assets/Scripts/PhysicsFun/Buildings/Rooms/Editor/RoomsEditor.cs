@@ -18,11 +18,16 @@ namespace PhysicsFun.Buildings.Rooms
     {
         NewRoomDrawer _newRoomDrawer;
         private Dictionary<Room, Editor> _editors;
+        private SerializedProperty _roomGroupingsProperty;
+
+        private Dictionary<Color, Rooms.RoomGroupings> _colorToGrouping = new Dictionary<Color, Rooms.RoomGroupings>();
 
         protected override void OnEnable()
         {
             _newRoomDrawer = new NewRoomDrawer(this.target as Rooms);
             _editors = new Dictionary<Room, Editor>();
+            _roomGroupingsProperty = serializedObject.FindProperty("roomGroupings");
+            var groups = (target as Rooms).GetGroups(true);
             foreach (var room in (target as Rooms).AllRooms)
             {
                 _editors.Add(room, CreateEditor(room, typeof(RoomEditor)));

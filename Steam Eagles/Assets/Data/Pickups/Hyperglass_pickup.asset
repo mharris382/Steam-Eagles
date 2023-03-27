@@ -13,7 +13,25 @@ MonoBehaviour:
   m_Name: Hyperglass_pickup
   m_EditorClassIdentifier: 
   key: Hyperglass
+  usePrefab: 0
   prefab: {fileID: 999566115427820490, guid: 023941485cd9b384dbdafa6a67ec400d, type: 3}
+  physicsOptions:
+    mass: 1
+    gravityScale: 1
+    linearDrag: 0
+    angularDrag: 0.2
+    shape: 2
+    colliderOffset: 0
+    sizeOffset: {x: 0, y: 0}
+    edgeRadius: 0
+    edgeOffset: 0.1
+    bounce: 0
+    friction: 0
+  renderingOptions:
+    sortingLayerName: Dynamic
+    sortingOrderRange: {x: -10, y: 10}
+  feedbackOptions:
+    spawnPrefabs: []
   overrideSprites:
   - {fileID: 405812608, guid: 38bacda35d00dd5498edc0a2c5dca1c4, type: 3}
   - {fileID: 1629721700, guid: 38bacda35d00dd5498edc0a2c5dca1c4, type: 3}

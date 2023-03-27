@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Buildings;
 using Sirenix.OdinInspector;
@@ -12,7 +13,11 @@ namespace PhysicsFun.Buildings.Rooms
         [SerializeField, Required]
         private StructureState building;
 
-       
+        [Range(0, 1)]
+        public float faceOpacity = 0.2f;
+        [Range(0, 1)]
+        public float outlineOpacity = 1;
+        
         [SerializeField] private List<Room> rooms;
 
 
@@ -71,6 +76,68 @@ namespace PhysicsFun.Buildings.Rooms
                 max = grid.CellToLocal(grid.LocalToCell(max));
                 bounds.SetMinMax(min, max);
                 room.roomBounds = bounds;
+            }
+        }
+        
+        [TableList]
+        [SerializeField] private List<RoomGroupings> roomGroupings;
+
+        public IEnumerable<RoomGroupings> GetGroups(bool rebuildGroups = false)
+        {
+            if (rebuildGroups)
+            {
+                Dictionary<Color, List<Room>> groups = new Dictionary<Color, List<Room>>();
+                foreach (var roomGrouping in roomGroupings)
+                {
+                    roomGrouping.roomsInGroup.RemoveAll(t => t == null);
+                    foreach (var room in roomGrouping.roomsInGroup)
+                    {
+                        if (room.roomColor != roomGrouping.groupColor)
+                        {
+                            roomGrouping.roomsInGroup.Remove(room);
+                        }
+                    }
+                    groups.Add(roomGrouping.groupColor, roomGrouping.roomsInGroup);
+                }
+                foreach (var room in AllRooms)
+                {
+                    if (groups.ContainsKey(room.roomColor))
+                    {
+                        if(groups[room.roomColor].Contains(room) == false)
+                            groups[room.roomColor].Add(room);
+                    }
+                    else
+                        groups.Add(room.roomColor, new List<Room> { room });
+                }
+                roomGroupings = new List<RoomGroupings>();
+               
+            }
+            foreach (var roomGrouping in roomGroupings)
+            {
+                yield return roomGrouping;
+            }
+        }
+
+
+        void RebuildGroups()
+        {
+            
+        }
+
+        [Serializable]
+        public class RoomGroupings
+        {
+            [OnValueChanged(nameof(UpdateColors))]
+            public Color groupColor;
+            public List<Room> roomsInGroup = new List<Room>();
+
+            void UpdateColors()
+            {
+                roomsInGroup.RemoveAll(t => t == null);
+                foreach (var room in roomsInGroup)
+                {
+                    room.roomColor = groupColor;
+                }
             }
         }
     }

@@ -21,4 +21,6 @@ namespace CoreLib.Pickups
 
         public bool HasKeyBeenAssigned => _keyAssigned;
     }
+
+
 }

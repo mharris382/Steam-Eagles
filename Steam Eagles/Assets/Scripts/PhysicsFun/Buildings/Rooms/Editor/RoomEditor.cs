@@ -1,8 +1,10 @@
 ﻿#if UNITY_EDITOR
+using CoreLib;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace PhysicsFun.Buildings.Rooms
 {
@@ -118,21 +120,24 @@ namespace PhysicsFun.Buildings.Rooms
                 if (room.dynamicBody == null) return;
                 transform = room.dynamicBody.transform;
             }
+
+            bool snappingToGrid = Event.current.control;
+
             var bounds = room.Bounds;
             var center = transform.TransformPoint(room.roomBounds.center);
             
-            DrawRoomArea(center, bounds, room);
-            DrawRoomBounds(center, room, transform);
+            DrawRoomArea(center, bounds, room, rooms.faceOpacity, rooms.outlineOpacity);
+            DrawRoomBounds(rooms, center, room, transform, snappingToGrid);
         }
 
-        private void DrawRoomBounds(Vector3 center, Room room, Transform transform)
+        private void DrawRoomBounds(Rooms rooms, Vector3 center, Room room, Transform transform, bool snapping =false)
         {
             m_BoundsHandle.center = center;
             m_BoundsHandle.size = room.roomBounds.size;
 
             m_BoundsHandle.midpointHandleSizeFunction = MidpointHandleSizeFunction;
             m_BoundsHandle.handleColor = room.roomColor;
-            m_BoundsHandle.wireframeColor = room.roomColor;
+            m_BoundsHandle.wireframeColor = room.roomColor.SetAlpha(rooms.outlineOpacity);
             Bounds newBounds = new Bounds();
             EditorGUI.BeginChangeCheck();
             m_BoundsHandle.DrawHandle();
@@ -140,21 +145,44 @@ namespace PhysicsFun.Buildings.Rooms
             {
                 Undo.RecordObject(room, "Changed Room Size");
                 newBounds.center = transform.InverseTransformPoint(m_BoundsHandle.center);
+                
                 newBounds.size = (m_BoundsHandle.size);
+                if (snapping)
+                {
+                    var bounds = newBounds;
+                    var min = bounds.min;
+                    var max = bounds.max;
+                    var grid = transform.GetComponent<Grid>();
+                    Debug.Assert(grid != null, "Building is missing grid!", transform);
+                    if (grid == null)
+                    {
+                        return;
+                    }
+                    min =  grid.CellToLocal(grid.LocalToCell(min));
+                    max = grid.CellToLocal(grid.LocalToCell(max));
+                    bounds.SetMinMax(min, max);
+                    newBounds = bounds;
+                }
                 room.roomBounds = newBounds;
             }
         }
 
-        public static void DrawRoomArea(Vector3 center, Bounds bounds, Room room)
+        public static void DrawRoomArea(Vector3 center, Bounds bounds, Room room, float faceOpacity = 1f, float outlineOpacity = 1)
         {
             var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
                 center.y + bounds.extents.y);
             var color = room.roomColor;
-            color.a = 0.25f;
-            Handles.DrawSolidRectangleWithOutline(rect, color, color);
+            color.a = 0.25f * faceOpacity;
+            var faceColor = color;
+            faceColor.a = faceOpacity;
+            var outlineColor = color;
+            outlineColor.a = outlineOpacity;
+            Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
         }
         public static void DrawRoomArea(Rooms rooms, Room room)
         {
+            float faceOpacity = rooms.faceOpacity;
+            float outlineOpacity = rooms.outlineOpacity;
             var transform = rooms.Building.transform;
             if (room.isDynamic)
             {
@@ -167,7 +195,11 @@ namespace PhysicsFun.Buildings.Rooms
                 center.y + bounds.extents.y);
             var color = room.roomColor;
             color.a = 0.25f;
-            Handles.DrawSolidRectangleWithOutline(rect, color, color);
+            var faceColor = color;
+            faceColor.a = faceOpacity;
+            var outlineColor = color;
+            outlineColor.a = outlineOpacity;
+            Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
         }
         static float MidpointHandleSizeFunction(Vector3 position)
         {

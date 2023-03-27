@@ -215,7 +215,7 @@ namespace Characters
                     Mathf.InverseLerp(normalVelocityMin, normalVelocityMax, desiredVelocity.x));
                 State.Rigidbody.velocity = new Vector2(velocityResult, characterVelocity.y);
             }
-        }
+        }   
 
         public void CheckForStructures()
         {

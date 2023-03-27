@@ -16,4 +16,16 @@ namespace CoreLib
             this.dynamicBlock = dynamicBlock;
         }
     }
+    
+    public struct SpawnedPickupInfo
+    {
+        public readonly ScriptableObject pickupID;
+        public GameObject pickupInstance;
+
+        public SpawnedPickupInfo(ScriptableObject pickupID, GameObject pickupInstance)
+        {
+            this.pickupID = pickupID;
+            this.pickupInstance = pickupInstance;
+        }
+    }
 }
