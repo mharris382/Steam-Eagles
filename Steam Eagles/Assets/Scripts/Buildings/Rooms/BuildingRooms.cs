@@ -13,6 +13,7 @@ using Sirenix.OdinInspector.Editor;
 
 namespace PhysicsFun.Buildings.Rooms
 {
+    [System.Obsolete("Use Rooms instead")]
     public class BuildingRooms : MonoBehaviour
     {
         [SerializeField, Required] private StructureState building;

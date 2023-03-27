@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace PhysicsFun.Buildings.Rooms
 {
+    [System.Obsolete("use CharacterRoomTracker instead")]
     /// <summary>
     /// there will be one instance of this class for each player
     /// </summary>

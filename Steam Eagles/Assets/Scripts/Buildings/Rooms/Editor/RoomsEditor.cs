@@ -68,6 +68,19 @@ namespace PhysicsFun.Buildings.Rooms
             }
             DrawCopyColorButton();
             base.OnInspectorGUI();
+            
+            
+            var roomTrackerManager = FindObjectOfType<RoomTrackerManager>();
+            if (roomTrackerManager == null)
+            {
+                EditorGUILayout.HelpBox("RoomTrackerManager not found in scene", MessageType.Warning);
+                if(GUILayout.Button("Create RoomTrackerManager"))
+                {
+                    var go = new GameObject("[ROOM TRACKER MANAGER]");
+                    go.AddComponent<RoomTrackerManager>();
+                    Selection.activeGameObject = go;
+                }
+            }
         }
 
 

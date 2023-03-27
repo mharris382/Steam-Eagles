@@ -119,6 +119,7 @@ namespace Players
                 
                         var character = characterAssignments.GetDependency(id);
                         Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
+                        MessageBroker.Default.Publish(new CharacterSpawnedInfo(character.tag, character.gameObject));
                 
                         wrapper.BindToPlayer(input);
                         wrapper.AssignCamera(camera.Value);
