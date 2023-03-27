@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
+using CoreLib;
+using CoreLib.Interactions;
 using FSM;
 using UniRx;
 using UnityEngine;
@@ -20,6 +22,7 @@ namespace Characters
         private FSM.StateMachine _stateMachine;
         private CharacterState _state;
         private StructureState _structureState;
+        private IPilot _pilot;
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
         public CharacterState State => _state;
@@ -37,10 +40,69 @@ namespace Characters
         private const string GROUNDED = "Grounded";
         private const string AERIAL = "Aerial";
 
+        /// <summary>
+        /// null object used since haven't yet implemented the pilot interface on character side
+        /// </summary>
+        private class NullPilot : IPilot
+        {
+            public NullPilot(GameObject owner)
+            {
+                this.owner = owner;
+            }
+
+            public float XInput { get; }
+            public float YInput { get; }
+            public event Action<int> OnPowerToThrustersChanged;
+            public event Action<int> OnPowerToHeatChanged;
+            private GameObject owner;
+            public void NotifyGainControls(AirshipControls controls)
+            {
+                Debug.Log($"Null Pilot gained controls of {controls.name}");
+            }
+
+            public void NotifyLostControls(AirshipControls controls)
+            {
+                Debug.Log($"Null Pilot lost control of {controls.name}");
+            }
+        }
+
+        private NullPilot _nullPilot;
+        
+        private IPilot Pilot => _pilot ?? _nullPilot;
+
+        private void Awake()
+        {
+            _nullPilot = new NullPilot(gameObject);
+            _pilot = GetComponent<IPilot>();
+            if (_pilot == null)
+                Debug.LogWarning($"No Pilot implementor found on {name}. Using NullPilot instead.", this);
+
+            MessageBroker.Default.Receive<AirshipPilotChangedInfo>()
+                .Subscribe(pilotChanged =>
+                {
+                    if (CompareTag(pilotChanged.newPilotName))
+                    {
+                        pilotChanged.controls.AssignPilot(Pilot);
+                        Debug.Log($"Unassigned {tag} as pilot for {pilotChanged.controls.name}", this);
+                    }
+                    else if (pilotChanged.controls.CurrentPilot == Pilot)
+                    {
+                        pilotChanged.controls.AssignPilot(null);
+                        Debug.Log($"Unassigned {tag} as pilot for {pilotChanged.controls.name}", this);
+                    }
+                })
+                .AddTo(this);
+            
+            MessageBroker.Default.Receive<AirshipPilotChangedInfo>()
+                .Select(t => CompareTag(t.newPilotName))
+                .Subscribe(isPilot => State.IsPilot = isPilot)
+                .AddTo(this);
+
+        }
+
         private void Start()
         {
             _controller = GetComponent<CharacterController2>();
-            
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
             _input.onJump.AsObservable().Subscribe(t => {
@@ -133,6 +195,9 @@ namespace Characters
             var physicsFSM = new FSM.StateMachine();
             var standardPhyiscsFSM = new FSM.StateMachine();
             
+            
+            
+            
             // physicsFSM.AddState(DEFAULT,
             //     onEnter: t =>
             //     {
@@ -149,7 +214,9 @@ namespace Characters
             //         Controller.ApplyMovement(Time.fixedDeltaTime);
             //         Controller.CheckParent();
             //     });
-            
+
+            #region [Setting UP Standard Physics FSM]
+
             standardPhyiscsFSM.AddState(AERIAL, 
                 onEnter: t =>
                 {
@@ -228,8 +295,24 @@ namespace Characters
 
             physicsFSM.SetStartState(DEFAULT);
             physicsFSM.Init();
+
+            #endregion
             
             _stateMachine.AddState("Default", physicsFSM);
+            _stateMachine.AddState("Pilot", 
+                onEnter: _ =>
+                {
+                    StructureState.Mode = StructureState.JointMode.ENABLED;//strap in
+                    Debug.Log($"{tag} entered Pilot Mode",this);
+                }, onLogic: _ =>
+                {
+                    Debug.Log($"{tag} Piloting",this);
+                }, onExit: _ =>
+                {
+                    Debug.Log($"{tag} exited Pilot Mode",this);
+                });
+            _stateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
+            _stateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
             _stateMachine.SetStartState("Default");
             _stateMachine.Init();
         }

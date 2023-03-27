@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.Utilities;
 
 namespace Characters.Interactables
 {
+    [System.Obsolete("use CoreLib.Interactions.InteractionManager instead")]
     /// <summary>
     /// handles making interactions available to interaction controller
     /// </summary>
@@ -74,7 +75,5 @@ namespace Characters.Interactables
                 controller.CurrentAvailableInteractable = bestObj;
             }
         }
-
-      
     }
 }

@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System;
 using CoreLib;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
@@ -48,13 +49,22 @@ namespace PhysicsFun.Buildings.Rooms
 
         protected override void OnEnable()
         {
-            Room room = (Room) target;
-            string errorMsg = "";
-            m_isCameraSelected = false;
-            if (IsRoomValid(ref errorMsg))
+            try
             {
-                ChangeSelectedRoomCamera(room);
+                Room room = (Room) target;
+                string errorMsg = "";
+                m_isCameraSelected = false;
+                if (IsRoomValid(ref errorMsg))
+                {
+                    ChangeSelectedRoomCamera(room);
+                }
             }
+            catch (InvalidCastException e)
+            {
+                Console.WriteLine(e);
+                Debug.LogError($"Why is target {target} not a room!",target);
+            }
+           
             base.OnEnable();
         }
 

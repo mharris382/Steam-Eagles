@@ -65,6 +65,8 @@ public class CharacterState : MonoBehaviour
         get;
         set;
     }
+    
+    public bool IsPilot { get; set; }
 
     public Vector2 AnimatorDelta { get; set; }
 
