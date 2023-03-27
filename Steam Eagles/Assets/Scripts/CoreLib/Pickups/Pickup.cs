@@ -85,8 +85,8 @@ namespace CoreLib.Pickups
 
             public void SetupTransform(Transform instance)
             {
-                var instanceRotation = rotation.Evaluate(UnityEngine.Random.value);
-                var instanceScale = this.scale.Evaluate(UnityEngine.Random.value);
+                var instanceRotation = rotation.Evaluate(UnityEngine.Random.Range(0, 1));
+                var instanceScale = this.scale.Evaluate(UnityEngine.Random.Range(0, 1));
                 instance.rotation = Quaternion.Euler(0, 0, instanceRotation);
                 instance.localScale = Vector3.one * instanceScale;
             }
@@ -104,7 +104,11 @@ namespace CoreLib.Pickups
                         Math.Abs(_physicsMaterial2D.bounciness - bounce) > Mathf.Epsilon || 
                         Math.Abs(_physicsMaterial2D.friction - friction) > Mathf.Epsilon)
                     {
-                        _physicsMaterial2D = Resources.Load<PhysicsMaterial2D>("PhysicsMaterials/Default");
+                        _physicsMaterial2D = new PhysicsMaterial2D()
+                        {
+                            friction = friction,
+                            bounciness = bounce
+                        };
                     }
                     return _physicsMaterial2D;
                 }
@@ -139,7 +143,7 @@ namespace CoreLib.Pickups
             [TabGroup("Physics Material")]
             public float bounce;
             [TabGroup("Physics Material")]
-            public float friction;
+            public float friction = .25f;
             public Type GetColliderType()
             {
                 switch (shape)
@@ -178,7 +182,9 @@ namespace CoreLib.Pickups
                     
                     boxCollider.edgeRadius = edgeRadius/2f;
                     boxCollider.size -= Vector2.one * colliderOffset;
-                    boxCollider.size = ((Vector2)instance.PickupBody.SpriteRenderer.sprite.bounds.size) - sizeOffset - (Vector2.one * (boxCollider.edgeRadius+edgeOffset)) ;
+                    var boundsSize = ((Vector2)instance.PickupBody.SpriteRenderer.sprite.bounds.size);
+                    var boundsOffset = new Vector2(boundsSize.x * sizeOffset.x, boundsSize.y * sizeOffset.y);
+                    boxCollider.size = boundsSize - boundsOffset - (Vector2.one * (boxCollider.edgeRadius+edgeOffset)) ;
                 }
 
                 void SetupPolygonCollider(PolygonCollider2D polygonCollider2D, Sprite sprite)
@@ -220,6 +226,7 @@ namespace CoreLib.Pickups
         [Serializable]
         public class RenderingOptions
         {
+            [SerializeField]
             ParticleSystem.MinMaxGradient spawnColor = new ParticleSystem.MinMaxGradient(Color.white);
             
             public string sortingLayerName = "Dynamic";
