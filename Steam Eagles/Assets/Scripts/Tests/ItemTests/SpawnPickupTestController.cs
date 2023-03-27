@@ -82,7 +82,7 @@ public class SpawnPickupTestController : MonoBehaviour
         mousePos.z = 0;
         if (Input.GetMouseButtonUp(0))
         {
-            var instance = pickup.SpawnPickup(mousePos);
+            var instance = currentPickup.SpawnPickup(mousePos);
         }
     }
 }
