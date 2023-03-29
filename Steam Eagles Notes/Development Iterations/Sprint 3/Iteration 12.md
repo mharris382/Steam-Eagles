@@ -22,7 +22,7 @@ so logically the actual range the player can move at should be that range, offse
 ----
 ## Result
 
-
+![[ariship vertical velocity effects jumping.mp4]]
 ## Inside of Structure State
 ```cs
 private void FixedUpdate()  
