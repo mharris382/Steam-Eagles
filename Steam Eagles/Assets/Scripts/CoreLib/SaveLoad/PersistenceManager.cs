@@ -12,7 +12,7 @@ namespace CoreLib.SaveLoad
         public string presetPath = "Editor Test";
         public bool usePreset = false;
         public string SaveDirectoryPath { get; private set; }
-        
+        public static string SavePath => Instance.SaveDirectoryPath;
         public event Action<string> GameSaved;
         public event Action<string> GameLoaded;
         

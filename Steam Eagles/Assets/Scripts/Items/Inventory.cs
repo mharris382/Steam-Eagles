@@ -11,24 +11,6 @@ namespace Items
         
     }
 
-    public class ItemContainer : MonoBehaviour
-    {
-         string containerName = "Container";
-         int numberOfSlots = 9;
-
-        private void Awake()
-        {
-            if (string.IsNullOrEmpty(containerName)) 
-                containerName = "Container";
-            
-            for (int i = 0; i < numberOfSlots; i++)
-            {
-                var slot = new GameObject($"{containerName} Slot " + i);
-                slot.transform.SetParent(transform);
-            }
-        }
-    }
-    
     public class Inventory : MonoBehaviour, IInventory
     {
         public Transform slotParent;
@@ -254,6 +236,7 @@ namespace Items
         }
     }
 
+    
 
     public class InventoryTester : MonoBehaviour
     {
