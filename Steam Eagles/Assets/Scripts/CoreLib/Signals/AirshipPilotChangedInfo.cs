@@ -14,5 +14,11 @@ namespace CoreLib
             this.newPilotName = newPilotName;
             this.controls = controls;
         }
+        public AirshipPilotChangedInfo(string newPilotName, AirshipControls controls) 
+        {
+            this.prevPilotName = controls.CurrentPilot == null ? "" : controls.CurrentPilot.tag;
+            this.newPilotName = newPilotName;
+            this.controls = controls;
+        }
     }
 }

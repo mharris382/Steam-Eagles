@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using CoreLib;
 using Players;
 using Sirenix.OdinInspector;
@@ -12,6 +14,9 @@ namespace Characters
 {
     public class PlayerWrapper : MonoBehaviour
     {
+        private static List<PlayerWrapper> _playerWrappers;
+        private static List<PlayerWrapper> PlayerWrappers => _playerWrappers ??= (_playerWrappers = new List<PlayerWrapper>());
+        
         [InlineEditor()]
         public Player player;
 
@@ -35,10 +40,23 @@ namespace Characters
 
         private void Awake()
         {
-           
+            if (player == null)
+            {
+                Debug.LogWarning("Player Wrapper does not have player asset assigned!", this);
+                return;
+            }
+            
         }
-        
-        
+
+        private IEnumerator Start()
+        {
+            while (player == null)
+            {
+                yield return null;
+            }
+        }
+
+
         public IDisposable OverrideCamera(Camera overrideCamera)
         {
             if (!IsFullyBound)

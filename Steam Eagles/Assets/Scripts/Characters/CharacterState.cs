@@ -11,6 +11,8 @@ public enum InteractionPhysicsMode
     Mixed = 1,      //root motion is added with gravity
     FullPhysics = 2 //root motion is applied as a force
 }
+
+[RequireComponent(typeof(ToolState))]
 [RequireComponent(typeof(CharacterInputState))]
 [RequireComponent(typeof(GroundCheck))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -23,6 +25,9 @@ public class CharacterState : MonoBehaviour
     private CapsuleCollider2D _capsuleCollider;
     private Rigidbody2D _rb;
 
+    private ToolState _tool;
+    public ToolState Tool => _tool ??= (_tool = GetComponent<ToolState>());
+    
     #region Public variables
 
     public CapsuleCollider2D Collider => _capsuleCollider;

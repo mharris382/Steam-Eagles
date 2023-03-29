@@ -11,6 +11,7 @@ namespace CoreLib.SaveLoad
 
         public string savePath;
 
+        
         [Button]
         void UpdateSpawnPosition()
         {
@@ -19,7 +20,7 @@ namespace CoreLib.SaveLoad
             var spawnDatabase = SpawnDatabase.Instance;
             
             
-            spawnDatabase.UpdateDefaultSpawnPoint(characterName, this.transform.position);
+            spawnDatabase.UpdateDefaultSpawnPoint(characterName, transform.parent == null ? this.transform.position : transform.localPosition);
         }
 
         [Button]
@@ -30,7 +31,15 @@ namespace CoreLib.SaveLoad
             var spawnDatabase = SpawnDatabase.Instance;
             if (spawnDatabase.HasDefaultSpawnPosition(characterName))
             {
-                this.transform.position = spawnDatabase.GetDefaultSpawnPointForScene(characterName);
+                var pos = spawnDatabase.GetDefaultSpawnPointForCharacter(characterName);
+                if (transform.parent == null)
+                {
+                    this.transform.position = pos;
+                }
+                else
+                {
+                    transform.localPosition = pos;
+                }
             }
         }
         [Button]
@@ -41,7 +50,15 @@ namespace CoreLib.SaveLoad
             var spawnDatabase = SpawnDatabase.Instance;
             if (spawnDatabase.HasDefaultSpawnPosition(characterName))
             {
-                this.transform.position = spawnDatabase.GetSpawnPointForScene(characterName, savePath);
+                var pos = spawnDatabase.GetSpawnPointForScene(characterName, savePath);
+                if (transform.parent == null)
+                {
+                    this.transform.position = pos;
+                }
+                else
+                {
+                    transform.localPosition = pos;
+                }
             }
         }
 

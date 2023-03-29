@@ -32,7 +32,7 @@ namespace CoreLib
 
         private void Awake()
         {
-            if (_instance == null)
+            if (_instance == null || _instance == this)
             {
                 _instance = this as T;
                 Init();
@@ -40,10 +40,15 @@ namespace CoreLib
             else
             {
                 Debug.LogWarning($"Found multiple {typeof(T).Name} found in scene. Deleting extra");
+                CleanupDuplicate();
                 Destroy(this);
             }
         }
 
+        protected virtual void CleanupDuplicate()
+        {
+            
+        }
         protected virtual void Init()
         {
         }

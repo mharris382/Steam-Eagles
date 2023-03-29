@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using CoreLib;
-using UniRx;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace PhysicsFun.Airships

@@ -95,6 +95,7 @@ namespace Players
         }
 
 
+        [System.Obsolete("Device registration should not be handled by GameManager, it needs to be handled by PlayerDeviceManager")]
         public void OnPlayerLeft(PlayerInput obj)
         {
             Debug.Log($"Player {obj.playerIndex} Left");

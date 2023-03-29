@@ -70,10 +70,21 @@ namespace PhysicsFun.Buildings.Rooms
 
         protected override void OnDisable()
         {
-            Room room = (Room) target;
-            if(m_selectedRoomCamera == room && !m_isCameraSelected) 
-                ChangeSelectedRoomCamera(null);
-            base.OnDisable();
+            try
+            {
+                Room room = (Room)target;
+                if (m_selectedRoomCamera == room && !m_isCameraSelected)
+                    ChangeSelectedRoomCamera(null);
+            }
+            catch (InvalidCastException e)
+            {
+                Console.WriteLine(e);
+                Debug.LogError($"Why is target {target} not a room!", target);
+            }
+            finally
+            {
+                base.OnDisable();
+            }
         }
 
         private void ChangeSelectedRoomCamera(Room o)

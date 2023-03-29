@@ -19,7 +19,8 @@ namespace Characters
         private CharacterController2 _controller;
         
         
-        private FSM.StateMachine _stateMachine;
+        private FSM.StateMachine _defaultStateMachine;
+        private FSM.StateMachine _toolStateMachine;
         private CharacterState _state;
         private StructureState _structureState;
         private IPilot _pilot;
@@ -45,13 +46,16 @@ namespace Characters
         /// </summary>
         private class NullPilot : IPilot
         {
+            public string tag => owner.tag;
+            private CharacterState _characterState;
             public NullPilot(GameObject owner)
             {
                 this.owner = owner;
+                _characterState = this.owner.GetComponent<CharacterState>();
             }
 
-            public float XInput { get; }
-            public float YInput { get; }
+            public float XInput => _characterState.MoveX;
+            public float YInput => _characterState.MoveY;
             public event Action<int> OnPowerToThrustersChanged;
             public event Action<int> OnPowerToHeatChanged;
             private GameObject owner;
@@ -83,7 +87,7 @@ namespace Characters
                     if (CompareTag(pilotChanged.newPilotName))
                     {
                         pilotChanged.controls.AssignPilot(Pilot);
-                        Debug.Log($"Unassigned {tag} as pilot for {pilotChanged.controls.name}", this);
+                        Debug.Log($"Assigned {tag} as pilot for {pilotChanged.controls.name}", this);
                     }
                     else if (pilotChanged.controls.CurrentPilot == Pilot)
                     {
@@ -94,7 +98,7 @@ namespace Characters
                 .AddTo(this);
             
             MessageBroker.Default.Receive<AirshipPilotChangedInfo>()
-                .Select(t => CompareTag(t.newPilotName))
+                .Select(t => !string.IsNullOrEmpty(t.newPilotName) && CompareTag(t.newPilotName))
                 .Subscribe(isPilot => State.IsPilot = isPilot)
                 .AddTo(this);
 
@@ -191,7 +195,7 @@ namespace Characters
 
             #endregion
 
-            _stateMachine = new FSM.StateMachine();
+            _defaultStateMachine = new FSM.StateMachine();
             var physicsFSM = new FSM.StateMachine();
             var standardPhyiscsFSM = new FSM.StateMachine();
             
@@ -298,8 +302,8 @@ namespace Characters
 
             #endregion
             
-            _stateMachine.AddState("Default", physicsFSM);
-            _stateMachine.AddState("Pilot", 
+            _defaultStateMachine.AddState("Default", physicsFSM);
+            _defaultStateMachine.AddState("Pilot", 
                 onEnter: _ =>
                 {
                     StructureState.Mode = StructureState.JointMode.ENABLED;//strap in
@@ -311,10 +315,10 @@ namespace Characters
                 {
                     Debug.Log($"{tag} exited Pilot Mode",this);
                 });
-            _stateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
-            _stateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
-            _stateMachine.SetStartState("Default");
-            _stateMachine.Init();
+            _defaultStateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
+            _defaultStateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
+            _defaultStateMachine.SetStartState("Default");
+            _defaultStateMachine.Init();
         }
 
        
@@ -336,7 +340,7 @@ namespace Characters
 
         private void FixedUpdate()
         {
-            _stateMachine.OnLogic();
+            _defaultStateMachine.OnLogic();
         }
 
 

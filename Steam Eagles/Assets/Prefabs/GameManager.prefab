@@ -824,6 +824,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2007201906275935060}
   - component: {fileID: 2007201906275935059}
+  - component: {fileID: 7264329577702498958}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -863,6 +864,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b2b00cbdaf473ebd0cb02fc8e30a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMode: 0
+  activePlayerCount: {fileID: 11400000, guid: d687f9a8814b65e48855ce6a763c61e6, type: 2}
   players:
   - {fileID: 2007201907167969878}
   - {fileID: 2007201907045349884}
@@ -892,6 +895,20 @@ MonoBehaviour:
     eventSystems: []
   waitingForFirstPlayerToJoinGUI: {fileID: 1204513529}
   playerDisconnectedGUI: {fileID: 957288007}
+--- !u!114 &7264329577702498958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007201906275935058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c851c03c1c48407e9bff6abe674df2db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  presetPath: Editor Test
+  usePreset: 0
 --- !u!1 &2007201907045349883
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,6 +1145,26 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 30153094499240168, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -374
+      objectReference: {fileID: 0}
+    - target: {fileID: 30153094499240168, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 149
+      objectReference: {fileID: 0}
+    - target: {fileID: 30153094499240168, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -408.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 30153094499240175, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: far clip plane
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 30153094499240175, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: orthographic size
+      value: 134.91
+      objectReference: {fileID: 0}
     - target: {fileID: 7265274975464692073, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -1171,6 +1208,10 @@ PrefabInstance:
     - target: {fileID: 7265274975464692073, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265274975464692074, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7265274975464692074, guid: 52623f3997d47a246bd4b3dfcf1dda27, type: 3}
       propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target

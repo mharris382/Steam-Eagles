@@ -34,7 +34,49 @@ namespace CoreLib.SaveLoad
     [System.Serializable]
     public class SavedSpawnPoints
     {
-        public List<SavedSpawnPoint> savedSpawnPoints;
+        [SerializeField]
+        public SavedSpawnPoint[] savedSpawnPoints = new SavedSpawnPoint[0];
+
+
+        public void CreateOrUpdate(string characterName, Vector3 spawnPosition)
+        {
+            int cnt = 0;
+            foreach (var savedSpawnPoint in savedSpawnPoints)
+            {
+                if (savedSpawnPoint.characterName == characterName)
+                {
+                    savedSpawnPoint.spawnPosition = spawnPosition;
+                    savedSpawnPoints[cnt] = savedSpawnPoint;
+                    Debug.Log($"Updated spawn point for character: {characterName} to {spawnPosition}");
+                    return;
+                }
+                cnt++;
+            }
+
+            var los = new List<SavedSpawnPoint>(savedSpawnPoints);
+            Debug.Log($"Created spawn point for character: {characterName} at {spawnPosition}");
+            los.Add(new SavedSpawnPoint()
+            {
+                characterName = characterName,
+                spawnPosition = spawnPosition
+            });
+            savedSpawnPoints = los.ToArray();
+        }
+
+        public bool GetSavePointFor(string character, out Vector3 point)
+        {
+            point = Vector3.zero;
+            foreach (var savedSpawnPoint in savedSpawnPoints)
+            {
+                if (savedSpawnPoint.characterName == character)
+                {
+                    point = savedSpawnPoint.spawnPosition;
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
     
     [System.Serializable]
@@ -44,7 +86,7 @@ namespace CoreLib.SaveLoad
         public Vector3 spawnPosition;
     }
  
-    public Vector3 GetDefaultSpawnPointForScene(string characterName)
+    public Vector3 GetDefaultSpawnPointForCharacter(string characterName)
     {
         foreach (var spawnPoint in spawnPoints)
         {
@@ -93,38 +135,65 @@ namespace CoreLib.SaveLoad
         if(TryLoadSpawnPoint(characterName, persistentSaveDataPath, out spawnPoint))
             return spawnPoint;
         
-        return GetDefaultSpawnPointForScene(characterName);
+        return GetDefaultSpawnPointForCharacter(characterName);
     }
     
     private bool TryLoadSpawnPoint(string characterName, string persistentSaveDataPath, out Vector3 spawnPoint)
     {
         spawnPoint = Vector3.zero;
-        string dirPath = Application.persistentDataPath + persistentSaveDataPath;
+        string dirPath = persistentSaveDataPath.StartsWith(Application.persistentDataPath) ? persistentSaveDataPath : $"{Application.persistentDataPath}/{persistentSaveDataPath}";
 
         if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
         
-        string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.dat" : "/SpawnPoints.dat");
+        string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
         if (!File.Exists(filepath))
         {
             return false;
         }
-        using (FileStream file = (File.Exists(filepath) ? File.Open(filepath, FileMode.Open) : File.Create(filepath)))
+
+        var spawnSaves = LoadSpawnPoints(filepath);
+        foreach (var savedSpawnPoint in spawnSaves.savedSpawnPoints)
         {
-            if(file.Length == 0)
-                return false;
-            SavedSpawnPoints savedSpawnPoints = (SavedSpawnPoints) new BinaryFormatter().Deserialize(file);
-            foreach (var savedSpawnPoint in savedSpawnPoints.savedSpawnPoints)
+            if (savedSpawnPoint.characterName == characterName)
             {
-                if (savedSpawnPoint.characterName == characterName)
-                {
-                    spawnPoint = savedSpawnPoint.spawnPosition;
-                    return true;
-                }
+                spawnPoint = savedSpawnPoint.spawnPosition;
+                return true;
             }
         }
+        
         return false;
     }
 
+    public Vector3 LoadSpawnPointForPath(string characterName, string savePath)
+    {
+        string filepath =  savePath + (savePath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
+        var spawnPoints = LoadSpawnPoints(filepath);
+        if (spawnPoints.GetSavePointFor(characterName, out var point))
+        {
+            return point;
+        }
+        return GetDefaultSpawnPointForCharacter(characterName);
+    }
+    public void SaveSpawnPoint(string characterName, string dirPath, Vector3 spawnPoint)
+    {
+        string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
+        var sp = LoadSpawnPoints(filepath);
+        sp.CreateOrUpdate(characterName, spawnPoint);
+        var json = JsonUtility.ToJson(sp);
+        File.WriteAllText(filepath, json);
+        Debug.Log($"Saved spawn point for {characterName} at path {filepath}");
+    }
+
+    SavedSpawnPoints LoadSpawnPoints(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"No File exists at {path}");
+            return new SavedSpawnPoints();
+        }
+        string json = File.ReadAllText(path);
+        return JsonUtility.FromJson<SavedSpawnPoints>(json);
+    }
 
     public bool HasDefaultSpawnPosition(string characterName)
     {

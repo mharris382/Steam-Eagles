@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using UnityEngine;
 using FSM;
 using Sirenix.OdinInspector;
@@ -20,6 +21,7 @@ namespace Characters.Animations
         
         private SpineAnimationHandler _animationHandler;
         private CharacterState _characterState;
+        private ToolState _characterToolState;
         private SkeletonAnimation _skeletonAnimation;
         private SkinController _skinController;
         private Fsm _stateMachine;
@@ -27,76 +29,130 @@ namespace Characters.Animations
         private void Start()
         {
             _characterState = GetComponentInParent<CharacterState>();
+            _characterToolState = _characterState.Tool;
+            var toolState = _characterToolState.currentToolState;
+            switch (toolState)
+            {
+                case ToolStates.None:
+                    break;
+                case ToolStates.Recipe:
+                    break;
+                case ToolStates.Build:
+                    break;
+                case ToolStates.Destruct:
+                    break;
+                case ToolStates.Repair:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
             _animationHandler = GetComponent<SpineAnimationHandler>();
-            
+            _skinController = GetComponent<SkinController>();
             _stateMachine = new Fsm();
-            
-            //---------------------------
-            //Grounded State Machine
-            
-            var groundedFsm = new Fsm(needsExitTime:false);
-            
-            groundedFsm.AddState(
-                "Idle",
-                onEnter: state =>
-                {
-                    _animationHandler.PlayAnimationForState("Idle", 0);
-                    onStateChange?.Invoke("Idle");
-                    LogState("Idle");
-                },
-                onLogic: state =>
-                {
-                    UpdateFacingDirection();
-                });
-            
-            groundedFsm.AddState(
-                "Run",
-                onEnter: state =>
-                {
-                   _animationHandler.PlayAnimationForState("Run", 0);
-                     onStateChange?.Invoke("Run");
-                   LogState("Run");
-                },
-                onLogic: state => 
-                {
-                    UpdateFacingDirection();
-                });
-            
-            groundedFsm.AddTransition("Idle", "Run",t=> IsMoving());
-            groundedFsm.AddTransition("Run", "Idle",t=> !IsMoving());
-            groundedFsm.SetStartState("Idle");
-            
-            //---------------------------
-            //Aerial State Machine
+           var stateMachine = new Fsm();
+           var toolFsm = new Fsm();
+           AddToolState(ToolStates.Repair);
+           AddToolStateFromStateObject(ToolStates.Build, new BuildToolState(_characterState, _characterToolState, _skeletonAnimation, _skinController, false));
+           AddToolState(ToolStates.Destruct);
+           AddToolState(ToolStates.Recipe);
+           toolFsm.Init();
 
-            var aerialFsm = new Fsm();
+           void AddToolStateFromStateObject(ToolStates toolStates, StateBase stateBase)
+           {
+               var toolState = toolStates.ToString();
+               toolFsm.AddState(toolState, stateBase);
+               toolFsm.AddTransitionFromAny(toolState, t => _characterToolState.currentToolState == toolStates);
+           }
+           void AddToolState(ToolStates state)
+           {
+               var toolState = state.ToString();
+               toolFsm.AddState(toolState
+                   , 
+                   onEnter: _ =>
+                   {
+                       Debug.Log($"Animator Enter Logic for {toolState.Bolded()}",this);
+                   },
+                   onLogic: _ =>
+                   {
+                       Debug.Log($"Animator Update Logic for {toolState.Bolded()}",this);
+                   }, 
+                   onExit: _ =>
+                   {
+                       Debug.Log($"Animator Exit Logic for {toolState.Bolded()}",this);
+                   });
+               toolFsm.AddTransitionFromAny(toolState, t => _characterToolState.currentToolState == state);
+           }
+           
+           #region [Default State Machine]
+
+           //---------------------------
+           //Grounded State Machine
             
-            aerialFsm.AddState(
-                "Jump", 
-                onEnter: state =>
-                {
-                    _animationHandler.PlayAnimationForState("Jump", 0);
-                    onStateChange?.Invoke("Jump");
-                    LogState("Jump");
-                }, 
-                onLogic: state =>
-                {
-                    UpdateFacingDirection();
-                });
+           var groundedFsm = new Fsm(needsExitTime:false);
             
-            aerialFsm.AddState(
-                "Fall",
-                onEnter: state =>
-                {
-                    _animationHandler.PlayAnimationForState("Fall", 0);
-                    onStateChange?.Invoke("Fall");
-                    LogState("Fall");
-                },
-                onLogic: state =>
-                {
-                    UpdateFacingDirection();
-                });
+           groundedFsm.AddState(
+               "Idle",
+               onEnter: state =>
+               {
+                   _animationHandler.PlayAnimationForState("Idle", 0);
+                   _skinController.UpdateState("Idle");
+                   LogState("Idle");
+               },
+               onLogic: state =>
+               {
+                   UpdateFacingDirection();
+               });
+            
+           groundedFsm.AddState(
+               "Run",
+               onEnter: state =>
+               {
+                   _animationHandler.PlayAnimationForState("Run", 0);
+                    _skinController.UpdateState("Run");
+                   LogState("Run");
+               },
+               onLogic: state => 
+               {
+                   UpdateFacingDirection();
+               });
+            
+           groundedFsm.AddTransition("Idle", "Run",t=> IsMoving());
+           groundedFsm.AddTransition("Run", "Idle",t=> !IsMoving());
+           groundedFsm.SetStartState("Idle");
+            
+           //---------------------------
+           //Aerial State Machine
+
+           var aerialFsm = new Fsm();
+            
+           aerialFsm.AddState(
+               "Jump", 
+               onEnter: state =>
+               {
+                   _animationHandler.PlayAnimationForState("Jump", 0);
+                   _skinController.UpdateState("Jump");
+                   LogState("Jump");
+               }, 
+               onLogic: state =>
+               {
+                   UpdateFacingDirection();
+               });
+            
+           aerialFsm.AddState(
+               "Fall",
+               onEnter: state =>
+               {
+                   _animationHandler.PlayAnimationForState("Fall", 0);
+                   _skinController.UpdateState("Fall");
+                   LogState("Fall");
+               },
+               onLogic: state =>
+               {
+                   UpdateFacingDirection();
+               });
+
+           #endregion
             
             aerialFsm.AddTransition("Jump", "Fall", t => !_characterState.IsJumping);
             aerialFsm.AddTransition("Falling", "Jump", t => _characterState.IsJumping);
@@ -104,13 +160,20 @@ namespace Characters.Animations
             
             //---------------------------
             
-            _stateMachine.AddState("Air", aerialFsm);
-            _stateMachine.AddState("Grounded", groundedFsm);
+            stateMachine.AddState("Air", aerialFsm);
+            stateMachine.AddState("Grounded", groundedFsm);
             
-            _stateMachine.AddTransition("Grounded", "Air", t => CheckAirCondition());
-            _stateMachine.AddTransition("Air", "Grounded", t => IsGrounded());
+            stateMachine.AddTransition("Grounded", "Air", t => CheckAirCondition());
+            stateMachine.AddTransition("Air", "Grounded", t => IsGrounded());
             
-            _stateMachine.SetStartState("Grounded");
+            stateMachine.SetStartState("Grounded");
+            stateMachine.Init();
+            
+            _stateMachine.AddState("Default", stateMachine);
+            _stateMachine.AddState("Tool", toolFsm);
+            _stateMachine.AddTransition("Default", "Tool" , _ => _characterToolState.currentToolState != ToolStates.None);
+            _stateMachine.AddTransition("Tool" , "Default", _ => _characterToolState.currentToolState == ToolStates.None);
+            _stateMachine.SetStartState(_characterToolState.currentToolState == ToolStates.None ? "Default" : "Tool");
             _stateMachine.Init();
         }
 

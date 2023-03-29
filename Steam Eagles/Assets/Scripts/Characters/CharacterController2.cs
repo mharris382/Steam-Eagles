@@ -192,7 +192,7 @@ namespace Characters
             }
         }
 
-        private CharacterState State => _state;
+        private CharacterState State => _state != null ? _state : (_state = GetComponent<CharacterState>());
         public CharacterConfig Config => State.config;
         public Rigidbody2D rb => _rigidbody2D;
         public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);

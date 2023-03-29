@@ -21,7 +21,7 @@ public class CharacterSkeletonAnimator : MonoBehaviour
     private Collider2D _collider;
     List<ContactPoint2D> _contactPoint2Ds;
     public SharedBool isFacingRight;
-    public enum States {IDLE, RUN, JUMP}
+    public enum States {IDLE, RUN, JUMP, BUILD, DESTRUCT, REPAIR, RECIPE}
 
     private States _current;
     public States Current

@@ -11,7 +11,9 @@ namespace CoreLib.Interactions
 
         [SerializeField, Range(0, MAX_POWER_STEPS)] public int thrusterPower = 1;
         [SerializeField,Range(0, MAX_POWER_STEPS)] public int heatPower = 1;
-        
+
+        public float ThrusterPowerAsPercent => thrusterPower / (float)MAX_POWER_STEPS;
+        public float HeatPowerAsPercent => heatPower / (float)MAX_POWER_STEPS;
         
         [SerializeField] private float timeBetweenSteps = 0.5f;
         

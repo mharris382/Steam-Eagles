@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b27263e3aaf04da438e31031253e4718, type: 2}
+  - {fileID: 2100000, guid: ffddb480e8eeb5740bf50a5c951b778b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 2f6efc0288474004c9d358c122bc6da6, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: ce14f126e059625448529d2b9634edd6, type: 2}
   initialSkinName: Builder - Body
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
         m_CallState: 2
   idleAnimationName: idle
   runAnimationName: run
-  jumpAnimationName: jump/jump-full
+  jumpAnimationName: jump/fall
   debug: 1
 --- !u!114 &7527658672694296535
 MonoBehaviour:
@@ -175,32 +175,35 @@ MonoBehaviour:
   statesAndAnimations:
   - stateName: Idle
     loop: 1
-    animation: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
+    animation: {fileID: 11400000, guid: 93a4e1f1ae9b0884597d3b9ceebf7ef8, type: 2}
   - stateName: Run
     loop: 1
-    animation: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
+    animation: {fileID: 11400000, guid: 0447c688e0fe9ac4480ac514b154239b, type: 2}
   - stateName: Jump
     loop: 1
-    animation: {fileID: 11400000, guid: 6fb301ce61318db43b7ec1d1ee0fbef6, type: 2}
+    animation: {fileID: 11400000, guid: cbbbe02608c0a0347864da39a3e5d0e3, type: 2}
   - stateName: Fall
     loop: 1
-    animation: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
+    animation: {fileID: 11400000, guid: 97b5b7243b4a5c241abf475a38e724f6, type: 2}
+  - stateName: Build
+    loop: 1
+    animation: {fileID: 11400000, guid: ee21ee05821cbef45a7d5fcadcc7d6bc, type: 2}
   transitions:
-  - from: {fileID: 11400000, guid: 8203994a1338b46488a43c83a1bd17e6, type: 2}
-    to: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
-    transition: {fileID: 11400000, guid: 4c24c864f10582f4aa5cab479e50f254, type: 2}
-  - from: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
-    to: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
-    transition: {fileID: 11400000, guid: 0af46cab45496e84f84ecbec648af078, type: 2}
-  - from: {fileID: 11400000, guid: cc1a86857b9394649906f5ad53135742, type: 2}
-    to: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
-    transition: {fileID: 11400000, guid: 0af46cab45496e84f84ecbec648af078, type: 2}
-  - from: {fileID: 11400000, guid: 9139775edb41df74dbaa6beb7ca19863, type: 2}
-    to: {fileID: 11400000, guid: 6fb301ce61318db43b7ec1d1ee0fbef6, type: 2}
-    transition: {fileID: 11400000, guid: ce23e93d9b02a1a4f9f7cae6ed5a1180, type: 2}
-  - from: {fileID: 11400000, guid: 96a03e95617322e428fe7e76e5047272, type: 2}
-    to: {fileID: 11400000, guid: 6fb301ce61318db43b7ec1d1ee0fbef6, type: 2}
-    transition: {fileID: 11400000, guid: d50c6e4784f611345a44822918e05b40, type: 2}
+  - from: {fileID: 11400000, guid: cbbbe02608c0a0347864da39a3e5d0e3, type: 2}
+    to: {fileID: 11400000, guid: 97b5b7243b4a5c241abf475a38e724f6, type: 2}
+    transition: {fileID: 11400000, guid: 1edac01731577b746a7d2c6c7b1255ba, type: 2}
+  - from: {fileID: 11400000, guid: 0447c688e0fe9ac4480ac514b154239b, type: 2}
+    to: {fileID: 11400000, guid: cbbbe02608c0a0347864da39a3e5d0e3, type: 2}
+    transition: {fileID: 11400000, guid: 44190f628408ddb4593018d432d21964, type: 2}
+  - from: {fileID: 11400000, guid: 93a4e1f1ae9b0884597d3b9ceebf7ef8, type: 2}
+    to: {fileID: 11400000, guid: cbbbe02608c0a0347864da39a3e5d0e3, type: 2}
+    transition: {fileID: 11400000, guid: e16d18b2c9ce3f64cbf3856c31cf440b, type: 2}
+  - from: {fileID: 11400000, guid: 97b5b7243b4a5c241abf475a38e724f6, type: 2}
+    to: {fileID: 11400000, guid: 0447c688e0fe9ac4480ac514b154239b, type: 2}
+    transition: {fileID: 11400000, guid: afccf6e280a3dbf4299b21c1542545d3, type: 2}
+  - from: {fileID: 11400000, guid: 97b5b7243b4a5c241abf475a38e724f6, type: 2}
+    to: {fileID: 11400000, guid: 93a4e1f1ae9b0884597d3b9ceebf7ef8, type: 2}
+    transition: {fileID: 11400000, guid: afccf6e280a3dbf4299b21c1542545d3, type: 2}
 --- !u!114 &8842447251057606262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +236,11 @@ MonoBehaviour:
   - stateName: Run
     handSkin:
     - Builder Hands/Builder - Hands Closed
+    overrideBodySkin: 0
+    bodySkin: 
+  - stateName: Build
+    handSkin:
+    - Builder Hands/Builder - Hand Hammer
     overrideBodySkin: 0
     bodySkin: 
 --- !u!1001 &4528259117313465035
@@ -322,6 +330,10 @@ PrefabInstance:
     - target: {fileID: 2023073604413840154, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: m_Name
       value: Character_Builder (New Animations)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2951422184399087470, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
+      propertyPath: currentToolState
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3403777592461052099, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: m_LocalPosition.x
