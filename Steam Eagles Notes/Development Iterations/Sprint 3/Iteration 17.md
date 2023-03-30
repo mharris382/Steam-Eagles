@@ -3,7 +3,7 @@
 %%
 # Iteration 17: Refactoring 
 Previous Iteration: [[Iteration 16]]
-Next Iteration: 
+Next Iteration: [[Iteration 18]]
 
 
 ## Goal

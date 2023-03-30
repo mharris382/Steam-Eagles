@@ -7,9 +7,7 @@ Next Iteration: [[Iteration 17]]
 
 
 ## Goal
-
-### Purpose
-
+Experiment with a damage system prototype that adjusts damage probability in order to keep the overall damage between a desired range without blocking the randomness
 
 ### Hypothesis
 
