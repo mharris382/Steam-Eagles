@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Items
         IComparable<ItemStack>
     {
         [HideLabel, LabelWidth(45)] public ItemBase item;
-        [LabelText("Count"), LabelWidth(45)] public int itemCount;
+        [LabelText("Count"), LabelWidth(45),SerializeField] private int itemCount;
 
         public ItemStack(ItemBase item, int itemCount)
         {
@@ -22,6 +21,7 @@ namespace Items
 
         public int Count => itemCount;
 
+        public string Key => Item.itemName.Replace(" ", "");
 
         private static ItemBase _nullItem;
         private static ItemStack _empty;
@@ -75,36 +75,7 @@ namespace Items
             if(item.IsStackable) return $"{item.itemName} ({itemCount})";
             return item.itemName;
         }
-    }
 
-
-    public class ItemStackSorter : IComparer<ItemStack>,
-        IComparer<ItemBase>,
-        IComparer<ItemType>
-    {
-        public int Compare(ItemStack x, ItemStack y)
-        {
-            int itemComparison = Compare(x.item, y.item);
-            if (itemComparison != 0)
-                return itemComparison;
-            return x.itemCount.CompareTo(y.itemCount);
-        }
-
-        public int Compare(ItemBase x, ItemBase y)
-        {
-            if (ReferenceEquals(x, y)) return 0;
-            if (ReferenceEquals(null, y)) return -1;
-            if (ReferenceEquals(null, x)) return 1;
-            int typeComparison = Compare(x.ItemType, y.ItemType);
-            if (typeComparison != 0)
-                return typeComparison;
-            var itemNameComparison = string.Compare(x.itemName, y.itemName, StringComparison.Ordinal);
-            return itemNameComparison;
-        }
-
-        public int Compare(ItemType x, ItemType y)
-        {
-            return x.CompareTo(y);
-        }
+        public static implicit operator ItemStack(ItemBase item) => new ItemStack(item, 1);
     }
 }

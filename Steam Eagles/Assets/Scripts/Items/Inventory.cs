@@ -6,10 +6,7 @@ using UnityEngine;
 
 namespace Items
 {
-    public interface IInventory
-    {
-        
-    }
+   
 
     public class Inventory : MonoBehaviour, IInventory
     {
@@ -42,7 +39,7 @@ namespace Items
             }
         }
         
-        public IEnumerable<ItemStack> items
+        public IEnumerable<ItemStack> Items
         {
             get
             {
@@ -79,7 +76,7 @@ namespace Items
         public int GetItemCount(ItemBase item)
         {
             int cnt = 0;
-            foreach (var itemStack in items)
+            foreach (var itemStack in Items)
             {
                 if (itemStack.item == item)
                 {
@@ -224,7 +221,7 @@ namespace Items
 
         public void SortInventory()
         {
-            var itemStacks = items.ToList();
+            var itemStacks = Items.ToList();
             itemStacks.Sort(sorter);
             for (int i = 0; i < slotParent.childCount; i++)
             {
@@ -236,11 +233,4 @@ namespace Items
         }
     }
 
-    
-
-    public class InventoryTester : MonoBehaviour
-    {
-        public List<ItemStack> inventoryItems = new List<ItemStack>();
-        public Inventory inventory;
-    }
 }

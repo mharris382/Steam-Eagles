@@ -27,6 +27,12 @@ namespace Tests.ItemTests
             }
         }
 
+        static string[] toolNames = new string[] {
+            AssumedItemNames.BUILD_TOOL,
+            AssumedItemNames.RECIPE_TOOL,
+            AssumedItemNames.DESTRUCT_TOOL,
+            AssumedItemNames.REPAIR_TOOL,
+        };
         [UnityTest]
         public IEnumerator BuildsFromListCorrectly()
         {
@@ -35,12 +41,7 @@ namespace Tests.ItemTests
                 (AssumedItemNames.ITEM_HYPERGLASS,5),
                 (AssumedItemNames.ITEM_SCRAP_METAL,3)
             };
-            string[] toolNames = new string[] {
-                AssumedItemNames.TOOL_SAW,
-                AssumedItemNames.TOOL_DRILL,
-                AssumedItemNames.TOOL_RECIPE_BOOK,
-                AssumedItemNames.TOOL_FLASHLIGHT,
-            };
+            
             int[] stackCounts = new int[] {
                 11,
                 22,
@@ -93,12 +94,7 @@ namespace Tests.ItemTests
                 (AssumedItemNames.ITEM_HYPERGLASS,5),
                 (AssumedItemNames.ITEM_SCRAP_METAL,3)
             };
-            string[] toolNames = new string[] {
-                AssumedItemNames.TOOL_SAW,
-                AssumedItemNames.TOOL_DRILL,
-                AssumedItemNames.TOOL_RECIPE_BOOK,
-                AssumedItemNames.TOOL_FLASHLIGHT,
-            };
+          
             int[] stackCounts = new int[] {
                 11,
                 22,

@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using RuntimeItemStack = Items.ItemStack;
 namespace Items.SaveLoad
 {
     [Serializable]
     public class InventorySaves
     {
+        [Serializable]
+        public class ItemStack
+        {
+            public string itemKey;
+            public int stackCount;
+
+            public ItemStack(RuntimeItemStack runtimeStack)
+            {
+                this.itemKey = runtimeStack.Key;
+                stackCount = runtimeStack.Count;
+            }
+        }
+        
         [Serializable]
         public class InventorySave
         {
@@ -16,6 +29,11 @@ namespace Items.SaveLoad
             {
                 this.key = key;
                 stacks = new List<ItemStack>();
+            }
+
+            public List<RuntimeItemStack> GetRuntimeStack()
+            {
+                throw new NotImplementedException();
             }
         }
     
@@ -32,7 +50,7 @@ namespace Items.SaveLoad
         public int Count => _saves.Count;
         
         
-        public List<ItemStack> this[string key]
+        public InventorySave this[string key]
         {
             get
             {
@@ -40,7 +58,7 @@ namespace Items.SaveLoad
                 if (_cache.ContainsKey(key))
                 {
 
-                    return _saves[_cache[key]].stacks;
+                    return _saves[_cache[key]];
                 }
 
                 
@@ -51,7 +69,7 @@ namespace Items.SaveLoad
                     if (inventorySave.key == key)
                     {
                         _cache.Add(key, i);
-                        return _saves[i].stacks;
+                        return _saves[i];
                     }
                 }
                 
@@ -60,7 +78,7 @@ namespace Items.SaveLoad
                 var newSave = new InventorySave(key);
                 _saves.Add(newSave);
                 _cache.Add(newSave.key, _saves.Count-1);
-                return newSave.stacks;
+                return newSave;
             }
         }
     }

@@ -13,11 +13,11 @@ namespace Items
 
         
         [VerticalGroup("h1/v1")]
-        [LabelText("Name")]
+        [LabelText("Name"),LabelWidth(80)]
         public string itemName;
 
         [VerticalGroup("h1/v1")]
-        [HideLabel]
+        [HideLabel, LabelWidth(80)]
         [Multiline(5)]
         public string description;
         

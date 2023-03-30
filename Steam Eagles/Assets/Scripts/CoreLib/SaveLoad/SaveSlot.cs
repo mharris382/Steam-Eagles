@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.IO;
 
+[Obsolete("Use Persistence Manager instead")]
 [CreateAssetMenu(fileName = "New Save Slot", menuName = "Steam Eagles/Save Slot")]
 public class SaveSlot : ScriptableObject
 {

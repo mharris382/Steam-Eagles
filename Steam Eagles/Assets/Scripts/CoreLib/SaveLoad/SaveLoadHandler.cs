@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using Task = System.Threading.Tasks.Task;
-
+[System.Obsolete("Use Persistence Manager Instead")]
 public class SaveLoadHandler : Singleton<SaveLoadHandler>
 {
     

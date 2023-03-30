@@ -18,11 +18,22 @@ namespace Tests.ItemTests
         public const string ITEM_COPPER_PIPE = "CopperPipe";
 
 
+        [System.Obsolete("Use DestructTool")]
         public const string TOOL_SAW = "Saw";
+        
+        [System.Obsolete("Use DestructTool")]
         public const string TOOL_DRILL = "Drill";
+        
+        [System.Obsolete("Use RecipeTool")]
         public const string TOOL_RECIPE_BOOK = "RecipeBook";
+        
+        [System.Obsolete("Tool Not Implemented Yet")]
         public const string TOOL_FLASHLIGHT = "Flashlight";
 
+        public const string BUILD_TOOL = "BuildTool";
+        public const string RECIPE_TOOL = "RecipeTool";
+        public const string REPAIR_TOOL = "RepairTool";
+        public const string DESTRUCT_TOOL = "DestructTool";
 
         public static string[] Tools = new[]
         {
@@ -40,25 +51,6 @@ namespace Tests.ItemTests
         };
         
         public static string[] All = Tools.Concat(Items).ToArray();
-        public static IEnumerator LoadAllItems()
-        {
-            foreach (var s in All)
-            {
-                var loadItem = s.LoadItem(t =>
-                {
-                    Assert.NotNull(t);
-                    Debug.Log("Loaded " + s);
-                });
-            }
-
-            foreach (var s in All)
-            {
-                while (!s.IsItemLoaded())
-                {
-                    yield return null;
-                }
-            }
-        }
     }
 
 
@@ -181,7 +173,7 @@ namespace Tests.ItemTests
             });
         }
 
-        public IEnumerator LoadResourceItemsAndFlashlight()
+        public IEnumerator LoadResourceItemsAndBuildTool()
         {
             yield return UniTask.ToCoroutine(async () =>
             {
@@ -189,7 +181,7 @@ namespace Tests.ItemTests
                     AssumedItemNames.ITEM_COPPER_PIPE,
                     AssumedItemNames.ITEM_SCRAP_METAL,
                     AssumedItemNames.ITEM_HYPERGLASS,
-                    AssumedItemNames.TOOL_FLASHLIGHT);
+                    AssumedItemNames.BUILD_TOOL);
                 Assert.NotNull(_copperPipe = a);
                 Assert.NotNull(_scrapMetal = b);
                 Assert.NotNull(_hyperglass = c);
@@ -398,7 +390,7 @@ namespace Tests.ItemTests
          public IEnumerator SortsDifferentItemTypesCorrectly()
          {
              BuildEmptyInventory();
-             yield return LoadResourceItemsAndFlashlight();
+             yield return LoadResourceItemsAndBuildTool();
             
 
              AddHyperglassToFirstEmptySlot(20);
@@ -439,7 +431,7 @@ namespace Tests.ItemTests
          public IEnumerator SortsEmptyStacksLast()
          {
              BuildEmptyInventory();
-             yield return LoadResourceItemsAndFlashlight();
+             yield return LoadResourceItemsAndBuildTool();
 
              var nonEmpty = _slots[^3];
              nonEmpty.SetItemStack(_flashlight, 1);

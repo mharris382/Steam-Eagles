@@ -17,9 +17,17 @@ namespace UI
         private GameObject _infoBoxWindowPrefab;
         private ConfirmationWindow _confirmationWindowInstance;
         private UIInfoBoxWindow _infoBoxWindowInstance;
+        
         private AsyncOperationHandle<GameObject> _confirmationWindowLoadOp;
         private AsyncOperationHandle<GameObject> _infoBoxWindowLoadOp;
 
+        
+        public class LocalPlayerUIWindows
+        {
+            public UICharacterInventoryWindow _uiCharacterInventoryWindow;
+            public UICharacterToolBeltHUD uiCharacterToolBeltHUD;
+        }
+        
         private void LoadConfirmationWindow()
         {
             _confirmationWindowLoadOp = Addressables.LoadAssetAsync<GameObject>(confirmationWindowAssetAddress);
