@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Spaces
+namespace Buildings.Tiles
 {
     public class PipeTile : EditableTile
     {

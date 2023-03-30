@@ -16,18 +16,8 @@ namespace Buildings
         
         public IObservable<int> PlayerCountChanged => _playerCountChanged;
         private IStructure _structure;
-        
-        
-        public bool HasPlayersInBuilding()
-        {
-            return playersInBuilding[0] || playersInBuilding[1];
-        }
-        
-        public bool HasPlayerInBuilding(int playerIndex)
-        {
-            return playersInBuilding[playerIndex];
-        }
-        
+
+
         private void Awake()
         {
             playersInBuilding = new bool[2]
@@ -68,14 +58,15 @@ namespace Buildings
       
 
 
+        //TODO: refactor this editable structures situation to enable any number of tilemaps
         public EditableTilemapStructure GetEditableStructure()
         {
-            return new EditableTilemapStructure()
-            {
+            return new EditableTilemapStructure() {
                 solidTilemap = _structure.SolidTilemap.Tilemap,
                 foundationTilemap = _structure.FoundationTilemap.Tilemap,
                 pipeTilemap = _structure.PipeTilemap.Tilemap,
-                wallTilemap = _structure.WallTilemap.Tilemap
+                wallTilemap = _structure.WallTilemap.Tilemap,
+                wireTilemap = _structure.WallTilemap.Tilemap
             };
         }
     }

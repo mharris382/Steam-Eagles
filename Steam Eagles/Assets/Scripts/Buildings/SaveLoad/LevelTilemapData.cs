@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Buildings.BuildingTilemaps;
-using Spaces;
+using Buildings.Tiles;
 using UnityEngine;
 
 namespace PhysicsFun.Buildings

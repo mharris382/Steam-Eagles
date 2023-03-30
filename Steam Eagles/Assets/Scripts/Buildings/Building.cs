@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Buildings;
 using Buildings.BuildingTilemaps;
 using CoreLib;
+using PhysicsFun.Buildings;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using World;
 
-namespace PhysicsFun.Buildings
+namespace Buildings
 {
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]

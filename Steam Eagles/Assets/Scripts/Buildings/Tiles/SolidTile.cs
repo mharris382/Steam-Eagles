@@ -1,6 +1,6 @@
-﻿namespace Spaces
+﻿namespace Buildings.Tiles
 {
-    public class WireTile : EditableTile
+    public class SolidTile : EditableTile
     {
         public override bool CanTileBeDisconnected()
         {

@@ -1,15 +1,15 @@
 ﻿#if UNITY_EDITOR
 
 using System;
-using Buildings;
 using Buildings.BuildingTilemaps;
+using PhysicsFun;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using World;
 
-namespace PhysicsFun.Buildings
+namespace Buildings.MyEditor
 {
     [CustomEditor(typeof(Building), true)]
     public class BuildingEditor :

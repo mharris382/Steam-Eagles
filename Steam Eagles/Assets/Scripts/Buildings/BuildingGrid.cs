@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.VFX;
 
-namespace PhysicsFun.Buildings
+namespace Buildings
 {
     [RequireComponent(typeof(Grid))]
     public class BuildingGrid : MonoBehaviour

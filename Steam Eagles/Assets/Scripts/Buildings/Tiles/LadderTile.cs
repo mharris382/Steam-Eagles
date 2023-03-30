@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Spaces
+namespace Buildings.Tiles
 {
     [CreateAssetMenu(menuName = "Steam Eagles/Tiles/Ladder Tile")]
     public class LadderTile : EditableTile

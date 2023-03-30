@@ -1,7 +1,6 @@
 ﻿//using PhysicsFun.DynamicBlocks;
-using UnityEngine;
 
-namespace Spaces
+namespace Buildings.Tiles
 {
     public abstract class EditableTile : PuzzleTile
     {

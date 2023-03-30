@@ -1,9 +1,8 @@
-﻿using Buildings;
-using Sirenix.OdinInspector;
+﻿using PhysicsFun;
 using UniRx;
 using UnityEngine;
 
-namespace PhysicsFun
+namespace Buildings
 {
     [RequireComponent(typeof(WallFaderController))]
     public class BuildingFaderTrigger : MonoBehaviour

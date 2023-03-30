@@ -1,16 +1,23 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Buildings;
 using CoreLib;
 using Players;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-
-namespace PhysicsFun.Buildings
+namespace Buildings
 {
+    /// <summary>
+    /// keeps track of which structures the players are currently inside.
+    ///
+    /// consider using this alongside a room manager for room tracking within
+    /// a particular building 
+    /// <para>
+    /// Note: player asset objects are loaded from addressables in start
+    /// </para>
+    /// 
+    /// </summary>
     public class StructureManager : Singleton<StructureManager>
     {
 
@@ -21,6 +28,7 @@ namespace PhysicsFun.Buildings
         private List<StructureState>[] _playerStructures;
         
         private bool _isInitialized;
+        public bool IsInitialized => _isInitialized;
 
         protected override void OnCreatedFromScript()
         {

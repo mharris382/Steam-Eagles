@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace World
+namespace Buildings
 {
     [Flags]
     public enum BuildingLayers
