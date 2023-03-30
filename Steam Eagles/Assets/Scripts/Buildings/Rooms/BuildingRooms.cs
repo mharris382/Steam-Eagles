@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Buildings;
+using Buildings.Rooms;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

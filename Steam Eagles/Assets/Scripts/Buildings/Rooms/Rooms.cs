@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Buildings;
+using PhysicsFun.Buildings;
+using PhysicsFun.Buildings.Rooms;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms
 {
     public class Rooms : MonoBehaviour
     {

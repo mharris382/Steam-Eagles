@@ -5,9 +5,8 @@ using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms.MyEditor
 {
     [CustomEditor(typeof(Room))]
     public class RoomEditor : OdinEditor
@@ -105,7 +104,7 @@ namespace PhysicsFun.Buildings.Rooms
             Room room = (Room) target;
             
             if (room == null) return false;
-            Rooms rooms = room.GetComponentInParent<Rooms>();
+            global::Buildings.Rooms.Rooms rooms = room.GetComponentInParent<global::Buildings.Rooms.Rooms>();
             if (rooms == null)
             {
                 msg = "Room is not a child of a Rooms object";
@@ -132,7 +131,7 @@ namespace PhysicsFun.Buildings.Rooms
         {
             Room room = (Room) target;
             if (room == null) return;
-            Rooms rooms = room.GetComponentInParent<Rooms>();
+            global::Buildings.Rooms.Rooms rooms = room.GetComponentInParent<global::Buildings.Rooms.Rooms>();
             if (rooms == null) return;
             if (!rooms.HasBuilding) return;
             var transform = rooms.Building.transform;
@@ -151,7 +150,7 @@ namespace PhysicsFun.Buildings.Rooms
             DrawRoomBounds(rooms, center, room, transform, snappingToGrid);
         }
 
-        private void DrawRoomBounds(Rooms rooms, Vector3 center, Room room, Transform transform, bool snapping =false)
+        private void DrawRoomBounds(global::Buildings.Rooms.Rooms rooms, Vector3 center, Room room, Transform transform, bool snapping =false)
         {
             m_BoundsHandle.center = center;
             m_BoundsHandle.size = room.roomBounds.size;
@@ -200,7 +199,7 @@ namespace PhysicsFun.Buildings.Rooms
             outlineColor.a = outlineOpacity;
             Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
         }
-        public static void DrawRoomArea(Rooms rooms, Room room)
+        public static void DrawRoomArea(global::Buildings.Rooms.Rooms rooms, Room room)
         {
             float faceOpacity = rooms.faceOpacity;
             float outlineOpacity = rooms.outlineOpacity;

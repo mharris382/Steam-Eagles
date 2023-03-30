@@ -1,8 +1,7 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms
 {
     public class CharacterRoomTracker : MonoBehaviour
     {

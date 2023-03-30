@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms
 {
     public class BoundsExample : MonoBehaviour
     {

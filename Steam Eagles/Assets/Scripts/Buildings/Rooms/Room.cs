@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms
 {
     [Serializable]
     public class Room : MonoBehaviour

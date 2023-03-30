@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
-using UnityEditor;
 using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms.MyEditor
 {
     public class RoomsEditorWindow : OdinEditorWindow
     {
         
-        public static bool IsEditorOpen(Rooms rooms)
+        public static bool IsEditorOpen(global::Buildings.Rooms.Rooms rooms)
         {
             
             var windows = Resources.FindObjectsOfTypeAll<RoomsEditorWindow>();
@@ -24,7 +23,7 @@ namespace PhysicsFun.Buildings.Rooms
             return false;
         }
         
-        public static void OpenWindow(Rooms rooms)
+        public static void OpenWindow(global::Buildings.Rooms.Rooms rooms)
         {
             var window = GetWindow<RoomsEditorWindow>();
             window.targetRooms = rooms;
@@ -33,7 +32,7 @@ namespace PhysicsFun.Buildings.Rooms
         
         
         
-        [SerializeField, Required] public Rooms targetRooms;
+        [SerializeField, Required] public global::Buildings.Rooms.Rooms targetRooms;
 
         protected override IEnumerable<object> GetTargets()
         {

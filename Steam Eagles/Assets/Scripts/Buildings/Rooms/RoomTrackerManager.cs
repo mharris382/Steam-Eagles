@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using CoreLib;
+using PhysicsFun.Buildings.Rooms;
 using UniRx;
 using UnityEngine;
 
-namespace PhysicsFun.Buildings.Rooms
+namespace Buildings.Rooms
 {
     public class RoomTrackerManager : Singleton<RoomTrackerManager>
     {
