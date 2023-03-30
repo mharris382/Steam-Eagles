@@ -1,9 +1,8 @@
-﻿using System;
-using Players;
+﻿using Players;
 using UniRx;
 using UnityEngine;
 
-namespace UI
+namespace UI.Wheel
 {
     public class UIWheelInputHandler : MonoBehaviour
     {

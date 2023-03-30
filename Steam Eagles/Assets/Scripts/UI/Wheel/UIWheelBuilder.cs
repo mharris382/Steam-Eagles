@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UniRx;
+using UnityEngine;
 
-
-namespace UI
+namespace UI.Wheel
 {
     public class UIWheelBuilder : MonoBehaviour
     {

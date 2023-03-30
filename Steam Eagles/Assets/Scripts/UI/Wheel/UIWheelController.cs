@@ -1,8 +1,7 @@
-﻿using System;
-using Players;
+﻿using Players;
 using UnityEngine;
 
-namespace UI
+namespace UI.Wheel
 {
     public class UIWheelController : MonoBehaviour
     {

@@ -1,29 +1,36 @@
-﻿using UnityEngine;
-
-namespace UI
-{
-    using CoreLib;
+﻿using CoreLib;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
-namespace UI
+namespace UI.Wheel
 {
+    [System.Obsolete("Use UIWheel instead")]
     public class UISelectorWheel : MonoBehaviour
     {
         public SharedInt SelectedIndex;
-        [Min(2)]
-        public int numberOfItems = 2;
-        public UISelectedAbilitySlot slotPrefab;
-        public SharedInt selectedSlotIndex;
         
-        [Range(-360, 360)]
-        public float offsetRotation;
+        public UISelectedAbilitySlot slotPrefab;
+        
+
+        [PropertyRange(0, nameof(numberOfItems))]
+        [OnValueChanged(nameof(TestValue)),MaxValue(nameof(numberOfItems))] public int startItemIndex;
+        [Min(2)] public int numberOfItems = 2;
+
+        void TestValue()
+        {
+            selectedIndex = startItemIndex;
+            SetRotation();
+        }
+
+        [OnValueChanged(nameof(SetRotation))]  [Wrap(-360, 360)] public float offsetRotation;
+        [OnValueChanged(nameof(SetRotation))] public float min = 0;
+        [OnValueChanged(nameof(SetRotation))] public float max = 360;
+        
+        
         [Header("Tween properties"), Range(0, 1)]
         public float movementDuration = 0.50f;
-
-        public float min = 0;
-        public float max = 360;
         public RotateMode rotateMode;
         public Ease movementEase = Ease.Linear;
         private int _selectedIndex;
@@ -51,8 +58,10 @@ namespace UI
                 SelectedIndex.Value = 0;
                 SelectedIndex.onValueChanged.AsObservable().TakeUntilDestroy(this).Subscribe(index => selectedIndex = index);
             }
-            
         }
+        
+        
+        
         public void Update()
         {
             if (testDown)
@@ -89,8 +98,11 @@ namespace UI
             
             rt.DORotateQuaternion(Quaternion.Euler(0, 0, _currentTargetRotation), movementDuration).SetEase(movementEase)
                 .Play().SetAutoKill(true);
-            
-                
+        }
+
+        void SetRotation()
+        {
+            GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, GetDesiredRotation(_selectedIndex, numberOfItems, offsetRotation, min, max));
         }
         
         private static float GetDesiredRotation(int targetIndex, int count, float rotationOffset, float min = 0, float max = 360)
@@ -104,5 +116,4 @@ namespace UI
         }
         
     }
-}
 }

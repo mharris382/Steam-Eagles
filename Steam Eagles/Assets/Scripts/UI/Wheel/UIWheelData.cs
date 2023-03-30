@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UI
+namespace UI.Wheel
 {
     public class UIWheelData : MonoBehaviour
     {

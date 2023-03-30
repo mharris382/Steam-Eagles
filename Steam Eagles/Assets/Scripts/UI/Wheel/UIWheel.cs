@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using UnityEngine;
-using UnityEngine.UI;
 using Sirenix.OdinInspector;
-using UnityEngine.EventSystems;
+using UnityEngine;
 
-namespace UI
+namespace UI.Wheel
 {
     public class UIWheel : MonoBehaviour
     {

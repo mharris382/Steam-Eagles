@@ -1,8 +1,9 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace UI
+namespace UI.Wheel
 {
+    [System.Obsolete("Use UIWheel instead")]
     public class UISelectorWheel2 : MonoBehaviour
     {
         [Required, ChildGameObjectsOnly] public RectTransform itemParent;
