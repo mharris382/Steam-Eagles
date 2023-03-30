@@ -43,6 +43,12 @@ targeted assemblies: [[Building Assembly]], Rooms
 		- 
 		- `bool isDestructable`
 
+### Editor Code Improvements
+cleaned up the editor files, separated copier and generator
+
+- changed editor so that it now uses reflection to determine the tile options so whenever a new tile class is made, no changes will need to be made to the editor in order to provide capability to copy a tile into the new type of tile asset
+
+
 ----
 ## Reflection
 
