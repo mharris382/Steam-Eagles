@@ -1,12 +1,32 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Buildables.Wireframe
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class WireframeInstance : MonoBehaviour
     {
+        public const string WIREFRAME_PREFAB_ADDRESS = "Buildable Wireframe";
+
+
+        public static bool IsWireframePrefabLoaded;
+        
+        private static GameObject _wireframePrefab;
+
+        public static async UniTask<GameObject> GetWireframePrefabAsync()
+        {
+            if (IsWireframePrefabLoaded)
+                return _wireframePrefab;
+            
+            _wireframePrefab = await Addressables.LoadAssetAsync<GameObject>(WIREFRAME_PREFAB_ADDRESS).ToUniTask();
+            IsWireframePrefabLoaded = true;
+            return _wireframePrefab;
+        }
+        
+
         private SpriteRenderer _sr;
         public SpriteRenderer Sr => _sr!=null ? _sr : _sr = GetComponent<SpriteRenderer>();
 
