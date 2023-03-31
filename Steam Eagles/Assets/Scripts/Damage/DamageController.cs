@@ -26,7 +26,10 @@ namespace Damage
 
         public float percent;
         public int chances;
-        
+
+        private Subject<Unit> _onDamage = new Subject<Unit>();
+        public IObservable<Unit> OnDamage => _onDamage;
+
         private void Awake()
         {
             var basicStrategy = new BasicDamageRollStrategy();
@@ -37,6 +40,7 @@ namespace Damage
 
         private void OnEnable()
         {
+            if(_onDamage == null) _onDamage = new Subject<Unit>();
             damageCount = 0;
             var cd = new CompositeDisposable();
             _disposable = cd;
@@ -44,12 +48,10 @@ namespace Damage
                .Subscribe(damage =>
                {
                    damageCount++;
+                   _onDamage.OnNext(Unit.Default);
                })
                .AddTo(cd);
-                calculator.Misses.Subscribe(misses =>
-                {
-                    missCount += misses;
-                }).AddTo(cd);
+               
                 calculator.OnBatch.Subscribe(rp =>
                 {
                     batchCount++;
@@ -60,6 +62,8 @@ namespace Damage
 
         private void OnDisable()
         {
+            _onDamage.Dispose();
+            _onDamage = null;
             _disposable?.Dispose();
             _disposable = null;
         }

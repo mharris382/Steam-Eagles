@@ -48,6 +48,7 @@ namespace Buildings.Rooms.MyEditor
 
         protected override void OnEnable()
         {
+            if (target == null) return;
             try
             {
                 Room room = (Room) target;

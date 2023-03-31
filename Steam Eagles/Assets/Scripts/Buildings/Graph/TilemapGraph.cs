@@ -1,73 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Buildings.BuildingTilemaps;
 using QuikGraph;
-
+using QuikGraph.Algorithms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
-using QuikGraph.Algorithms;
-namespace PhysicsFun.Buildings.Graph
+
+namespace Buildings.Graph
 {
+    public readonly struct Cell
+    {
+        public Vector2Int CellPosition { get; }
+        public Cell(Vector2Int cellPosition)
+        {
+            CellPosition = cellPosition;
+        }
+        public Cell(Vector3Int cellPosition)
+        {
+            CellPosition = (Vector2Int)cellPosition;
+        }
+        
+        private static Vector2Int[] neighborDirections = new Vector2Int[4]
+            { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
+
+
+        public IEnumerable<Vector3Int> GetNeighbors()
+        {
+            foreach (var neighborDirection in neighborDirections)
+            {
+                yield return (Vector3Int)(CellPosition + neighborDirection);
+            }
+        }
+    }
     public abstract class TilemapGraph
     {
-        private AdjacencyGraph<Vector3Int,Edge<Vector3Int>> graph;
-        private readonly BuildingTilemap _tilemap;
+        protected AdjacencyGraph<Vector3Int,Edge<Vector3Int>> graph;
+        protected readonly BuildingTilemap _tilemap;
         
-        private int stronglyConnectedComponents = 0;
-        IDictionary<Vector3Int, int> scComponents = new Dictionary<Vector3Int, int>();
+        protected int stronglyConnectedComponents = 0;
+        protected IDictionary<Vector3Int, int> scComponents = new Dictionary<Vector3Int, int>();
         
         public int VertexCount => graph.VertexCount;
 
 
         public IEnumerable<Vector3Int> GetAllVertices() => graph.Vertices;
 
+        void FindEdges(Dictionary<Vector3Int, TileBase> dictionary, Stopwatch timer1)
+        {
+            foreach (var nonEmptyTile in dictionary)
+            {
+                foreach (var neighborPosition in new Cell(nonEmptyTile.Key).GetNeighbors())
+                {
+                    if (dictionary.ContainsKey(neighborPosition))
+                    {
+                        this.graph.AddEdge(new Edge<Vector3Int>(nonEmptyTile.Key, neighborPosition));
+                    }
+                }
+            }
+
+            
+        }
+        
+        Dictionary<Vector3Int, TileBase> FindAllNonEmptyTiles(BoundsInt boundsInt, Tilemap tm1)
+        {
+            Dictionary<Vector3Int, TileBase> tileBases = new Dictionary<Vector3Int, TileBase>();
+            for (int x = boundsInt.xMin; x < boundsInt.xMax; x++)
+            {
+                for (int y = boundsInt.yMin; y < boundsInt.yMax; y++)
+                {
+                    for (int z = boundsInt.zMin; z < boundsInt.zMax; z++)
+                    {
+                        var position = new Vector3Int(x, y, z);
+                        var tile = tm1.GetTile(position);
+                        if (tile != null) tileBases.Add(position, tile);
+                    }
+                }
+            }
+
+            return tileBases;
+        }
         public TilemapGraph(BuildingTilemap tilemap)
         {
-            void FindEdges(Dictionary<Vector3Int, TileBase> dictionary, Stopwatch timer1)
-            {
-                Vector3Int[] neighborDirections = new Vector3Int[4]
-                    { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
-
-              
-                foreach (var nonEmptyTile in dictionary)
-                {
-                    foreach (var neighborDirection in neighborDirections)
-                    {
-                        var neighborPosition = nonEmptyTile.Key + neighborDirection;
-                        if (dictionary.ContainsKey(neighborPosition))
-                        {
-                            this.graph.AddEdge(new Edge<Vector3Int>(nonEmptyTile.Key, neighborPosition));
-                        }
-                    }
-                }
-
-                timer1.Stop();
-                Debug.Log(
-                    $"{tilemap.name}: Found {this.graph.EdgeCount} Edges in graph with {dictionary.Count} nodes non-empty tiles in {timer1.ElapsedMilliseconds} ms");
-            }
-            Dictionary<Vector3Int, TileBase> FindAllNonEmptyTiles(BoundsInt boundsInt, Tilemap tm1, Stopwatch stopwatch)
-            {
-                Dictionary<Vector3Int, TileBase> tileBases = new Dictionary<Vector3Int, TileBase>();
-                for (int x = boundsInt.xMin; x < boundsInt.xMax; x++)
-                {
-                    for (int y = boundsInt.yMin; y < boundsInt.yMax; y++)
-                    {
-                        for (int z = boundsInt.zMin; z < boundsInt.zMax; z++)
-                        {
-                            var position = new Vector3Int(x, y, z);
-                            var tile = tm1.GetTile(position);
-                            if (tile != null) tileBases.Add(position, tile);
-                        }
-                    }
-                }
-
-                Debug.Log($"{tilemap.name}: Found {tileBases.Count} non-empty tiles in {stopwatch.ElapsedMilliseconds} ms");
-                stopwatch.Reset();
-                return tileBases;
-            }
-
             _tilemap = tilemap;
             var tm = tilemap.Tilemap;
             var bounds = tm.cellBounds;
@@ -76,9 +90,10 @@ namespace PhysicsFun.Buildings.Graph
             timer.Start();
             
             //find all non-empty tiles
-            var nonEmptyTiles = FindAllNonEmptyTiles(bounds, tm, timer);
+            var nonEmptyTiles = FindAllNonEmptyTiles(bounds, tm);
             
-            
+            timer.Stop();
+          
             //init adjacency graph
             this.graph = new AdjacencyGraph<Vector3Int, Edge<Vector3Int>>();
             this.graph.AddVertexRange(nonEmptyTiles.Keys);

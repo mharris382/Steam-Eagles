@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Buildings.BuildingTilemaps;
 using CoreLib;
+using CoreLib.SaveLoad;
 using PhysicsFun.Buildings;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using World;
 
 namespace Buildings
@@ -13,7 +15,7 @@ namespace Buildings
     [RequireComponent(typeof(Grid))]
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
     [RequireComponent(typeof(StructureState), typeof(BuildingPlayerTracker))]
-    public class Building : MonoBehaviour, IStructure
+    public class Building : MonoBehaviour, IStructure, IBuildingTilemaps
     {
         #region [Inspector Fields]
 
@@ -137,24 +139,34 @@ namespace Buildings
             }
         }
 
-        
+        private void OnEnable()
+        {
+            PersistenceManager.Instance.GameSaved += SaveBuilding;
+            PersistenceManager.Instance.GameLoaded += LoadBuilding;
+        }
+
+        private void OnDisable()
+        {
+            PersistenceManager.Instance.GameSaved -= SaveBuilding;
+            PersistenceManager.Instance.GameLoaded -= LoadBuilding;
+        }
 
         #endregion
 
         #region [Public Methods]
 
         
-
-        
-        public void SaveBuilding()
+        public void SaveBuilding(string path)
         {
-            
+            //TODO: trigger save
+            Debug.Log("TODO: Saving Building".Bolded());
         }
 
         
-        public void LoadBuilding()
+        public void LoadBuilding(string path)
         {
-            
+            //TODO: trigger load
+            Debug.Log("TODO: Load Building".Bolded());
         }
         
         #endregion
@@ -202,5 +214,45 @@ namespace Buildings
 #endif
 
         #endregion
+
+        public bool HasTile(Vector2Int cellPosition, BuildingLayers layers)
+        {
+            int layer = (int)layers;
+
+            foreach (var buildingTilemap in GetAllBuildingLayers())
+            {
+                if (HasLayer(layer, buildingTilemap.Layer))
+                {
+                    if (buildingTilemap.Tilemap.HasTile(new Vector3Int(cellPosition.x, cellPosition.y, 0)))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryGetTile(Vector2Int cellPosition, BuildingLayers layers, out TileBase tile)
+        {
+            int layer = (int)layers;
+            tile = null;
+            foreach (var buildingTilemap in GetAllBuildingLayers())
+            {
+                if (HasLayer(layer, buildingTilemap.Layer))
+                {
+                    var cell = new Vector3Int(cellPosition.x, cellPosition.y, 0);
+                    if (buildingTilemap.Tilemap.HasTile(cell))
+                    {
+                        tile = buildingTilemap.Tilemap.GetTile(cell);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool HasLayer(int layer, BuildingLayers layers) => ((layer & (int)layers) != 0);
     }
 }

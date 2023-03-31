@@ -1,0 +1,30 @@
+{
+	"nodes":[
+		{"type":"group","id":"a9124c269291b7e0","x":-1720,"y":-920,"width":2680,"height":1560,"label":"Damage System"},
+		{"type":"text","text":"## Damage Calculator","id":"93adb9af0d17aeea","x":-1045,"y":-340,"width":485,"height":220},
+		{"type":"text","text":"*IDamageRollStrategy*","id":"9b7aeec8139c7089","x":-858,"y":50,"width":353,"height":80},
+		{"type":"text","text":"*IDamageRollsStrategy*","id":"fa7d3a1ddc320b7f","x":-1145,"y":160,"width":374,"height":80},
+		{"type":"text","text":"RollParameters","id":"9454c6ac92e4f9fe","x":-1505,"y":70,"width":250,"height":60},
+		{"type":"text","text":"# Damage Controller","id":"2b97f3eccc922b46","x":-1685,"y":-920,"width":640,"height":220,"color":"1"},
+		{"type":"text","text":"## [[Damage Hit Placement]]\nrole: choose which cell to hit whenever we need to damage a cell.  \n\nnote: is not allowed to decide to decline a hit with the exception being there are no remaining damageable cells on the tilemap","id":"3b09e82f31083e3c","x":-160,"y":-825,"width":720,"height":440},
+		{"type":"text","text":"### Structure Damage Event Info\n\nstring StructureName { get; }\nVector3Int[] cellsToDamage;\n\n\n","id":"ee9c38b4c2671b82","x":1360,"y":-785,"width":503,"height":360,"color":"6"},
+		{"type":"text","text":"BasicRollStrategy","id":"f4dfd7d9ecf4e561","x":-989,"y":500,"width":484,"height":120},
+		{"type":"text","text":"StructureName","id":"410841f600e8c166","x":1240,"y":-2280,"width":314,"height":80},
+		{"type":"file","file":"Development Iterations/Sprint 3/Building Interfaces.md","id":"0053f18e95d075f9","x":-340,"y":-1800,"width":1080,"height":480},
+		{"id":"2e82a9a799844632","x":780,"y":-1800,"width":602,"height":307,"type":"file","file":"Development Iterations/Sprint 3/Building Repair Interfaces.md"}
+	],
+	"edges":[
+		{"id":"9b47fbee3e32e0f6","fromNode":"93adb9af0d17aeea","fromSide":"top","toNode":"2b97f3eccc922b46","toSide":"bottom"},
+		{"id":"e3d604353cf3fc97","fromNode":"9b7aeec8139c7089","fromSide":"top","toNode":"93adb9af0d17aeea","toSide":"bottom"},
+		{"id":"fed888080d1982d5","fromNode":"fa7d3a1ddc320b7f","fromSide":"top","toNode":"93adb9af0d17aeea","toSide":"bottom"},
+		{"id":"3f4162fab6e22397","fromNode":"f4dfd7d9ecf4e561","fromSide":"top","toNode":"9b7aeec8139c7089","toSide":"bottom"},
+		{"id":"90ac6ef5040b2e0e","fromNode":"f4dfd7d9ecf4e561","fromSide":"top","toNode":"fa7d3a1ddc320b7f","toSide":"bottom"},
+		{"id":"09258d91a6a73dd9","fromNode":"f4dfd7d9ecf4e561","fromSide":"right","toNode":"93adb9af0d17aeea","toSide":"right"},
+		{"id":"6bf2a00273e674e9","fromNode":"9454c6ac92e4f9fe","fromSide":"right","toNode":"fa7d3a1ddc320b7f","toSide":"left"},
+		{"id":"d548df2d648f3866","fromNode":"9454c6ac92e4f9fe","fromSide":"right","toNode":"9b7aeec8139c7089","toSide":"left"},
+		{"id":"95e4b25b98f9bd55","fromNode":"9454c6ac92e4f9fe","fromSide":"top","toNode":"93adb9af0d17aeea","toSide":"left"},
+		{"id":"263786316c77ac58","fromNode":"2b97f3eccc922b46","fromSide":"right","toNode":"3b09e82f31083e3c","toSide":"left","color":"3","label":"raises damage event"},
+		{"id":"18184e4970bb68cd","fromNode":"3b09e82f31083e3c","fromSide":"right","toNode":"ee9c38b4c2671b82","toSide":"left","color":"2","label":"raises external event to trigger tilemap changes"},
+		{"id":"5d24050a5b74cadf","fromNode":"0053f18e95d075f9","fromSide":"bottom","toNode":"3b09e82f31083e3c","toSide":"top"}
+	]
+}
