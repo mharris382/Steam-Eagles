@@ -22,9 +22,9 @@ namespace Buildables.Wireframe
 
         public void SetMachine(BuildableMachine bm)
         {
-            SetMachine(bm, null);
+            SetMachineToTarget(bm, null);
         }
-        public void SetMachine(BuildableMachine bm, GameObject buildingTarget)
+        public void SetMachineToTarget(BuildableMachine bm, GameObject buildingTarget)
         {
             if (buildingTarget== null && bm.buildingTarget == null)
             {
