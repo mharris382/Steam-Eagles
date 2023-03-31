@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 
-public class UIContinueGameButton : UILoadGameButton
+namespace UI
 {
-    protected override void Awake()
+    /// <summary>
+    /// used in the UI menu for the continue button
+    /// </summary>
+    public class UIContinueGameButton : UILoadGameButton
     {
-        if (PlayerPrefs.HasKey("Last Save Path"))
+        protected override void Awake()
         {
-            savePath = PlayerPrefs.GetString("Last Save Path");
+            if (PlayerPrefs.HasKey("Last Save Path"))
+            {
+                savePath = PlayerPrefs.GetString("Last Save Path");
+            }
+            base.Awake();
         }
-        base.Awake();
     }
 }

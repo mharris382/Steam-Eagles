@@ -1,14 +1,13 @@
 %%
 [[Sprint 3]] #iteration #unity
 %%
-# Iteration 18:
+# Iteration 18: UI Refactoring
 Previous Iteration: 
 Next Iteration: 
 
 
 ## Goal
-
-### Purpose
+clean up the UI system and add some functionality to loading.
 
 
 ### Hypothesis

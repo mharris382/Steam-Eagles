@@ -32,7 +32,10 @@ namespace Items.UI
             if (!UIInventoryItemSlots.Instance.IsUIReady(slotKey))
             {
                 Close();
-                StartCoroutine(WaitForSlotToBeReady());
+                Observable.FromCoroutine(WaitForSlotToBeReady).Subscribe(_ =>
+                {
+                    Open();
+                }).AddTo(this);
                 return;
             }
 

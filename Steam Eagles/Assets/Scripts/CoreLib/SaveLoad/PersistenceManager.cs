@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UniRx;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Windows;
+using Directory = System.IO.Directory;
 
 namespace CoreLib.SaveLoad
 {
@@ -105,6 +108,17 @@ namespace CoreLib.SaveLoad
         protected virtual void OnGameSaved(string obj)
         {
             GameSaved?.Invoke(obj);
+        }
+
+
+
+        public static IEnumerable<string> GetAllGameSaves()
+        {
+            var root = Application.persistentDataPath;
+            foreach (var subfolder in Directory.GetDirectories(root))
+            {
+                yield return subfolder;
+            }
         }
     }
 }

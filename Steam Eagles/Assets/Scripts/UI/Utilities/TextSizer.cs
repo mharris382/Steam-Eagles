@@ -4,8 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Utilities
 {
+    /// <summary>
+    /// automatically sizes text element to fit in it's container. This script is a replacement for Unity's default
+    /// ContentSizeFitter, which is notorious for not working with text elements.  Used with the tooltip window 
+    /// </summary>
     [ExecuteInEditMode]
     public class TextSizer : MonoBehaviour
     {

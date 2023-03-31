@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
@@ -49,7 +50,14 @@ namespace Items
                 return;
             foreach (var autoLoadItem in autoLoadItems)
             {
-                _loadedItems.Add(autoLoadItem, new LoadedItem(this, autoLoadItem));
+                try
+                {
+                    _loadedItems.Add(autoLoadItem, new LoadedItem(this, autoLoadItem));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to load addressable {autoLoadItem}",this);
+                }
             }
         }
 
