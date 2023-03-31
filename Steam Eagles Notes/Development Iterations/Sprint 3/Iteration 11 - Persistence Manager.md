@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 11: Persistence Manager
-Previous Iteration: [[Iteration 10]]
-Next Iteration: [[Iteration 12]]
+Previous Iteration: [[Iteration 10 - Spawning and Scene Management]]
+Next Iteration: [[Iteration 12 - Jumping on Airship]]
 
 
 ## Goal

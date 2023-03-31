@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 12: Jumping on Airship
-Previous Iteration: [[Iteration 09]]
-Next Iteration: [[Iteration 13]]
+Previous Iteration: [[Iteration 09 - Climbing Movement]]
+Next Iteration: [[Iteration 13 - preparing to pilot]]
 
 
 ## Goal

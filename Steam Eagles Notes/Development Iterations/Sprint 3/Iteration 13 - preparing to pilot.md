@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 13:  preparing to pilot 
-Previous Iteration: [[Iteration 12]]
-Next Iteration: [[Iteration 14]]
+Previous Iteration: [[Iteration 12 - Jumping on Airship]]
+Next Iteration: [[Iteration 14 -  Save Loading]]
 
 
 ## Goal

@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 09:  Climbing Movement
-Previous Iteration:  [[Iteration 08]]
-Next Iteration: [[Iteration 10]]
+Previous Iteration:  [[Iteration 08 - Aerial Movement on airship]]
+Next Iteration: [[Iteration 10 - Spawning and Scene Management]]
 
  
 ## Goal

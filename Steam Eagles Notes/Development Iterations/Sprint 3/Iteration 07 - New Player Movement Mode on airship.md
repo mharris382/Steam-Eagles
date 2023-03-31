@@ -3,7 +3,7 @@
 %%
 # Iteration 07: New Player Movement Mode on airship
 Previous Iteration: 
-Next Iteration: [[Iteration 08 ]]
+Next Iteration: [[Iteration 08 - Aerial Movement on airship ]]
 
 
 ## Goal

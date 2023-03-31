@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 17: Refactoring 
-Previous Iteration: [[Iteration 16]]
-Next Iteration: [[Iteration 18]]
+Previous Iteration: [[Iteration 16 - Damage Systems Prototype]]
+Next Iteration: [[Iteration 18 - UI Refactoring]]
 
 
 ## Goal

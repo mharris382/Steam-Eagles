@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 10: Spawning and Scene Management
-Previous Iteration: [[Iteration 09]]
-Next Iteration: [[Iteration 11]]
+Previous Iteration: [[Iteration 09 - Climbing Movement]]
+Next Iteration: [[Iteration 11 - Persistence Manager]]
 
 
 ## Goal

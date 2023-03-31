@@ -2,8 +2,8 @@
 [[Sprint 3]] #iteration #unity
 %%
 # Iteration 08: Aerial Movement on airship
-Previous Iteration: [[Iteration 07]]
-Next Iteration: [[Iteration 09]]
+Previous Iteration: [[Iteration 07 - New Player Movement Mode on airship]]
+Next Iteration: [[Iteration 09 - Climbing Movement]]
 
 
 ## Goal
