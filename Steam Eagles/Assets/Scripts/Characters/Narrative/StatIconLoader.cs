@@ -1,7 +1,6 @@
 ﻿using CoreLib;
-using UnityEngine;
 
-namespace Characters.Stats
+namespace Characters.Narrative
 {
     public class StatIconLoader : Singleton<StatIconLoader>
     {

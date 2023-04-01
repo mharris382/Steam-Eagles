@@ -81,6 +81,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.39331555
+  debug: 0
 --- !u!1 &1869736275885109226
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,6 +145,9 @@ GameObject:
   - component: {fileID: 6661290386722291500}
   - component: {fileID: 1869736276068514337}
   - component: {fileID: 2848682898492096785}
+  - component: {fileID: 2318135444051796077}
+  - component: {fileID: 5070824008259107557}
+  - component: {fileID: 6070281782941261213}
   m_Layer: 10
   m_Name: Character_Transporter (No Ability)
   m_TagString: Transporter
@@ -220,22 +224,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5493fba352c478d42bd1d11bdb43d4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnGroundedStateChanged:
+  onGroundedStateChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1869736276068514367}
-        m_TargetAssemblyTypeName: CharacterState, SteamEagles.Characters
-        m_MethodName: set_IsGrounded
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   groundCheckParent: {fileID: 1869736275885109221}
+  verticalVelocityThreshold: -1.1
   _points:
   - {fileID: 1869736275674776384}
   - {fileID: 7016309155016969737}
@@ -248,7 +241,6 @@ MonoBehaviour:
   - {fileID: 4981491960926065415}
   - {fileID: 7275343302617176744}
   - {fileID: 1869736277301167943}
-  verticalVelocityThreshold: -1.1
 --- !u!114 &1869736276068514367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +290,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be7bf5a73d318d45bc223fb7e1669fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1869736276068514360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,9 +305,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50683243b6618e4c8f023a0f4bb5f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMovement: 1
   jumpForce: 26
   jumpTime: 0.4
   moveSpeed: 600
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  threshold: 25
 --- !u!114 &7796845978079655148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,6 +425,62 @@ FixedJoint2D:
   m_ConnectedAnchor: {x: -90.8, y: 7.8}
   m_DampingRatio: 0
   m_Frequency: 0
+--- !u!114 &2318135444051796077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869736276068514339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa8c2fe6a96a4b33809035a3e87daecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentToolState: 0
+--- !u!114 &5070824008259107557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869736276068514339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0519fa13af894a4d8a75e51ab9508f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugVariables:
+    hasPlayerAssigned: 0
+    xInput: 0
+    yInput: 0
+    jumpPressed: 0
+    jumpHeld: 0
+  useEventsForJump: 0
+  onJump:
+    m_PersistentCalls:
+      m_Calls: []
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  onPickup:
+    m_PersistentCalls:
+      m_Calls: []
+  onValve:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6070281782941261213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869736276068514339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7c1cf9d358400181d099563e646287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1869736276093685708
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,6 +529,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.43234986
+  debug: 0
 --- !u!1 &1869736277301167941
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +578,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.2535584
+  debug: 0
 --- !u!1 &2100953423970355292
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,6 +627,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.39331555
+  debug: 0
 --- !u!1 &2593478330999857491
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,6 +676,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.27670693
+  debug: 0
 --- !u!1 &2820031426617153233
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,6 +725,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.2535584
+  debug: 0
 --- !u!1 &2859620258936052444
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,6 +774,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.39331555
+  debug: 0
 --- !u!1 &3891555720282980463
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,6 +867,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.28826416
+  debug: 0
 --- !u!1 &8329123774408095654
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +916,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.39331555
+  debug: 0
 --- !u!1 &8889420026032623414
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,6 +965,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.29525894
+  debug: 0
 --- !u!1 &8991346092568739312
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,11 +1014,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 33612352
   distance: 0.39331555
+  debug: 0
 --- !u!1001 &1166861427189333442
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 59377860792319817}
     m_Modifications:
     - target: {fileID: 4658013625800602833, guid: 907efa12b3446b3428ecf0c02ade73fb, type: 3}
@@ -988,6 +1076,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 907efa12b3446b3428ecf0c02ade73fb, type: 3}
 --- !u!4 &8220008082719106140 stripped
 Transform:
@@ -999,6 +1088,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 59377860792319817}
     m_Modifications:
     - target: {fileID: 3413434371445799031, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
@@ -1054,6 +1144,7 @@ PrefabInstance:
       value: Jump Particle Effect TP
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
 --- !u!198 &4896563393837124681 stripped
 ParticleSystem:
@@ -1070,6 +1161,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 1869736276068514364}
     m_Modifications:
     - target: {fileID: 306040371081765820, guid: 5c5e339199b032f48b79f1a3d765429d, type: 3}
@@ -1125,6 +1217,7 @@ PrefabInstance:
       value: Transporter Spine Skeleton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c5e339199b032f48b79f1a3d765429d, type: 3}
 --- !u!4 &4274054685391485357 stripped
 Transform:
@@ -1136,6 +1229,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 1869736276068514364}
     m_Modifications:
     - target: {fileID: 5707614140888106971, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
@@ -1187,6 +1281,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
 --- !u!4 &932609386762478040 stripped
 Transform:
