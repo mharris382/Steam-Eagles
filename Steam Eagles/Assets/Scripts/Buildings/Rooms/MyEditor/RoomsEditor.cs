@@ -34,6 +34,10 @@ namespace Buildings.Rooms.MyEditor
         protected override void OnDisable()
         {
             _editors.Clear();
+            if(_newRoomDrawer != null){
+                _newRoomDrawer.IsDrawing = false;
+            }
+            isCopyingColor = false;
             base.OnDisable();
         }
 
