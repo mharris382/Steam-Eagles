@@ -56,7 +56,7 @@ namespace PhysicsFun.Buildings.Rooms
             private void DrawRoom(BuildingRooms building, Room room)
             {
                 Handles.color = room.roomColor;
-                var bounds = room.roomBounds;
+                var bounds = room.RoomBounds;
                 
                 var transform = building.Building.transform;
 
@@ -71,7 +71,7 @@ namespace PhysicsFun.Buildings.Rooms
                     Bounds newBounds = new Bounds();
                     newBounds.center = transform.InverseTransformPoint(handle.center);
                     newBounds.size = transform.InverseTransformVector(handle.size);
-                    room.roomBounds = newBounds;
+                    room.RoomBounds = newBounds;
                 }
 
             }

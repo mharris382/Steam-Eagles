@@ -53,7 +53,7 @@ namespace Buildings.Rooms
             var localPosition = Building.transform.InverseTransformPoint(position);
             foreach (var room in rooms)
             {
-                localPosition.z = room.roomBounds.center.z;
+                localPosition.z = room.RoomBounds.center.z;
                 if (room.Bounds.Contains(localPosition))
                 {
                     return room;
@@ -69,13 +69,13 @@ namespace Buildings.Rooms
             var grid = Building.GetComponent<Grid>();
             foreach (var room in AllRooms)
             {
-                var bounds = room.roomBounds;
+                var bounds = room.RoomBounds;
                 var min = bounds.min;
                 var max = bounds.max;
                 min =  grid.CellToLocal(grid.LocalToCell(min));
                 max = grid.CellToLocal(grid.LocalToCell(max));
                 bounds.SetMinMax(min, max);
-                room.roomBounds = bounds;
+                room.RoomBounds = bounds;
             }
         }
         
@@ -141,7 +141,4 @@ namespace Buildings.Rooms
             }
         }
     }
-
-
-    
 }

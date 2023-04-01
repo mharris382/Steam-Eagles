@@ -19,8 +19,8 @@ namespace Buildings.Rooms.MyEditor
                 this._building = buildingRooms.Building.transform;
                 this._room = room;
                 axes = PrimitiveBoundsHandle.Axes.X | PrimitiveBoundsHandle.Axes.Y;
-                center = _building.TransformPoint(room.roomBounds.center);
-                size = _building.TransformVector(room.roomBounds.size);
+                center = _building.TransformPoint(room.RoomBounds.center);
+                size = _building.TransformVector(room.RoomBounds.size);
                 handleColor = room.roomColor;
                 wireframeColor = room.roomColor;
                 midpointHandleDrawFunction = Handles.DotHandleCap;

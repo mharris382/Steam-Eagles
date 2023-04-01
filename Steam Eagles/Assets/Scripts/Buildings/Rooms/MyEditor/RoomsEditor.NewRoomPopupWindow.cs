@@ -51,7 +51,7 @@ namespace Buildings.Rooms.MyEditor
                         Room selectedRoom = null;
                         foreach (var roomsAllRoom in rooms.AllRooms)
                         {
-                            var localSpaceBonds = roomsAllRoom.roomBounds;
+                            var localSpaceBonds = roomsAllRoom.RoomBounds;
                             //ignore z position
                             lsPosition.z = localSpaceBonds.center.z;
                             if (localSpaceBonds.Contains(lsPosition))
@@ -104,7 +104,7 @@ namespace Buildings.Rooms.MyEditor
                 Undo.RegisterCreatedObjectUndo(canGo, "Created Cinemachine Camera");
                 var cam = canGo.AddComponent(Type.GetType("Cinemachine.CinemachineVirtualCamera"));
                 canGo.transform.SetParent(_room.transform);
-                canGo.transform.position = _room.roomBounds.center;
+                canGo.transform.position = _room.RoomBounds.center;
                 OdinMenuEditorWindow.InspectObject(canGo);
             }
 

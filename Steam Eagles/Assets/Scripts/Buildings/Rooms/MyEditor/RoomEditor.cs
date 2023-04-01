@@ -145,7 +145,7 @@ namespace Buildings.Rooms.MyEditor
             bool snappingToGrid = Event.current.control;
 
             var bounds = room.Bounds;
-            var center = transform.TransformPoint(room.roomBounds.center);
+            var center = transform.TransformPoint(room.RoomBounds.center);
             
             DrawRoomArea(center, bounds, room, rooms.faceOpacity, rooms.outlineOpacity);
             DrawRoomBounds(rooms, center, room, transform, snappingToGrid);
@@ -154,10 +154,10 @@ namespace Buildings.Rooms.MyEditor
         private void DrawRoomBounds(global::Buildings.Rooms.Rooms rooms, Vector3 center, Room room, Transform transform, bool snapping =false)
         {
             m_BoundsHandle.center = center;
-            m_BoundsHandle.size = room.roomBounds.size;
+            m_BoundsHandle.size = room.RoomBounds.size;
 
             m_BoundsHandle.midpointHandleSizeFunction = MidpointHandleSizeFunction;
-            m_BoundsHandle.handleColor = room.roomColor;
+            m_BoundsHandle.handleColor = room.roomColor.SetAlpha(Mathf.Min(1,rooms.outlineOpacity+ 0.1f));
             m_BoundsHandle.wireframeColor = room.roomColor.SetAlpha(rooms.outlineOpacity);
             Bounds newBounds = new Bounds();
             EditorGUI.BeginChangeCheck();
@@ -184,7 +184,7 @@ namespace Buildings.Rooms.MyEditor
                     bounds.SetMinMax(min, max);
                     newBounds = bounds;
                 }
-                room.roomBounds = newBounds;
+                room.RoomBounds = newBounds;
             }
         }
 
@@ -210,7 +210,7 @@ namespace Buildings.Rooms.MyEditor
                 if (room.dynamicBody == null) return;
                 transform = room.dynamicBody.transform;
             }
-            var center = transform.TransformPoint(room.roomBounds.center);
+            var center = transform.TransformPoint(room.RoomBounds.center);
             var bounds = room.Bounds;
             var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
                 center.y + bounds.extents.y);

@@ -8,31 +8,37 @@ using UnityEngine;
 
 namespace Buildings.Rooms.MyEditor
 {
-    [CustomEditor(typeof(global::Buildings.Rooms.Rooms))]
+    [CustomEditor(typeof(Rooms))]
     public partial class RoomsEditor : OdinEditor
     {
         NewRoomDrawer _newRoomDrawer;
         private Dictionary<Room, Editor> _editors;
         private SerializedProperty _roomGroupingsProperty;
 
-        private Dictionary<Color, global::Buildings.Rooms.Rooms.RoomGroupings> _colorToGrouping = new Dictionary<Color, global::Buildings.Rooms.Rooms.RoomGroupings>();
+        private RoomsGraphEditor _graphEditor;
+        private Dictionary<Color, Rooms.RoomGroupings> _colorToGrouping = new Dictionary<Color, Rooms.RoomGroupings>();
 
         protected override void OnEnable()
         {
-            _newRoomDrawer = new NewRoomDrawer(this.target as global::Buildings.Rooms.Rooms);
+            if (target == null || (target as Rooms)==null) return;
+            _graphEditor = new RoomsGraphEditor(target as Rooms);
+            _newRoomDrawer = new NewRoomDrawer(target as Rooms);
             _editors = new Dictionary<Room, Editor>();
             _roomGroupingsProperty = serializedObject.FindProperty("roomGroupings");
-            var groups = (target as global::Buildings.Rooms.Rooms).GetGroups(true);
-            foreach (var room in (target as global::Buildings.Rooms.Rooms).AllRooms)
-            {
-                _editors.Add(room, CreateEditor(room, typeof(RoomEditor)));
-            }
+            var groups = (target as Rooms)?.GetGroups(true);
+            var allRooms = (target as Rooms)?.AllRooms;
+            if (allRooms != null)
+                foreach (var room in allRooms)
+                {
+                    _editors.Add(room, CreateEditor(room, typeof(RoomEditor)));
+                }
 
             base.OnEnable();
         }
 
         protected override void OnDisable()
         {
+            _graphEditor.Cleanup();
             _editors.Clear();
             if(_newRoomDrawer != null){
                 _newRoomDrawer.IsDrawing = false;
@@ -65,9 +71,11 @@ namespace Buildings.Rooms.MyEditor
                 //    RoomsEditorWindow.OpenWindow((Rooms) target);
                 //}
             }
+            
             DrawCopyColorButton();
             base.OnInspectorGUI();
             
+            _graphEditor.OnInspectorGUI();
             
             var roomTrackerManager = FindObjectOfType<RoomTrackerManager>();
             if (roomTrackerManager == null)
@@ -82,14 +90,40 @@ namespace Buildings.Rooms.MyEditor
             }
         }
 
+        private void OnPreSceneGUI()
+        {
+            Rooms rooms = (Rooms)target;
+            if (rooms == null) return;
+            if (!rooms.HasBuilding) return;
+            float size = HandleUtility.GetHandleSize(HandleUtility.WorldToGUIPoint(Event.current.mousePosition)) * 0.1f;
+            _graphEditor.OnPreSceneGUI(size);
+        }
 
         private void OnSceneGUI()
         {
-            global::Buildings.Rooms.Rooms rooms = (global::Buildings.Rooms.Rooms)target;
+            Rooms rooms = (Rooms)target;
             if (rooms == null) return;
             if (!rooms.HasBuilding) return;
 
+            float size = HandleUtility.GetHandleSize(HandleUtility.WorldToGUIPoint(Event.current.mousePosition))* 0.1f;
+            _graphEditor.OnPreSceneGUI(size);
+            _graphEditor.OnSceneGUI(size);
             
+            foreach (var editor in _editors)
+            {
+                var roomEditor = editor.Value as RoomEditor;
+                if (roomEditor != null)
+                {
+                    roomEditor.OnSceneGUI();
+                }
+            }
+
+            foreach (var room in rooms.AllRooms)
+            {
+                RoomEditor.DrawRoomArea(rooms, room);
+            }
+
+            if (_graphEditor.IsEditing) return;
             Tools.hidden = _newRoomDrawer.IsDrawing || isCopyingColor;
             if (isCopyingColor)
             {
@@ -110,25 +144,12 @@ namespace Buildings.Rooms.MyEditor
                 _newRoomDrawer.Dispose();
             }
 
-            foreach (var editor in _editors)
-            {
-                var roomEditor = editor.Value as RoomEditor;
-                if (roomEditor != null)
-                {
-                    roomEditor.OnSceneGUI();
-                }
-            }
-
-            foreach (var room in rooms.AllRooms)
-            {
-                RoomEditor.DrawRoomArea(rooms, room);
-
-            }
+            
         }
 
         private void CreateNewRoom(Rect roomArea)
         {
-            var targetRooms = (global::Buildings.Rooms.Rooms)target;
+            var targetRooms = (Rooms)target;
             var buildingTransform = targetRooms.Building.transform;
             var centerWs = roomArea.center;
             var center = buildingTransform.InverseTransformPoint(centerWs);
@@ -140,9 +161,9 @@ namespace Buildings.Rooms.MyEditor
             var room = roomGo.AddComponent<Room>();
             room.gameObject.layer = LayerMask.NameToLayer("Triggers");
             room.tag = "Room";
-            room.roomColor = Color.HSVToRGB(UnityEngine.Random.value, 1, 1);
-            room.roomBounds = new Bounds(center, roomArea.size);
-            roomGo.transform.SetParent(((global::Buildings.Rooms.Rooms)target).transform);
+            room.roomColor = Color.HSVToRGB(Random.value, 1, 1);
+            room.RoomBounds = new Bounds(center, roomArea.size);
+            roomGo.transform.SetParent(((Rooms)target).transform);
 
             targetRooms.UpdateRoomsList();
             _newRoomDrawer.Dispose();
@@ -192,12 +213,12 @@ namespace Buildings.Rooms.MyEditor
         public void DrawCopyColorOnScene()
         {
             var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
-            var rooms = ((global::Buildings.Rooms.Rooms)target);
+            var rooms = ((Rooms)target);
             if (rooms == null) return;
             if (!rooms.HasBuilding) return;
             void DrawCopyTo()
             {
-                var fromPosition =  rooms.Building.transform.TransformPoint(_copyingFrom.roomBounds.center);
+                var fromPosition =  rooms.Building.transform.TransformPoint(_copyingFrom.RoomBounds.center);
                 var fromColor = _copyingFrom.roomColor;
                 using (new HandlesScope(fromColor))
                 {
@@ -211,7 +232,7 @@ namespace Buildings.Rooms.MyEditor
                 var toRoom = rooms.GetRoomAtWS(position);
                 if (toRoom != null)
                 {
-                    var toPosition = rooms.Building.transform.TransformPoint(toRoom.roomBounds.center);
+                    var toPosition = rooms.Building.transform.TransformPoint(toRoom.RoomBounds.center);
                     var toColor = toRoom.roomColor;
                     using (new HandlesScope(toColor))
                     {
@@ -242,7 +263,7 @@ namespace Buildings.Rooms.MyEditor
                 if (Event.current.button == 0)
                 {
                     var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
-                    var rooms = ((global::Buildings.Rooms.Rooms)target);
+                    var rooms = ((Rooms)target);
                     if (_copyingFrom == null)
                     {
                         _copyingFrom = rooms.GetRoomAtWS(position);
@@ -262,7 +283,7 @@ namespace Buildings.Rooms.MyEditor
         }
 
 
-        private void DrawRoomHandle(global::Buildings.Rooms.Rooms rooms, Room room)
+        private void DrawRoomHandle(Rooms rooms, Room room)
         {
             var handle = new RoomSizeHandle(rooms, room);
 
@@ -273,7 +294,7 @@ namespace Buildings.Rooms.MyEditor
             {
                 Undo.RecordObject(rooms, "Changed Room Size");
                 var bounds = new Bounds(handle.GetLocalCenter(), handle.GetLocalSize());
-                room.roomBounds = bounds;
+                room.RoomBounds = bounds;
             }
         }
     }
