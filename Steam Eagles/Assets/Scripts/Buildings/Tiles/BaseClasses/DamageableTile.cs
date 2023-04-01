@@ -2,6 +2,6 @@
 {
     public abstract class DamageableTile : EditableTile
     {
-        public abstract RepairableTile GetRepairedTileVersion();
+        public abstract RepairableTile GetDamagedTileVersion();
     }
 }
