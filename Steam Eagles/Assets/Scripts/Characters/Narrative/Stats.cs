@@ -1,4 +1,5 @@
 ﻿using System;
+using Characters.Narrative;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Characters.Stats
     {
         public const int MAX_HEALTH_CAP = 100;
         public const int MAX_ENERGY_CAP = 100;
-        public const int MAX_INVENTORY_CAP = 30;
+        public const int MAX_CARRY_WEIGHT = 30;
     }
     public static class Stats
     {
@@ -112,15 +113,4 @@ namespace Characters.Stats
         
         public int inventorySize = 7;
     }
-    
-    [Serializable]
-    public class CrewMemberStats
-    {
-        public int pilotRank;
-        public int engineerRank;
-        public int officerRank;
-    }
-    
-    
-    
 }
