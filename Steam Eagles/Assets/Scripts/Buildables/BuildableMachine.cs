@@ -30,6 +30,26 @@ namespace Buildables
             public Color gizmoColor = Color.green;
         }
 
+        public Vector2Int CellSize => cellSize;
+        
+        public Vector2Int CellPosition => (Vector2Int) GridLayout.WorldToCell(transform.position);
+        
+        public Vector2 WsSize => (Vector2)_gridLayout.cellSize * cellSize;
+
+        public GridLayout GridLayout
+        {
+            get
+            {
+                if(_gridLayout != null)return _gridLayout;
+                if (!HasResources())
+                {
+                    Debug.LogError("No grid found on building target or building not set",this);
+                    return null;
+                }
+                _gridLayout = FindGridOnTarget();
+                return _gridLayout;
+            }            
+       }
         bool HasResources()
         {
             if(_gridLayout != null)
@@ -67,17 +87,17 @@ namespace Buildables
         private void OnDrawGizmos()
         {
             if (!HasResources()) return;
-            var cellPos = _gridLayout.WorldToCell(transform.position);
-            var cellSize = _gridLayout.cellSize;
+            var cellPos = GridLayout.WorldToCell(transform.position);
+            var gridCellSize = GridLayout.cellSize;
             Gizmos.color = Color.red;
             Vector3[] GetCorners(Vector3 worldPosition)
             {
                var corners = new Vector3[]
                {
                    new Vector3(worldPosition.x, worldPosition.y, 0),
-                   new Vector3(worldPosition.x+cellSize.x, worldPosition.y, 0),
-                   new Vector3(worldPosition.x+cellSize.x, worldPosition.y+cellSize.y, 0),
-                   new Vector3(worldPosition.x, worldPosition.y+cellSize.y, 0),
+                   new Vector3(worldPosition.x+gridCellSize.x, worldPosition.y, 0),
+                   new Vector3(worldPosition.x+gridCellSize.x, worldPosition.y+gridCellSize.y, 0),
+                   new Vector3(worldPosition.x, worldPosition.y+gridCellSize.y, 0),
                    new Vector3(worldPosition.x, worldPosition.y, 0),
                };
                 return corners;
@@ -87,7 +107,7 @@ namespace Buildables
                 for (int y = 0; y < cellSize.y; y++)
                 {
                     var cell = cellPos + new Vector3Int(x, y, 0);
-                    var worldPos = _gridLayout.CellToWorld(cell);
+                    var worldPos = GridLayout.CellToWorld(cell);
                     var corners = GetCorners(worldPos);
                     for (int i = 1; i < corners.Length; i++)
                     {
@@ -103,17 +123,17 @@ namespace Buildables
                 if(machineCell.tile == null)
                     continue;
                 var cell = cellPos + new Vector3Int(machineCell.cellPosition.x, machineCell.cellPosition.y, 0);
-                var worldPos = _gridLayout.CellToWorld(cell);
+                var worldPos = GridLayout.CellToWorld(cell);
                 var corners = GetCorners(worldPos);
                 Gizmos.color = machineCell.gizmoColor;
-                for (int i = 1; i < corners.Length; i++)                    
-                {                                                           
-                    var p0 = corners[i - 1];                                
-                    var p1 = corners[i];                                    
-                    Gizmos.DrawLine(p0, p1);                                
-                }
-                var cellCenter = _gridLayout.CellToWorld(cell) + _gridLayout.cellSize / 2f;
-                Gizmos.DrawWireCube(cellCenter, (_gridLayout.cellSize * 3f) / 4f);
+                // for (int i = 1; i < corners.Length; i++)                    
+                // {                                                           
+                //     var p0 = corners[i - 1];                                
+                //     var p1 = corners[i];                                    
+                //     Gizmos.DrawLine(p0, p1);                                
+                // }
+                var cellCenter = GridLayout.CellToWorld(cell) + GridLayout.cellSize / 2f;
+                Gizmos.DrawCube(cellCenter, (_gridLayout.cellSize * 3f) / 4f);
             }
         }
     }
