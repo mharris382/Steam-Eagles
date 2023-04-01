@@ -17,14 +17,68 @@ public class RuleTileCopier : OdinEditorWindow
     {
         GetWindow<RuleTileCopier>("Rule Tile Generator");
     }
-
-    public Sprite defaultSprite;
-    public GameObject overrideDefaultGameobject;
+    
+        
+    [PropertyOrder(-2)]
+    [EnableIf(nameof(CanCreateTile))]
+    [Button(ButtonSizes.Gigantic)]
+    public void CreateAndSaveTile()
+    {
+        SaveTile(GetRuleTileCopy(original), newTileName);
+    }
+    
+    
+    [PropertyOrder(-1000)]
     [OnValueChanged(nameof(updateSprites))]
+    [Required]
     public RuleTile original;
+    
+    
+        
+    [PropertyOrder(-90)]
+    [ValueDropdown(nameof(GetTypeOptions))]
+    public string selectedType = "";
+
+
+    [PropertyOrder(-80)]
+    public string newTileName;
+    
+    
+    
+    [BoxGroup("Sprites")] [ShowIf(nameof(HasOriginal))]
+    public Sprite defaultSprite;
+    
+    [PropertyOrder(1000)] [FoldoutGroup("Sprites/Extras")] [ShowIf(nameof(HasOriginal))]
+    public GameObject overrideDefaultGameobject;
+    
+
+    
+    [FoldoutGroup("Sprites/Extras"),PropertyOrder(-7)] [ShowIf(nameof(HasOriginal))]
     public Sprite fallbackSprite;
+    
+    [InfoBox("@spritesInfo")] [PropertyOrder(-8)] [BoxGroup("Sprites")] [ShowIf(nameof(HasOriginal))]
     public Sprite[] sprites = new Sprite[0];
 
+    public string spritesInfo
+    {
+        get
+        {
+            if (!HasOriginal()) return "must assign original tile";
+            var cnt = original.m_TilingRules.Count;
+            return $"Expecting {cnt} sprites in this tileset";
+        }
+    }
+    
+    [FoldoutGroup("Sprites/Extras",false)] [ToggleGroup("Sprites/Extras/" + nameof(useMultiSprites))]
+    public bool useMultiSprites;
+    
+    
+    [ToggleGroup("Sprites/Extras/" + nameof(useMultiSprites))] [ShowIf(nameof(useMultiSprites))]
+    public List<Sprite[]> multiSprites = new List<Sprite[]>();
+
+    
+    bool HasOriginal() => original != null;
+    
     void updateSprites()
     {
         if (original == null)
@@ -42,8 +96,7 @@ public class RuleTileCopier : OdinEditorWindow
 
     private bool hasOriginal => original != null;
 
-    [EnableIf(nameof(hasOriginal))]
-    [ButtonGroup("Copy"), Button]
+    [PropertyOrder(1001)] [EnableIf(nameof(hasOriginal))] [ButtonGroup("Copy"), Button]
     void CopySprites()
     {
         if (original == null)
@@ -59,8 +112,7 @@ public class RuleTileCopier : OdinEditorWindow
         }
     }
     
-    [EnableIf(nameof(hasOriginal))]
-    [ButtonGroup("Copy"), Button]
+    [PropertyOrder(1000)] [EnableIf(nameof(hasOriginal))] [ButtonGroup("Copy"), Button]
     void CopyMultiSprites()
     {
         if (original == null)
@@ -78,19 +130,16 @@ public class RuleTileCopier : OdinEditorWindow
         }
     }
 
-    [ToggleGroup(nameof(useMultiSprites))]
-    public bool useMultiSprites;
-    [ToggleGroup(nameof(useMultiSprites))]
-    [ShowIf(nameof(useMultiSprites))]
-    public List<Sprite[]> multiSprites = new List<Sprite[]>();
-    
-    
-    
+
+    public bool CanCopy() => HasOriginal() && !string.IsNullOrEmpty(selectedType) && !string.IsNullOrEmpty(newTileName);
+
+    [Obsolete]
+    [HideInInspector]
     public TileType tileType = TileType.RULE_TILE;
-    [ValueDropdown(nameof(GetTypeOptions))]
-    public string selectedType = "";
+    
+
+    [HideInInspector]
     public Type customTileType;
-    public string newTileName;
 
     private string GetNewTileName()
     {
@@ -144,7 +193,7 @@ public class RuleTileCopier : OdinEditorWindow
         vdl.Add("");
         foreach (var tileType in GetAllTileTypes())
         {
-            vdl.Add(tileType.Name);
+            vdl.Add(tileType.Name, tileType.AssemblyQualifiedName);
         }
         return vdl;
     }
@@ -217,18 +266,14 @@ public class RuleTileCopier : OdinEditorWindow
 
     bool CanCreateTile()
     {
+        if (!CanCopy()) 
+            return false;
+        
         var type = Type.GetType(selectedType);
         var tileName = newTileName;
         return type != null && type.InheritsFrom(typeof(PuzzleTile));
     }
-    
-    [EnableIf(nameof(CanCreateTile))]
-    [Button]
-    public void CreateAndSaveTile()
-    {
-        SaveTile(GetRuleTileCopy(original), newTileName);
-    }
-    
+
     public  enum TileType
     {
         PIPE,
