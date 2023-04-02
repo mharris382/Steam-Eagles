@@ -20,7 +20,9 @@ namespace CoreLib
         }
         public void Dispose()
         {
+#if UNITY_EDITOR
             Handles.color = _preColor;
+#endif
         }
     }
 }

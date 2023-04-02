@@ -3,7 +3,7 @@ using System.Text;
 using Characters.Stats;
 using CoreLib;
 using Sirenix.OdinInspector;
-using UnityEditor.VersionControl;
+
 using UnityEngine;
 
 namespace Characters.Narrative

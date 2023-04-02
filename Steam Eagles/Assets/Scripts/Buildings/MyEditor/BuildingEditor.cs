@@ -7,7 +7,6 @@ using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using World;
 
 namespace Buildings.MyEditor
 {

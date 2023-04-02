@@ -22,7 +22,20 @@ namespace Buildings.Rooms
 
 
         public bool  HasBuilding => building != null;
-        public StructureState Building => building;
+
+        public StructureState Building
+        {
+            get => building;
+            set
+            {
+                if (Application.isEditor && !Application.isPlaying && value != null)
+                {
+                    Debug.Log($"Building {value.name} assigned to Rooms {name}");
+                    building = value;
+                    return;
+                }
+            }
+        }
         
         public IEnumerable<Room> AllRooms
         {
