@@ -4,7 +4,7 @@ using Characters;
 using Characters.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
-[Obsolete("using new input system")]
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class AbilityInputHandler : MonoBehaviour
 {
 

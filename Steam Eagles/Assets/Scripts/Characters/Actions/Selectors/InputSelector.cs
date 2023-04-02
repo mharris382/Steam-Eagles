@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace Characters.Actions.Selectors
 {
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class InputSelector : SelectorBase
     {
         public Player player;

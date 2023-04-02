@@ -5,7 +5,7 @@ using UnityEngine.InputSystem.Utilities;
 
 namespace Characters.Interactables
 {
-    [System.Obsolete("use CoreLib.Interactions.InteractionManager instead")]
+    [System.Obsolete("Interaction System will be replaced with a generic version to be used by both NPC (AI) and PC (players)")]
     /// <summary>
     /// handles making interactions available to interaction controller
     /// </summary>

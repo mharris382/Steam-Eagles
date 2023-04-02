@@ -15,6 +15,7 @@ using Rand = UnityEngine.Random;
 
 namespace Characters
 {
+    [System.Obsolete("This will be replaced with the inventory/tool system")]
     public class CharacterObjectHolder : MonoBehaviour
     {
         [Serializable]

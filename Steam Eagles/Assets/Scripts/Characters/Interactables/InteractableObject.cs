@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Characters.Interactables
 {
-    
+    [System.Obsolete("Interaction System will be replaced with a generic version to be used by both NPC (AI) and PC (players)")]
     public class InteractableObject : MonoBehaviour
     {
         public Vector2 Position => transform.position;

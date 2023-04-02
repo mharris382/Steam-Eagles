@@ -14,7 +14,6 @@ public enum InteractionPhysicsMode
 
 [RequireComponent(typeof(ToolState))]
 [RequireComponent(typeof(CharacterInputState))]
-[RequireComponent(typeof(GroundCheck))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterState : MonoBehaviour
 {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace PhysicsFun
 {
+    [Obsolete("replaced with AutoJointRenderer")]
     public class DistanceJointLineRenderer : MonoBehaviour
     {
         

@@ -1,6 +1,7 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -10,6 +11,12 @@ namespace Buildings.Rooms
     public class Room : MonoBehaviour
     {
         public GameObject roomCamera;
+
+        
+        [EnumToggleButtons]
+        public AccessLevel accessLevel = AccessLevel.EVERYONE;
+        
+        
         public Color roomColor = Color.red;
         public Bounds roomBounds = new Bounds(Vector3.zero, Vector3.one);
 

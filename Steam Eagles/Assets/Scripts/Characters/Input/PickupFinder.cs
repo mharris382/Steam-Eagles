@@ -7,6 +7,7 @@ using UnityEditor;
 #endif
 namespace Characters
 {
+    [Obsolete("Not sure what this is used for, but it is overly generic and needs to be removed")]
     public class PickupFinder : MonoBehaviour
     {
         [SerializeField] internal TriggerArea inRangePickups;

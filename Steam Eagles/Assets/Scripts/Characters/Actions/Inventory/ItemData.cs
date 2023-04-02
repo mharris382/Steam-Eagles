@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Characters.Actions.Inventory
 {
+    [System.Obsolete("all inventory code is now the responsibility of the items assembly")]
     public class ItemData : ScriptableObject
     {
         public string itemName;

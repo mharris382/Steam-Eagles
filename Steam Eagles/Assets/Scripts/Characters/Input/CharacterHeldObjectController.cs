@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [System.Obsolete("This will be replaced with the inventory/tool system")]
     public class CharacterHeldObjectController : MonoBehaviour
     {
         [SerializeField] TriggerArea inRangePickups;

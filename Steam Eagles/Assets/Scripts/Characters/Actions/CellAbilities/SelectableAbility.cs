@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class SelectableAbility : CellAbility
 {
     [Serializable]

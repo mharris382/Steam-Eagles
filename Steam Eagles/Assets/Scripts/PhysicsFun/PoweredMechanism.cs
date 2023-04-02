@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace PhysicsFun
 {
+    [Obsolete("This will be replaced with a dedicated assembly for power and other production/consumption heavy systems")]
     /// <summary>
     /// powered mechanism is base class for machines which perform work and consume energy from a power source
     /// </summary>

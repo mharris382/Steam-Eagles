@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Characters.Actions.UI
 {
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class AbilityUI : MonoBehaviour
     {
        [Serializable]

@@ -7,6 +7,7 @@ namespace PhysicsFun.DynamicBlocks
     /// <summary>
     /// one of these should be added to each character and the unity event will allow them to communicate
     /// </summary>
+    [System.Obsolete("Entire DynamicBlocks system is deprecated, it will be phased out and replaced with the item pickup system")]
     [RequireComponent(typeof(CircleCollider2D))]
     public class DynamicBlockCollector : TriggerAreaBase<DynamicBlock>
     {

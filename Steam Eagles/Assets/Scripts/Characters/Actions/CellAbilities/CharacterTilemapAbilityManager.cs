@@ -12,6 +12,7 @@ namespace Characters
     [RequireComponent(typeof(AbilityUser))]
     [RequireComponent(typeof(CellAbilitySet))]
     [RequireComponent(typeof(SelectorBase))]
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class CharacterTilemapAbilityManager : MonoBehaviour
     {
         [SerializeField] private Player player;

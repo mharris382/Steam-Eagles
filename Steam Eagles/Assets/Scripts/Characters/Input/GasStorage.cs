@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [System.Obsolete("Gas System prototype is deprecated and will be replaced with the new Economy systems")]
     public class GasStorage : MonoBehaviour
     {
         [SerializeField] private int _gasAmount;

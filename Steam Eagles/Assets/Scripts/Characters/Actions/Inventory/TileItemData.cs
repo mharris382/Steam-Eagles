@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Characters.Actions.Inventory
 {
-    [CreateAssetMenu(fileName = "New Item", menuName = "Steam Eagles/New Item Tile")]
+    [System.Obsolete("all inventory code is now the responsibility of the items assembly")]
     public class TileItemData : ItemData
     {
         public PuzzleTile staticBlock;

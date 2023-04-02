@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Characters
 {
-    [Obsolete("using new input system")]
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class MouseAbilityInputHandler : MonoBehaviour
     {
         public Camera camera;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Characters.Actions.Abilities
 {
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class AbilityManager : MonoBehaviour
     {
         public Player player;

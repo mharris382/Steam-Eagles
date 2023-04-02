@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Characters
 {
+    [System.Obsolete("This will be replaced with the inventory/tool system")]
     public class HoldableTriggerArea : TriggerArea
     {
         public ReactiveCollection<Rigidbody2D> availablePickups = new ReactiveCollection<Rigidbody2D>();

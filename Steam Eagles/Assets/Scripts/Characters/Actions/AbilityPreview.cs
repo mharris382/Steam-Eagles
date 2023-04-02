@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class AbilityPreview : MonoBehaviour
 {
     public GameObject previewGameObject;

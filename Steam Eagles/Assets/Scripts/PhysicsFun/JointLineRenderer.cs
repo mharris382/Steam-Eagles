@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+[Obsolete("Replaced with AutoJointRenderer")]
 [RequireComponent(typeof(LineRenderer))]
 [ExecuteAlways]
 public class JointLineRenderer : MonoBehaviour

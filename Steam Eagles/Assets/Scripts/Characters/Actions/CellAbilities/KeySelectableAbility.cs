@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class KeySelectableAbility : SelectableAbility
 {
     public KeyCode[] selectAbilityKeys;

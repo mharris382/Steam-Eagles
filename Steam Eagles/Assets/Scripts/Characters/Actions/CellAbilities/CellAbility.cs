@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using World;
 
-
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public abstract class CellAbility : MonoBehaviour
 {
     public string inputActionName = "Primary";

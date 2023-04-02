@@ -33,7 +33,7 @@ namespace Characters.Stats
     public class CharacterStats
     {
         public string characterName;
-        public CrewMemberStats crewMemberStats;
+        public CharacterCrewRank characterCrewRank;
         public CharacterStats(string characterName)
         {
             this.characterName = characterName;

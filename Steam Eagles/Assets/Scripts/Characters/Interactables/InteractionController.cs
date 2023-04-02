@@ -10,6 +10,7 @@ namespace Characters.Interactables
     /// <summary>
     /// handles the core logic of interactions
     /// </summary>
+    [System.Obsolete("Interaction System will be replaced with a generic version to be used by both NPC (AI) and PC (players)")]
     public class InteractionController : MonoBehaviour
     {
         public string tag;

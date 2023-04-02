@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Items.SaveLoad
@@ -31,8 +32,17 @@ namespace Items.SaveLoad
         /// <returns></returns>
         public override InventorySlot GetSlotFor(int slotNumber)
         {
-            slotNumber = Mathf.Clamp(0, numberOfSlots - 1, slotNumber);
-            return _slots[slotNumber];
+            try
+            {
+                slotNumber = Mathf.Clamp(0, numberOfSlots - 1, slotNumber);
+                return _slots[slotNumber];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                
+                Debug.LogError($"Got index out of range exception for backpack inventory: {name}",this);
+                return null;
+            }
         }
     }
 }

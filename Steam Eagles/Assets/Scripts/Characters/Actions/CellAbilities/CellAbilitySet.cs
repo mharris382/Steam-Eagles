@@ -11,6 +11,7 @@ namespace Characters.Actions.UI
     /// abstraction hides the fact that the returned values are changed when the player
     /// selects a different block type
     /// </summary>
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class CellAbilitySet : MonoBehaviour, ICellAbilitySet
     {
         [SerializeField]

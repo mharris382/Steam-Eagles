@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace Characters
 {
+    [System.Obsolete("Early prototype type of gameplay interaction, should be replaced with concrete implementation of a tool ")]
     /// <summary>
     /// listens for Valve input and a valve is available
     /// </summary>

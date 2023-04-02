@@ -13,6 +13,7 @@ namespace PhysicsFun.DynamicBlocks
     /// add this to builder and transporter both.  They will then each have their own handler which will manage the
     /// blocks once they are held.
     /// </summary>
+    [System.Obsolete("Entire DynamicBlocks system is deprecated, it will be phased out and replaced with the item pickup system")]
     public sealed class DynamicBlockInventory : MonoBehaviour
     {
         [SerializeField] private DynamicBlockCollector collector;

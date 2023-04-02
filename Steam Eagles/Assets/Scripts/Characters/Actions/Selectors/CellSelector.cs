@@ -9,6 +9,7 @@ using World;
 
 namespace Characters.Actions.Selectors
 {
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class CellSelector : MonoBehaviour, ICellSelector
     {
         public Vector2Int size = Vector2Int.one *6;

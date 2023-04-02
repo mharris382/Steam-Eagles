@@ -6,6 +6,8 @@ using Players;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+[Obsolete("Needs to be replaced by a POCO version which is not attached to the character or the input")]
+//TODO: this should be refactored so that character input processor is not attached to a character as a component and is instead passed a player instance and a character instance
 public class CharacterInputProcessor : MonoBehaviour
 {
     [Required]

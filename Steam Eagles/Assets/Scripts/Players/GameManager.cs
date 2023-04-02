@@ -11,6 +11,10 @@ using UnityEngine.InputSystem.UI;
 
 namespace Players
 {
+    /// <summary>
+    /// this needs to be majorly refactored.  this class is a butt to deal with
+    /// TODO: refactor GameManager and character spawning
+    /// </summary>
     public class GameManager : MonoBehaviour
     {
         public enum GameMode
@@ -201,7 +205,7 @@ namespace Players
         }
     }
 
-
+    [System.Obsolete("replace these IPlayerDependencyResolver nonsense")]
     [Serializable]
     public class CharacterAssignments : IPlayerDependencyResolver<CharacterState>
     {
@@ -216,6 +220,7 @@ namespace Players
     }
 
 
+    [System.Obsolete("replace these IPlayerDependencyResolver nonsense")]
     [Serializable]
     public class EventSystemAssignments : IPlayerDependencyResolver<InputSystemUIInputModule>
     {

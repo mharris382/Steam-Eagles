@@ -5,7 +5,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Characters.Actions.Inventory
 {
-    [CreateAssetMenu(fileName = "New Inventory Item", menuName = "Steam Eagles/Character Item Database Loader")]
+   
+    [System.Obsolete("all inventory code is now the responsibility of the items assembly")]
     public class CharacterItemDatabaseLoader : ScriptableObject
     {
         public string itemDatabaseAddress;

@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Characters.Actions.Selectors
 {
-    [Obsolete("the InputSelector has this functionality, plus it adds controller support")]
+    
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public class MouseSelector : SelectorBase
     {
         public override bool CanSelectCells()

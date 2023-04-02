@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace PhysicsFun.DynamicBlocks
 {
+    [System.Obsolete("Entire DynamicBlocks system is deprecated, it will be phased out and replaced with the item pickup system")]
     public class DynamicBlockManager : MonoBehaviour
     {
         private void Awake()

@@ -4,7 +4,7 @@ using CoreLib;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-[System.Obsolete("Ability System is deprecated, use Tool System instead.")]
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class ConnectCellAbility : CellAbility
 {
     [SerializeField] private TileBase tileToPlace;

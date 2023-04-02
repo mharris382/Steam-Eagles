@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace CoreLib
 {
+    
+    [Obsolete("Replaced by StructureState")]
     public class DynamicBodyState : MonoBehaviour
     {
         public Vector2 MovingObjectVelocity

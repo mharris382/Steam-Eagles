@@ -59,12 +59,12 @@ namespace Characters
             public event Action<int> OnPowerToThrustersChanged;
             public event Action<int> OnPowerToHeatChanged;
             private GameObject owner;
-            public void NotifyGainControls(AirshipControls controls)
+            public void NotifyGainControls(IAirshipControls controls)
             {
                 Debug.Log($"Null Pilot gained controls of {controls.name}");
             }
 
-            public void NotifyLostControls(AirshipControls controls)
+            public void NotifyLostControls(IAirshipControls controls)
             {
                 Debug.Log($"Null Pilot lost control of {controls.name}");
             }

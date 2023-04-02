@@ -5,6 +5,7 @@ namespace PhysicsFun.DynamicBlocks
     /// <summary>
     /// this class is instantiated from code by dynamic block manager
     /// </summary>
+    [System.Obsolete("Entire DynamicBlocks system is deprecated, it will be phased out and replaced with the item pickup system")]
     public class DynamicBlock : MonoBehaviour
     {
         private Rigidbody2D _rb;

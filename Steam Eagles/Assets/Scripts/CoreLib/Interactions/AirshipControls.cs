@@ -2,7 +2,7 @@
 
 namespace CoreLib.Interactions
 {
-    public class AirshipControls : MonoBehaviour
+    public class AirshipControls : MonoBehaviour, IAirshipControls
     {
         private const int MAX_POWER_STEPS = 4;
         

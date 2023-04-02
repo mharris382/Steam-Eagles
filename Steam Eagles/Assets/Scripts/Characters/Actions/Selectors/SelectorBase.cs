@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 namespace Characters.Actions.Selectors
 {
+    [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
     public abstract class SelectorBase : MonoBehaviour
     {
         public Grid TargetGrid { get; set; }

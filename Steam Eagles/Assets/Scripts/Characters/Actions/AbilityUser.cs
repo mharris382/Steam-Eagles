@@ -13,6 +13,7 @@ using World;
 /// since the ability system is getting newer more complex features added, I think it's important to setup a shared data container to hold shared state information
 /// and act as a dependency injection entry point for other systems to interface with.
 /// </summary>
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class AbilityUser : MonoBehaviour
 {
     [System.Obsolete("user cannot own defaults?")]

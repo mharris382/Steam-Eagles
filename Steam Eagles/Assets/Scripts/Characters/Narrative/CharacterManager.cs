@@ -12,8 +12,8 @@ namespace Characters.Narrative
     public class CharacterManager : Singleton<CharacterManager>
     {
         
-        private Dictionary<string, AsyncOperationHandle<Character>> _loadedCharacters 
-            = new Dictionary<string, AsyncOperationHandle<Character>>();
+        private Dictionary<string, AsyncOperationHandle<GameObject>> _loadedCharacters 
+            = new Dictionary<string, AsyncOperationHandle<GameObject>>();
         
         private Dictionary<string, CharacterDescription> _loadedCharactersDescriptions
             = new Dictionary<string, CharacterDescription>();
@@ -67,29 +67,29 @@ namespace Characters.Narrative
 #pragma warning restore CS1998
         {
             CharacterDescription characterDescription;
-            if (IsCharacterLoaded(characterName))
-            {
-                return _loadedCharacters[characterName].Result;
-            }
-
-            if(!IsCharacterDescriptionLoaded(characterName))
-            {
-                characterDescription = await LoadCharacterDescriptionAsync(characterName);
-            }
-            else
-            {
-                characterDescription = _loadedCharactersDescriptions[characterName];
-            }
-            var prefabHandle = characterDescription.characterComponentReference.InstantiateAsync();
-            await prefabHandle.Task;
-            
-            if (prefabHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                var character = prefabHandle.Result;
-                _loadedCharacters.Add(characterName, prefabHandle);
-                OnCharacterLoaded?.Invoke(character.gameObject);
-                return character;
-            }
+            // if (IsCharacterLoaded(characterName))
+            // {
+            //     return _loadedCharacters[characterName].Result.GetComponent<Character>();
+            // }
+            //
+            // if(!IsCharacterDescriptionLoaded(characterName))
+            // {
+            //     characterDescription = await LoadCharacterDescriptionAsync(characterName);
+            // }
+            // else
+            // {
+            //     characterDescription = _loadedCharactersDescriptions[characterName];
+            // }
+            // var prefabHandle = characterDescription.characterComponentReference.InstantiateAsync();
+            // await prefabHandle.Task;
+            //
+            // if (prefabHandle.Status == AsyncOperationStatus.Succeeded)
+            // {
+            //     var character = prefabHandle.Result;
+            //     _loadedCharacters.Add(characterName, prefabHandle);
+            //     OnCharacterLoaded?.Invoke(character.gameObject);
+            //     return character;
+            // }
 
             throw new Exception();
         }
@@ -127,35 +127,19 @@ namespace Characters.Narrative
         
         private void LoadCharacter(string characterName, Action<Character> prefabLoaded)
         {
-            void LoadFromCharacterDescription(CharacterDescription description)
-            {
-                LoadCharacterDescription(description);
-                _loadedCharacters.Add(characterName, description.characterComponentReference.InstantiateAsync());
-                _loadedCharacters[characterName].Completed += handle => {
-                    if (handle.Status == AsyncOperationStatus.Succeeded)
-                    {
-                        prefabLoaded?.Invoke(handle.Result);
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                };
-            }
-            
-            CharacterDescription description;
             if (IsCharacterLoaded(characterName))
             {
-                prefabLoaded?.Invoke(_loadedCharacters[characterName].Result);
+                prefabLoaded?.Invoke(_loadedCharacters[characterName].Result.GetComponent<Character>());
+                return;
             }
-            else if (IsCharacterDescriptionLoaded(characterName))
+
+            string addressableKey = $"{characterName}_Prefab";
+            var loadOp = Addressables.LoadAssetAsync<GameObject>(addressableKey);
+            _loadedCharacters.Add(characterName, loadOp);
+            loadOp.Completed += res =>
             {
-                LoadFromCharacterDescription( _loadedCharactersDescriptions[characterName]);
-            }
-            else
-            {
-                LoadCharacterDescription(characterName, LoadFromCharacterDescription);
-            }
+                prefabLoaded?.Invoke(res.Result.GetComponent<Character>());
+            };
         }
         public Character GetCharacter(string characterName)
         {
@@ -163,7 +147,7 @@ namespace Characters.Narrative
             {
                 return null;
             }
-            return _loadedCharacters[characterName].Result;
+            return _loadedCharacters[characterName].Result.GetComponent<Character>();
         }
 
         public CharacterDescription GetCharacterDescription(string characterName)
@@ -200,22 +184,5 @@ namespace Characters.Narrative
             return false;
         }
         
-        /// <summary>
-        /// Spawns character under parent
-        /// </summary>
-        public void SpawnCharacterUnder(string characterName, Transform parent)
-        {
-            if (!IsCharacterLoaded(characterName))
-            {
-                LoadCharacter(characterName, character => SpawnCharacterUnder(character.CharacterName, parent));
-                return;
-            }
-            var characterInstance = _loadedCharacters[characterName].Result;
-            characterInstance.transform.SetParent(parent);
-            characterInstance.transform.localPosition = Vector3.zero;
-            characterInstance.transform.localRotation = Quaternion.identity;
-            characterInstance.transform.localScale = Vector3.one;
-            OnCharacterSpawned?.Invoke(characterInstance);
-        }
     }
 }

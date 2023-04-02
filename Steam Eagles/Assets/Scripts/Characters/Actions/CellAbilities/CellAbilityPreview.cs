@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class CellAbilityPreview : MonoBehaviour
 {
     private List<SpriteRenderer> _sprites;
