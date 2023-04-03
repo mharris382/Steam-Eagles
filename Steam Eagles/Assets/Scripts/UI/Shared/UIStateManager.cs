@@ -6,6 +6,7 @@ namespace UI.Shared
 {
     public class UIStateManager : Singleton<UIStateManager>
     {
+        public override bool DestroyOnLoad => true;
         [SerializeField]
         private bool hasGameStarted;
         

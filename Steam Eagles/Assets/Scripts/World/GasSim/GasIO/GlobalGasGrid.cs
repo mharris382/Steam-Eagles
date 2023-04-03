@@ -8,5 +8,6 @@ namespace GasSim
     {
         private Grid _grid;
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
+        public override bool DestroyOnLoad => true;
     }
 }

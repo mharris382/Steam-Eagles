@@ -24,6 +24,8 @@ namespace CoreLib
                 return _instance;
             }
         }
+        
+        public abstract bool DestroyOnLoad { get; }
 
         protected virtual void OnCreatedFromScript()
         {
@@ -35,6 +37,8 @@ namespace CoreLib
             if (_instance == null || _instance == this)
             {
                 _instance = this as T;
+                if(!DestroyOnLoad)
+                    DontDestroyOnLoad(_instance);
                 Init();
             }
             else

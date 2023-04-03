@@ -8,9 +8,11 @@ namespace UI.Core
     public class UIGameManager : Singleton<UIGameManager>
     {
          private FSM.StateMachine _rootStateMachine;
-         
 
-        private void Awake()
+
+         public override bool DestroyOnLoad => true;
+
+         private void Awake()
         {
             _rootStateMachine = new FSM.StateMachine();
         }

@@ -12,7 +12,7 @@ namespace CoreLib.Pickups
     {
     
         public List<string> autoLoadPickups;
-    
+        public override bool DestroyOnLoad => false;
     
         private Dictionary<string, LoadedPickupSpawner> _pickupSpawners = new Dictionary<string, LoadedPickupSpawner>();
         private List<LoadedPickupSpawner> _loadedPickupSpawners;

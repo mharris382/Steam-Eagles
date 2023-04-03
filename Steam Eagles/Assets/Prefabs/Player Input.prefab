@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3734753825138336114}
   - component: {fileID: 3734753825138336113}
   - component: {fileID: 3734753825138336112}
+  - component: {fileID: 32434174380900420}
+  - component: {fileID: 1684543107700423164}
   m_Layer: 0
   m_Name: Player Input
   m_TagString: Untagged
@@ -47,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
   m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
+  m_UIInputModule: {fileID: 1684543107700423164}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -154,22 +156,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3734753825138336112}
         m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
-        m_MethodName: OnValve
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 3eda8f6a-2ccc-4e21-89ce-68c39c0ee270
-    m_ActionName: Gameplay/Valve[/XInputControllerWindows/leftTrigger,/XInputControllerWindows1/leftTrigger,/XInputControllerWindows/rightTrigger,/XInputControllerWindows1/rightTrigger,/Mouse/scroll/down,/Mouse/scroll/up]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3734753825138336112}
-        m_TargetAssemblyTypeName: Characters.PlayerCharacterInput, SteamEagles.Characters
         m_MethodName: OnInteract
         m_Mode: 0
         m_Arguments:
@@ -200,16 +186,144 @@ MonoBehaviour:
     m_ActionName: Gameplay/Aim[/XInputControllerWindows/rightStick,/XInputControllerWindows1/rightStick,/Mouse/delta]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 7ccbdd9c-dd1e-438a-aaef-ed19c86fa4ce
-    m_ActionName: Gameplay/Vaccum Gas[/Mouse/backButton,/XInputControllerWindows/leftTrigger,/XInputControllerWindows1/leftTrigger]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 723780eb-d4ca-410d-89f9-35bda831f65b
-    m_ActionName: Gameplay/Release Gas[/Mouse/forwardButton,/XInputControllerWindows/rightTrigger,/XInputControllerWindows1/rightTrigger]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 59003e4c-5c67-4277-a90e-2d60149ad190
     m_ActionName: Depricated/_Valve_Old[/XInputControllerWindows/leftTrigger,/XInputControllerWindows1/leftTrigger,/XInputControllerWindows/rightTrigger,/XInputControllerWindows1/rightTrigger]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 00dae576-3e2e-47e6-acdc-6a7674be1e9d
+    m_ActionName: Gameplay/Ability Primary[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cba94b11-18ab-4c02-a57a-1566d1162c0b
+    m_ActionName: Gameplay/Ability Secondary[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f1697a49-d1a6-41a8-aa72-c2746eeb4329
+    m_ActionName: Gameplay/Select[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 815fcc70-8284-42c0-992e-3e650103117f
+    m_ActionName: Gameplay/Open Wheel[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 79bc18b3-d05f-49b7-bceb-8843d1ee695c
+    m_ActionName: Gameplay/Inventory[/Keyboard/i]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dfbfdcab-bc10-4676-9a69-de7fb3212fda
+    m_ActionName: Wheel/Open Wheel[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c308d7fd-bca4-4c3e-a2c7-a41b2b8a4bf9
+    m_ActionName: Inventory/Inventory[/Keyboard/i]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f58f1be9-e815-42e2-9aea-6e88825f2801
+    m_ActionName: Inventory/Horizontal
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2316a5a1-92e6-413a-84f8-8aa99d9911ac
+    m_ActionName: Gameplay Basic/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a2fa9e40-6506-4bcf-9a05-ab69c96a478c
+    m_ActionName: Gameplay Basic/Jump[/Keyboard/space,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 753b94f5-5cce-4349-a9b4-70b26f6d83ac
+    m_ActionName: Gameplay Basic/Interact[/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 781e0c63-a563-4f25-854d-18f198fac179
+    m_ActionName: Gameplay Basic/Aim[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4512719b-ac86-4bfe-af90-ac1eed8972ba
+    m_ActionName: Gameplay Basic/Enter Mode Construction[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fa962ac5-fb2f-42f1-9350-02dde9fe4791
+    m_ActionName: Gameplay Construction/Exit Mode[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ba452b54-9bb3-491e-a5a6-000a57c8551c
+    m_ActionName: Gameplay Construction/Cycle Recipe[/Mouse/scroll/y]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cff017f3-2dc0-4b62-b578-1c9c2f6492c2
+    m_ActionName: Gameplay Construction/Aim[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a48f3c5d-2ba5-4048-8c65-440eec99cd7c
+    m_ActionName: Gameplay Construction/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b3e06252-3f6e-4c13-96df-c3baa63f85dd
+    m_ActionName: Gameplay Construction/Confirm Placement
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5306cdda-27b3-4325-b306-afaa4f0a795a
+    m_ActionName: Gameplay Piloting Airship/Exit Mode[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 96be9b29-b134-40e2-93ee-12cfdcd42928
+    m_ActionName: Gameplay Piloting Airship/Gas[/Keyboard/ctrl,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a2f4aa1b-7eaa-4d89-b239-a58aaaf4b180
+    m_ActionName: Gameplay Piloting Airship/Thrusters[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2c009418-8064-40d5-9d2b-6f20e6f1da0d
+    m_ActionName: Gameplay Piloting Airship/Look
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 968d496a-799f-49b3-9ec3-3e8de4eaf15f
+    m_ActionName: Gameplay Driving/Exit Mode[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f4d7b4c4-d49e-4b27-9f9c-2e9842996cad
+    m_ActionName: Depricated/Vaccum Gas[/Mouse/backButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 96c6366a-3de2-488b-93f5-93affad9a2cf
+    m_ActionName: Depricated/Release Gas[/Mouse/forwardButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 25bd7567-0805-462a-80cf-575cb6d3bdd0
+    m_ActionName: Depricated/Valve[/Mouse/scroll/down,/Mouse/scroll/up,/Mouse/backButton,/Mouse/forwardButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ce7494e8-8092-4e78-b19b-69aa4b2cdc65
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 92ae6615-90e6-4c7a-82d5-4085460bbe7b
+    m_ActionName: UI/Left Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7c1b1265-ae75-4a73-9cd9-ac54d74d7e86
+    m_ActionName: UI/Right Click[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1b5380f0-6bf7-4cba-b6a1-0f3cda338bae
+    m_ActionName: UI/Middle Click[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 17c355ca-2cee-48ad-83eb-d7080735fa22
+    m_ActionName: UI/Scroll Wheel[/Mouse/scroll/up]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d4ce0e7b-3657-4be7-92e7-90579d33d0ea
+    m_ActionName: UI/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 09e6bbc9-94d6-4853-9a34-f943b9b241c2
+    m_ActionName: UI/Submit[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dfaf6425-db66-40bc-b8b7-8a02d332f088
+    m_ActionName: UI/Cancel[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -227,4 +341,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eedf11f650a4a2783a0784dabf2ad5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useEventsForJump: 0
+--- !u!114 &32434174380900420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734753825138336127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!114 &1684543107700423164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734753825138336127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_PointAction: {fileID: -731376406291558933, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_MoveAction: {fileID: 6918331742031666354, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_SubmitAction: {fileID: -4745200926926670351, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_CancelAction: {fileID: 5642511602578070801, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_LeftClickAction: {fileID: -3999691462689216884, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_MiddleClickAction: {fileID: 5125433258128711736, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_RightClickAction: {fileID: 7536304160435962286, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_ScrollWheelAction: {fileID: 7679714438774719411, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0

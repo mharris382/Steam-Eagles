@@ -4,6 +4,7 @@ using System.Linq;
 using Characters;
 using CoreLib;
 using Cysharp.Threading.Tasks;
+using Players.Shared;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Players
     [RequireComponent(typeof(PlayerInputManager))]
     public class PlayerDeviceManager : Singleton<PlayerDeviceManager>
     {
+        public override bool DestroyOnLoad => false;
+        
         public const int MAX_LOCAL_PLAYERS = 2;
         private PlayerInputManager _playerInputManager;
         
@@ -111,12 +114,14 @@ namespace Players
 
         public void OnPlayerJoin(PlayerInput obj)
         {
+            MessageBroker.Default.Publish(new PlayerDeviceJoined(obj.playerIndex, obj.gameObject));
             if (_playerInputs.Contains(obj)) return;
             _playerInputs.Add(obj);
         }
 
         public void OnPlayerLeft(PlayerInput obj)
         {
+            MessageBroker.Default.Publish(new PlayerDeviceLost(obj.playerIndex, obj.gameObject));
             if (!_playerInputs.Contains(obj)) return;
             _playerInputs.Remove(obj);
         }

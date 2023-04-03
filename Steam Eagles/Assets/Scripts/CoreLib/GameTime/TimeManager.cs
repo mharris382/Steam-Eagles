@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using CoreLib.SaveLoad;
+using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace CoreLib.GameTime
 {
     public class TimeManager : Singleton<TimeManager>
     {
+        public override bool DestroyOnLoad => true;
         private GameDateTime _currentDateTime;
         
         public bool isGameTimePaused;

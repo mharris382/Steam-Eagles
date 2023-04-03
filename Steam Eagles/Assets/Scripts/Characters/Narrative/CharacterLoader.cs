@@ -8,7 +8,7 @@ namespace Characters.Narrative
     {
         private Dictionary<CharacterDescription, Character> _loadedCharacters = new Dictionary<CharacterDescription, Character>();
         
-
+        public override bool DestroyOnLoad => false;
 
         public bool TryGetCharacter(string characterName, out Character character)
         {

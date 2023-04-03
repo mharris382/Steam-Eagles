@@ -22,7 +22,7 @@ namespace Buildings
     {
 
         public Player[] players;
-
+        public override bool DestroyOnLoad => false;
 
         //the structures the players are currently inside (index is player id)
         private List<StructureState>[] _playerStructures;

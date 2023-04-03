@@ -11,6 +11,7 @@ namespace Characters.Narrative
 {
     public class CharacterManager : Singleton<CharacterManager>
     {
+        public override bool DestroyOnLoad => false;
         
         private Dictionary<string, AsyncOperationHandle<GameObject>> _loadedCharacters 
             = new Dictionary<string, AsyncOperationHandle<GameObject>>();

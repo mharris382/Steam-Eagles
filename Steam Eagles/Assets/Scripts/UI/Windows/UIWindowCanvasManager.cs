@@ -5,7 +5,7 @@ namespace UI
 {
     public class UIWindowCanvasManager : Singleton<UIWindowCanvasManager>
     {
-        
+        public override bool DestroyOnLoad => false;
         [SerializeField] private RectTransform fullScreenParent;
         [SerializeField] private RectTransform leftScreenParent;
         [SerializeField] private RectTransform rightScreenParent;

@@ -17,7 +17,7 @@ namespace Items.UI
         {
             "ItemSlot"
         };
-
+        public override bool DestroyOnLoad => false;
 
         private Transform _inactiveItemsParent;
         private Queue<UIInventoryItem> _inactiveItems = new Queue<UIInventoryItem>();

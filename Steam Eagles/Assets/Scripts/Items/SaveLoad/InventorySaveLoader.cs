@@ -1,6 +1,8 @@
 ﻿using CoreLib.SaveLoad;
 using UnityEngine;
 using System.IO;
+using SaveLoad;
+
 namespace Items.SaveLoad
 {
     public static class InventorySaveLoader 

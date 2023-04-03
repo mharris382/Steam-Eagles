@@ -9,6 +9,7 @@ namespace UI
 {
     public class WindowLoader : Singleton<WindowLoader>
     {
+        public override bool DestroyOnLoad => false;
         public string confirmationWindowAssetAddress = "Confirmation Window";
         public string infoBoxWindowAssetAddress = "Info Box Window";
 

@@ -13,6 +13,7 @@ namespace UI
     public class UIPromptBuilder : Singleton<UIPromptBuilder>
     {
         ConfirmationWindow _window;
+        public override bool DestroyOnLoad => false;
 
         private List<UIPrompt> _prompts = new List<UIPrompt>();
 

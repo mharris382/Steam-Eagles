@@ -8,6 +8,7 @@ namespace Buildings.Rooms
 {
     public class RoomTrackerManager : Singleton<RoomTrackerManager>
     {
+        public override bool DestroyOnLoad => false;
         private Dictionary<string, CharacterRoomTracker> roomTrackers = new Dictionary<string, CharacterRoomTracker>();
         protected override void Init()
         {

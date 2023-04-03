@@ -10,6 +10,7 @@ namespace Items
 {
     public class ItemLoader : Singleton<ItemLoader>
     {
+        public override bool DestroyOnLoad => false;
         private class LoadedItem
         {
             private readonly AsyncOperationHandle<ItemBase> _loadOp;
