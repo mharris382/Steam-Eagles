@@ -7,37 +7,18 @@ using UnityEngine;
 namespace Buildings
 {
     [RequireComponent(typeof(Building))]
-    public class BuildingMechanisms : MonoBehaviour
+    public class BuildingMechanisms : BuildingSubsystem<BuildingMechanism>
     {
-        private Building _building;
-
-        public Building Building => _building != null ? _building : _building = GetComponent<Building>();
+     
         
         private Rigidbody2D _rigidbody2D;
         
         public Rigidbody2D Rigidbody2D => _rigidbody2D != null ? _rigidbody2D : _rigidbody2D = GetComponent<Rigidbody2D>();
 
 
-        private ReactiveCollection<BuildingMechanism> _mechanisms = new ReactiveCollection<BuildingMechanism>();
         
         
         
-        public void RegisterMechanism(BuildingMechanism buildingMechanism)
-        {
-            Debug.Log($"Registering {buildingMechanism.name} on {name}");
-            _mechanisms.Add(buildingMechanism);
-            if (buildingMechanism is JointedMechanism jointedMechanism)
-            {
-                jointedMechanism.BuildingJoint.connectedBody = Rigidbody2D;
-            }
-        }
-        
-        public void UnregisterMechanism(BuildingMechanism buildingMechanism)
-        {
-            Debug.Log($"Unregistering {buildingMechanism.name} on {name}");
-            _mechanisms.Remove(buildingMechanism);
-        }
-
 
         
         /// <summary>
@@ -49,6 +30,19 @@ namespace Buildings
             {
                 jointed.BuildingJoint.connectedBody = Rigidbody2D;
             }
+        }
+
+        public override void OnSubsystemEntityRegistered(BuildingMechanism entity)
+        {
+            if (entity is JointedMechanism jointedMechanism)
+            {
+                jointedMechanism.BuildingJoint.connectedBody = Rigidbody2D;
+            }
+        }
+
+        public override void OnSubsystemEntityUnregistered(BuildingMechanism entity)
+        {
+            
         }
     }
 

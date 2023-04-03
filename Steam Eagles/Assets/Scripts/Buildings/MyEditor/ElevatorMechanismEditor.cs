@@ -12,9 +12,15 @@ namespace Buildings.MyEditor
         public override void OnInspectorGUI()
         {
             var mechanism = (ElevatorMechanism) target;
-            
-            if(mechanism.BuildingJoint.connectedBody == null)
-                mechanism.BuildingMechanisms.LinkJointsImmediately();
+
+            if (mechanism.BuildingJoint.connectedBody == null)
+            {
+                if (mechanism.BuildingMechanisms == null)
+                {
+                    Debug.LogError("No BuildingMechanisms found on " + mechanism.name);
+                    return;
+                }
+            }
             
             base.OnInspectorGUI();
         }
@@ -28,12 +34,14 @@ namespace Buildings.MyEditor
 
             var joint = mechanism.BuildingJoint as SliderJoint2D;
             var mechanismTransform = mechanism.transform;
-            var mechanismPosition = (Vector2)mechanismTransform.position;
-
+            var mechanismPositionWS = (Vector2)mechanismTransform.position;
+            var mechanismPositionLS = mechanismTransform.InverseTransformPoint(mechanismPositionWS);
+            
             //elevators only move in the y direction
             var anchor = joint.anchor;
             var connectedAnchor = joint.connectedAnchor;
-            anchor.x = connectedAnchor.x = mechanismPosition.x;
+            anchor.x = mechanismPositionLS.x;
+            connectedAnchor.x = mechanism.BuildingMechanisms.transform.InverseTransformPoint(mechanismPositionWS).x;
             joint.anchor = anchor;
             joint.connectedAnchor = connectedAnchor;
         }

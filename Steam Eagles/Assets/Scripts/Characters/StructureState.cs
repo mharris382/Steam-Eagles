@@ -217,7 +217,7 @@ namespace Characters
             }
         }   
 
-        public void CheckForStructures()
+          public void CheckForStructures()
         {
             var pos = transform.position;
             var prev = Physics2D.queriesHitTriggers;

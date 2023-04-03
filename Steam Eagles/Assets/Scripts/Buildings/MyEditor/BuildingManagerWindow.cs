@@ -27,6 +27,8 @@ namespace Buildings.MyEditor
                 tree.Add(b.buildingName, b);
                 tree.Add($"{b.buildingName}/Tilemaps", new BuildingTilemapsTable(b));
                 tree.Add($"{b.buildingName}/Rooms", new BuildingRoomsTable(b));
+                tree.Add($"{b.buildingName}/Mechanisms", new MechanismTable(b));
+                tree.Add($"{b.buildingName}/Appliances", new ApplianceTable(b));
             }
             return tree;
         }

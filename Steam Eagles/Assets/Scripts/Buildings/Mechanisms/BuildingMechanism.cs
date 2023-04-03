@@ -2,13 +2,11 @@
 
 namespace Buildings.Mechanisms
 {
-    public abstract class BuildingMechanism : MonoBehaviour
+    public abstract class BuildingMechanism : BuildingSubsystemEntity<BuildingMechanisms, BuildingMechanism>, IEntityID
     {
         private BuildingMechanisms _building;
         public BuildingMechanisms BuildingMechanisms => _building != null ? _building : _building = GetComponentInParent<BuildingMechanisms>();
 
-        
-        
         void Awake()
         {
             if (BuildingMechanisms == null)
@@ -18,18 +16,19 @@ namespace Buildings.Mechanisms
         }
         protected virtual void Start()
         {
-            BuildingMechanisms.RegisterMechanism(this);
+            BuildingMechanisms.RegisterSubsystemEntity(this);
         }
-        
-        
-        public abstract float[] GetSaveState();
-        
-        public abstract void LoadSaveState(float[] saveState);
-        
+
+
         private void OnDestroy()
         {
-            BuildingMechanisms.UnregisterMechanism(this);
+            BuildingMechanisms.UnregisterSubsystemEntity(this);
         }
+
+        public abstract float[] GetSaveState();
+
+        public abstract void LoadSaveState(float[] saveState);
+
     }
     
     
