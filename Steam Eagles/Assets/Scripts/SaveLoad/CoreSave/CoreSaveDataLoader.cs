@@ -1,8 +1,9 @@
 ﻿namespace SaveLoad.CoreSave
 {
+    [LoadOrder(-1000)]
     public class CoreSaveDataLoader : SaveFileLoader<CoreSaveData>
     {
-        public override bool LoadSaveState(string savePath)
+        public override bool LoadData(CoreSaveData data)
         {
             throw new System.NotImplementedException();
         }

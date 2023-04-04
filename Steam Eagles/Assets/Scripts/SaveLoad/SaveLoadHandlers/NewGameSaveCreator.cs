@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -55,45 +54,12 @@ namespace SaveLoad
             }
         }
     }
-    
+
     public static class TypeExtensions
     {
         public static bool IsConcrete(this Type type)
         {
             return !type.IsAbstract && !type.IsInterface;
-        }
-    }
-    
-    public static class ReflectionUtils
-    {
-        public static List<Type> GetConcreteTypes<T>()
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            var types = assemblies
-                .SelectMany(a => a.GetTypes())
-                .Where(t => typeof(T).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface && !t.IsGenericTypeDefinition);
-
-            return types.ToList();
-        }
-        
-        public static List<T> GetConcreteInstances<T>()
-        {
-            var types = GetConcreteTypes<T>();
-
-            var instances = new List<T>();
-
-            foreach (var type in types)
-            {
-                var instance = Activator.CreateInstance(type);
-
-                if (instance is T tInstance)
-                {
-                    instances.Add(tInstance);
-                }
-            }
-
-            return instances;
         }
     }
 }

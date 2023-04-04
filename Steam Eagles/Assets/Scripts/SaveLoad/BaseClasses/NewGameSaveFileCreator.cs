@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace SaveLoad
 {
+    
     public abstract class SaveFileCreator<T> : IGameDataSaver
     {
         private string GetSaveFileName() => typeof(T).Name;
@@ -19,6 +20,12 @@ namespace SaveLoad
             System.IO.File.WriteAllText(filePath, json);
         }
     }
+    
+    public abstract class GameSaveFileCreator<T> : SaveFileCreator<T>, IGameSaveFileCreator
+    {
+        public void SaveGame(string savePath) => SaveGame(savePath, false);
+    }
+    
     /// <summary>
     /// implement this for each type of save data object so that it can be used to
     /// initialize the save state of a new game.  After that the operation for

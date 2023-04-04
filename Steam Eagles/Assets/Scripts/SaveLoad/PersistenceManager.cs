@@ -85,6 +85,9 @@ namespace SaveLoad
                 return;
             }
 
+            var loadHandler = new LoadGameHandler(true);
+            loadHandler.LoadGame(SaveDirectoryPath);
+            return;
             throw new NotImplementedException();
             //Steps for loading a game
             // first find all data files in the save directory
