@@ -9,11 +9,11 @@ namespace CoreLib
     public struct PlayerCharacterBoundInfo
     {
         public int playerNumber;
-        public GameObject character;
+        public string character;
     }
     
     public struct PlayerCharacterUnboundInfo
     {
-        
+        public int playerNumber;
     }
 }

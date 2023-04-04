@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoreLib;
 using Players.Shared;
 using UniRx;
@@ -17,14 +18,30 @@ namespace Game
         /// </summary>
         public event System.Action<int> PlayerLostDevice;
 
+        
+        public event Action<string[]> CharacterAssignmentsChanged; 
+        public event Action<int> NumberOfPlayerDevicesChanged;
+        
         protected override void Init()
         {
             MessageBroker.Default.Receive<PlayerDeviceJoined>().Subscribe(OnPlayerDeviceJoined).AddTo(this);
             MessageBroker.Default.Receive<PlayerDeviceLost>().Subscribe(OnPlayerDeviceLost).AddTo(this);
+            MessageBroker.Default.Receive<PlayerCharacterBoundInfo>().Subscribe(OnPlayerCharacterBound).AddTo(this);
+            MessageBroker.Default.Receive<PlayerCharacterUnboundInfo>().Subscribe(OnPlayerCharacterUnbound).AddTo(this);
         }
 
 
         #region [Event Listeners]
+
+        private void OnPlayerCharacterBound(PlayerCharacterBoundInfo playerCharacterBound)
+        {
+            AssignCharacterToPlayer(playerCharacterBound.playerNumber, playerCharacterBound.character);
+        }
+        
+        private void OnPlayerCharacterUnbound(PlayerCharacterUnboundInfo playerCharacterBound)
+        {
+            AssignCharacterToPlayer(playerCharacterBound.playerNumber, null);
+        }
 
         private void OnPlayerDeviceLost(PlayerDeviceLost playerDeviceLost)
         {
@@ -33,6 +50,7 @@ namespace Game
                 _playerDevices.Remove(playerDeviceLost.Index);
                 PlayerLostDevice?.Invoke(playerDeviceLost.Index);
             }
+            NumberOfPlayerDevicesChanged?.Invoke(_playerDevices.Count);
         }
 
         private void OnPlayerDeviceJoined(PlayerDeviceJoined playerDeviceJoined)
@@ -45,6 +63,7 @@ namespace Game
             {
                 _playerDevices.Add(playerDeviceJoined.Index, playerDeviceJoined.PlayerInput);
             }
+            NumberOfPlayerDevicesChanged?.Invoke(_playerDevices.Count);
         }
 
         #endregion
@@ -117,11 +136,45 @@ namespace Game
                 case 0:
                 case 1:
                     _playerCharacterNames[playerIndex] = characterName;
+                    CharacterAssignmentsChanged?.Invoke(GetCharacterAssignments());
                     break;
                 default:
                     Debug.LogError("Game Manager does not support more than 2 players!");
                     break;
             }
+        }
+
+        private string[] GetCharacterAssignments()
+        {
+            void AddPlayerCharacterAssignment(int i, List<string> list)
+            {
+                if (PlayerHasJoined(i))
+                {
+                    if (PlayerHasCharacterAssigned(i))
+                    {
+                        list.Add(GetPlayerCharacterName(i));
+                    }
+                }
+            }
+
+            List<string> characterAssignments = new List<string>();
+            int p = 0;
+            AddPlayerCharacterAssignment(0, characterAssignments);
+            AddPlayerCharacterAssignment(1, characterAssignments);
+            return characterAssignments.ToArray();
+        }
+        
+        
+        private int GetNumberOfPlayerDevices()
+        {
+            int cnt = 0;
+            foreach (var playerDevices in _playerDevices)
+            {
+                if(playerDevices.Value != null)
+                    cnt++;
+            }
+
+            return cnt;
         }
 
         #endregion

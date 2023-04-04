@@ -58,10 +58,21 @@ public class CreateNewGameSaveFileTest
         {
             GetSaveFilePath<CoreSaveData>()
         };
-        foreach (var path in files) Assert.Contains(path, expectedFiles);
+        HashSet<string> actualPaths = new HashSet<string>();
+        foreach (var file in files)
+        {
+            actualPaths.Add(file);
+        }
+        foreach (var expectedPath in expectedFiles)
+        {
+            Assert.IsTrue(actualPaths.Contains(expectedPath));
+            string json = File.ReadAllText(expectedPath);
+            var coreSaveData = JsonUtility.FromJson<CoreSaveData>(json);
+            Assert.IsNotNull(coreSaveData);
+        }
     }
     
     
     
-    public string GetSaveFilePath<T>() => $"{GetTestSavePath()}/{typeof(T).Name}.json";
+    public string GetSaveFilePath<T>() => $"{GetTestSavePath()}\\{typeof(T).Name}.json";
 }

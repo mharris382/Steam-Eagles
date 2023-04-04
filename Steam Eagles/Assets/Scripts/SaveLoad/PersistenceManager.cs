@@ -18,12 +18,13 @@ namespace SaveLoad
         public static string SavePath => Instance.SaveDirectoryPath;
         public event Action<string> GameSaved;
         public event Action<string> GameLoaded;
-        public override bool DestroyOnLoad => false;
         public void Initialize(string saveDirectoryPath)
         {
             SaveDirectoryPath = saveDirectoryPath;
             
         }
+
+        public override bool DestroyOnLoad => false;
 
         protected override void Init()
         {
