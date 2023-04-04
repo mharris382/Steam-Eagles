@@ -47,6 +47,7 @@ namespace SaveLoad
         
         public void CreateNewGameSave(string savePath)
         {
+            PersistenceManager.Instance.Initialize(savePath);
             Directory.CreateDirectory(savePath);
             foreach (var gameSaveFileCreator in creators)
             {

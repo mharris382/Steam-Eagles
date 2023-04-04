@@ -15,6 +15,7 @@ namespace UI.MainMenu
 {
     public class UICharacterSelection : MonoBehaviour
     {
+        public string newGameSaveName = "NewGame";
         [SerializeField, Range(0,1)]
         private float timeBetweenSelections = 0.25f;
         public bool isMainMenu = true;
@@ -47,7 +48,11 @@ namespace UI.MainMenu
                     if (activeDevice == null) continue;
                     activeDevice.SwitchCurrentActionMap(startGameActionMap);
                 }
+                var newGameSave = new NewGameSaveCreator(false);
+                newGameSave.CreateNewGameSave(newGameSaveName);
                 Debug.Log($"Current save path is {PersistenceManager.Instance.SaveDirectoryPath}");
+                MessageBroker.Default.Publish(new LoadGameRequestedInfo(newGameSaveName));
+                
             }).AddTo(this);
 
         }

@@ -30,7 +30,7 @@ namespace UI.MainMenu
         {
             confirmSelectionButton.onClick.AsObservable().Subscribe(_ =>
             {
-                mainMenu.StartGame();
+                //mainMenu.StartGame();
             });
         }
 

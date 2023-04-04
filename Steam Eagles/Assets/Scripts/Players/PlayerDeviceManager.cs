@@ -117,6 +117,7 @@ namespace Players
             MessageBroker.Default.Publish(new PlayerDeviceJoined(obj.playerIndex, obj.gameObject));
             if (_playerInputs.Contains(obj)) return;
             _playerInputs.Add(obj);
+            obj.transform.SetParent(transform);
         }
 
         public void OnPlayerLeft(PlayerInput obj)
