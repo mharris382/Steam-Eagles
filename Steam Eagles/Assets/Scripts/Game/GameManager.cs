@@ -165,7 +165,7 @@ namespace Game
         }
         
         
-        private int GetNumberOfPlayerDevices()
+        public int GetNumberOfPlayerDevices()
         {
             int cnt = 0;
             foreach (var playerDevices in _playerDevices)
@@ -178,5 +178,10 @@ namespace Game
         }
 
         #endregion
+
+        public bool CanStartGameInMultiplayer()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

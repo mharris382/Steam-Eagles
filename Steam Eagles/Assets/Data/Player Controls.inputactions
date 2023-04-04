@@ -2122,6 +2122,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Horizontal Select",
+                    "type": "Value",
+                    "id": "f2ab4943-b892-4fc8-876b-e49e5d4dfc0a",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -2270,7 +2279,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "39275f35-768a-41e6-a4fb-aa6e5397f81f",
+                    "id": "c14c1394-8d8d-49da-bc61-5ec0af8759a3",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
@@ -2281,7 +2290,7 @@
                 },
                 {
                     "name": "right",
-                    "id": "83520c43-74ec-46e4-bff5-9026d6afc67d",
+                    "id": "6e7a665e-6e95-478b-a4f1-7da1b562eaef",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
@@ -2335,12 +2344,12 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "right",
-                    "id": "ad34cb18-3425-420d-8db6-baffdd71b66b",
-                    "path": "<Gamepad>/dpad/right",
+                    "name": "left",
+                    "id": "e24fe3b5-cbec-4cf9-9f36-ca182196ecc0",
+                    "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller 1;Controller 2",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -2388,6 +2397,72 @@
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "8145b3bd-b912-4d20-967d-14230923bb6c",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Horizontal Select",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "39275f35-768a-41e6-a4fb-aa6e5397f81f",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Horizontal Select",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "83520c43-74ec-46e4-bff5-9026d6afc67d",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Horizontal Select",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "1c7d44ee-e324-4e8a-afc2-f20048e6650d",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Horizontal Select",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "b289abed-a7b2-495d-82e8-ee35a009c565",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Horizontal Select",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "ad34cb18-3425-420d-8db6-baffdd71b66b",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Horizontal Select",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
