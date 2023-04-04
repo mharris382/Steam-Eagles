@@ -50,7 +50,7 @@ namespace UI.MainMenu
                 }
                 var newGameSave = new NewGameSaveCreator(false);
                 newGameSave.CreateNewGameSave(newGameSaveName);
-                Debug.Log($"Current save path is {PersistenceManager.Instance.SaveDirectoryPath}");
+                Debug.Log($"Current save path is {Application.persistentDataPath}/{PersistenceManager.Instance.SaveDirectoryPath}");
                 MessageBroker.Default.Publish(new LoadGameRequestedInfo(newGameSaveName));
                 
             }).AddTo(this);

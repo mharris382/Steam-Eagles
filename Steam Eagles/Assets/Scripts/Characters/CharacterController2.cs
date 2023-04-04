@@ -618,7 +618,7 @@ namespace Characters
 
         public void ClearParent()
         {
-            transform.parent.SetParent(null);
+            transform.SetParent(null);
         }
 
         

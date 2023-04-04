@@ -12,6 +12,10 @@ namespace SaveLoad
         {
             var data = GetSaveState();
             if (debug) Debug.Log($"Saving {data} to {savePath}");
+            if (!savePath.Contains(Application.persistentDataPath))
+            {
+                savePath = $"{Application.persistentDataPath}/{savePath}";
+            }
             SaveData(data, GetSaveFilePath(savePath));
         }
         private void SaveData(T data, string filePath)
