@@ -84,6 +84,24 @@ namespace SaveLoad
                 Debug.LogError($"No load path at {SaveDirectoryPath}");
                 return;
             }
+
+            throw new NotImplementedException();
+            //Steps for loading a game
+            // first find all data files in the save directory
+            
+            // load game core
+            // load character save data
+            // load inventory save data
+            // load structure save data
+            
+            // when all data is loaded also load the scene
+            
+            // spawn the characters into the scenes from character save data
+            // spawn the structures into the scenes from structure save data
+            // spawn the inventory into the scenes from inventory save data 
+            
+            //now raise the event to let the game know that the game has been loaded and player devices can be assigned to their spawned characters
+            
             GameLoaded?.Invoke(SaveDirectoryPath);
             //if we are in the main menu then we should also load the game scene after storing the path locally
             if (SceneManager.GetActiveScene().buildIndex == 0)
