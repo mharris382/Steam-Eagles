@@ -48,9 +48,9 @@ public class CreateNewGameSaveFileTest
     public void NewGameSaveContainsCoreSaveData()
     {
         var newGameCreator = new NewGameSaveCreator(true);
-        newGameCreator.CreateNewGameSave(GetTestSavePath());
-        
-        var files = Directory.GetFiles(GetTestSavePath()).ToList();
+        var savePath = GetTestSavePath();
+        newGameCreator.CreateNewGameSave(savePath);
+        var files = Directory.GetFiles(savePath).ToList();
         
         Assert.IsTrue(files.Count > 0);
         

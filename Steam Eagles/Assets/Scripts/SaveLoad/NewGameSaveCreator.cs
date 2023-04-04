@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Sirenix.Utilities;
 using UnityEngine;
 
@@ -24,33 +26,31 @@ namespace SaveLoad
         }
 
 
-        private Dictionary<int, NewGameSaveCreatorTypeGroup> groups;
         public List<INewGameSaveFileCreator> creators = new List<INewGameSaveFileCreator>();
         public NewGameSaveCreator(bool debug)
         {
-            groups = new Dictionary<int, NewGameSaveCreatorTypeGroup>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsConcrete()).ToArray();
-            creators = new List<INewGameSaveFileCreator>(types.Length);
-            foreach (var type in types)
+            var types = ReflectionUtils.GetConcreteTypes<INewGameSaveFileCreator>();
+            var instances = ReflectionUtils.GetConcreteInstances<INewGameSaveFileCreator>();
+            if (debug)
             {
-                creators.Add(Activator.CreateInstance(type) as INewGameSaveFileCreator);
-                if(debug)Debug.Log($"Found {type.Name}");
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Found Types inheriting from INewGameSaveFileCreator:");
+                foreach (var type in types)
+                {
+                    sb.AppendLine($"{type.FullName}");
+                }
+                Debug.Log(sb.ToString());
             }
-                
+            creators = instances;
             this.debug = true;
         }
         
         public void CreateNewGameSave(string savePath)
         {
-            foreach (var group in groups.Values.OrderBy(t => t.groupOrder))
+            Directory.CreateDirectory(savePath);
+            foreach (var gameSaveFileCreator in creators)
             {
-                Debug.Log($"Saving Group {group.groupOrder}");
-                foreach (var creator in group.creators)
-                {
-                    Debug.Log($"Saving {creator.GetType().Name}");
-                    creator.CreateNewSaveFile(savePath);
-                }
+                gameSaveFileCreator.CreateNewSaveFile(savePath);
             }
         }
     }
@@ -60,6 +60,39 @@ namespace SaveLoad
         public static bool IsConcrete(this Type type)
         {
             return !type.IsAbstract && !type.IsInterface;
+        }
+    }
+    
+    public static class ReflectionUtils
+    {
+        public static List<Type> GetConcreteTypes<T>()
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            var types = assemblies
+                .SelectMany(a => a.GetTypes())
+                .Where(t => typeof(T).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface && !t.IsGenericTypeDefinition);
+
+            return types.ToList();
+        }
+        
+        public static List<T> GetConcreteInstances<T>()
+        {
+            var types = GetConcreteTypes<T>();
+
+            var instances = new List<T>();
+
+            foreach (var type in types)
+            {
+                var instance = Activator.CreateInstance(type);
+
+                if (instance is T tInstance)
+                {
+                    instances.Add(tInstance);
+                }
+            }
+
+            return instances;
         }
     }
 }
