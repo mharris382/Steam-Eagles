@@ -26,6 +26,8 @@ public class CharacterState : MonoBehaviour
 
     private ToolState _tool;
     public ToolState Tool => _tool ??= (_tool = GetComponent<ToolState>());
+
+    public bool UsingTool => Tool.currentToolState != ToolStates.None;
     
     #region Public variables
 
