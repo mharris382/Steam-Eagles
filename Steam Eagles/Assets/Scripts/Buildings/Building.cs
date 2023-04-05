@@ -255,5 +255,9 @@ namespace Buildings
         }
 
         private bool HasLayer(int layer, BuildingLayers layers) => ((layer & (int)layers) != 0);
+        
+        
+        Rooms.Rooms _rooms;
+        public Rooms.Rooms Rooms => _rooms ? _rooms : _rooms = GetComponentInChildren<Rooms.Rooms>();
     }
 }

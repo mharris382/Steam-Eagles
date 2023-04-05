@@ -91,7 +91,7 @@ namespace Buildings.MyEditor
             [ShowInInspector, ReadOnly]
             private readonly Room _room;
 
-            
+            public Vector2 RoomSize => _room.Bounds.size;
 
             public void SelectRoom() => Selection.activeGameObject = _room.gameObject;
 
