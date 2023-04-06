@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using Buildings.Rooms;
 using PhysicsFun.Buildings;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Buildings
@@ -19,6 +22,13 @@ namespace Buildings
             box.isTrigger = true;
             box.size = building.sizeWorldSpace.size;
             box.offset = transform.InverseTransformPoint(building.sizeWorldSpace.center);
+            var rooms = GetComponentsInChildren<Room>();
+            IObservable<(Collider2D, Room)> roomEnterStream = null; 
+            foreach (var room in rooms)
+            {
+                IObservable<(Collider2D, Room)> triggerEnterStream = room.OnTriggerEnter2DAsObservable()
+                    .Select(t => (t, room));
+            }
         }
         
         

@@ -36,22 +36,6 @@ namespace Characters.Animations
             _skinController = GetComponent<SkinController>();
         }
 
-        private void Start()
-        {
-            _stateMachine = new Fsm();
-            var stateMachine = CreateDefaultFSM();
-            var toolFsm = CreateToolFSM();
-           
-            _stateMachine.AddState("Default", stateMachine);
-            _stateMachine.AddState("Tool", toolFsm);
-            
-            _stateMachine.AddTransition("Default", "Tool" , _ => _characterState.UsingTool);
-            _stateMachine.AddTransition("Tool" , "Default", _ => !_characterState.UsingTool);
-            
-            _stateMachine.SetStartState("Default");
-            _stateMachine.Init();
-        }
-
         #region [Create State Machines]
 
         Fsm CreateToolFSM()
@@ -73,6 +57,7 @@ namespace Characters.Animations
             AddToolStateFromStateObject(ToolStates.Recipe, 
                 new ToolStateRecipeBookTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
             
+            toolFsm.SetStartState(ToolStates.Build.ToString());
             toolFsm.Init();
             return toolFsm;
 
@@ -184,8 +169,25 @@ namespace Characters.Animations
 
         #endregion
 
+        private void Start()
+        {
+            _stateMachine = new Fsm();
+            var stateMachine = CreateDefaultFSM();
+            var toolFsm = CreateToolFSM();
+           
+            _stateMachine.AddState("Default", stateMachine);
+            _stateMachine.AddState("Tool", toolFsm);
+            
+            _stateMachine.AddTransition("Default", "Tool" , _ => _characterState.UsingTool);
+            _stateMachine.AddTransition("Tool" , "Default", _ => !_characterState.UsingTool);
+            
+            _stateMachine.SetStartState("Default");
+            _stateMachine.Init();
+        }
+
         private void Update()
         {
+            
             _stateMachine.OnLogic();
         }
 

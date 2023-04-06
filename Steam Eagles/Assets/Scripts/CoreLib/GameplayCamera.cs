@@ -10,7 +10,7 @@ namespace CoreLib
         public static event Action<GameObject> CameraCreated;
         private void Start()
         {
-            CreateCopy();
+            //CreateCopy();
         }
 
         public void CreateCopy()

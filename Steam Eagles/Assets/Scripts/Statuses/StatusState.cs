@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Statuses
+﻿namespace Statuses
 {
     public enum StatusState
     {
@@ -18,14 +16,5 @@ namespace Statuses
         DORMANT,
         INVALID_WRONG_ENTITY_TYPE,
         INVALID_CANNOT_APPLY_STATUS_GROUP_TO_ENTITY,
-    }
-
-    [Flags]
-    public enum EntityType
-    {
-        UNSPECIFIED,
-        CHARACTER,
-        VEHICLE,
-        ALL = CHARACTER | VEHICLE
     }
 }

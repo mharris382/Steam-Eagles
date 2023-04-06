@@ -82,8 +82,13 @@ namespace SaveLoad
             PlayerPrefs.SetString("Last Save Path", savePath);
         }
 
+        private Coroutine _loadRoutine;
         void LoadGameAtPath(string loadPath)
         {
+            if (_loadRoutine == null)
+            {
+                _isLoading = false;
+            }
             if (IsLoading)
             {
                 Debug.LogError($"Already loading a game from path: {loadPath}",this);

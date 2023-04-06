@@ -1,6 +1,6 @@
 ﻿namespace Statuses
 {
-    public interface IEntity
+    public interface IEntityStatuses
     {
         EntityType EntityType { get; }
         StatusState GetStatusState(StatusHandle status);

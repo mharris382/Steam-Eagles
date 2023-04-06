@@ -12,17 +12,17 @@ namespace Characters.Animations
 
         public override void OnEquipTool()
         {
-            throw new System.NotImplementedException();
+           // throw new System.NotImplementedException();
         }
 
         public override void OnToolUpdate()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public override void OnUnEquipTool()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }
