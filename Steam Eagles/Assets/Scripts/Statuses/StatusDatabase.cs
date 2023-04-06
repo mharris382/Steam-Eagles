@@ -38,6 +38,11 @@ namespace Statuses
                 RegisterStatusRequirement(newRequiredStatus, newStatus.Status);
             }
         }
+
+        public StatusHandle[] RegisterStatusGroup(StatusGroup group)
+        {
+            throw new NotImplementedException();
+        }
         
         public StatusHandle RegisterStatus(string newStatus)
         {
@@ -77,10 +82,12 @@ namespace Statuses
 
         public string StatusName { get; }
 
+        public bool IsStatusGroup { get; }
         internal StatusHandle(string status, StatusDatabase _db)
         {
             this._db = _db;
             StatusName = status;
+            IsStatusGroup = false;
         }
 
         public IEnumerable<string> BlockingStatuses => _db.WhatStatusesIsThisStatusBlockedBy(StatusName);
