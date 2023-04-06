@@ -59,6 +59,21 @@ namespace Buildings.Rooms
             }
             set => RoomBounds = value;
         }
+
+        public Bounds WorldSpaceBounds
+        {
+            get
+            {
+                var lsBounds = Bounds;
+                var wsMin = BuildingTransform.TransformPoint(lsBounds.min);
+                var wsMax = BuildingTransform.TransformPoint(lsBounds.max);
+                wsMin.z = -0.5f;
+                wsMax.z = 0.5f;
+                var wsBounds = new Bounds(wsMin, Vector3.zero);
+                Bounds.SetMinMax(wsMin, wsMax);
+                return wsBounds;
+            }
+        }
         
         private Rooms _rooms;
 
@@ -77,6 +92,7 @@ namespace Buildings.Rooms
         }
 
         public Vector3 WorldCenter => BuildingTransform.TransformPoint(RoomBounds.center);
+        
         
         public void AddConnectedRoom(Room room)
         {

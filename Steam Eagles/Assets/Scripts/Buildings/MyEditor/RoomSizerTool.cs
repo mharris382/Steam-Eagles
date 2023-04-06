@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Buildings.Rooms;
+using CoreLib;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -12,6 +14,9 @@ namespace Buildings.MyEditor
     {
         public List<Room> Rooms = new List<Room>();
         private Color SelectionColor => Color.Lerp(Color.green, Color.white, 0.5f);
+
+        [ShowInInspector,  BoxGroup("Output")]
+        public OutputRoomSizes outputRoomSizes;
         
         [LabelText("Rooms")]
         [TableList(IsReadOnly = true, AlwaysExpanded = true),ShowInInspector]
@@ -31,10 +36,11 @@ namespace Buildings.MyEditor
         [BoxGroup("Bounds"), PropertyOrder(-8),ShowInInspector, ShowIf(nameof(showCalculatedBounds))]
         private BoundsCalculation calculation;
 
-        public RoomSizerTool(IEnumerable<Room> allRooms)
+        public RoomSizerTool(Building building, IEnumerable<Room> allRooms)
         {
             roomSelected= allRooms.Select(r => new RoomWrapper(r, this, false)).ToList();
             calculation = new BoundsCalculation(this);
+            outputRoomSizes = new OutputRoomSizes(building,allRooms);
         }
 
         protected void SelectRoom(RoomWrapper room)
@@ -170,6 +176,51 @@ namespace Buildings.MyEditor
             {
                 Room = room;
                 _sizerTool = sizerTool;
+            }
+        }
+        
+        
+        [InlineProperty]
+        public class OutputRoomSizes
+        {
+            private readonly Building _b;
+            public float multiplier = 64;
+
+
+            [FolderPath(AbsolutePath = true)]
+            public string outputPath = "";
+
+            [HideInInspector]
+            private Room[] rooms;
+            public OutputRoomSizes(Building b, IEnumerable<Room> allRooms)
+            {
+                _b = b;
+                rooms = allRooms.ToArray();
+            }
+
+            [Button]
+            public void OutputSizes()
+            {
+                var buildingName = _b.name;
+                var path = $"{outputPath}/{buildingName}.csv";
+           
+                if(Directory.Exists(outputPath) == false)
+                    Directory.CreateDirectory(outputPath);
+                
+                if(File.Exists(path))
+                    File.Delete(path);
+                using (FileStream fs = File.OpenWrite(path))
+                {
+                    StreamWriter sw = new StreamWriter(fs);
+                    sw.Write($"Building, Room, Width(u), Height(u), Width(px), Height(px), Width(px^2), Height(px^2)\n");
+                    foreach (var room in rooms)
+                    {
+                        var bounds = room.Bounds.size;
+                        var size = new Vector2(bounds.x * multiplier, bounds.y * multiplier);
+                        sw.Write($"{buildingName}, {room.name}, {bounds.x}, {bounds.y}, {size.x}, {size.y}, {Mathf.NextPowerOfTwo(Mathf.CeilToInt(size.x))}, {Mathf.NextPowerOfTwo(Mathf.CeilToInt(size.y))}\n");
+                    }
+                }
+                Debug.Log($"Output Path:\n{path.Bolded().InItalics()}");
             }
         }
     }

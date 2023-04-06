@@ -7,6 +7,11 @@ using UnityEngine;
 
 namespace Buildings.MyEditor
 {
+    public class RoomGroupsTable
+    {
+        
+    }
+
     public class BuildingRoomsTable
     {
         [ShowInInspector]

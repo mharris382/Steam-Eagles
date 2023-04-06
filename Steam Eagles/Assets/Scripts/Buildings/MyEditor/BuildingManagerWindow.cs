@@ -29,7 +29,8 @@ namespace Buildings.MyEditor
                 tree.Add($"{b.buildingName}/Rooms", new BuildingRoomsTable(b));
                 tree.Add($"{b.buildingName}/Mechanisms", new MechanismTable(b));
                 tree.Add($"{b.buildingName}/Appliances", new ApplianceTable(b));
-                tree.Add($"{b.buildingName}/Size Tool", new RoomSizerTool(b.Rooms.AllRooms));
+                tree.Add($"{b.buildingName}/Size Tool", new RoomSizerTool(b, b.Rooms.AllRooms));
+                tree.Add($"{b.buildingName}/Room Cameras", new RoomCamerasTable(b));
             }
             return tree;
         }
