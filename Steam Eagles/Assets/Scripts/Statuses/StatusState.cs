@@ -15,12 +15,15 @@ namespace Statuses
         /// <summary>
         /// the status is applied to the entity, but is either missing requirements or the status is blocked by another status
         /// </summary>
-        DORMANT
+        DORMANT,
+        INVALID_WRONG_ENTITY_TYPE,
+        INVALID_CANNOT_APPLY_STATUS_GROUP_TO_ENTITY,
     }
 
     [Flags]
     public enum EntityType
     {
+        UNSPECIFIED,
         CHARACTER,
         VEHICLE,
         ALL = CHARACTER | VEHICLE

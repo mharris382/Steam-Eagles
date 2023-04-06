@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UniRx;
+using UnityEngine;
 
 namespace Statuses
 {
@@ -32,6 +32,7 @@ namespace Statuses
                 RegisterStatus(newBlockingStatus);
                 RegisterBlockingStatus(newBlockingStatus, newStatus.Status);
             }
+
             foreach (var newRequiredStatus in newStatus.GetDefinedRequiredStatuses())
             {
                 RegisterStatus(newRequiredStatus);
@@ -43,21 +44,29 @@ namespace Statuses
         {
             throw new NotImplementedException();
         }
-        
+
+        public StatusHandle[] RegisterStatusGroup(string groupName, params string[] statuses)
+        {
+            Debug.Assert(statuses.Length >= 2, "Group must have at least 2 statuses and a name");
+            var group = new StatusGroup(groupName, statuses);
+            return RegisterStatusGroup(group);
+        }
+
         public StatusHandle RegisterStatus(string newStatus)
         {
             throw new NotImplementedException();
         }
+
         public bool IsRegistered(string status)
         {
             return false;
         }
-        
+
         public IEnumerable<string> WhatStatusesIsThisStatusBlockedBy(string status)
         {
             throw new NotImplementedException();
         }
-        
+
         public IEnumerable<string> WhatStatusesDoesThisStatusRequire(string status)
         {
             throw new NotImplementedException();
@@ -67,44 +76,44 @@ namespace Statuses
         {
             throw new NotImplementedException();
         }
-        
-        public void RegisterStatusRequirement(string requiredStatus, string requiredByStatus, bool isTwoWay=false)
+
+        public void RegisterStatusRequirement(string requiredStatus, string requiredByStatus, bool isTwoWay = false)
         {
-            if(isTwoWay)
+            if (isTwoWay)
                 RegisterStatusRequirement(requiredByStatus, requiredStatus, false);
             throw new NotImplementedException();
         }
-    }
 
-    public struct StatusHandle
-    {
-        private StatusDatabase _db;
 
-        public string StatusName { get; }
-
-        public bool IsStatusGroup { get; }
-        internal StatusHandle(string status, StatusDatabase _db)
+        public void SpecifyTargetMask(string status, EntityType entityType)
         {
-            this._db = _db;
-            StatusName = status;
-            IsStatusGroup = false;
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<string> BlockingStatuses => _db.WhatStatusesIsThisStatusBlockedBy(StatusName);
-        
-        public IEnumerable<string> RequiredStatuses => _db.WhatStatusesDoesThisStatusRequire(StatusName);
 
-        public bool IsBlockedBy(string status) => BlockingStatuses.Contains(status);
-        public bool Requires(string status) => RequiredStatuses.Contains(status);
-
-        public void AddRequirement(string requirement)
+        public IEnumerable<string> GetStatusesInGroup(string statusGrouping)
         {
-            _db.RegisterStatusRequirement(requirement, StatusName);
+            throw new NotImplementedException();
+        }
+
+        
+        public EntityType GetTargetMask(string statusName)
+        {
+            throw new NotImplementedException();
         }
         
-        public void AddBlockingStatus(string blockingStatus)
+        
+        /// <summary>
+        /// this means that only one status in the group can be applied at a time, adding one will remove the others.
+        ///
+        /// this would be useful for equip tool statuses, where we only need to equip the tool we want now, we don't need
+        /// to know which tool was equipped before in order to remove it. 
+        /// </summary>
+        /// <param name="group"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void MakeGroupedStatusesMutuallyExclusive(string group)
         {
-            this._db.RegisterBlockingStatus(blockingStatus, StatusName);
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using UnityEngine;
 
 namespace Statuses
 {
@@ -24,6 +26,12 @@ namespace Statuses
         {
             this.groupName = groupName;
             this.statuses = statuses;
+        }
+        public StatusGroup(params string[] statuses)
+        {
+            Debug.Assert(statuses.Length > 2, "Group must have at least 2 statuses and a name");
+            this.groupName = statuses[0];
+            this.statuses = statuses.Where(t=> t!=groupName).ToArray();
         }
     }
 }

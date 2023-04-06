@@ -3,6 +3,7 @@
     public interface IEntity
     {
         EntityType EntityType { get; }
-        StatusState GetStatusState(string status);
+        StatusState GetStatusState(StatusHandle status);
+        StatusState AddStatus(StatusHandle kvpValue);
     }
 }

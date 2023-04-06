@@ -6,5 +6,10 @@
         {
             
         }
+
+        public IEntity CreateNewEntity(string testCharacter, EntityType character)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
