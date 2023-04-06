@@ -21,7 +21,7 @@ namespace Characters.Narrative
 
         public AccessLevel GetAccessLevel()
         {
-            AccessLevel baseline = AccessLevel.CIVILIANS;
+            AccessLevel baseline = AccessLevel.PASSENGERS;
             int rankTotal = pilotRank + engineerRank + officerRank;
             if (rankTotal <= 0)
             {

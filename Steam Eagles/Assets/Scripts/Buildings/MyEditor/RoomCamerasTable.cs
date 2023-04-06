@@ -36,6 +36,7 @@ namespace Buildings.MyEditor
         {
             private readonly Room _room;
 
+            [GUIColor(nameof(guiColor))]
             [ShowInInspector, TableColumnWidth(120), InlineButton(nameof(SelectRoom), "Select")]
             public string RoomName
             {
@@ -43,6 +44,7 @@ namespace Buildings.MyEditor
                 set => _room.name = value;
             }
 
+            private Color guiColor => _room.roomColor;
             void SelectRoom()
             {
                 Selection.activeGameObject = _room.gameObject;
@@ -98,6 +100,7 @@ namespace Buildings.MyEditor
                 var vCam = cameraGO.AddComponent<CinemachineVirtualCamera>();
                 vCam.gameObject.AddComponent<GameplayCamera>();
                 _room.roomCamera = cameraGO;
+                vCam.m_Priority = 16;
             }
 
             [ButtonGroup()]

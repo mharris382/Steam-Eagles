@@ -10,7 +10,7 @@ namespace CoreLib
         OFFICERS = 1 << 2,
         PILOTS = 1 << 3,
         CREW_MEMBERS = ENGINEERS | OFFICERS | PILOTS,
-        CIVILIANS = PASSENGERS | ~(CREW_MEMBERS),
+        
         EVERYONE = CREW_MEMBERS | PASSENGERS
     }
 }

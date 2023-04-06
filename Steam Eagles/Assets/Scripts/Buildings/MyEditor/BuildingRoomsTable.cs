@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -95,6 +97,38 @@ namespace Buildings.MyEditor
             
             [ShowInInspector, ReadOnly]
             private readonly Room _room;
+            
+            
+            [ShowInInspector, EnumPaging, TableColumnWidth(175, false)]
+            public AccessLevel AccessLevel
+            {
+                get => _room.accessLevel;
+                set => _room.accessLevel = value;
+            }
+            
+            [ShowInInspector]
+
+            public bool EngineersOnly
+            {
+                get
+                {
+                    var civilians = _room.accessLevel.HasFlag(AccessLevel.PASSENGERS);
+                    var engineers = _room.accessLevel.HasFlag(AccessLevel.ENGINEERS);
+                    return !civilians && engineers;
+                }
+                set
+                {
+                    
+                    if (value)
+                    {
+                        AccessLevel = AccessLevel.ENGINEERS;
+                    }
+                    else
+                    {
+                        AccessLevel = AccessLevel.EVERYONE;
+                    }
+                }
+            }
 
             public Vector2 RoomSize => _room.Bounds.size;
 
@@ -103,6 +137,7 @@ namespace Buildings.MyEditor
             public RoomWrapper(Room room, BuildingRoomsTable roomsTable)
             {
                 this._room = room;
+                _room.transform.position = room.WorldCenter;
             }
         }
     }
