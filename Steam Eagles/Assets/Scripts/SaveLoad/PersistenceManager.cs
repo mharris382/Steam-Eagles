@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
 using CoreLib.SaveLoad;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,11 @@ namespace SaveLoad
     {
         public string presetPath = "Editor Test";
         public bool usePreset = false;
+
+
+        private bool _isLoading;
+        public bool IsLoading => _isLoading;
+        
         public string SaveDirectoryPath { get; private set; }
         public static string SavePath => Instance.SaveDirectoryPath;
         public event Action<string> GameSaved;
@@ -78,41 +84,42 @@ namespace SaveLoad
 
         void LoadGameAtPath(string loadPath)
         {
-            this.SaveDirectoryPath = loadPath;
+            if (IsLoading)
+            {
+                Debug.LogError($"Already loading a game from path: {loadPath}",this);
+                return;
+            }
+
+            if (!loadPath.Contains(Application.persistentDataPath))
+            {
+                loadPath = $"{Application.persistentDataPath}/{loadPath}";
+            }
+            
+            SaveDirectoryPath = loadPath;
             if (!Directory.Exists(SaveDirectoryPath))
             {
                 Debug.LogError($"No load path at {SaveDirectoryPath}");
                 return;
             }
 
-            var loadHandler = new LoadGameHandler(true);
-            loadHandler.LoadGame(SaveDirectoryPath);
-            return;
-            throw new NotImplementedException();
-            //Steps for loading a game
-            // first find all data files in the save directory
+            //var loadHandler = new LoadGameHandler(true);
+            //loadHandler.LoadGame(SaveDirectoryPath);
             
-            // load game core
-            // load character save data
-            // load inventory save data
-            // load structure save data
-            
-            // when all data is loaded also load the scene
-            
-            // spawn the characters into the scenes from character save data
-            // spawn the structures into the scenes from structure save data
-            // spawn the inventory into the scenes from inventory save data 
-            
-            //now raise the event to let the game know that the game has been loaded and player devices can be assigned to their spawned characters
-            
-            GameLoaded?.Invoke(SaveDirectoryPath);
-            //if we are in the main menu then we should also load the game scene after storing the path locally
-            if (SceneManager.GetActiveScene().buildIndex == 0)
-            {
-                StartCoroutine(LoadScene());
-            }
+            var loadHandler = new AsyncLoadGameHandler(true);
+            StartCoroutine(LoadAsync(loadHandler));
         }
 
+        IEnumerator LoadAsync(AsyncLoadGameHandler loadHandler)
+        {
+            _isLoading = true;
+            Debug.Log($"Starting load from path: {SaveDirectoryPath}");
+            
+            yield return UniTask.ToCoroutine(async () => await loadHandler.LoadAsync(SaveDirectoryPath));
+            
+            Debug.Log($"Finished loading from path: {SaveDirectoryPath}");
+            _isLoading = false;
+        }
+        
         IEnumerator LoadScene()
         {
             yield return SceneManager.LoadSceneAsync(1);

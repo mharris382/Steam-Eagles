@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using CoreLib;
 using Sirenix.Utilities;
 using UnityEngine;
 
@@ -46,6 +47,11 @@ namespace SaveLoad
         
         public void CreateNewGameSave(string savePath)
         {
+            if (!savePath.Contains(Application.persistentDataPath))
+            {
+                savePath = $"{Application.persistentDataPath}/{savePath}";
+            }
+            Debug.Log($"Initializing New Game to save path: \n{savePath.Bolded().InItalics()}");
             PersistenceManager.Instance.Initialize(savePath);
             Directory.CreateDirectory(savePath);
             foreach (var gameSaveFileCreator in creators)

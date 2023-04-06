@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 namespace SaveLoad
@@ -21,6 +22,10 @@ namespace SaveLoad
         private void SaveData(T data, string filePath)
         {
             var json = JsonUtility.ToJson(data);
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Dispose();
+            }
             System.IO.File.WriteAllText(filePath, json);
         }
     }

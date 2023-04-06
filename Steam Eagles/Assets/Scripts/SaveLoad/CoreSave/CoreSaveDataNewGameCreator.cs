@@ -7,7 +7,7 @@
     {
         protected override CoreSaveData GetNewGameSaveState()
         {
-            return new CoreSaveData(1, "Builder", "Transporter");
+            return new CoreSaveData(1, "Builder");
         }
     }
 }

@@ -115,6 +115,7 @@ namespace Players
         public void OnPlayerJoin(PlayerInput obj)
         {
             MessageBroker.Default.Publish(new PlayerDeviceJoined(obj.playerIndex, obj.gameObject));
+            DontDestroyOnLoad(obj.gameObject);
             if (_playerInputs.Contains(obj)) return;
             _playerInputs.Add(obj);
             obj.transform.SetParent(transform);

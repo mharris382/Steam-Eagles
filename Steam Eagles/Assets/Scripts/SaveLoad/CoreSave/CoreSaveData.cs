@@ -1,10 +1,12 @@
-﻿namespace SaveLoad.CoreSave
+﻿using UnityEngine;
+
+namespace SaveLoad.CoreSave
 {
     [System.Serializable]
     public class CoreSaveData
     {
-        private readonly string[] _playerCharacterNames;
-        private readonly int _scene;
+        [SerializeField] private string[] _playerCharacterNames;
+        [SerializeField] private int _scene;
         
         public int Scene => _scene;
         public string[] PlayerCharacterNames => _playerCharacterNames;

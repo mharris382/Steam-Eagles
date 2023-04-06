@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using Game;
 
 namespace Players
 {
@@ -15,7 +16,7 @@ namespace Players
     /// this needs to be majorly refactored.  this class is a butt to deal with
     /// TODO: refactor GameManager and character spawning
     /// </summary>
-    public class GameManager : MonoBehaviour
+    public class GamePlayerManager : MonoBehaviour
     {
         public enum GameMode
         {
@@ -29,6 +30,8 @@ namespace Players
         [ValidateInput(nameof(ValidateWrappers))]
         [BoxGroup("Players")]  public List<PlayerWrapper> players;
         [BoxGroup("Players")]  public CameraAssignments cameraAssignments;
+        [HideInInspector]
+        [Obsolete("handled external prefab loader systems")]
         [BoxGroup("Players")]  public CharacterAssignments characterAssignments;
         [BoxGroup("Players")] public EventSystemAssignments eventSystemAssignments;
         
@@ -44,7 +47,7 @@ namespace Players
         private void Awake()
         {
             activePlayerCount.Value = 0;
-            
+            MessageBroker.Default.Receive<RequestPlayerCharacterSpawn>().Subscribe(OnSpawnPlayerRequested).AddTo(this);
         }
 
         private void Start()
@@ -106,8 +109,49 @@ namespace Players
             _joinedPlayers.Remove(players[obj.playerIndex]);
         }
 
+        public void OnSpawnPlayerRequested(RequestPlayerCharacterSpawn request)
+        {
+            var building = GameObject.FindGameObjectWithTag("Building");
+            Debug.Assert(building != null, "No building found in scene", this);
+
+            SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal);
+           
+        }
+
+        void SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
+        {
+            var wrapper = players[id];
+            var obj = GameManager.Instance.GetPlayerDevice(id);
+            Debug.Assert(obj != null, "Player Device was null", this);
+            PlayerInputWrapper input ;//= obj.GetComponent<PlayerInputWrapper>();
+
+            if (!obj.TryGetComponent(out input))
+            {
+                input = obj.AddComponent<PlayerInputWrapper>();
+            }
+                
+            var camera = cameraAssignments.GetDependency(id);
+            Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
+            Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
+
+            
+            var character = Instantiate(prefab,parent.transform).GetComponent<CharacterState>();
+            character.transform.localPosition = localOffset;
+            
+            Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
+            MessageBroker.Default.Publish(new CharacterSpawnedInfo(character.tag, character.gameObject));
+                
+            wrapper.BindToPlayer(input);
+            wrapper.AssignCamera(camera.Value);
+            wrapper.AssignCharacter(character);
+            Debug.Assert(wrapper.IsFullyBound);
+                
+            _joinedPlayers.Add(wrapper);
+            SwitchToSinglePlayerCamera();
+        }
         public void OnPlayerJoined(PlayerInput obj)
         {
+            return;
             var id = obj.playerIndex;
             switch (gameMode)
             {
@@ -115,24 +159,7 @@ namespace Players
                     
                     if (_joinedPlayers.Count == 0)
                     {
-                        var wrapper = players[id];
-                        var input = obj.GetComponent<PlayerInputWrapper>();
-                
-                        var camera = cameraAssignments.GetDependency(id);
-                        Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
-                        Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
-                
-                        var character = characterAssignments.GetDependency(id);
-                        Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
-                        MessageBroker.Default.Publish(new CharacterSpawnedInfo(character.tag, character.gameObject));
-                
-                        wrapper.BindToPlayer(input);
-                        wrapper.AssignCamera(camera.Value);
-                        wrapper.AssignCharacter(character);
-                        Debug.Assert(wrapper.IsFullyBound);
-                
-                        _joinedPlayers.Add(wrapper);
-                        SwitchToSinglePlayerCamera();
+                        
                     }
                     break;
                 case GameMode.LOCAL_COOP:
