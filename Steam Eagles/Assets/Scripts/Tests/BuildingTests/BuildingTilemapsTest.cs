@@ -49,13 +49,13 @@ public class BuildingTilemapsTest
         }
     }
 
-[Test]
+//[Test]
     public void BuildingTilemapsTestSimplePasses()
     {
         // Use the Assert class to test conditions
     }
 
-    [UnityTest]
+    //[UnityTest]
     public IEnumerator BuildingTilemapsTestWithEnumeratorPasses()
     {
         // Use the Assert class to test conditions.

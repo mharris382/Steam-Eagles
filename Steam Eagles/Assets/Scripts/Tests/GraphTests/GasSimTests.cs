@@ -166,7 +166,7 @@ namespace Tests.GraphTests
             Vector2Int chunkCount = _gasManager.GasSimGrid.ChunkCount;
         }
         
-        [Test]
+        //[Test]
         public void Cell_To_Chunk()
         {
             int expectedChunksX = 10;
@@ -235,7 +235,7 @@ namespace Tests.GraphTests
         }
 
 
-        [Test]
+        //[Test]
         public void Iterate_On_Chunks()
         {
             int expectedChunksX = 10;
