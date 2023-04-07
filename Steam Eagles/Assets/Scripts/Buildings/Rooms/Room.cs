@@ -28,7 +28,10 @@ using Sirenix.OdinInspector;
         [ToggleGroup(nameof(isDynamic))] public bool isDynamic;
         [ToggleGroup(nameof(isDynamic))] public Rigidbody2D dynamicBody;
 
-        public bool IsDamageable => ((int)accessLevel & (int)AccessLevel.ENGINEERS) != 0;
+        public bool IsDamageable => (((int)accessLevel & (int)AccessLevel.ENGINEERS) != 0) && 
+                                    ((int)accessLevel & (int)AccessLevel.OFFICERS) == 0 && 
+                                    ((int)accessLevel & (int)AccessLevel.PILOTS) == 0 && 
+                                    ((int)accessLevel & (int)AccessLevel.PASSENGERS) == 0;
 
 
         public List<Room> connectedRooms = new List<Room>();

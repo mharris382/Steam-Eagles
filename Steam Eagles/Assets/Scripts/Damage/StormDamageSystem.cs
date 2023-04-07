@@ -44,8 +44,9 @@ namespace Damage
         public (Vector3Int pos, TileHandle handle) PickRandomDamageableTile()
         {
             var index = UnityEngine.Random.Range(0, _damageableTiles.Count);
+            if (_damageableTiles.Count == 0)
+                throw new Exception("No Damageable Tiles Found");
             var handle = _damageableTiles[index];
-            _damageableTiles.RemoveAt(index);
             return ((Vector3Int)handle.Cell, handle);
         }
 

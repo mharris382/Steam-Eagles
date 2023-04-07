@@ -150,6 +150,31 @@ namespace Damage
                         onDamage:() => {
                             Debug.Log("$Damaged tile {t.ToString()}");
                             tilemap.SetTile((Vector3Int)t, RepairableTile);
+                            var right = t + Vector2Int.right;
+                            var left = t + Vector2Int.left;
+                            var up = t + Vector2Int.up;
+                            var down = t + Vector2Int.down;
+                            if (_cellRoomLookup.ContainsKey(right))
+                            {
+                                var handle = GetHandle(right);
+                                if(handle.CanDamage)
+                                    handle.DamageCell();
+                            }
+                            if (_cellRoomLookup.ContainsKey(left))
+                            {
+                                var handle = GetHandle(left);
+                                if(handle.CanDamage)handle.DamageCell();
+                            }
+                            if (_cellRoomLookup.ContainsKey(up))
+                            {
+                                var handle = GetHandle(up);
+                                if(handle.CanDamage)handle.DamageCell();
+                            }
+                            if (_cellRoomLookup.ContainsKey(down))
+                            {
+                                var handle = GetHandle(down);
+                                if(handle.CanDamage)handle.DamageCell();
+                            }
                         }, 
                         onRepair: () =>
                         {
