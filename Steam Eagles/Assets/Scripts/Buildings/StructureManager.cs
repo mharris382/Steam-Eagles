@@ -112,6 +112,7 @@ namespace Buildings
 
         private void UpdatePlayerEditableStructure(Player player)
         {
+            return;
             if (_playerStructures[player.playerNumber].Count == 0)
             {
                 Debug.Log($"Disabled Structure editing for player {player.name}({player.characterTag})");

@@ -14,6 +14,9 @@ namespace Damage
         [SerializeField, SuffixLabel("sec")]
         private float damageCheckInterval = 1;
         
+        
+        public DamageCalculator damageCalculator;
+        
         public float DurationInSeconds => duration * 60;
         
         

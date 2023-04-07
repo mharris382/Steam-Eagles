@@ -104,7 +104,7 @@ namespace SaveLoad
                 Debug.LogError($"Already loading a game from path: {loadPath}",this);
                 return;
             }
-
+            loadPath= loadPath.Replace('\\','/');
             SaveDirectoryPath = loadPath;
             PlayerPrefs.SetString("Last Save Path", loadPath);
             if (!Directory.Exists(SaveDirectoryPath))

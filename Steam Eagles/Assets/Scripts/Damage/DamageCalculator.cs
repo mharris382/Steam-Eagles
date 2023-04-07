@@ -107,6 +107,35 @@ namespace Damage
            _misses = new Subject<int>();
            return Observable.FromCoroutine<Vector3Int>(RunDamageLoop);
        }
+
+       public IEnumerable<Vector3Int> Loop()
+       {
+           Debug.Log("Starting Calculator Loop");
+           var parameters = ComputeParameters(_numHits, _numRollsSoFar);
+           var rollP = new RollParameters(parameters.percent, parameters.rerolls);
+           if(_onBatch == null) _onBatch = new Subject<RollParameters>();
+           _onBatch.OnNext(rollP);
+           int localHits = 0;
+           using (_hitSubject.Subscribe(_ => localHits++))
+           {
+               SingleBatch(rollP);
+           }
+            _numRollsSoFar += rollsPerBatch;
+            _numHits += localHits;
+            if (localHits == 0)
+            {
+                Debug.Log("No hits this time");
+            }
+            else
+            {
+                Debug.Log($"Got {localHits} hits this time");
+            }
+            for (int i = 0; i < localHits; i++)
+            {
+                yield return Vector3Int.zero;
+            }
+       }
+       
        public IEnumerator RunDamageLoop(IObserver<Vector3Int> observer,
             CancellationToken ct)
         {
