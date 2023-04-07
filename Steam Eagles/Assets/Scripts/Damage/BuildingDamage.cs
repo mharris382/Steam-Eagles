@@ -39,23 +39,7 @@ namespace Damage
                 var tm = damageableTilemaps[i];
                 int cnt = 0;
                 var tilemap = _building.GetTilemap(tm.layer).Tilemap;
-               var _damageableRoomCells = new RectInt[rooms.Length];
-                foreach (var room in rooms)
-                {
-                    Debug.Log($"Found damageable room: {room.name}");
-                    var bounds = room.WorldSpaceBounds;
-                    var min = bounds.min;
-                    min.z = 0;
-                    var max = bounds.max;
-                    max.z = 0;
-                    var cellMin = tilemap.layoutGrid.WorldToCell(min);
-                    var cellMax = tilemap.layoutGrid.WorldToCell(max);
-                    _damageableRoomCells[cnt] = new RectInt(cellMin.x, cellMin.y, cellMax.x, cellMax.y);
-                    cnt++;
-                }
-                
-                _tilemapDamageHandlers[i] = new TilemapDamageHandler(tm.layer,
-                   tilemap, grid, tm.damageableTile, tm.repairableTile, _damageableRoomCells);
+                _tilemapDamageHandlers[i] = new TilemapDamageHandler(tm.layer, tilemap, grid, tm.damageableTile, tm.repairableTile, rooms);
             }
         }
 
@@ -89,67 +73,34 @@ namespace Damage
                 tmDamageHandler.OnDrawGizmos(this);
             }
         }
-    }
-
-    public class Tester
-    {
-        public TilemapDamageHandler damageHandler;
-
-        [ShowInInspector, TableList]
-        public RectWrapper[] wrappers;
-        [ShowInInspector]
-        public class RectWrapper
-        {
-            [HideInInspector]
-            public TilemapDamageHandler damageHandler;
-            [ShowInInspector]
-            public RectInt rect;
-
-            public RectWrapper(TilemapDamageHandler damageHandler, RectInt rect)
-            {
-                this.damageHandler = damageHandler;
-                this.rect = rect;
-            }
-
-            [Button]
-            public void Fill()
-            {
-                damageHandler.AutoFillRect(rect);
-            }
-        }
-
-        public Tester(TilemapDamageHandler tilemapDamageHandler)
-        {
-            damageHandler = tilemapDamageHandler;
-            wrappers = new RectWrapper[tilemapDamageHandler.Cells.Length];
-            for (int i = 0; i < wrappers.Length; i++)
-            {
-                wrappers[i] = new RectWrapper(tilemapDamageHandler,tilemapDamageHandler.Cells[i] );
-            }   
-        }
+        
+        public IDamageableBuildingLayer GetDamageableLayer(BuildingLayers layer) => _tilemapDamageHandlers.FirstOrDefault(t => t.Layers == layer);
     }
 
     
-    public class TilemapDamageHandler
+    
+    public class TilemapDamageHandler : IDamageableBuildingLayer
     {
-        [Button]
-        void OpenTester()
-        {
-            OdinEditorWindow.InspectObject(new Tester(this));
-        }
+     
+        
         public TilemapDamageHandler(BuildingLayers layers, Tilemap tilemap, Grid grid,
             DamageableTile damageableTile, RepairableTile repairableTile, 
-            RectInt[] cells)
+            Room[] rooms)
         {
             this.Layers = layers;
             this.Tilemap = tilemap;
             this.DamageableTile = damageableTile;
             this.RepairableTile = repairableTile;
-            this.Cells = cells;
-            
-
-
+            this.Rooms = rooms;
+            _damageableTiles = new List<Vector2Int>();
+            _damageableTiles = rooms.SelectMany(room => room.GetCells(tilemap).Select(t => (Vector2Int)t)).ToList();
+            foreach (var room in rooms)
+            {
+                
+            }
         }
+
+        public Room[] Rooms { get; set; }
 
         public void AutoFill()
         {
@@ -161,17 +112,7 @@ namespace Damage
 
        public  void AutoFillRect(RectInt rect)
         {
-            var scale = Tilemap.transform.lossyScale;
-            for (int x = rect.min.x; x < rect.max.x; x++)
-            {
-                for (int y = rect.min.y; y < rect.max.y; y++)
-                {
-                    var vec = new Vector3Int(x, y, 0);
-                    var tile = Tilemap.GetTile(vec);
-                    if (tile == null)
-                        Tilemap.SetTile(vec, DamageableTile);
-                }
-            }
+            
         }
 
         public void OnDrawGizmos(MonoBehaviour mb)
@@ -189,6 +130,18 @@ namespace Damage
         [ShowInInspector]
 
         public Tilemap Tilemap { get; }
+        
+        List<Vector2Int> _damageableTiles;
+
+        public List<Vector2Int> GetDamageableTiles()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DamageTile(Vector2Int tile, int damage)
+        {
+            throw new NotImplementedException();
+        }
     }
   
 }
