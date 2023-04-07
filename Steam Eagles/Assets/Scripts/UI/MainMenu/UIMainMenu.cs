@@ -140,6 +140,7 @@ public class UIMainMenu : MonoBehaviour
         if ((singlePlayer && GameManager.Instance.CanStartGameInSingleplayer()) || 
             (!singlePlayer && GameManager.Instance.CanStartGameInMultiplayer()))
         {
+            PlayerPrefs.SetString("Last Save Path", PersistenceManager.SavePath);
             MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
         }
     }
@@ -175,5 +176,14 @@ public class UIMainMenu : MonoBehaviour
     public void QuitButton()
     {
         Application.Quit();   
+    }
+    
+    public void OnContinueButton()
+    {
+        var lastPath = PlayerPrefs.GetString("Last Save Path");
+        if (lastPath != null)
+        {
+            MessageBroker.Default.Publish(new LoadGameRequestedInfo(lastPath));
+        }
     }
 }

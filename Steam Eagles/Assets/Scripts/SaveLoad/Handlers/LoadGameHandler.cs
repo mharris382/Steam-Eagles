@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using CoreLib;
+using CoreLib.Signals;
 using Cysharp.Threading.Tasks;
 using Sirenix.Utilities;
+using UniRx;
 using UnityEngine;
 
 namespace SaveLoad
@@ -134,6 +136,7 @@ namespace SaveLoad
                     Debug.LogError($"Loading Failed within load group: {loadOrderAttribute.Order}");
                     return;
                 }
+                MessageBroker.Default.Publish(new GameLoadComplete());
             }
         }
     }

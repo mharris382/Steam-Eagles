@@ -103,156 +103,32 @@ namespace Characters
                 .AddTo(this);
 
         }
+        
+     
+        
+            
+       
 
         private void Start()
         {
             _controller = GetComponent<CharacterController2>();
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
-            _input.onJump.AsObservable().Subscribe(t => {
-                
-                switch (t.phase)
-                {
-                    case InputActionPhase.Disabled:
-                        break;
-                    case InputActionPhase.Waiting:
-                        break;
-                    case InputActionPhase.Started:
-                        Debug.Log("Jump Started");
-                        break;
-                    case InputActionPhase.Performed:
-                        Debug.Log("Jump Performed");
-                        break;
-                    case InputActionPhase.Canceled:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                
-            });
+ 
             
-            #region DROP METHODS
-
-            void OnPlatformDropEnter(State<string, string> t)
-            {
-                LogStateEntered("Platform Drop");
-                Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
-                Controller.BeginDropping();
-                Controller.ClearParent();
-                State.IsDropping = true;
-            }
-
-            void OnPlatformDropExit(State<string, string> t)
-            {
-                Controller.UpdatePhysMat();
-                Controller.StopDropping();
-                State.IsDropping = false;
-            }
-
-            void OnPlatformDropLogic(State<string, string> t)
-            {
-                if (t.timer.Elapsed > dropTime)
-                {
-                    t.fsm.StateCanExit();
-                    t.fsm.RequestStateChange(DEFAULT);
-                }
-                else
-                {
-                    Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
-                    Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
-                }
-            }
-
-            #endregion
-
-            #region JUMP METHODS
-
-            void OnJumpEnter(State<string, string> t)
-            {
-                Controller.BeginJump(); 
-                StructureState.Mode = StructureState.JointMode.DISABLED;
-                _jumpTime = Time.time;
-                if (Controller.IsBalloonJumping && Controller.BalloonCollider != null &&
-                    Controller.BalloonCollider.attachedRigidbody != null)
-                {
-                    var force = Vector2.down * Controller.Config.balloonImpactForce * Controller.rb.mass;
-                    Controller.BalloonCollider.attachedRigidbody.AddForceAtPosition(Controller.groundCheck.position, force, ForceMode2D.Impulse);
-                }
-            }
-
-            void OnJumpLogic(State<string, string> t)
-            {
-                Controller.UpdateFacingDirection();
-                Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
-                Controller.ApplyJumpForce();
-                Controller.ClearParent();
-            }
             
-            void OnJumpExit(State<string, string> t)
-            {
-                Controller.EndJump();
-            }
 
-            #endregion
 
             _defaultStateMachine = new FSM.StateMachine();
             var physicsFSM = new FSM.StateMachine();
             var standardPhyiscsFSM = new FSM.StateMachine();
             
             
-            
-            
-            // physicsFSM.AddState(DEFAULT,
-            //     onEnter: t =>
-            //     {
-            //         StructureState.Mode = StructureState.JointMode.AUTOMATIC;  
-            //     },
-            //     onLogic: t =>
-            //     {
-            //         
-            //         Controller.UpdateFacingDirection();
-            //         Controller.UpdateGround();
-            //         Controller.CheckWater();
-            //         Controller.UpdateSlopes();
-            //         Controller.UpdatePhysMat();
-            //         Controller.ApplyMovement(Time.fixedDeltaTime);
-            //         Controller.CheckParent();
-            //     });
 
             #region [Setting UP Standard Physics FSM]
 
-            standardPhyiscsFSM.AddState(AERIAL, 
-                onEnter: t =>
-                {
-                    StructureState.Mode = StructureState.JointMode.DISABLED;
-                    Controller.UpdatePhysMat();
-                },
-                onLogic: t =>
-                {
-                    Controller.UpdateFacingDirection();
-                    Controller.UpdateGround();
-                    Controller.CheckWater();
-                    Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
-                    Controller.CheckParent();
-                });
-            
-            standardPhyiscsFSM.AddState(GROUNDED, 
-                onEnter: t =>
-                {
-                    StructureState.CheckForStructures();
-                    StructureState.Mode = StructureState.JointMode.ENABLED;
-                },
-                onLogic: t =>
-                {
-                    StructureState.CheckForStructures();
-                    Controller.UpdateFacingDirection();
-                    Controller.UpdateGround();
-                    Controller.CheckWater();
-                    Controller.UpdateSlopes();
-                    Controller.UpdatePhysMat();
-                    Controller.ApplyMovement(Time.fixedDeltaTime);
-                    Controller.CheckParent();
-                });
+            standardPhyiscsFSM.AddState(AERIAL, OnAirEnter, OnAirLogic, OnAirExit);
+            standardPhyiscsFSM.AddState(GROUNDED, OnGroundedEnter, OnGroundedLogic, OnGroundedExit);
             
             standardPhyiscsFSM.SetStartState(AERIAL);
             standardPhyiscsFSM.AddTransition(AERIAL, GROUNDED, _ => State.IsGrounded);
@@ -260,32 +136,9 @@ namespace Characters
             standardPhyiscsFSM.Init();
             
             physicsFSM.AddState(DEFAULT, standardPhyiscsFSM);
-            physicsFSM.AddState(CLIMBING,
-                onEnter: t =>
-                {
-                    StructureState.Mode = StructureState.JointMode.ENABLED;
-                },
-                onLogic: t =>
-                {
-                    StructureState.CheckForStructures();
-                    Controller.UpdateFacingDirection();
-                    Controller.UpdateGround();
-                    Controller.CheckParent();
-                });
-            
-            physicsFSM.AddState(
-                DROPPING,
-                onEnter: OnPlatformDropEnter,
-                onLogic: OnPlatformDropLogic,
-                onExit: OnPlatformDropExit, 
-                needsExitTime:true);
-            
-            physicsFSM.AddState(
-                JUMPING,
-                onEnter: OnJumpEnter,
-                onLogic: OnJumpLogic, 
-                onExit: OnJumpExit, 
-                needsExitTime:false);
+            physicsFSM.AddState(CLIMBING, OnClimbEnter, OnClimbLogic, OnClimbExit);
+            physicsFSM.AddState(DROPPING, OnPlatformDropEnter, OnPlatformDropLogic, OnPlatformDropExit, needsExitTime:true);
+            physicsFSM.AddState(JUMPING, OnJumpEnter, OnJumpLogic,OnJumpExit, needsExitTime:false);
 
             physicsFSM.AddTransition(DEFAULT, JUMPING, _ => CheckJumpCondition());
             physicsFSM.AddTransition(JUMPING, DEFAULT, _ => !State.IsJumping || !State.JumpHeld);
@@ -303,34 +156,13 @@ namespace Characters
             #endregion
             
             _defaultStateMachine.AddState("Default", physicsFSM);
-            _defaultStateMachine.AddState("Pilot", 
-                onEnter: _ =>
-                {
-                    StructureState.Mode = StructureState.JointMode.ENABLED;//strap in
-                    Debug.Log($"{tag} entered Pilot Mode",this);
-                }, onLogic: _ =>
-                {
-                    Debug.Log($"{tag} Piloting",this);
-                }, onExit: _ =>
-                {
-                    Debug.Log($"{tag} exited Pilot Mode",this);
-                });
+            _defaultStateMachine.AddState("Pilot", OnPilotEnter, OnPilotLogic, OnPilotExit);
+            
             _defaultStateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
             _defaultStateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
             _defaultStateMachine.SetStartState("Default");
             _defaultStateMachine.Init();
         }
-
-       
-
-        public bool CheckClimbStartCondition()
-        {
-            return State.IsClimbing;
-        }
-
-        public bool CheckJumpCondition() => Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
-
-        public bool CheckDropCondition() => (Controller.AbleToDrop() && State.DropPressed);
 
         private void Update()
         {
@@ -351,5 +183,175 @@ namespace Characters
                 Debug.Log($"{name} Entered State: {stateName}", this);
             }
         }
+
+        #region [Transition Checks]
+
+
+        public bool CheckClimbStartCondition()
+        {
+            return State.IsClimbing;
+        }
+
+        public bool CheckJumpCondition() => Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
+
+        public bool CheckDropCondition() => (Controller.AbleToDrop() && State.DropPressed);
+
+        #endregion
+
+        #region AERIAL METHODS
+
+        void OnAirEnter(State<string, string> t)
+        {
+            StructureState.Mode = StructureState.JointMode.DISABLED;
+            Controller.UpdatePhysMat();
+        }
+
+        void OnAirLogic(State<string, string> t)
+        {
+            Controller.UpdateFacingDirection();
+            Controller.UpdateGround();
+            Controller.CheckWater();
+            Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
+            Controller.CheckParent();
+        }
+
+        void OnAirExit(State<string, string> t)
+        {
+            
+        }
+
+        #endregion 
+        
+        #region GROUNDED METHODS
+
+        void OnGroundedEnter(State<string, string> t)
+        {
+            StructureState.CheckForStructures();
+            StructureState.Mode = StructureState.JointMode.ENABLED;
+        }
+
+        void OnGroundedLogic(State<string, string> t)
+        {
+            
+            StructureState.CheckForStructures();
+            Controller.UpdateFacingDirection();
+            Controller.UpdateGround();
+            Controller.CheckWater();
+            Controller.UpdateSlopes();
+            Controller.UpdatePhysMat();
+            Controller.ApplyMovement(Time.fixedDeltaTime);
+            Controller.CheckParent();
+        }
+
+        void OnGroundedExit(State<string, string> t)
+        {
+            
+        }
+
+        #endregion 
+
+        #region CLIIMB METHODS
+        void OnClimbEnter(State<string, string> t)
+        {
+            
+        }
+        
+        void OnClimbLogic(State<string, string> t)
+        {
+            
+        }
+
+        void OnClimbExit(State<string, string> t)
+        {
+            
+        }
+
+        #endregion
+        
+        #region DROP METHODS
+
+        void OnPlatformDropEnter(State<string, string> t)
+        {
+            LogStateEntered("Platform Drop");
+            Controller.SetPhysicsMaterial(Controller.FrictionlessPhysicsMaterial);
+            Controller.BeginDropping();
+            Controller.ClearParent();
+            State.IsDropping = true;
+        }
+
+        void OnPlatformDropExit(State<string, string> t)
+        {
+            Controller.UpdatePhysMat();
+            Controller.StopDropping();
+            State.IsDropping = false;
+        }
+
+        void OnPlatformDropLogic(State<string, string> t)
+        {
+            if (t.timer.Elapsed > dropTime)
+            {
+                t.fsm.StateCanExit();
+                t.fsm.RequestStateChange(DEFAULT);
+            }
+            else
+            {
+                Controller.rb.velocity.Set(Controller.rb.velocity.x, -dropSpeed);
+                Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
+            }
+        }
+
+        #endregion
+        
+        #region JUMP METHODS
+
+        void OnJumpEnter(State<string, string> t)
+        {
+            Controller.BeginJump(); 
+            StructureState.Mode = StructureState.JointMode.DISABLED;
+            _jumpTime = Time.time;
+            if (Controller.IsBalloonJumping && Controller.BalloonCollider != null &&
+                Controller.BalloonCollider.attachedRigidbody != null)
+            {
+                var force = Vector2.down * Controller.Config.balloonImpactForce * Controller.rb.mass;
+                Controller.BalloonCollider.attachedRigidbody.AddForceAtPosition(Controller.groundCheck.position, force, ForceMode2D.Impulse);
+            }
+        }
+
+        void OnJumpLogic(State<string, string> t)
+        {
+            Controller.UpdateFacingDirection();
+            Controller.ApplyHorizontalMovement(Time.fixedDeltaTime);
+            Controller.ApplyJumpForce();
+            Controller.ClearParent();
+        }
+            
+        void OnJumpExit(State<string, string> t)
+        {
+            Controller.EndJump();
+        }
+
+        #endregion
+
+        #region PILOT METHODS
+
+        void OnPilotEnter(State<string, string> t)
+        {
+            StructureState.Mode = StructureState.JointMode.ENABLED;//strap in
+            Debug.Log($"{tag} entered Pilot Mode",this);
+        }
+
+        void OnPilotLogic(State<string, string> t)
+        {
+           
+            Debug.Log($"{tag} Piloting",this);
+        }
+
+        void OnPilotExit(State<string, string> t)
+        {
+            
+            Debug.Log($"{tag} exited Pilot Mode",this);
+        }
+
+        #endregion
     }
 }

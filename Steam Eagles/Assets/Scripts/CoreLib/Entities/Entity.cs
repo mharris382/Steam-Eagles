@@ -7,5 +7,6 @@ namespace CoreLib.EntityTag
     public class Entity : MonoBehaviour
     {
         public EntityType entityType = EntityType.CHARACTER;
+        public string entityGUID;
     }
 }

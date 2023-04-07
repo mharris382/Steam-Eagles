@@ -72,7 +72,9 @@ namespace Characters
             get => _hasLadder.Value;
             set => _hasLadder.Value = value;
         }
+        
         private ReactiveProperty<JointMode> JointModeProperty => _jointMode ??= new ReactiveProperty<JointMode>(JointMode.DISABLED);
+        
         [ShowInInspector]
         public JointMode Mode
         {
@@ -217,7 +219,7 @@ namespace Characters
             }
         }   
 
-          public void CheckForStructures()
+        public void CheckForStructures()
         {
             var pos = transform.position;
             var prev = Physics2D.queriesHitTriggers;
@@ -283,8 +285,6 @@ namespace Characters
             }
         }
 
-        
-        
         private void OnDrawGizmosSelected()
         {
             if (useOverlapArea)

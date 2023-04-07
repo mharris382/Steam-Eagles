@@ -72,15 +72,22 @@ namespace CoreLib.EntityTag
             return true;
         }
 
-        public static Entity CreateEntityLinked(this GameObject gameObject)
+        public static Entity CreateEntityLinked(this GameObject gameObject, string guid=null)
         {
             if (gameObject.TryGetEntity(out var existingEntity))
             {
                 Debug.Log($"This GameObject ({gameObject.name}) is already associated with entity: {existingEntity.name}");
                 return existingEntity;
             }
+
+            if (guid == null || string.IsNullOrEmpty(guid))
+            {
+                guid = System.Guid.NewGuid().ToString();
+            }
             var entityGO = new GameObject("Entity", typeof(Entity));
             var entity = entityGO.GetComponent<Entity>();
+            entity.entityGUID = guid;
+            
             entityGO.transform.SetParent(EntitiesRoot.transform);
             s_EntityCache.Add(entityGO, entity);
             RegisterRemoteEntityLink(gameObject, entity);

@@ -62,8 +62,8 @@ namespace SaveLoad.CoreSave
             return loadedSceneSuccess;
         }
     }
-    
-    
+
+
     public static class LoadedCharacterPrefabs
     {
         public static GameObject LoadedTransporterPrefab;

@@ -39,18 +39,15 @@ namespace SaveLoad
                 SaveDirectoryPath = presetPath;
             }
             base.Init();
-        }
-
-        private void Start()
-        {
-            
             MessageBroker.Default.Receive<SaveGameRequestedInfo>()
                 .Select(t => t.savePath)
-                .Subscribe(SaveGameAtPath).AddTo(this);
+                .Subscribe(SaveGameAtPath)
+                .AddTo(this);
 
             MessageBroker.Default.Receive<LoadGameRequestedInfo>()
                 .Select(t => t.loadPath)
-                .Subscribe(LoadGameAtPath).AddTo(this);
+                .Subscribe(LoadGameAtPath)
+                .AddTo(this);
 
             MessageBroker.Default.Receive<CharacterSpawnedInfo>()
                 .DelayFrame(1)
@@ -71,20 +68,33 @@ namespace SaveLoad
         }
 
 
+
         void SaveGameAtPath(string savePath)
         {
+            savePath = GetPathSafe(savePath);
             if (!Directory.Exists(savePath))
             {
                 Debug.Log($"Save Directory does not exist, creating one now at {savePath}");
                 Directory.CreateDirectory(savePath);
             }
+            
             OnGameSaved(savePath);
             PlayerPrefs.SetString("Last Save Path", savePath);
+        }
+
+        string GetPathSafe(string path)
+        {
+            if (!path.Contains(Application.persistentDataPath))
+            {
+                path = $"{Application.persistentDataPath}/{path}";
+            }
+            return path;
         }
 
         private Coroutine _loadRoutine;
         void LoadGameAtPath(string loadPath)
         {
+            loadPath = GetPathSafe(loadPath);
             if (_loadRoutine == null)
             {
                 _isLoading = false;
@@ -95,12 +105,8 @@ namespace SaveLoad
                 return;
             }
 
-            if (!loadPath.Contains(Application.persistentDataPath))
-            {
-                loadPath = $"{Application.persistentDataPath}/{loadPath}";
-            }
-            
             SaveDirectoryPath = loadPath;
+            PlayerPrefs.SetString("Last Save Path", loadPath);
             if (!Directory.Exists(SaveDirectoryPath))
             {
                 Debug.LogError($"No load path at {SaveDirectoryPath}");

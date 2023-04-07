@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using Sirenix.OdinInspector;
-using UnityEngine;
+ using Sirenix.OdinInspector.Editor;
+ using UnityEditor;
+ using UnityEngine;
+ using UnityEngine.Tilemaps;
 
-namespace Buildings.Rooms
+ namespace Buildings.Rooms
 {
     [Serializable]
     public class Room : MonoBehaviour
@@ -22,6 +25,8 @@ namespace Buildings.Rooms
 
         [ToggleGroup(nameof(isDynamic))] public bool isDynamic;
         [ToggleGroup(nameof(isDynamic))] public Rigidbody2D dynamicBody;
+
+        public bool IsDamageable => ((int)accessLevel & (int)AccessLevel.ENGINEERS) != 0;
 
 
         public List<Room> connectedRooms = new List<Room>();
@@ -131,6 +136,69 @@ namespace Buildings.Rooms
         {
             if(roomCamera != null)
                 roomCamera.SetActive(active);
+        }
+
+
+        [Button]
+        void OpenTester()
+        {
+            OdinEditorWindow.InspectObject(new RoomTester(this));
+        }
+        
+        public void Fill(TileBase tileBase, Tilemap target)
+        {
+            
+            
+            var center = Bounds.center;
+            var centerWS = target.transform.TransformPoint(center);
+            var extent = target.transform.TransformVector(Bounds.extents);
+            var newRect = new Rect(centerWS, extent*2);
+            var min =newRect.min;
+            var max =newRect.max;
+            for (int x = Mathf.RoundToInt( min.x); x < max.x; x++)
+            {
+                for (int y = Mathf.RoundToInt(min.y); y < max.y; y++)
+                {
+                    var pos = new Vector3(x, y)-extent;
+                    target.SetTile(target.WorldToCell(pos), tileBase);
+                }
+            }
+        }
+    }
+
+    public class RoomTester
+    {
+        private readonly Room _room;
+        private readonly Building _b;
+
+        [ShowInInspector]
+        public Bounds RoomBounds
+        {
+            get => _room.Bounds;
+        }
+
+        public Building Building
+        {
+            get => _b;
+        }
+
+        
+        public TileBase tile;
+
+        private bool hasTile => tile != null;
+
+        [Button, ShowIf(nameof(hasTile))]
+        void Fill()
+        {
+            var tm = Building.GetTilemap(BuildingLayers.WALL).Tilemap;
+            Undo.RecordObject(tm, "Fill room");
+            _room.Fill(tile, tm);
+        }
+
+        public RoomTester(Room room)
+        {
+            _room = room;
+            _b =  _room.BuildingTransform.GetComponent<Building>();
         }
     }
 }

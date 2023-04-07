@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using CoreLib;
+using CoreLib.Signals;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,6 +30,11 @@ namespace Characters
             {
                 Debug.Log("Device Lost");
             };
+            MessageBroker.Default.Receive<GameLoadComplete>().AsUnitObservable()
+                .Subscribe(_ =>
+                {
+                    PlayerInput.SwitchCurrentActionMap("Gameplay");
+                }).AddTo(this);
         }
 
         public void Assign(CharacterInputState characterInputState)
