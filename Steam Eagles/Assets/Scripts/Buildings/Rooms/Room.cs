@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
  using Sirenix.OdinInspector.Editor;
  using UnityEditor;
+ #endif
  using UnityEngine;
  using UnityEngine.Tilemaps;
 
@@ -142,27 +144,65 @@ using Sirenix.OdinInspector;
         [Button]
         void OpenTester()
         {
+#if UNITY_EDITOR
             OdinEditorWindow.InspectObject(new RoomTester(this));
+#endif
         }
         
         public void Fill(TileBase tileBase, Tilemap target)
         {
-            
-            
+            foreach (var cell in GetCells(target))
+            {
+                target.SetTile(cell, tileBase);
+            }
+        }
+        public IEnumerable<Vector3Int> GetCells( Tilemap target)
+        {
             var center = Bounds.center;
             var centerWS = target.transform.TransformPoint(center);
             var extent = target.transform.TransformVector(Bounds.extents);
             var newRect = new Rect(centerWS, extent*2);
             var min =newRect.min;
             var max =newRect.max;
-            for (int x = Mathf.RoundToInt( min.x); x < max.x; x++)
+            for (int x = Mathf.RoundToInt( min.x)+1; x < max.x-1; x++)
             {
-                for (int y = Mathf.RoundToInt(min.y); y < max.y; y++)
+                for (int y = Mathf.RoundToInt(min.y)+1; y < max.y-1; y++)
                 {
                     var pos = new Vector3(x, y)-extent;
-                    target.SetTile(target.WorldToCell(pos), tileBase);
+                    yield return target.WorldToCell(pos);
                 }
             }
+        }
+
+        public RectInt GetCellRect(Tilemap target)
+        {
+            var center = Bounds.center;
+            var centerWS = target.transform.TransformPoint(center);
+            var extent = target.transform.TransformVector(Bounds.extents);
+            var newRect = new Rect(centerWS, extent*2);
+            var min =newRect.min;
+            var max =newRect.max;
+            var rectInt = new RectInt();
+            var minCell =  Vector3Int.one;
+            var maxCell = Vector3Int.zero;
+            minCell.z = 0;
+            for (int x = Mathf.RoundToInt( min.x)+1; x < max.x-1; x++)
+            {
+                for (int y = Mathf.RoundToInt(min.y)+1; y < max.y-1; y++)
+                {
+                    var pos = new Vector3(x, y)-extent;
+                    var cell = target.WorldToCell(pos);
+                    if(pos.x < minCell.x)
+                        minCell.x = cell.x;
+                    if(pos.y < minCell.y)
+                        minCell.y = cell.y;
+                    if(pos.x > maxCell.x)
+                        maxCell.x = cell.x;
+                    if(pos.y > maxCell.y)
+                        maxCell.y = cell.y;
+                }
+            }
+            return new RectInt(minCell.x, minCell.y, maxCell.x, maxCell.y);
         }
     }
 
