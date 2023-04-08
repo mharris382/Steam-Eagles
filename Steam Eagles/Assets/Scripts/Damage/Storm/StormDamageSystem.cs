@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 namespace Damage
 {
+    [System.Obsolete("This is no good")]
     public class StormDamagePositionPicker : IDisposable
     {
         List<TileHandle> _damageableTiles;
@@ -56,6 +57,9 @@ namespace Damage
             disposable?.Dispose();
         }
     }
+    
+    
+    [System.Obsolete("This is no good")]
     public class StormDamageSystem
     {
         private readonly Storm _storm;
