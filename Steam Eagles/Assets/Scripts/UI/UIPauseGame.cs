@@ -1,10 +1,14 @@
-﻿using CoreLib.Signals;
+﻿using CoreLib;
+using CoreLib.Signals;
+using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using UnityEngine.SceneManagement;
+using Observable = UnityEngine.InputSystem.Utilities.Observable;
 
 namespace UI
 {
@@ -64,6 +68,35 @@ namespace UI
             }
             CloseBy(_openedByPlayerInput);
             Close();
+        }
+        
+        public void QuitButton()
+        {
+            
+            using (UniRx.Observable.FromEvent<string>(
+                       t => PersistenceManager.Instance.GameSaved += t,
+                       t => PersistenceManager.Instance.GameSaved -= t).Subscribe((_ =>
+                   {
+                        Debug.Log("Save Completed!");
+                        Application.Quit();
+                   })))
+            {
+                MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
+            }
+        }
+
+        public void QuitToMainMenu()
+        {
+            using (UniRx.Observable.FromEvent<string>(
+                       t => PersistenceManager.Instance.GameSaved += t,
+                       t => PersistenceManager.Instance.GameSaved -= t).Subscribe((_ =>
+                   {
+                       Debug.Log("Save Completed!");
+                       SceneManager.LoadScene(0);
+                   })))
+            {
+                MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
+            }
         }
     }
 }

@@ -71,15 +71,16 @@ namespace SaveLoad
 
         void SaveGameAtPath(string savePath)
         {
+            Debug.Log($"Saving Game at path: {savePath}");
             savePath = GetPathSafe(savePath);
             if (!Directory.Exists(savePath))
             {
                 Debug.Log($"Save Directory does not exist, creating one now at {savePath}");
                 Directory.CreateDirectory(savePath);
             }
-            
-            OnGameSaved(savePath);
+
             PlayerPrefs.SetString("Last Save Path", savePath);
+            OnGameSaved(savePath);
         }
 
         string GetPathSafe(string path)
