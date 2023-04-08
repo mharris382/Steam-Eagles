@@ -7,11 +7,13 @@ using UnityEngine;
 
 namespace Game
 {
+    [RequireComponent(typeof(GameInputBase))]
     public class GameManager : Singleton<GameManager>
     {
         public override bool DestroyOnLoad => false;
         private Dictionary<int, GameObject> _playerDevices = new Dictionary<int, GameObject>();
         private Dictionary<int, string> _playerCharacterNames = new Dictionary<int, string>();
+        private GameInputBase _gameInput;
 
         /// <summary>
         /// called when player device was at some point connected, but device became disconnected
@@ -24,6 +26,8 @@ namespace Game
         
         protected override void Init()
         {
+            _gameInput = GetComponent<GameInputBase>();
+            Debug.Assert(_gameInput != null, "Game Manager requires a GameInputBase component!");
             MessageBroker.Default.Receive<PlayerDeviceJoined>().Subscribe(OnPlayerDeviceJoined).AddTo(this);
             MessageBroker.Default.Receive<PlayerDeviceLost>().Subscribe(OnPlayerDeviceLost).AddTo(this);
             MessageBroker.Default.Receive<PlayerCharacterBoundInfo>().Subscribe(OnPlayerCharacterBound).AddTo(this);
@@ -178,6 +182,20 @@ namespace Game
         }
 
         #endregion
+
+        private void Update()
+        {
+            foreach (var playerDevice in _playerDevices)
+            {
+                if (playerDevice.Value == null)
+                    continue;
+                _gameInput.UpdateInput(playerDevice.Value);
+                //if (playerDevice.Value.GetComponent<PlayerInput>().actions["Pause"].triggered)
+                //{
+                //    MessageBroker.Default.Publish(new PlayerPausedGame());
+                //}
+            }
+        }
 
         public bool CanStartGameInMultiplayer()
         {

@@ -61,6 +61,8 @@ namespace UI
     }
 
 
+ 
+
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class StateWindow : MonoBehaviour
     {
