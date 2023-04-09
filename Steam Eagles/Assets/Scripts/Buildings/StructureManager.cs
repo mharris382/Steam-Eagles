@@ -64,7 +64,8 @@ namespace Buildings
                 {
                     foreach (var structureState in _playerStructures[i])
                     {
-                        NotifyPlayerEnteredStructure(players[i], structureState);
+                        if (!_playerStructures[i].Contains(structureState))
+                            NotifyPlayerEnteredStructure(players[i], structureState);
                     }
                 }
             }
@@ -78,7 +79,8 @@ namespace Buildings
             if (_isInitialized)
             {
                 Debug.Assert(structureState != null);
-                NotifyPlayerEnteredStructure(players[playerNumber], structureState);
+                if (!_playerStructures[playerNumber].Contains(structureState))
+                    NotifyPlayerEnteredStructure(players[playerNumber], structureState);
             }
         }
         public void NotifyPlayerExitedStructure(int playerNumber, StructureState structureState)
@@ -88,7 +90,8 @@ namespace Buildings
             if (_isInitialized)
             {
                 Debug.Assert(structureState != null);
-                NotifyPlayerExitedStructure(players[playerNumber], structureState);
+                if (_playerStructures[playerNumber].Contains(structureState))
+                    NotifyPlayerExitedStructure(players[playerNumber], structureState);
             }
         }
         
@@ -112,7 +115,12 @@ namespace Buildings
 
         private void UpdatePlayerEditableStructure(Player player)
         {
-            return;
+            if (player == null)
+            {
+                Debug.LogError("Player is null!", this);
+                return;
+            }
+           // return;
             if (_playerStructures[player.playerNumber].Count == 0)
             {
                 Debug.Log($"Disabled Structure editing for player {player.name}({player.characterTag})");

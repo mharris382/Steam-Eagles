@@ -19,10 +19,15 @@ namespace Items.SaveLoad
             _slots = new List<InventorySlot>(numberOfSlots);
             for (int i = 0; i < _slots.Count; i++)
             {
-                var newSlotGo = new GameObject($"{InventoryGroupKey}_{UniqueInventoryID}_Slot#{i}", typeof(InventorySlot));
-                newSlotGo.transform.parent = transform;
-                _slots.Add(newSlotGo.GetComponent<InventorySlot>());
+                CreateSlot(i);
             }
+        }
+
+        private void CreateSlot(int i)
+        {
+            var newSlotGo = new GameObject($"{InventoryGroupKey}_{UniqueInventoryID}_Slot#{i}", typeof(InventorySlot));
+            newSlotGo.transform.parent = transform;
+            _slots.Add(newSlotGo.GetComponent<InventorySlot>());
         }
 
         /// <summary>
@@ -32,9 +37,23 @@ namespace Items.SaveLoad
         /// <returns></returns>
         public override InventorySlot GetSlotFor(int slotNumber)
         {
+            if ( _slots == null || slotNumber >= _slots.Count-1)
+            {
+                RebuildInventory(slotNumber);
+            }
             try
             {
-                slotNumber = Mathf.Clamp(0, numberOfSlots - 1, slotNumber);
+                slotNumber = Mathf.Clamp(slotNumber,0, numberOfSlots - 1);
+                if (slotNumber >= transform.childCount)
+                {
+                    for (int i = transform.childCount; i <= slotNumber; i++)
+                    {
+                        var go = new GameObject("", typeof(InventorySlot));
+                        go.transform.parent = transform;
+                        _slots.Add(go.GetComponent<InventorySlot>());
+                    }
+                }
+                return transform.GetChild(slotNumber).GetComponent<InventorySlot>();
                 return _slots[slotNumber];
             }
             catch (IndexOutOfRangeException e)
@@ -42,6 +61,28 @@ namespace Items.SaveLoad
                 
                 Debug.LogError($"Got index out of range exception for backpack inventory: {name}",this);
                 return null;
+            }
+        }
+
+        private void RebuildInventory(int size)
+        {
+            
+            int oldSize = transform.childCount;
+            if (size > oldSize-1)
+            {
+                for (int i = oldSize + 1; i < size; i++)
+                {
+                    CreateSlot(i);
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            _slots = new List<InventorySlot>(size);
+            for (int i = 0; i < size; i++)
+            {
+                _slots.Add(transform.GetChild(i).GetComponent<InventorySlot>());
             }
         }
     }

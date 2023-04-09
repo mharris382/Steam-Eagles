@@ -76,6 +76,11 @@ namespace UI
         {
             foreach (var panel in panels)
             {
+                if (panel.button == null || panel.window == null) 
+                {
+                    Debug.LogError($"Missing Button or Window on {this.name}: Window={panel.window}, Panel={panel.window}",this);
+                    continue;
+                }
                 panel.button.onClick.AsObservable().Select(t => panel).Subscribe(SwitchTo).AddTo(this);
                 panel.window.Close();
             }

@@ -6,6 +6,7 @@ namespace CoreLib
     public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         private static T _instance;
+        public static bool HasInstance => _instance != null;
         public  static T Instance
         {
             get

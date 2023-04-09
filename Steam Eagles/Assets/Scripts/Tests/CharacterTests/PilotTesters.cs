@@ -37,7 +37,7 @@ public class PilotTesters : MonoBehaviour
         {
             MessageBroker.Default.Publish(new AirshipPilotChangedInfo("", controls));
         }
-        if (controls.CurrentPilot.tag == characterName && Input.GetKeyDown(takeControlKey))
+        else if (controls.CurrentPilot.tag == characterName && Input.GetKeyDown(takeControlKey))
         {
             MessageBroker.Default.Publish(new AirshipPilotChangedInfo(characterName, characterName2, controls));
         }

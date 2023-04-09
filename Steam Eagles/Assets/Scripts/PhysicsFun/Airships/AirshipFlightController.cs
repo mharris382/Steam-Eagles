@@ -24,15 +24,20 @@ namespace PhysicsFun.Airships
         private Rect _liftRect;
         private void Awake()
         {
-            if (!HasRequiredValues())
+            if(heightTarget==null)
             {
-                Debug.LogError("Airship Flight controller missing required values", this);
+                heightTarget = new GameObject($"{name} Height Target").transform;
+                heightTarget.position = balloonCounterLiftEffector.transform.position;
             }
             _balloonCounterLiftEffectorRigidbody2D = balloonCounterLiftEffector.GetComponent<Rigidbody2D>();
             _airshipArea = airshipBody.GetComponent<BoxCollider2D>();
             _liftArea = balloonCounterLiftEffector.GetComponent<BoxCollider2D>();
             _airshipRect = new Rect(_airshipArea.offset.x, _airshipArea.offset.y, _airshipArea.size.x, _airshipArea.size.y);
             _liftRect = new Rect(_liftArea.offset.x, _liftArea.offset.y, _liftArea.size.x, _liftArea.size.y);
+            if (!HasRequiredValues())
+            {
+                Debug.LogError("Airship Flight controller missing required values", this);
+            }
         }
 
         private void Update()

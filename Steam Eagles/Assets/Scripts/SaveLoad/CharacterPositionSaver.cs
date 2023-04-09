@@ -34,8 +34,11 @@ namespace SaveLoad
 
         private void OnDisable()
         {
-            PersistenceManager.Instance.GameSaved -= OnSave;
-            PersistenceManager.Instance.GameLoaded -= OnLoad;
+            if (PersistenceManager.HasInstance)
+            {
+                PersistenceManager.Instance.GameSaved -= OnSave;
+                PersistenceManager.Instance.GameLoaded -= OnLoad;
+            }
         }
 
         void OnSave(string path)

@@ -32,6 +32,13 @@ namespace SaveLoad
 
         public override bool DestroyOnLoad => false;
 
+        private bool inited = false;
+
+        private void OnDestroy()
+        {
+            inited = false;
+        }
+
         protected override void Init()
         {
             if (usePreset)
@@ -39,14 +46,14 @@ namespace SaveLoad
                 SaveDirectoryPath = presetPath;
             }
             base.Init();
+            inited = true;
             MessageBroker.Default.Receive<SaveGameRequestedInfo>()
                 .Select(t => t.savePath)
                 .Subscribe(SaveGameAtPath)
                 .AddTo(this);
 
             MessageBroker.Default.Receive<LoadGameRequestedInfo>()
-                .Select(t => t.loadPath)
-                .Subscribe(LoadGameAtPath)
+                .Subscribe(LoadGameRequest)
                 .AddTo(this);
 
             MessageBroker.Default.Receive<CharacterSpawnedInfo>()
@@ -68,6 +75,13 @@ namespace SaveLoad
         }
 
 
+        private void Start()
+        {
+            if (!inited)
+            {
+                Init();
+            }
+        }
 
         void SaveGameAtPath(string savePath)
         {
@@ -93,6 +107,11 @@ namespace SaveLoad
         }
 
         private Coroutine _loadRoutine;
+        void LoadGameRequest(LoadGameRequestedInfo info)
+        {
+            Debug.Log($"Received Load Game Request: {info.loadPath}");
+            LoadGameAtPath(info.loadPath);
+        }
         void LoadGameAtPath(string loadPath)
         {
             loadPath = GetPathSafe(loadPath);
