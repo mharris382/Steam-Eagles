@@ -54,6 +54,13 @@ namespace Damage
             return directions.Select(t => (t.direction, t.count)).ToArray();
         }
         
+        public GrabBag<Vector2Int> CreateGrabBag()
+        {
+            GrabBag<Vector2Int> grabBag = new GrabBag<Vector2Int>();
+            grabBag.Init(GetDirections());
+            return grabBag;
+        }
+
         [Button]
         public void OpenTester()
         {
@@ -104,5 +111,197 @@ namespace Damage
                 }
             }
         }
+    }
+
+
+
+
+
+    public class StormHitGrid
+    {
+        private readonly Vector2Int size;
+        private readonly Cell[,] cells;
+        private readonly HashSet<Vector2Int> blockedCells;
+        
+
+        public int Width => size.x;
+        public int Height => size.y;
+
+
+        public Cell this[Vector2Int v]
+        {
+            get
+            {
+                if (IsBlocked(v))
+                {
+                    return new Cell(v.x, v.y, true);
+                }
+                return cells[v.x, v.y];
+            }
+            set
+            {
+                if(IsBlocked(v))
+                    return;
+                cells[v.x, v.y] = value;
+            }
+        }
+
+        public StormHitGrid(int width, int height, IEnumerable<Vector2Int> blockedCells)
+        {
+            size = new Vector2Int(width, height);
+            this.blockedCells = new HashSet<Vector2Int>(blockedCells);
+            cells = new Cell[width, height];
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    cells[i, j] = new Cell(i, j, IsBlocked(i, j));
+                    if (!IsBlocked(i + 1, j))
+                    {
+                        cells[i,j].directions |= Directions.RIGHT;
+                    }
+
+                    if (!IsBlocked(i - 1, j))
+                    {
+                        cells[i, j].directions |= Directions.LEFT;
+                    }
+                    
+                    if(!IsBlocked(i, j + 1))
+                    {
+                        cells[i, j].directions |= Directions.UP;
+                    }
+
+                    if (!IsBlocked(i, j - 1))
+                    {
+                        cells[i, j].directions |= Directions.DOWN;
+                    }
+                }
+            }
+        }
+
+       
+        [Flags]
+        public enum Directions
+        {
+           NONE,UP,DOWN,LEFT, RIGHT
+        }
+
+        public struct Cell
+        {
+            public Vector2Int position;
+            public bool isBlocked;
+            public int value;
+            public Directions directions;
+
+            public Cell(int x, int y, bool isBlocked ) : this()
+            {
+                this.position = new Vector2Int(x,y);
+                this.isBlocked = isBlocked;
+                value = 0;
+            }
+
+            public bool HasDirection(Vector2Int direction)
+            {
+                if(direction.x > 0)
+                    return (directions & Directions.RIGHT) != 0;
+                else if(direction.x < 0)
+                    return (directions & Directions.LEFT) != 0;
+                else if(direction.y > 0)
+                    return (directions & Directions.UP) != 0;
+                else if (direction.y < 0)
+                    return (directions & Directions.DOWN) != 0;
+                else
+                    throw new System.Exception("Invalid direction");
+                
+            }
+            
+
+            public IEnumerable<Vector2Int> GetUnblockedNeighborPositions()
+            {
+                if((directions & Directions.UP) != 0)
+                    yield return position + Vector2Int.up;
+                if((directions & Directions.DOWN) != 0)
+                    yield return position + Vector2Int.down;
+                if((directions & Directions.LEFT) != 0)
+                    yield return position + Vector2Int.left;
+                if((directions & Directions.RIGHT) != 0)
+                    yield return position + Vector2Int.right;
+            }
+        }
+
+        public bool IsBlocked(int x, int y) => IsBlocked(new Vector2Int(x, y));
+        public bool IsBlocked(Vector2Int position)
+        {
+            if(position.x < 0 || position.x >= size.x)
+                return true;
+            if(position.y < 0 || position.y >= size.y)
+                return true;
+            return blockedCells.Contains(position);
+        }
+    }
+    
+    public class StormHitGraph2
+    {
+        private readonly StormHitGrid _stormHitGrid;
+        private readonly Vector2Int _seedPosition;
+        private readonly StormHit _hit;
+        private GrabBag<Vector2Int> _directionGrabBag;
+        public int MaxDistance => _hit.maxDamage;
+
+        private bool finished = false;
+        private Vector2Int _activePosition;
+        private AdjacencyGraph<Vector2Int, TaggedEdge<Vector2Int, int>> _graph;
+        public StormHitGraph2(StormHit hit, Vector2Int seedPosition, StormHitGrid stormHitGrid)
+        {
+            _hit = hit;
+            _seedPosition = seedPosition;
+            _stormHitGrid = stormHitGrid;
+            _directionGrabBag = new GrabBag<Vector2Int>();
+            _directionGrabBag.Init(_hit.GetDirections());
+            
+            var cell = _stormHitGrid[_seedPosition];
+            if (cell.isBlocked) finished = true;
+
+            var stack = new Stack<TaggedEdge<Vector2Int, int>>();
+            _graph = new AdjacencyGraph<Vector2Int, TaggedEdge<Vector2Int, int>>();
+            _graph.AddVertex(_seedPosition);
+            foreach (var unblockedNeighborPosition in cell.GetUnblockedNeighborPositions())
+            {
+                _graph.AddVertex(unblockedNeighborPosition);
+                var newEdge = new TaggedEdge<Vector2Int, int>(_seedPosition, unblockedNeighborPosition, 1);
+                stack.Push(newEdge);
+                _graph.AddEdge(newEdge);
+            }
+            //
+            // while (stack.Count > 0)
+            // {
+            //     var edge = stack.Pop();
+            //     var targetCell = _stormHitGrid[edge.Source];
+            //     targetCell.value = edge.Tag + 1;
+            //     
+            //     if (targetCell.value >= _hit.maxDamage)
+            //         continue;
+            //     foreach (var unblockedNeighborPosition in targetCell.GetUnblockedNeighborPositions())
+            //     {
+            //         //check if neighbor cell is already visited
+            //         var neighborCell = _stormHitGrid[unblockedNeighborPosition];
+            //         
+            //         // check if neighbor cell has been visited by another path, and check if this path is longer
+            //         if(neighborCell.value >= 0 || neighborCell.value < edge.Tag + 1)//already visited
+            //             continue;
+            //
+            //         //if not visited, add to graph
+            //         var newEdge = new TaggedEdge<Vector2Int, int>(edge.Source, unblockedNeighborPosition, edge.Tag + 1);
+            //         _graph.AddVerticesAndEdge(newEdge);
+            //         stack.Push(newEdge);
+            //         
+            //         //update neighbor cell value
+            //         neighborCell.value = newEdge.Tag;
+            //         _stormHitGrid[unblockedNeighborPosition] = neighborCell;
+            //     }
+            // }
+            //
+        }
+        
     }
 }

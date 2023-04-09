@@ -15,28 +15,77 @@ namespace Damage
     public class StormHitTester
     {
         private const int UNDAMAGED = -1;
-        [ShowInInspector]
-        [OnValueChanged(nameof(UpdateGridSize))]
+        private const int BLOCKED = -2;
+        private const int DAMAGE_SEED = 0;
+        [ShowInInspector] [OnValueChanged(nameof(UpdateGridSize))]
         public int testGridSize = 10;
-        [HorizontalGroup("h1")]
-        [ShowInInspector]
-        [OnValueChanged(nameof(UpdateBlockedGrid))]
-        [TableMatrix(DrawElementMethod = nameof(DrawColoredEnumElement), ResizableColumns = false, RowHeight = 16, SquareCells = true)]
+        
+        [HorizontalGroup("h1")] [ShowInInspector] [OnValueChanged(nameof(UpdateBlockedGrid))] [TableMatrix(DrawElementMethod = nameof(DrawColoredEnumElement), ResizableColumns = false, RowHeight = 16, SquareCells = true)]
         public bool[,] blockGrid = new bool[10, 10];
         
-        [HorizontalGroup("h1")]
-        [ShowInInspector]
-        [TableMatrix(DrawElementMethod = nameof(DrawColoredOutputResult), ResizableColumns = false, RowHeight = 16, SquareCells = true)]
+        [HorizontalGroup("h1")] [ShowInInspector] [TableMatrix(DrawElementMethod = nameof(DrawColoredOutputResult), ResizableColumns = false, RowHeight = 16, SquareCells = true)]
         public int[,] testGrid = new int[10, 10];
 
-        [ShowInInspector]
-        private AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph;
+        [ShowInInspector] private AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph;
 
         private readonly StormHit _hit;
-        [ShowInInspector]
-        [TableMatrix(DrawElementMethod = nameof(DrawGraphVisual))]
+        
+        [HorizontalGroup("h2")][ShowInInspector] [TableMatrix(DrawElementMethod = nameof(DrawGraphVisual))]
         public Vector2Int[,] graphVisual = new Vector2Int[10, 10];
+        
+        [HorizontalGroup("h2")][ShowInInspector, TableMatrix(DrawElementMethod = nameof(DrawResultGrid))]
+        public int[,] resultGrid = new int[10, 10];
 
+
+        private static Color[] colorLookup = new Color[]
+        {
+            new Color(0, 0, 0, .5f),
+            new Color(0.1f, 0.8f, 0.5f),
+            new Color(0.8f, 0.1f, 0.1f),
+            new Color(0.8f, 0.8f, 0.1f).Darken(.8f),
+        };
+
+        [ShowInInspector]
+        public Vector2Int[] Verts => graph == null ? null : graph.Vertices.ToArray();
+
+        static Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left, };
+        
+        private const string leftArrow = "←";
+
+        private const string rightArrow = "→";
+
+        private const string upArrow = "↑";
+
+        private const string downArrow = "↓";
+
+
+        void UpdateBlockedGrid()
+        {
+            for (int i = 0; i < testGridSize; i++)
+            {
+                for (int j = 0; j < testGridSize; j++)
+                {
+                    if (blockGrid[i, j])
+                    {
+                        testGrid[i, j] = -2;
+                    }
+                }
+            }
+        }
+
+        private void ResetGraphVisual()
+        {
+            graphVisual = new Vector2Int[testGridSize, testGridSize];
+            for (int i = 0; i < testGridSize; i++)
+            {
+                for (int j = 0; j < testGridSize; j++)
+                {
+                    graphVisual[i, j] = new Vector2Int(i, j);
+                }
+            }
+        }
+
+        #region [Grid Drawing]
 
         static bool DrawColoredEnumElement(Rect rect, bool value)
         {
@@ -50,23 +99,9 @@ namespace Damage
             return value;
         }
 
-        private static Color[] colorLookup = new Color[]
-        {
-            new Color(0, 0, 0, .5f),
-            new Color(0.1f, 0.8f, 0.5f),
-            new Color(0.8f, 0.1f, 0.1f),
-            new Color(0.8f, 0.8f, 0.1f).Darken(.8f),
-        };
-
-        [ShowInInspector]
-        public Vector2Int[] Verts => graph == null ? null : graph.Vertices.ToArray();
-        private string leftArrow = "←";
-        private string rightArrow = "→";
-        private string upArrow = "↑";
-        private string downArrow = "↓";
-
         Vector2Int DrawGraphVisual(Rect rect, Vector2Int value)
         {
+            
             if (graph == null) {
                 EditorGUI.DrawRect(rect.Padding(1), new Color(0,  0, 0, .5f));
                 CreateGraph();
@@ -78,6 +113,15 @@ namespace Damage
                 EditorGUI.DrawRect(rect.Padding(1), new Color(.7f,  .7f, .7f, .7f));
                 return value;
             }
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            {
+                CreateGraph();
+                DoHit(value);
+                //value = !value;
+                GUI.changed = true;
+                Event.current.Use();
+            }
+
             var leftRect = rect.AlignLeft(rect.width / 2);
             var rightRect = rect.AlignRight(rect.width / 2);
             var downRect = rect.AlignBottom(rect.height / 2);
@@ -118,54 +162,39 @@ namespace Damage
             return value;
         }
 
-        void UpdateBlockedGrid()
+        static Color BlockedColor = new Color(0,  0, 0, .5f);
+        static Color  SeedColor = new Color(0.8f, 0.1f, 0.1f);
+        private static Color DamageEndColor = new Color(0.6f, 0.1f, 0.1f, .5f);
+        static Color UndamagedColor = new Color(.6f,  .6f, 0.2f, .7f);
+        int DrawResultGrid(Rect rect, int value)
         {
-            for (int i = 0; i < testGridSize; i++)
+            int maxDamage = _hit.maxDamage;
+            string label = "";
+            Color color = Color.black;
+            switch (value)
             {
-                for (int j = 0; j < testGridSize; j++)
-                {
-                    if (blockGrid[i, j])
-                    {
-                        testGrid[i, j] = -2;
-                    }
-                }
+                case BLOCKED:
+                    color = BlockedColor;
+                    label = "▢";
+                    break;
+                case UNDAMAGED:
+                    color = UndamagedColor;
+                    break;
+                case DAMAGE_SEED:
+                    label = "╳";
+                    color = Color.red;
+                    break;
+                default:
+                    float t = value / (float)maxDamage;
+                    t = Mathf.Clamp01(t);
+                    color = Color.Lerp(SeedColor, DamageEndColor, t);
+                    label = value.ToString();
+                    break;
             }
+            EditorGUI.DrawRect(rect.Padding(1), color);
+            EditorGUI.LabelField(rect.Padding(3),label);
+            return value;
         }
-        
-        [PropertyOrder(-10), ButtonGroup()]
-        [Button]
-        void ResetTestGrid()
-        {
-            graph  = new AdjacencyGraph<Vector2Int, Edge<Vector2Int>>();
-            ResetGraphVisual();
-            for (int i = 0; i < testGridSize; i++)
-            {
-                for (int j = 0; j < testGridSize; j++)
-                {
-                    if (blockGrid[i, j])
-                    {
-                        testGrid[i, j] = -2;
-                    }
-                    else
-                    {
-                        testGrid[i, j] = -1;
-                    }
-                }
-            }
-        }
-
-        private void ResetGraphVisual()
-        {
-            graphVisual = new Vector2Int[testGridSize, testGridSize];
-            for (int i = 0; i < testGridSize; i++)
-            {
-                for (int j = 0; j < testGridSize; j++)
-                {
-                    graphVisual[i, j] = new Vector2Int(i, j);
-                }
-            }
-        }
-
 
         int DrawColoredOutputResult(Rect rect, int value)
         {
@@ -214,6 +243,12 @@ namespace Damage
             return value;
         }
 
+        #endregion
+
+ 
+
+        #region [Helpers]
+
         int GetValue(Vector2Int vector2Int)
         {
             try
@@ -226,6 +261,7 @@ namespace Damage
                 throw;
             }
         }
+
         bool IsSeed(Vector2Int vector2Int)
         {
             try
@@ -238,6 +274,7 @@ namespace Damage
                 return false;
             }
         }
+
         bool IsBlocked(Vector2Int vector2Int)
         {
             if(vector2Int.x >= testGridSize || vector2Int.y >= testGridSize || vector2Int.x < 0 || vector2Int.y < 0)
@@ -252,6 +289,7 @@ namespace Damage
                 return true;
             }
         }
+
         void UpdateValue(Vector2Int vector2Int, int value)
         {
             try
@@ -264,7 +302,8 @@ namespace Damage
                 return;
             }
         }
-        static Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left, };
+
+
         IEnumerable<Vector2Int> GetNeighbors(Vector2Int cell, AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph)
         {
             foreach (var direction in directions)
@@ -278,7 +317,7 @@ namespace Damage
                 }
             }
         }
-        
+
         IEnumerable<(Vector2Int, int)> GetNeighborValues(Vector2Int cell, AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph)
         {
             foreach (var neighbor in GetNeighbors(cell, graph))
@@ -286,8 +325,33 @@ namespace Damage
                 yield return (neighbor, testGrid[neighbor.x, neighbor.y]);
             }
         }
-        [PropertyOrder(-10), ButtonGroup()]
-        [Button]
+
+        #endregion
+
+        #region [Buttons]
+
+        [PropertyOrder(-10), ButtonGroup()] [Button]
+        void ResetTestGrid()
+        {
+            graph  = new AdjacencyGraph<Vector2Int, Edge<Vector2Int>>();
+            ResetGraphVisual();
+            for (int i = 0; i < testGridSize; i++)
+            {
+                for (int j = 0; j < testGridSize; j++)
+                {
+                    if (blockGrid[i, j])
+                    {
+                        testGrid[i, j] = -2;
+                    }
+                    else
+                    {
+                        testGrid[i, j] = -1;
+                    }
+                }
+            }
+        }
+
+        [PropertyOrder(-10), ButtonGroup()] [Button]
         private void RefreshGrid()
         {
             ResetGraphVisual();
@@ -339,10 +403,10 @@ namespace Damage
                 }
             }
 
-            foreach (var seed in seedPoints)
-            {
-                TestDamage(seed, graph);
-            }
+            //foreach (var seed in seedPoints)
+            //{
+            //    TestDamage(seed, graph);
+            //}
             this.graph = graph;
             return;
             for (int i = 0; i < testGridSize; i++)
@@ -399,62 +463,46 @@ namespace Damage
             }
         }
 
-        private void TestDamage(Vector2Int seed, AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph)
+
+        public void CreateGraphFromSeed(Vector2Int seed, int maxDistance)
         {
-            var current = seed;
-            var currentValue = GetValue(current);
-            Stack<Vector2Int> neighbors = new Stack<Vector2Int>();
+            
+            if (IsBlocked(seed))
+            {
+                return;
+            }
+            
+            AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph = new AdjacencyGraph<Vector2Int, Edge<Vector2Int>>();
             HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-            neighbors.Push(current);
-
-            while (neighbors.Count > 0)
+            Stack< (Vector2Int pos, int distance)> unvisited = new Stack<(Vector2Int, int)>();
+            
+            int currentDistance = 0;
+            
+            unvisited.Push((seed, currentDistance));
+            graph.AddVertex(seed);
+            
+            while (unvisited.Count > 0)
             {
-                current = neighbors.Pop();
-                currentValue = GetValue(current);
-                visited.Add(current);
-                foreach (var neighbor in GetNeighborValues(current, graph))
+                var current = unvisited.Pop();
+                
+                if (visited.Contains(current.pos)) continue;
+                visited.Add(current.pos);
+                
+                currentDistance = current.distance;
+                if (currentDistance >= maxDistance) continue;
+                
+                foreach (var neighbor in GetNeighbors(current.pos, graph))
                 {
-                    if (visited.Contains(neighbor.Item1)) continue;
-                    if (neighbor.Item2 == UNDAMAGED || neighbor.Item2 > currentValue)
-                    {
-                        neighbors.Push(neighbor.Item1);
-                        graph.AddEdge(new Edge<Vector2Int>(current, neighbor.Item1));
-                        UpdateValue(neighbor.Item1, currentValue + 1);
-                    }
+                    if (visited.Contains(neighbor)) continue;
+                    if (IsBlocked(neighbor)) continue;
+                    
+                    graph.AddVerticesAndEdge(new Edge<Vector2Int>(current.pos, neighbor));
+                    unvisited.Push((neighbor, currentDistance + 1));
                 }
             }
         }
-
-        private void FloodFill(AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph, Vector2Int seedPoint)
-        {
-            var queue = new Queue<Vector2Int>();
-            queue.Enqueue(seedPoint);
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                var currentValue = testGrid[current.x, current.y];
-              
-                var neighborsV = GetNeighborValues(current, graph);
-                foreach (var valueTuple in neighborsV)
-                {
-                    if (valueTuple.Item2 == UNDAMAGED || valueTuple.Item2 > currentValue)
-                    {
-                        //check if edge exists, if it does, continue
-                        if (graph.TryGetEdge(valueTuple.Item1, current, out var e))
-                        {
-                            continue;
-                        }
-                        //otherwise add edge and update value 
-                        UpdateValue(valueTuple.Item1, currentValue+1);
-                        graph.AddEdge(new Edge<Vector2Int>(current, valueTuple.Item1));
-                        queue.Enqueue(valueTuple.Item1);
-                    }
-                }
-               
-            }
-        }
-        [PropertyOrder(-10), ButtonGroup()]
-        [Button]
+        
+        [PropertyOrder(-10), ButtonGroup()] [Button]
         private void CreateGraph()
         {
             List<Vector2Int> seedPoints = new List<Vector2Int>();
@@ -492,6 +540,144 @@ namespace Damage
             }
             this.graph = graph;
         }
+
+        [EnableIf(nameof(HasGraph)), GUIColor(0.8f, .2f, .2f)]
+        [PropertyOrder(-10), ButtonGroup(),Button]
+        private void DoHitRandom()
+        {
+            int x = UnityEngine.Random.Range(0, testGridSize);
+            int y = UnityEngine.Random.Range(0, testGridSize);
+            var seed = new Vector2Int(x, y);
+            TestDamage(_hit, seed, graph);
+        }
+        private void DoHit(Vector2Int seed)
+        {
+            
+            TestDamage(_hit, seed, graph);
+        }
+        bool HasGraph => graph != null && graph.VertexCount > 0;
+        #endregion
+
+        private void TestDamage(StormHit hit, Vector2Int seed, AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph)
+        {
+            FloodFill(graph, seed, hit.maxDamage);
+            for (int i = 0; i < testGridSize; i++)
+            {
+                for (int j = 0; j < testGridSize; j++)
+                {
+                    graphVisual[i, j] = new Vector2Int(i, j);
+                    resultGrid[i,j] = blockGrid[i,j] ? BLOCKED : UNDAMAGED;
+                }
+            }
+
+            var currentDamage = 0;
+            var current = seed;
+            int GetCurrentValue() => resultGrid[current.x, current.y];
+            void SetCurrentValue(int value)
+            {
+                if (GetCurrentValue() == UNDAMAGED)
+                {
+                    currentDamage+=1;
+                    resultGrid[current.x, current.y] = value;
+                }
+            }
+            
+            var grabBag = hit.CreateGrabBag();
+            using var grabBagIterator = grabBag.GetItems(t => {
+                var v = current + t;
+                if (!graph.ContainsVertex(v))
+                    return false;
+                if (resultGrid[v.x, v.y] != UNDAMAGED)
+                    return false;
+                if (!graph.ContainsEdge(current, v))
+                    return false;
+                return true;
+            }).GetEnumerator();
+            int reverseCount = 0;
+            Stack<Vector2Int> previous = new Stack<Vector2Int>();
+            HashSet<Vector2Int> visitedTwice = new HashSet<Vector2Int>();
+            while (grabBagIterator.MoveNext() && currentDamage < hit.maxDamage)
+            {
+                current += grabBagIterator.Current;
+                SetCurrentValue(previous.Count + 1 + reverseCount);
+                if (grabBag.RemainingItems == 0 && previous.Count > 0)
+                {
+                    current = previous.Pop();
+                    //check if we have visited this vertex twice, if not add it to visited twice and check all neighbors again
+                    if (visitedTwice.Contains(current))
+                    {
+                        continue;
+                    }
+
+                    reverseCount++;
+                    visitedTwice.Add(current);
+                    grabBag.ReturnUnacceptedItems();//return all items to grab bag so that iterator will check them with the new current
+                    continue;
+                }
+                previous.Push(current);
+            }
+        }
+
+        private void FloodFill(AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph, Vector2Int seedPoint)
+        {
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(seedPoint);
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                var currentValue = testGrid[current.x, current.y];
+              
+                var neighborsV = GetNeighborValues(current, graph);
+                foreach (var valueTuple in neighborsV)
+                {
+                    if (valueTuple.Item2 == UNDAMAGED || valueTuple.Item2 > currentValue)
+                    {
+                        //check if edge exists, if it does, continue
+                        if (graph.TryGetEdge(valueTuple.Item1, current, out var e))
+                        {
+                            continue;
+                        }
+                        //otherwise add edge and update value 
+                        UpdateValue(valueTuple.Item1, currentValue+1);
+                        graph.AddEdge(new Edge<Vector2Int>(current, valueTuple.Item1));
+                        queue.Enqueue(valueTuple.Item1);
+                    }
+                }
+               
+            }
+        }
+
+        private void FloodFill(AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph, Vector2Int seedPoint,
+            int maxDistance)
+        {
+            var queue = new Queue<Vector2Int>();
+            queue.Enqueue(seedPoint);
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                var currentValue = testGrid[current.x, current.y];
+                if(currentValue >= maxDistance) continue;
+                var neighborsV = GetNeighborValues(current, graph);
+                foreach (var valueTuple in neighborsV)
+                {
+                    var neighborPos = valueTuple.Item1;
+                    var neighborValue = valueTuple.Item2;
+                    if (neighborValue == UNDAMAGED || neighborValue > currentValue)
+                    {
+                        //check if edge exists, if it does, continue
+                        if (graph.TryGetEdge(valueTuple.Item1, current, out var e))
+                        {
+                            continue;
+                        }
+                        //otherwise add edge and update value 
+                        UpdateValue(neighborPos, currentValue+1);
+                        graph.AddVerticesAndEdge(new Edge<Vector2Int>(current, neighborPos));
+                        queue.Enqueue(neighborPos);
+                    }
+                }
+
+            }
+        }
         private void TestHit(AdjacencyGraph<Vector2Int, Edge<Vector2Int>> graph, Vector2Int seedPoint)
         {
             var stormHitGraph = new StormHitGraph(_hit, seedPoint, graph);
@@ -505,12 +691,14 @@ namespace Damage
         {
             _hit = stormHit;
         }
-
+        
+        
         void UpdateGridSize(int size)
         {
             blockGrid = new bool[size, size];
             testGrid = new int[size, size];
             graphVisual = new Vector2Int[size, size];
+            resultGrid = new int[size, size];
             ResetGraphVisual();
             ResetGrid();
         }
@@ -521,7 +709,8 @@ namespace Damage
             {
                 for (int j = 0; j < testGridSize; j++)
                 {
-                    testGrid[i, j] = UNDAMAGED;
+                    graphVisual[i, j] = new Vector2Int(i, j);
+                    testGrid[i, j] = resultGrid[i,j] = blockGrid[i,j] ? BLOCKED : UNDAMAGED;
                 }
             }
         }

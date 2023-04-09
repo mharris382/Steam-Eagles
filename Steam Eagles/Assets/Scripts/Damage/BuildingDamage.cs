@@ -113,7 +113,7 @@ namespace Damage
         
         
 
-        public TilemapDamageHandler(BuildingLayers layers, Tilemap tilemap, Grid grid,
+        public TilemapDamageHandler(BuildingLayers layers, Tilemap tilemap, Grid stormHitGrid,
             DamageableTile damageableTile, RepairableTile repairableTile, 
             Room[] rooms)
         {

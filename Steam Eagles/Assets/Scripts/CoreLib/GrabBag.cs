@@ -57,6 +57,15 @@ namespace CoreLib
             declinedSet.Clear();
         }
 
+        public int RemainingItems => shuffleBag.Count;
+        public int TotalUnusedItems => shuffleBag.Count + declined.Count;
+        public void ReturnUnacceptedItems()
+        {
+            while (declined.Count > 0)
+            {
+                shuffleBag.Enqueue(declined.Dequeue());
+            }
+        }
         public IEnumerable<T> GetItems(Predicate<T> acceptItem)
         {
             while (shuffleBag.Count > 0)
