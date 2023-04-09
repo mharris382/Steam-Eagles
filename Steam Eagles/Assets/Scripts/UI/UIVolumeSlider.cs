@@ -45,6 +45,7 @@ namespace UI
             else
             {
                 volumeSlider.normalizedValue = 1;
+                volumePercentage.text = $"{Mathf.RoundToInt(volumeSlider.normalizedValue * 100)}%";
             }
             UpdateColors();
             volumeSlider.onValueChanged.AsObservable().TakeUntilDestroy(this)
@@ -58,7 +59,7 @@ namespace UI
             {
                 PlayerPrefs.SetFloat(propertyName, volume);
             }
-
+            volumePercentage.text = $"{Mathf.RoundToInt(volumeSlider.normalizedValue * 100)}%";
             UpdateColors();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Damage.Signals;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -83,15 +84,12 @@ namespace Damage
         {
             Debug.Log("Storm Damage System Started");
            
-            activeStorm.StormProgress.Buffer(TimeSpan.FromSeconds(_storm.DamageCheckIntervalInSeconds)).Subscribe(_ =>
-            {
-                foreach (var hit in _storm.damageCalculator.Loop())
-                {
-                    Debug.Log("Damaged Cell");
-                    _posPicker.PickRandomDamageableTile().handle.DamageCell();
-                }
-
-            }, () => _posPicker.Dispose());
+            activeStorm.StormProgress.Buffer(TimeSpan.FromSeconds(_storm.DamageCheckIntervalInSeconds))
+                    .Subscribe(_ =>
+                    {
+                        MessageBroker.Default.Publish(new RandomlyPlacedDamageRequest());
+                    },
+                    () => _posPicker.Dispose());
         }
     }
 }
