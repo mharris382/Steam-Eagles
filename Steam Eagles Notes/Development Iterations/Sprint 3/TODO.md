@@ -1,0 +1,6 @@
+- [x] control hints
+- [ ] settings menus
+	- [ ] gameplay menu
+	- [x] audio menu
+	- [ ] graphics menu
+	- [ ] controls menu

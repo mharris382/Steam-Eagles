@@ -234,7 +234,9 @@ using Sirenix.OdinInspector;
         void Fill()
         {
             var tm = Building.GetTilemap(BuildingLayers.WALL).Tilemap;
+#if UNITY_EDITOR
             Undo.RecordObject(tm, "Fill room");
+#endif
             _room.Fill(tile, tm);
         }
 
