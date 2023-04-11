@@ -45,6 +45,8 @@ namespace CoreLib.Entities
                 Instance.EntityFactory.CreateEntity(Entity, EntitySavePath);
                 if (Instance.debug)
                     Debug.Log($"Created Entity: {entityGUID}");
+                if(Instance._entityChangeListeners.ContainsKey(entityGUID))
+                    Instance._entityChangeListeners[entityGUID].Value = Entity;
             }
             
             public EntityHandle(Entity entity)
@@ -156,7 +158,7 @@ namespace CoreLib.Entities
                     entityHandle.Value.Save();
                 else
                 {
-                    Debug.Log($"Failed to save entity: {entityHandle.Key}");
+                    //Debug.Log($"Failed to save entity: {entityHandle.Key}");
                 }
             }
             

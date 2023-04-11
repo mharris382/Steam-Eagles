@@ -29,7 +29,7 @@ namespace CoreLib.Entities.Factory
             if (EntityManager.Instance.debug) 
                 Debug.Log($"Saving Entity: {entity.entityGUID}");
             
-            var json =  JsonUtility.ToJson(saveData);
+            var json =  JsonUtility.ToJson(saveData, EntityManager.Instance.debug);
             
             if (EntityManager.Instance.debug)
                 Debug.Log($"Save Data for Entity: {entity.entityGUID}\n{json.InItalics()}");
@@ -119,6 +119,7 @@ namespace CoreLib.Entities.Factory
 
         private static void SaveInventoryData(Entity entity, CharacterSaveData saveData)
         {
+            
             var persistentInventories = entity.linkedGameObject.GetComponentsInChildren<PersistentInventoryBase>();
             if (persistentInventories.Length == 0)
             {

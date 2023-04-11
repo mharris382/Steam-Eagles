@@ -108,6 +108,7 @@ namespace Players
 
         private void OnDestroy()
         {
+            if(_playerInputManager == null) return;
             _playerInputManager.onPlayerJoined -= OnPlayerJoin;
             _playerInputManager.onPlayerLeft -= OnPlayerLeft;
         }

@@ -87,12 +87,14 @@ namespace Items.SaveLoad
                     //TODO: trigger item load operation
                     slot.IsSlotLoading = true;
                     var i1 = i;
+                    Debug.Log($"Loading Item: {itemId} for slot: {i1} on inventory: {name}");
                     StartCoroutine(itemId.LoadItem(load => SetItemStack(slot, load, itemAmount, i1)));
                 }
             }
 
             void SetItemStack(InventorySlot slot, ItemBase item, int itemAmount, int i)
             {
+                Debug.Log($"Setting Item Stack: {item.name} x {itemAmount}, in slot {i} on inventory {name}");
                 Debug.Assert(slot.SetItemStack(new ItemStack(item, itemAmount)),
                     $"Failed to set item stack: {item.name} x {itemAmount}, in slot {i} on inventory {name}", Inventory);
             }

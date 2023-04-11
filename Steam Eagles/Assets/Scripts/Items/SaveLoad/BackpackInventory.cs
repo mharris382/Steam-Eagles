@@ -16,18 +16,18 @@ namespace Items.SaveLoad
 
         public override void InitSlots()
         {
-            _slots = new List<InventorySlot>(numberOfSlots);
-            for (int i = 0; i < _slots.Count; i++)
-            {
-                CreateSlot(i);
-            }
+            //_slots = new List<InventorySlot>(numberOfSlots);
+            //for (int i = 0; i < _slots.Count; i++)
+            //{
+            //    CreateSlot(i);
+            //}
         }
 
         private void CreateSlot(int i)
         {
-            var newSlotGo = new GameObject($"{InventoryGroupKey}_{UniqueInventoryID}_Slot#{i}", typeof(InventorySlot));
-            newSlotGo.transform.parent = transform;
-            _slots.Add(newSlotGo.GetComponent<InventorySlot>());
+            //var newSlotGo = new GameObject($"{InventoryGroupKey}_{UniqueInventoryID}_Slot#{i}", typeof(InventorySlot));
+            //newSlotGo.transform.parent = transform;
+            //_slots.Add(newSlotGo.GetComponent<InventorySlot>());
         }
 
         /// <summary>
@@ -37,6 +37,7 @@ namespace Items.SaveLoad
         /// <returns></returns>
         public override InventorySlot GetSlotFor(int slotNumber)
         {
+            return transform.GetChild(slotNumber).GetComponent<InventorySlot>();
             if ( _slots == null || slotNumber >= _slots.Count-1)
             {
                 RebuildInventory(slotNumber);
