@@ -1,4 +1,6 @@
-﻿namespace Statuses
+﻿using CoreLib.Entities;
+
+namespace Statuses
 {
     public class StatusEntityManager
     {

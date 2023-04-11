@@ -37,14 +37,27 @@ namespace Game
 
         #region [Event Listeners]
 
+        
         private void OnPlayerCharacterBound(PlayerCharacterBoundInfo playerCharacterBound)
         {
             AssignCharacterToPlayer(playerCharacterBound.playerNumber, playerCharacterBound.character);
+            Debug.Assert(GetPlayerDevice(playerCharacterBound.playerNumber)!=null, " Player device is null but player has been assigned to a character");
+            MessageBroker.Default.Publish(new CharacterAssignedPlayerInputInfo()
+            {
+                characterName = playerCharacterBound.character,
+                inputGo = GetPlayerDevice(playerCharacterBound.playerNumber)
+            });
         }
         
         private void OnPlayerCharacterUnbound(PlayerCharacterUnboundInfo playerCharacterBound)
         {
             AssignCharacterToPlayer(playerCharacterBound.playerNumber, null);
+            Debug.Assert(GetPlayerDevice(playerCharacterBound.playerNumber)!=null, " Player device is null but player has been assigned to a character");
+            MessageBroker.Default.Publish(new CharacterUnassignedPlayerInputInfo()
+            {
+                characterName = _playerCharacterNames[playerCharacterBound.playerNumber],
+                inputGo = GetPlayerDevice(playerCharacterBound.playerNumber)
+            });
         }
 
         private void OnPlayerDeviceLost(PlayerDeviceLost playerDeviceLost)

@@ -1,6 +1,25 @@
 - [x] control hints
-- [ ] settings menus
+- [x] settings menus
 	- [ ] gameplay menu
 	- [x] audio menu
 	- [ ] graphics menu
 	- [ ] controls menu
+
+- [ ] load game steps
+	- [ ] core - assigned players/characters
+		- [ ] load scene 0
+		- [ ] load PC prefabs
+		- [ ] raise notification that PC prefabs are loaded
+		- [ ] player game manager creates instance of PC from prefab
+			- [ ] calls awake on all PC components
+			- [ ] injects Player dependencies 
+			- [ ] injects camera dependencies
+			- [ ] injects UI dependencies
+	- [ ] airship loader 
+		- [ ] loads a list of entities that are known to be associated with the airship
+			- [ ] all previously saved NPC characters on the ship
+			- [ ] all previously saved fixed inventories on the ship
+		- [ ] all permentant airship NPC are serialized in the scene
+- [ ] entity save data
+	- [ ] entity
+	- [ ] entity core loader : loads entity table from save

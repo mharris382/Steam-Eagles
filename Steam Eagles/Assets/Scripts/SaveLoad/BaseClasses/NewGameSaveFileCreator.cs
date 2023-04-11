@@ -52,6 +52,6 @@ namespace SaveLoad
             return GetNewGameSaveState();
         }
 
-        public void CreateNewSaveFile(string savePath) => SaveGame(savePath);
+        public virtual void CreateNewSaveFile(string savePath) => SaveGame(savePath);
     }
 }

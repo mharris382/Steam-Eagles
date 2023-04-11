@@ -13,6 +13,7 @@ namespace Characters
     /// component responsible for the PlayerInput side of the PlayerController, this component will be attached to the PlayerInput GameObject
     /// </summary>
     [RequireComponent(typeof(PlayerInput))]
+    [Obsolete("Use GameManager and signal bus instead")]
     public class PlayerInputWrapper : MonoBehaviour
     {
         
@@ -64,9 +65,13 @@ namespace Characters
                 Debug.LogWarning("CharacterInputState is null", this);
                 return;
             }
-            //_characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
-            //_characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
-           //// _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
+            _characterInput.MoveInput = PlayerInput.actions["Move"].ReadValue<Vector2>();
+            if (_characterInput.MoveInput != Vector2.zero)
+            {
+                Debug.Log("Moved");
+            }
+            _characterInput.AimInput = PlayerInput.actions["Aim"].ReadValue<Vector2>();
+           // _characterInput.DropHeldItem = PlayerInput.actions["Interact"].IsPressed();
             //_characterInput.JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             //_characterInput.JumpHeld = PlayerInput.actions["Jump"].IsPressed();
         }

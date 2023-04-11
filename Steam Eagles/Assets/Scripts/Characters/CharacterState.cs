@@ -18,6 +18,7 @@ public enum InteractionPhysicsMode
 public class CharacterState : MonoBehaviour
 {
 
+    public bool IsEntityInitialized { get; set; }
     public CharacterConfig config;
     public bool alwaysGrounded = false;
 

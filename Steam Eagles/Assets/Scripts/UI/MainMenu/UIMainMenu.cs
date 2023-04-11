@@ -9,6 +9,7 @@ using UI;
 using UI.MainMenu;
 using UniRx;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -24,6 +25,122 @@ public class UIMainMenu : MonoBehaviour
     private UILoadMenu _loadMenu;
 
     public Windows windows;
+
+    [SerializeField] private UIPanelGroup panelGroup = new UIPanelGroup() {
+        panels = new List<UIPanel>()
+        {
+            new UIPanel()
+            {
+                key = "options",
+                panelWindow = null,
+                panelGameObject = null,
+                uiMenuButton = null,
+            },
+            new UIPanel()
+            {
+                key = "load game",
+                panelWindow = null,
+                panelGameObject = null,
+                uiMenuButton = null,
+            },
+            new UIPanel()
+            {
+                key = "new game",
+                panelWindow = null,
+                panelGameObject = null,
+                uiMenuButton = null,
+            },
+            new UIPanel()
+            {
+                key = "credits",
+                panelWindow = null,
+                panelGameObject = null,
+                uiMenuButton = null,
+            },
+        }
+    };
+
+    [Serializable]
+    public class UIPanelGroup
+    {
+        public List<UIPanel> panels = new List<UIPanel>();
+        internal UIMainMenu _uiMainMenu;
+        public void Init(UIMainMenu mainMenu)
+        {
+            _uiMainMenu = mainMenu;
+            foreach (var uiPanel in panels)
+            {
+                uiPanel.SetGroup(this);
+                uiPanel.panelGameObject.SetActive(false);
+            }
+        }
+
+        public void ShowWindow(string newGame)
+        {
+            foreach (var panel in panels)
+            {
+                if (String.Equals(panel.key, newGame, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    panel.Show();
+                    return;
+                }
+            }
+        }
+    }
+
+    [Serializable]
+    public class UIPanel
+    {
+        public string key;
+        public Window panelWindow;
+        public GameObject panelGameObject;
+        public Button uiMenuButton;
+        
+        UIPanelGroup group;
+        public void SetGroup(UIPanelGroup group)
+        {
+            this.group = group;
+            panelWindow.IsVisibleProperty
+                .Subscribe(open =>
+                {
+                    if (open)
+                    {
+                        group.panels.ForEach(panel =>
+                        {
+                            if (panel != this)
+                                panel.Hide();
+                        });
+                    }
+                }).AddTo(group._uiMainMenu);
+            uiMenuButton.OnClickAsObservable().Subscribe(_ => Show()).AddTo(group._uiMainMenu);
+            if (panelWindow.closeButton != null)
+                panelWindow.closeButton.OnClickAsObservable().Subscribe(_ => HideAndSelectButton())
+                    .AddTo(group._uiMainMenu);
+        }
+        public void Show()
+        {
+            panelWindow.IsVisible = true;
+            panelGameObject.gameObject.SetActive(true);
+            foreach (var groupPanel in group.panels)
+            {
+                if(groupPanel == this)
+                    continue;
+                groupPanel.Hide();
+            }
+        }
+
+        public void Hide()
+        {
+            panelWindow.IsVisible = false;
+            panelGameObject.gameObject.SetActive(false);
+        }   
+        
+        public void HideAndSelectButton()
+        {
+            Hide();
+            EventSystem.current.SetSelectedGameObject(uiMenuButton.gameObject);
+        }
+    }
 
     [Serializable]
     public class Windows
@@ -81,12 +198,7 @@ public class UIMainMenu : MonoBehaviour
        }
        public void ShowOptionsWindow()
        {
-           foreach (var window in AllWindows())
-           {
-               if(window == null)
-                   continue;
-               window.SetActive(window == optionsWindow.window);
-           }
+           optionsWindow.Show();
        }
        public void BackToMainMenuHome()
        {
@@ -102,7 +214,8 @@ public class UIMainMenu : MonoBehaviour
     private void Awake()
     {
         windows.Init(this);
-        
+        panelGroup.Init(this);
+
     }
     public void ResetNewGameOperations()
     {
@@ -143,6 +256,24 @@ public class UIMainMenu : MonoBehaviour
             PlayerPrefs.SetString("Last Save Path", PersistenceManager.SavePath);
             MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
         }
+    }
+    
+    public void ShowOptionsWindow()
+    {
+        panelGroup.ShowWindow("options");
+        windows.ShowOptionsWindow();
+    }
+    
+    public void ShowLoadGameWindow()
+    {
+        windows.ShowLoadGameWindow();
+        panelGroup.ShowWindow("load game");
+    }
+    
+    public void ShowNewGameWindow()
+    {
+        windows.ShowNewGameWindow();
+        panelGroup.ShowWindow("new game");
     }
 
     public void PopulateLoadMenu()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CoreLib.Entities;
 
 namespace Statuses
 {

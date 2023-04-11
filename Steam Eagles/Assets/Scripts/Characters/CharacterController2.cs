@@ -615,18 +615,20 @@ namespace Characters
             }
         }
 
-
+        [System.Obsolete]
         public void ClearParent()
         {
-            transform.SetParent(null);
+           // transform.SetParent(null);
         }
 
         
         /// <summary>
         /// checks to see if the player should be parented to the building they are inside
         /// </summary>
+        [System.Obsolete]
         public void CheckParent()
         {
+            return;
             if (_dynamicBody.RoomBody != null)
             {
                 transform.SetParent(_dynamicBody.RoomBody.transform);

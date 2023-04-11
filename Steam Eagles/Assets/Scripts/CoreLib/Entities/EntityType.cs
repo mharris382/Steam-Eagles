@@ -1,13 +1,24 @@
 ﻿using System;
 
-namespace Statuses
+namespace CoreLib.Entities
 {
     [Flags]
     public enum EntityType
     {
         UNSPECIFIED,
         CHARACTER,
+        ENEMY,
         VEHICLE,
-        ALL = CHARACTER | VEHICLE
+        BUILDING,
+        MACHINE,
+        INVENTORY,
+        PLAYER,
+        PICKUP,
+        PROJECTILE,
+        STRUCTURE,
+        TERRAIN,
+        WEAPON,
+        NPC,
+        ALL = ~0
     }
 }

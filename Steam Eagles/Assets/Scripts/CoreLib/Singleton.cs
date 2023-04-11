@@ -27,6 +27,8 @@ namespace CoreLib
         }
         
         public abstract bool DestroyOnLoad { get; }
+        
+        public bool forceInstanceAsSingleton = false;
 
         protected virtual void OnCreatedFromScript()
         {
@@ -35,9 +37,14 @@ namespace CoreLib
 
         private void Awake()
         {
-            if (_instance == null || _instance == this)
+            if (Instance == null || Instance == this || forceInstanceAsSingleton)
             {
                 _instance = this as T;
+                if (_instance != this && forceInstanceAsSingleton)
+                {
+                    Debug.Log($"Overriding Singleton Instance: {name}", this);
+                    Destroy(_instance);
+                }
                 if(!DestroyOnLoad)
                     DontDestroyOnLoad(_instance);
                 Init();

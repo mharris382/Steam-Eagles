@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Game;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -36,6 +36,7 @@ namespace Characters
                 jumpPressed = State.JumpPressed;
             }
         }
+        
         [SerializeField] private DebugVariables debugVariables;
         [SerializeField] private bool useEventsForJump;
         
@@ -123,6 +124,7 @@ namespace Characters
 
         public void AssignPlayer(PlayerInput playerInput)
         {
+            //return;
             Debug.Assert(playerInput!=null, "assigned null player input");
             this._playerInput = playerInput;
             enabled = true;

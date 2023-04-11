@@ -37,10 +37,11 @@ namespace Players
         
         public GameObject waitingForFirstPlayerToJoinGUI;
         public GameObject playerDisconnectedGUI;
-        
+        public Subject<Unit> _update = new Subject<Unit>();
         private ReactiveCollection<PlayerWrapper> _joinedPlayers = new ReactiveCollection<PlayerWrapper>();
 
 
+        public bool debug = false;
         IDisposable _singlePlayerCameraSubscription;
         IPlayerDependencyResolver<Camera> CameraResolver => cameraAssignments;
 
@@ -114,11 +115,17 @@ namespace Players
             var building = GameObject.FindGameObjectWithTag("Building");
             Debug.Assert(building != null, "No building found in scene", this);
 
-            SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal);
-           
+           var characterInstance = SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal);
+           var assignmentNotification = new CharacterAssignedPlayerInputInfo() {
+                characterName = request.characterName,
+                characterState = characterInstance,
+                inputGo = GameManager.Instance.GetPlayerDevice(request.playerCharacterIndex),
+                playerNumber = request.playerCharacterIndex
+           };
+            MessageBroker.Default.Publish(assignmentNotification);
         }
 
-        void SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
+        CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
         {
             var wrapper = players[id];
             var obj = GameManager.Instance.GetPlayerDevice(id);
@@ -140,7 +147,7 @@ namespace Players
             
             Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
             MessageBroker.Default.Publish(new CharacterSpawnedInfo(character.tag, character.gameObject));
-                
+            //TODO: remove this, character is bound to input not the other way around
             wrapper.BindToPlayer(input);
             wrapper.AssignCamera(camera.Value);
             wrapper.AssignCharacter(character);
@@ -148,6 +155,7 @@ namespace Players
                 
             _joinedPlayers.Add(wrapper);
             SwitchToSinglePlayerCamera();
+            return character;
         }
         public void OnPlayerJoined(PlayerInput obj)
         {
@@ -230,7 +238,13 @@ namespace Players
             waitingForFirstPlayerToJoinGUI.gameObject.SetActive(false);
             playerDisconnectedGUI.gameObject.SetActive(false);
         }
+
+        private void Update()
+        {
+            _update.OnNext(Unit.Default);
+        }
     }
+
 
     [System.Obsolete("replace these IPlayerDependencyResolver nonsense")]
     [Serializable]

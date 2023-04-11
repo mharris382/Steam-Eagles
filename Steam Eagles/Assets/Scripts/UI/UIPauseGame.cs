@@ -93,6 +93,7 @@ namespace UI
                    {
                        Debug.Log("Save Completed!");
                        SceneManager.LoadScene(0);
+                       Close();
                    })))
             {
                 MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));

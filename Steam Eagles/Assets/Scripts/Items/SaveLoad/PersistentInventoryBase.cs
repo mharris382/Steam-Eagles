@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Items.SaveLoad
@@ -11,11 +12,28 @@ namespace Items.SaveLoad
         public abstract int NumberOfSlots { get; }
 
 
-        [SerializeField]
-        private Inventory targetInventory;
-        
+        [SerializeField] private Inventory targetInventory;
+
         private Inventory _inventory;
-        
+
+        public Inventory Inventory
+        {
+            get
+            {
+                if (_inventory == null)
+                {
+                    if(targetInventory!=null)
+                        _inventory = targetInventory;
+                    else
+                    {
+                        _inventory = gameObject.GetComponent<Inventory>();
+                        if(_inventory==null)
+                            _inventory = gameObject.AddComponent<Inventory>();
+                    }
+                }
+                return _inventory;
+            }
+        }
 
         protected string SaveKey => $"{InventoryGroupKey}_{UniqueInventoryID}";
         
@@ -30,34 +48,54 @@ namespace Items.SaveLoad
                 }
             }
 
-            _inventory = targetInventory!=null ? targetInventory : gameObject.AddComponent<Inventory>();
+            if(_inventory == null)
+                _inventory = targetInventory!=null ? targetInventory : gameObject.AddComponent<Inventory>();
+            PersistentInventoryManager.Instance.RegisterPersistentInventoryForLoad(this);
             InitSlots();
-            var itemStacks = InventorySaveLoader.LoadedInventorySave[SaveKey];
-            
-            
-            
-            //found the expected number of slots in save
-            if (itemStacks.stacks.Count == NumberOfSlots)
-            {
-                
-            }
-            //found more slots in save than expected
-            else if (itemStacks.stacks.Count > NumberOfSlots)
-            {
-                
-            }
-            // expected more slots than expected
-            else
-            {
-                
-            }
-            
-            //get the slots to load items into
-            List<InventorySlot> slots = new List<InventorySlot>(NumberOfSlots);
-            GetAllSlots(slots);
+        }
+
+        private void OnDestroy()
+        {
+            PersistentInventoryManager.Instance.UnregisterPersistentInventory(this);
         }
 
         public abstract void InitSlots();
         public abstract InventorySlot GetSlotFor(int slotNumber);
+
+
+        
+        
+        public void LoadFromSaveData((string itemID, int itemAmount)[] toArray)
+        {
+            Debug.Assert(Inventory != null, $"Inventory {name} is null", this);
+            for (int i = 0; i < toArray.Length; i++)
+            {
+                var itemId = toArray[i].itemID;
+                var itemAmount = toArray[i].itemAmount;
+                var slot = GetSlotFor(i);
+                Debug.Assert(slot != null, $"Couldn't find slot for  {i}, on Inventory {this.name}",this);
+                //has item and item is already loaded
+                if (!string.IsNullOrEmpty(itemId) && itemId.IsItemLoaded())
+                {
+                    slot.IsSlotLoading = false;
+                    var item = itemId.GetItem();
+                    SetItemStack(slot, item, itemAmount, i);
+                }
+                //has item but item is not loaded
+                else if (!string.IsNullOrEmpty(itemId))
+                {
+                    //TODO: trigger item load operation
+                    slot.IsSlotLoading = true;
+                    var i1 = i;
+                    StartCoroutine(itemId.LoadItem(load => SetItemStack(slot, load, itemAmount, i1)));
+                }
+            }
+
+            void SetItemStack(InventorySlot slot, ItemBase item, int itemAmount, int i)
+            {
+                Debug.Assert(slot.SetItemStack(new ItemStack(item, itemAmount)),
+                    $"Failed to set item stack: {item.name} x {itemAmount}, in slot {i} on inventory {name}", Inventory);
+            }
+        }
     }
 }

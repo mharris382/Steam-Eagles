@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UniRx;
+using UnityEngine;
 
 namespace UI
 {
@@ -9,6 +11,7 @@ namespace UI
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
 
+        public UnityEngine.UI.Button closeButton;
         public RectTransform RectTransform
         {
             get
@@ -21,11 +24,26 @@ namespace UI
                 return _rectTransform;
             }
         }
+        private ReactiveProperty<bool> _isVisible = new ReactiveProperty<bool>();
 
+        public IReadOnlyReactiveProperty<bool> IsVisibleProperty => _isVisible;
         public CanvasGroup CanvasGroup => _canvasGroup ? _canvasGroup : _canvasGroup = GetComponent<CanvasGroup>();
 
 
         protected virtual bool BlockRaycastsWhenVisible => true;
+
+        private void Start()
+        {
+            Init();
+        }
+
+        public virtual void Init()
+        {
+            if (closeButton != null)
+            {
+                closeButton.onClick.AddListener(Close);
+            }
+        }
 
         public virtual void Open()
         {
@@ -40,7 +58,11 @@ namespace UI
         public bool IsVisible
         {
             get  => CanvasGroup.alpha > 0;
-            set => SetWindowVisible(value);
+            set
+            {
+                SetWindowVisible(value);
+                _isVisible.Value = value;
+            }
         }
         
         public void SetWindowVisible(bool visible)

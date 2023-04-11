@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Statuses;
+using CoreLib.Entities;
 using UnityEngine;
 
 namespace CoreLib.EntityTag

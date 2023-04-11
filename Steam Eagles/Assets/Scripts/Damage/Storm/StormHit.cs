@@ -158,40 +158,34 @@ namespace Damage
                     cells[i, j] = new Cell(i, j, IsBlocked(i, j));
                     if (!IsBlocked(i + 1, j))
                     {
-                        cells[i,j].directions |= Directions.RIGHT;
+                        cells[i,j].cardinalDirections |= CardinalDirections.RIGHT;
                     }
 
                     if (!IsBlocked(i - 1, j))
                     {
-                        cells[i, j].directions |= Directions.LEFT;
+                        cells[i, j].cardinalDirections |= CardinalDirections.LEFT;
                     }
                     
                     if(!IsBlocked(i, j + 1))
                     {
-                        cells[i, j].directions |= Directions.UP;
+                        cells[i, j].cardinalDirections |= CardinalDirections.UP;
                     }
 
                     if (!IsBlocked(i, j - 1))
                     {
-                        cells[i, j].directions |= Directions.DOWN;
+                        cells[i, j].cardinalDirections |= CardinalDirections.DOWN;
                     }
                 }
             }
         }
 
-       
-        [Flags]
-        public enum Directions
-        {
-           NONE,UP,DOWN,LEFT, RIGHT
-        }
 
         public struct Cell
         {
             public Vector2Int position;
             public bool isBlocked;
             public int value;
-            public Directions directions;
+            public CardinalDirections cardinalDirections;
 
             public Cell(int x, int y, bool isBlocked ) : this()
             {
@@ -203,13 +197,13 @@ namespace Damage
             public bool HasDirection(Vector2Int direction)
             {
                 if(direction.x > 0)
-                    return (directions & Directions.RIGHT) != 0;
+                    return (cardinalDirections & CardinalDirections.RIGHT) != 0;
                 else if(direction.x < 0)
-                    return (directions & Directions.LEFT) != 0;
+                    return (cardinalDirections & CardinalDirections.LEFT) != 0;
                 else if(direction.y > 0)
-                    return (directions & Directions.UP) != 0;
+                    return (cardinalDirections & CardinalDirections.UP) != 0;
                 else if (direction.y < 0)
-                    return (directions & Directions.DOWN) != 0;
+                    return (cardinalDirections & CardinalDirections.DOWN) != 0;
                 else
                     throw new System.Exception("Invalid direction");
                 
@@ -218,13 +212,13 @@ namespace Damage
 
             public IEnumerable<Vector2Int> GetUnblockedNeighborPositions()
             {
-                if((directions & Directions.UP) != 0)
+                if((cardinalDirections & CardinalDirections.UP) != 0)
                     yield return position + Vector2Int.up;
-                if((directions & Directions.DOWN) != 0)
+                if((cardinalDirections & CardinalDirections.DOWN) != 0)
                     yield return position + Vector2Int.down;
-                if((directions & Directions.LEFT) != 0)
+                if((cardinalDirections & CardinalDirections.LEFT) != 0)
                     yield return position + Vector2Int.left;
-                if((directions & Directions.RIGHT) != 0)
+                if((cardinalDirections & CardinalDirections.RIGHT) != 0)
                     yield return position + Vector2Int.right;
             }
         }
@@ -239,7 +233,7 @@ namespace Damage
             return blockedCells.Contains(position);
         }
     }
-    
+
     public class StormHitGraph2
     {
         private readonly StormHitGrid _stormHitGrid;

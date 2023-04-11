@@ -1,5 +1,6 @@
 using System;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,6 +16,17 @@ namespace Items
 
         public bool IsEmpty => itemStack.item == null;
 
+        
+        private ReactiveProperty<bool> _isSlotLoading = new ReactiveProperty<bool>(false);
+
+        public bool IsSlotLoading
+        {
+            get => _isSlotLoading.Value;
+            set => _isSlotLoading.Value = value;
+        }
+
+        
+      
 
         public UnityEvent<ItemStack> onStackChanged;
 
