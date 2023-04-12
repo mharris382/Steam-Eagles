@@ -40,6 +40,7 @@ namespace Characters.Stats
         }
     }
 
+
     [Serializable]
     public class RangedStat
     {
