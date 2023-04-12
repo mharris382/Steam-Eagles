@@ -1338,8 +1338,8 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 1, g: 0.39102107, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 45, y: -68.5, z: 0}
-    m_Extent: {x: 22, y: 10.5, z: 0.5}
+    m_Center: {x: 48, y: -68, z: -0.5}
+    m_Extent: {x: 20, y: 10, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -1347,7 +1347,7 @@ MonoBehaviour:
   - {fileID: 2129630096}
   - {fileID: 1874130073}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &102803523
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2176,14 +2176,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 19, y: -10.5, z: 0}
-    m_Extent: {x: 18, y: 3.5, z: 0.5}
+    m_Center: {x: 19, y: -11, z: -0.5}
+    m_Extent: {x: 17, y: 3, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 331564510}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &126148873
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3419,6 +3419,56 @@ Transform:
   m_Father: {fileID: 255751143}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &221005843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 221005844}
+  - component: {fileID: 221005845}
+  m_Layer: 0
+  m_Name: Tester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &221005844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221005843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -303.29752, y: 69.19345, z: 0.5884751}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1888681749}
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &221005845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221005843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72a88cdf56548ac9f3632bdc44f860e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  building: {fileID: 1567570286}
+  tile: {fileID: 11400000, guid: 9f9c0ed02b270a44d9029a7fb830b85c, type: 2}
+  visual: {fileID: 1888681750}
+  validColor: {r: 0.5, g: 0.9, b: 0.6, a: 0.5}
+  invalidColor: {r: 0.9, g: 0.5, b: 0.6, a: 0.5}
 --- !u!1 &232403585
 GameObject:
   m_ObjectHideFlags: 0
@@ -3468,8 +3518,8 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 1, g: 0.39102107, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 152, y: -68.5, z: 0}
-    m_Extent: {x: 36, y: 10.5, z: 0.5}
+    m_Center: {x: 152, y: -68, z: -0.5}
+    m_Extent: {x: 36, y: 10, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -3477,7 +3527,7 @@ MonoBehaviour:
   - {fileID: 702204561}
   - {fileID: 838587146}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &232403588
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4413,14 +4463,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0.46544218, g: 0, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 17.5, y: -2.5, z: 0}
-    m_Extent: {x: 19.5, y: 4.5, z: 0.5}
+    m_Center: {x: 18, y: -2, z: -0.5}
+    m_Extent: {x: 20, y: 4, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 1170989450}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &272593244
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4955,8 +5005,8 @@ MonoBehaviour:
   accessLevel: 2
   roomColor: {r: 0, g: 0.120508194, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 59.5, y: -36, z: -0.5}
-    m_Extent: {x: 6.5, y: 22, z: 0.5}
+    m_Center: {x: 60, y: -36, z: -0.5}
+    m_Extent: {x: 6, y: 22, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -4968,7 +5018,7 @@ MonoBehaviour:
   - {fileID: 102803522}
   - {fileID: 425404941}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &331564511
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5774,13 +5824,13 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 110.5, y: 7, z: 0}
-    m_Extent: {x: 7.5, y: 5, z: 0.5}
+    m_Center: {x: 111, y: 7, z: -0.5}
+    m_Extent: {x: 7, y: 5, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms: []
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &397701147
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -38122,8 +38172,8 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0.46544218, g: 0, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 51.5, y: -6, z: -0.5}
-    m_Extent: {x: 14.5, y: 8, z: 0.5}
+    m_Center: {x: 52, y: -6, z: -0.5}
+    m_Extent: {x: 14, y: 8, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -38132,7 +38182,7 @@ MonoBehaviour:
   - {fileID: 440071078}
   - {fileID: 1764513280}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &425404942
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -41719,14 +41769,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 29, y: -26, z: 0}
+    m_Center: {x: 30, y: -26, z: -0.5}
     m_Extent: {x: 24, y: 4, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 331564510}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &669714583
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -41969,14 +42019,14 @@ MonoBehaviour:
   accessLevel: 2
   roomColor: {r: 0.6870065, g: 0, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 231.5, y: -48, z: -0.5}
-    m_Extent: {x: 8.5, y: 10, z: 0.5}
+    m_Center: {x: 231, y: -48, z: -0.5}
+    m_Extent: {x: 9, y: 10, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 838587146}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!1 &678651831
 GameObject:
   m_ObjectHideFlags: 0
@@ -42194,15 +42244,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 1, g: 0.39102107, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 208, y: -68.5, z: 0}
-    m_Extent: {x: 20, y: 10.5, z: 0.5}
+    m_Center: {x: 208, y: -68, z: -0.5}
+    m_Extent: {x: 20, y: 10, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 232403587}
   - {fileID: 838587146}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &702204562
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -42954,7 +43004,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 756661570}
-  - component: {fileID: 756661572}
   - component: {fileID: 756661571}
   m_Layer: 12
   m_Name: Greenhouse Right
@@ -42995,41 +43044,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.3981762, a: 1}
   roomBounds:
-    m_Center: {x: 128, y: 32.5, z: 0}
-    m_Extent: {x: 13, y: 5.5, z: 0.5}
+    m_Center: {x: 127, y: 33, z: -0.5}
+    m_Extent: {x: 13, y: 5, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 2126131780}
   - {fileID: 970170021}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
---- !u!61 &756661572
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 756661569}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  targetGrid: {fileID: 411735225}
 --- !u!1 &766603154
 GameObject:
   m_ObjectHideFlags: 0
@@ -43619,14 +43642,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 28, y: -18, z: 0}
+    m_Center: {x: 29, y: -18, z: -0.5}
     m_Extent: {x: 25, y: 4, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 331564510}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &837671391
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -43764,14 +43787,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 1, g: 0.14036824, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 230.5, y: 89.5, z: 0}
-    m_Extent: {x: 23.5, y: 5.5, z: 0.5}
+    m_Center: {x: 231, y: 90, z: -0.5}
+    m_Extent: {x: 23, y: 6, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 1296917228}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &840790936
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -50015,15 +50038,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 0.7326665, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 176.06555, y: 55.5, z: 0}
-    m_Extent: {x: 35.06555, y: 28.5, z: 0.5}
+    m_Center: {x: 175, y: 56, z: -0.5}
+    m_Extent: {x: 35, y: 28, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 756661571}
   - {fileID: 1185069644}
-  debugGetCells: 0
-  targetGrid: {fileID: 0}
+  debugGetCells: 1
+  targetGrid: {fileID: 411735225}
 --- !u!61 &970170022
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -52315,8 +52338,8 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0.46544218, g: 0, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 33, y: 14.5, z: 0}
-    m_Extent: {x: 36, y: 12.5, z: 0.5}
+    m_Center: {x: 32, y: 15, z: -0.5}
+    m_Extent: {x: 34, y: 13, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -52325,7 +52348,7 @@ MonoBehaviour:
   - {fileID: 1516111515}
   - {fileID: 1900772107}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1170989451
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -52438,7 +52461,7 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0.0857687, g: 0, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 236, y: 41, z: 0}
+    m_Center: {x: 235, y: 42, z: -0.5}
     m_Extent: {x: 25, y: 14, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
@@ -52448,7 +52471,7 @@ MonoBehaviour:
   - {fileID: 1296917228}
   - {fileID: 1763775443}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1185069645
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -53453,14 +53476,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 30.5, y: -34, z: 0}
-    m_Extent: {x: 22.5, y: 4, z: 0.5}
+    m_Center: {x: 31, y: -34, z: -0.5}
+    m_Extent: {x: 23, y: 4, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 331564510}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1296900261
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -53536,15 +53559,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 0.6224389, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 236, y: 69.5, z: 0}
-    m_Extent: {x: 25, y: 14.5, z: 0.5}
+    m_Center: {x: 235, y: 70, z: -0.5}
+    m_Extent: {x: 25, y: 14, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 840790935}
   - {fileID: 1185069644}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1296917229
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -55779,15 +55802,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.6766405, a: 1}
   roomBounds:
-    m_Center: {x: 86, y: 11.084732, z: 0}
-    m_Extent: {x: 17, y: 9.084736, z: 0.5}
+    m_Center: {x: 85, y: 8, z: -0.5}
+    m_Extent: {x: 19, y: 6, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 1170989450}
   - {fileID: 397701146}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1516111516
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -55963,7 +55986,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1530502577}
-  - component: {fileID: 1530502579}
   - component: {fileID: 1530502578}
   m_Layer: 12
   m_Name: Greenhouse Left
@@ -56003,41 +56025,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.3981762, a: 1}
   roomBounds:
-    m_Center: {x: 47.5, y: 32.5, z: 0}
-    m_Extent: {x: 8.5, y: 5.5, z: 0.5}
+    m_Center: {x: 48, y: 33, z: -0.5}
+    m_Extent: {x: 8, y: 5, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 2126131780}
   - {fileID: 1707207972}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
---- !u!61 &1530502579
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530502576}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  targetGrid: {fileID: 411735225}
 --- !u!1 &1530601362
 GameObject:
   m_ObjectHideFlags: 0
@@ -56386,7 +56382,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 33092.31
+  m_Mass: 33092.33
   m_LinearDrag: 0.44
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -57356,14 +57352,14 @@ MonoBehaviour:
   accessLevel: 2
   roomColor: {r: 1, g: 0.17543724, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 268, y: 35.5, z: 0}
-    m_Extent: {x: 7, y: 19.5, z: 0.5}
+    m_Center: {x: 267, y: 36.5, z: -0.5}
+    m_Extent: {x: 7, y: 17.5, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 1185069644}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1670989018
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -57523,13 +57519,13 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 0.7326665, b: 1, a: 1}
   roomBounds:
-    m_Center: {x: 12.5, y: 41.5, z: 0}
-    m_Extent: {x: 26.5, y: 14.5, z: 0.5}
+    m_Center: {x: 13, y: 42, z: -0.5}
+    m_Extent: {x: 27, y: 14, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms: []
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1707207973
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -60344,14 +60340,14 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.44417167, a: 1}
   roomBounds:
-    m_Center: {x: 32, y: -42, z: 0}
+    m_Center: {x: 33, y: -42, z: -0.5}
     m_Extent: {x: 21, y: 4, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 331564510}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1835103455
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -61045,15 +61041,15 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 1, g: 0.39102107, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 91.5, y: -68.5, z: 0}
-    m_Extent: {x: 24.5, y: 10.5, z: 0.5}
+    m_Center: {x: 92, y: -68, z: -0.5}
+    m_Extent: {x: 24, y: 10, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
   - {fileID: 102803522}
   - {fileID: 232403587}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
+  targetGrid: {fileID: 411735225}
 --- !u!61 &1874130074
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -61248,6 +61244,90 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1888681748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1888681749}
+  - component: {fileID: 1888681750}
+  m_Layer: 0
+  m_Name: Square
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1888681749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888681748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: -0.5884751}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 221005844}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1888681750
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888681748}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: e834606222b802c41adb917b03890700, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 1
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1900609257
 GameObject:
   m_ObjectHideFlags: 0
@@ -61381,8 +61461,8 @@ MonoBehaviour:
   accessLevel: 2
   roomColor: {r: 1, g: 0.17543724, b: 0, a: 1}
   roomBounds:
-    m_Center: {x: 87, y: 21, z: -0.5}
-    m_Extent: {x: 17, y: 7, z: 0.5}
+    m_Center: {x: 85, y: 21, z: -0.5}
+    m_Extent: {x: 19, y: 7, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -119167,7 +119247,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2126131779}
-  - component: {fileID: 2126131781}
   - component: {fileID: 2126131780}
   m_Layer: 12
   m_Name: Greenhouse Main
@@ -119207,8 +119286,8 @@ MonoBehaviour:
   accessLevel: 15
   roomColor: {r: 0, g: 1, b: 0.3981762, a: 1}
   roomBounds:
-    m_Center: {x: 85.5, y: 41.5, z: -0.5}
-    m_Extent: {x: 29.5, y: 14.5, z: 0.5}
+    m_Center: {x: 85, y: 42, z: -0.5}
+    m_Extent: {x: 29, y: 14, z: 0.5}
   isDynamic: 0
   dynamicBody: {fileID: 0}
   connectedRooms:
@@ -119216,33 +119295,7 @@ MonoBehaviour:
   - {fileID: 1530502578}
   - {fileID: 437613741}
   debugGetCells: 0
-  targetGrid: {fileID: 0}
---- !u!61 &2126131781
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2126131778}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  targetGrid: {fileID: 411735225}
 --- !u!1 &2129630094
 GameObject:
   m_ObjectHideFlags: 0

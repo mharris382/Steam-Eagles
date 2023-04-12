@@ -1,8 +1,10 @@
-﻿using Buildings;
+﻿using System;
+using Buildings;
 using Buildings.BuildingTilemaps;
 
 namespace PhysicsFun.Buildings
 {
+    [Obsolete("Use Building instead")]
     public interface IStructure
     {
         FoundationTilemap FoundationTilemap { get; }

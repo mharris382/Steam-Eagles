@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Buildings
 {
+	[Obsolete("Use BuildingMap instead")]
     public interface IReadOnlyBuildingTilemap
     {
 			public  string  StructureName{ get; }
@@ -20,6 +22,7 @@ namespace Buildings
             public IEnumerable<(TileBase t, Vector3Int c)> GetAllNonEmptyTiles();
             //public Dictionary<TileBase, List<Vector2Int>> TilePositionDictionary { get; }	
     }
+    
     
     public interface IBuildingTilemap : IReadOnlyBuildingTilemap
     {

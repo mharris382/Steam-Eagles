@@ -9,5 +9,12 @@ namespace Buildings.Tiles
         {
             return false;
         }
+
+        public override BuildingLayers GetLayer() => BuildingLayers.LADDERS;
+
+        public override bool IsPlacementValid(Vector3Int cell, BuildingMap buildingMap)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

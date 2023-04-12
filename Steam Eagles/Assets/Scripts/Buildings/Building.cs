@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Buildings.BuildingTilemaps;
 using Buildings.Rooms;
 using CoreLib;
@@ -265,106 +264,5 @@ namespace Buildings
         
         Rooms.Rooms _rooms;
         public Rooms.Rooms Rooms => _rooms ? _rooms : _rooms = GetComponentInChildren<Rooms.Rooms>();
-    }
-
-
-
-
-    public class BuildingMap : IBuildingRoomLookup
-    {
-        private class CellToRoomLookup
-        {
-            public readonly Vector2 cellSize;
-            private Dictionary<Vector3Int, Room> _cellToRoomLookup = new Dictionary<Vector3Int, Room>();
-            private Dictionary<Room, BoundsInt> _roomToCellBounds = new Dictionary<Room, BoundsInt>();
-            public CellToRoomLookup(GridLayout grid, Room[] rooms)
-            {
-                this.cellSize = grid.cellSize;
-                foreach (var room in rooms)
-                {
-                    var roomBounds = room.GetCells(grid);
-                    _roomToCellBounds.Add(room, roomBounds);
-                    for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
-                    {
-                        for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
-                        {
-                            var cell = new Vector3Int(x, y, 0);
-                            if (!_cellToRoomLookup.ContainsKey(cell))
-                            {
-                                _cellToRoomLookup.Add(cell, room);
-                            }
-                            else
-                            {
-                                Debug.LogError($"Cell {cell} is already registered to {_cellToRoomLookup[cell].name} but also found in {room.name}");
-                            }
-                        }
-                    }
-                }
-            }
-            public Room GetRoom(Vector3Int cell) => _cellToRoomLookup.ContainsKey(cell) ? _cellToRoomLookup[cell] : null;
-
-            public BoundsInt GetCells(Room room) => _roomToCellBounds[room];
-            public IEnumerable<(Room room, Vector3Int cell)> GetAllCells() => _cellToRoomLookup.Select(kvp => (kvp.Value, kvp.Key));
-            public IEnumerable<(Room room, BoundsInt bounds)> GetAllBounds() => _roomToCellBounds.Select(kvp => (kvp.Key, kvp.Value));
-        }
-
-        private readonly Dictionary<Vector2, CellToRoomLookup> _cellToRoomMaps;
-        private readonly RoomGraph _roomGraph;
-
-        private readonly Dictionary<BuildingLayers, Vector2> _layerToCellSize;
-        private readonly Dictionary<BuildingLayers, Tilemap> _layerToTilemap;
-
-        private CellToRoomLookup GetMapForLayer(BuildingLayers layer)
-        {
-            if (!_layerToCellSize.ContainsKey(layer))
-                return _cellToRoomMaps[Vector2.one];
-            
-            return _cellToRoomMaps[_layerToCellSize[layer]];
-        }
-
-        public BuildingMap(Building building, Room[] rooms)
-        {
-            _cellToRoomMaps = new Dictionary<Vector2, CellToRoomLookup>();
-            _layerToCellSize = new Dictionary<BuildingLayers, Vector2>();
-            _layerToTilemap = new Dictionary<BuildingLayers, Tilemap>();
-            _roomGraph = new RoomGraph(building.GetComponentInChildren<Rooms.Rooms>());
-            BoundsInt buildingBounds = new BoundsInt();
-            foreach (var buildingTilemap in building.GetAllBuildingLayers())
-            {
-                var cellSize = buildingTilemap.CellSize;
-                var tmLayer = buildingTilemap.Layer;
-                
-                if(!_layerToCellSize.ContainsKey(tmLayer))
-                    _layerToCellSize.Add(tmLayer, cellSize);
-                
-                buildingBounds = buildingBounds.Encapsulate(buildingTilemap.Tilemap.cellBounds);
-                
-                if (!_layerToTilemap.ContainsKey(tmLayer)) 
-                    _layerToTilemap.Add(tmLayer, buildingTilemap.Tilemap);
-                
-                if (!_cellToRoomMaps.ContainsKey(cellSize))
-                    _cellToRoomMaps.Add(cellSize, new CellToRoomLookup(buildingTilemap.Tilemap.layoutGrid, rooms));
-            }
-        }
-        
-        public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
-        public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);
-        
-        public TileBase GetTile(Vector3Int cell, BuildingLayers layers)
-        {
-            if (!_layerToTilemap.ContainsKey(layers))
-                return null;
-            return _layerToTilemap[layers].GetTile(cell);
-        }
-
-        public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
-        {
-            if (!_layerToTilemap.ContainsKey(layers))
-            {
-                Debug.LogError($"No tilemap found for layer {layers}");
-                return null;
-            }
-            return _layerToTilemap[layers].GetTile<T>(cell);
-        }
     }
 }
