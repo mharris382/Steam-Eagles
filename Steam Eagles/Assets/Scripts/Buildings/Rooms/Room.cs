@@ -177,6 +177,18 @@ using Sirenix.OdinInspector;
             }
         }
 
+        public bool debugGetCells;
+        public GridLayout targetGrid;
+        
+        public BoundsInt GetCells(GridLayout gridLayout)
+        {
+            var cellMin = gridLayout.LocalToCell(Bounds.min);
+            var cellMax = gridLayout.LocalToCell(Bounds.max);
+            cellMax.z = cellMin.z = 0;
+            var size = cellMax - cellMin;
+            return new BoundsInt(cellMin, size);
+        }
+
         public RectInt GetCellRect(Tilemap target)
         {
             var center = Bounds.center;
@@ -206,6 +218,25 @@ using Sirenix.OdinInspector;
                 }
             }
             return new RectInt(minCell.x, minCell.y, maxCell.x, maxCell.y);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if(!debugGetCells || targetGrid == null) return;
+            var cells = GetCells(targetGrid);
+            Gizmos.color = this.roomColor;
+            for (int x = cells.xMin; x < cells.xMax; x++)
+            {
+                for (int y = cells.yMin; y < cells.yMax; y++)
+                {
+                    var cell = new Vector3Int(x, y, 0);
+                    var worldCenter = targetGrid.CellToWorld(cell);
+                    var cellSize = targetGrid.cellSize;
+                    worldCenter += cellSize/2f;
+                    Gizmos.DrawCube(worldCenter, cellSize * 0.95f);
+                }
+            }
+           
         }
     }
 
