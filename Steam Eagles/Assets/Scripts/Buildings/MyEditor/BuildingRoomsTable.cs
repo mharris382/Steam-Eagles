@@ -106,6 +106,20 @@ namespace Buildings.MyEditor
                 set => _room.accessLevel = value;
             }
             
+            [GUIColor(nameof(guiColorBuildLevel))]
+            [ShowInInspector, EnumPaging, TableColumnWidth(175, false)]
+            public BuildLevel BuildLevel
+            {
+                get => _room.buildLevel;
+                set
+                {
+                    Undo.RecordObject(_room, "Change Build Level");
+                    _room.buildLevel = value;
+                    EditorUtility.SetDirty(_room);
+                }
+            }
+
+            private Color guiColorBuildLevel => BuildLevel == BuildLevel.FULL ? new Color(0.8f, 0.7f, 0.5f, 0.8f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
             [ShowInInspector]
 
             public bool EngineersOnly

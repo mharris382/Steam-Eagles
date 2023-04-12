@@ -12,6 +12,11 @@ using Sirenix.OdinInspector;
 
  namespace Buildings.Rooms
 {
+    public enum BuildLevel
+    {
+        FULL,
+        NONE
+    }
     [Serializable]
     public class Room : MonoBehaviour
     {
@@ -20,7 +25,8 @@ using Sirenix.OdinInspector;
         
         [EnumToggleButtons]
         public AccessLevel accessLevel = AccessLevel.EVERYONE;
-        
+        [EnumPaging]
+        public BuildLevel buildLevel = BuildLevel.FULL;
         
         public Color roomColor = Color.red;
         public Bounds roomBounds = new Bounds(Vector3.zero, Vector3.one);
@@ -33,6 +39,7 @@ using Sirenix.OdinInspector;
                                     ((int)accessLevel & (int)AccessLevel.PILOTS) == 0 && 
                                     ((int)accessLevel & (int)AccessLevel.PASSENGERS) == 0;
 
+      
 
         public List<Room> connectedRooms = new List<Room>();
 

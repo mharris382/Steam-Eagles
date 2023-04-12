@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using Buildings.Rooms;
+using CoreLib;
 using UnityEngine;
 
 namespace Buildings.Tiles
@@ -29,15 +31,28 @@ namespace Buildings.Tiles
         {
             if (!allowPlacementOnDamagedWall)
             {
-                if (CheckIfSolidCellHasDamagedWall(cell, buildingMap)) 
+                if (CheckIfOtherCellExistsOnMap<DamagedWallTile>(cell, buildingMap, BuildingLayers.WALL))
                     return false;
             }
 
             if (!allowPlacementOnPipe)
             {
-                if (!CheckIfSolidCellHasPipe(cell, buildingMap)) return false;
+                if (CheckIfOtherCellExistsOnMap(cell, buildingMap, BuildingLayers.PIPE))
+                    return false;
             }
 
+            if (CheckIfOtherCellIsFoundation(cell, buildingMap))
+            {
+                return false;
+            }
+
+
+            if (!buildingMap.CellIsInARoom(cell, GetLayer())) 
+                return false;
+            var room = buildingMap.GetRoom(cell, GetLayer());
+            if (room.buildLevel == BuildLevel.NONE)
+                return false;
+            
             return true;
         }
         private bool CheckIfSolidCellHasPipe(Vector3Int cell, BuildingMap buildingMap)

@@ -29,7 +29,8 @@ namespace Buildings.Tiles
             }
             foreach (var otherCell in otherCells)
             {
-                if (buildingMap.GetTile(otherCell, otherLayer) != null)
+                var tile = buildingMap.GetTile(otherCell, otherLayer);
+                if (tile != null)
                     return true;
             }
             
