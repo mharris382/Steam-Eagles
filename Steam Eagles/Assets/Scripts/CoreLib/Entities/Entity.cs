@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CoreLib.Entities.PersistentData;
+using UniRx;
 using UnityEngine;
 
 namespace CoreLib.Entities
@@ -11,27 +12,29 @@ namespace CoreLib.Entities
         public EntityType entityType = EntityType.CHARACTER;
         public string entityGUID;
 
-        private GameObject _linkedGameObject;
+        //private GameObject _linkedGameObject;
         // private List<InventoryData> _inventoryData = new List<InventoryData>();
 
+        private ReactiveProperty<GameObject> _linkedGameObject = new ReactiveProperty<GameObject>();
 
+        private ReactiveProperty<GameObject> rxLinkedGameObjectProperty =>
+            _linkedGameObject ??= new ReactiveProperty<GameObject>();
         public GameObject linkedGameObject
         {
             set
             {
-                if (_linkedGameObject == null)
+                if (rxLinkedGameObjectProperty.Value == null)
                 {
-                    _linkedGameObject = value;
+                    rxLinkedGameObjectProperty.Value = value;
                     return;
                 }
 
                 throw new Exception();
             }
-            get
-            {
-                return _linkedGameObject;
-            }
+            get => rxLinkedGameObjectProperty.Value;
         }
+
+        public IReadOnlyReactiveProperty<GameObject> LinkedGameObjectProperty => rxLinkedGameObjectProperty;
 
 
         /// <summary>

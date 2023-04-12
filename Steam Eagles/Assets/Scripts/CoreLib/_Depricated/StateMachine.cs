@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StateMachine;
+using CoreLib.Interfaces;
 using UnityEngine;
 
 namespace CoreLib

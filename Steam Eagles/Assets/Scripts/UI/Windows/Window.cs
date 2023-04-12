@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace UI
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
 
+        [ShowIf(nameof(UsesCloseButton))]
         public UnityEngine.UI.Button closeButton;
         public RectTransform RectTransform
         {
@@ -31,6 +33,8 @@ namespace UI
 
 
         protected virtual bool BlockRaycastsWhenVisible => true;
+        
+        protected virtual bool UsesCloseButton => true;
 
         private void Start()
         {

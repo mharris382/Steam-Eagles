@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using StateMachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;

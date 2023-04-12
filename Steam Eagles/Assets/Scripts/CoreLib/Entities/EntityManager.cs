@@ -179,7 +179,8 @@ namespace CoreLib.Entities
 
         public void SaveEntity(string getEntityGUID)
         {
-            _entityHandles[getEntityGUID].Save();
+            if(_entityHandles.ContainsKey(getEntityGUID))
+                _entityHandles[getEntityGUID].Save();
         }
     }
 

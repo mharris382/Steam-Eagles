@@ -1,4 +1,4 @@
-﻿namespace StateMachine
+﻿namespace CoreLib.Interfaces
 {
     public interface IState<in T>
     {

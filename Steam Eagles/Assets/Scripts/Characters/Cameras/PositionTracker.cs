@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreLib.SharedVariables;
-using StateMachine;
 using UnityEngine;
 
 /// <summary>

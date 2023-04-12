@@ -2,7 +2,6 @@
 using Cinemachine;
 using CoreLib;
 using CoreLib.SharedVariables;
-using StateMachine;
 using UnityEngine;
 
 namespace Characters.Cameras
