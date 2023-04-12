@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterState))]
+[RequireComponent(typeof(Character))]
 public class InputHandler : MonoBehaviour
 {
-    private CharacterState _state;
+    private Character _state;
     [SerializeField]
     private string horizontalAxisName = "Horizontal";
 
@@ -16,7 +16,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private KeyCode additionalJumpInput = KeyCode.Space;
     private void Awake()
     {
-        _state = GetComponent<CharacterState>();
+        _state = GetComponent<Character>();
     }
 
     public bool useLegacyInput;
@@ -109,7 +109,7 @@ public class InputHandler : MonoBehaviour
     }
 }
 
-[RequireComponent(typeof(CharacterState))]
+[RequireComponent(typeof(Character))]
 public class NewInputHandler : MonoBehaviour
 {
     

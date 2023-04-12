@@ -82,7 +82,7 @@ namespace Players
         public PlayerInputWrapper InputWrapper { get; private set; }
 
         public PlayerInput PlayerInput => InputWrapper == null ? null : InputWrapper.PlayerInput;
-        public CharacterState State { get; private set; }
+        public Character State { get; private set; }
 
         
         private Dictionary<Action<Camera>, IDisposable> _cameraSubscriptions = new Dictionary<Action<Camera>, IDisposable>();
@@ -105,7 +105,7 @@ namespace Players
             }
         }
 
-        public void AssignPlayer(PlayerInputWrapper playerInputWrapper,CharacterState assignedCharacter)
+        public void AssignPlayer(PlayerInputWrapper playerInputWrapper,Character assignedCharacter)
         {
             this.State = assignedCharacter;
             this.InputWrapper = playerInputWrapper;

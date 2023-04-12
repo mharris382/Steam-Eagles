@@ -21,12 +21,12 @@ namespace Characters
         
         private FSM.StateMachine _defaultStateMachine;
         private FSM.StateMachine _toolStateMachine;
-        private CharacterState _state;
+        private Character _state;
         private StructureState _structureState;
         private IPilot _pilot;
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
-        public CharacterState State => _state;
+        public Character State => _state;
         
         public StructureState StructureState => _structureState != null ? _structureState : _structureState = GetComponent<StructureState>();
         
@@ -47,15 +47,15 @@ namespace Characters
         private class NullPilot : IPilot
         {
             public string tag => owner.tag;
-            private CharacterState _characterState;
+            private Character _character;
             public NullPilot(GameObject owner)
             {
                 this.owner = owner;
-                _characterState = this.owner.GetComponent<CharacterState>();
+                _character = this.owner.GetComponent<Character>();
             }
 
-            public float XInput => _characterState.MoveX;
-            public float YInput => _characterState.MoveY;
+            public float XInput => _character.MoveX;
+            public float YInput => _character.MoveY;
             public event Action<int> OnPowerToThrustersChanged;
             public event Action<int> OnPowerToHeatChanged;
             private GameObject owner;
@@ -112,7 +112,7 @@ namespace Characters
         private void Start()
         {
             _controller = GetComponent<CharacterController2>();
-            _state = GetComponent<CharacterState>();
+            _state = GetComponent<Character>();
             _input = GetComponent<CharacterInputState>();
  
             

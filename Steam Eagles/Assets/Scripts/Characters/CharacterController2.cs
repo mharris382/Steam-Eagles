@@ -22,7 +22,7 @@ namespace Characters
         
         
         public Transform groundCheck;
-        private CharacterState _state;
+        private Character _state;
         private Rigidbody2D _rigidbody2D;
         private CharacterInputState _input;
         private CapsuleCollider2D _capsuleCollider;
@@ -192,7 +192,7 @@ namespace Characters
             }
         }
 
-        private CharacterState State => _state != null ? _state : (_state = GetComponent<CharacterState>());
+        private Character State => _state != null ? _state : (_state = GetComponent<Character>());
         public CharacterConfig Config => State.config;
         public Rigidbody2D rb => _rigidbody2D;
         public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
@@ -222,7 +222,7 @@ namespace Characters
                 _structureState = gameObject.AddComponent<StructureState>();
             }
             
-            _state = GetComponent<CharacterState>();
+            _state = GetComponent<Character>();
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _capsuleCollider = GetComponent<CapsuleCollider2D>();

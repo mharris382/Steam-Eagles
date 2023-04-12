@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace CoreLib.Entities.Characters
 {
-    [RequireComponent(typeof(CharacterState))]
+    [RequireComponent(typeof(Character))]
     public class CharacterInitializer : EntityInitializer
     {
-        private CharacterState _characterState;
+        private Character _character;
         
         [ShowInInspector]
         private IReadOnlyReactiveProperty<Entity> _listener;
 
-        private CharacterState CharacterState => _characterState != null
-            ? _characterState
-            : _characterState = GetComponent<CharacterState>();
+        private Character Character => _character != null
+            ? _character
+            : _character = GetComponent<Character>();
         
         public override string GetEntityGUID() => tag;
 
@@ -24,13 +24,13 @@ namespace CoreLib.Entities.Characters
 
         private void Awake()
         {
-            CharacterState.IsEntityInitialized = false;
+            Character.IsEntityInitialized = false;
             _listener = EntityManager.Instance.GetEntityProperty(GetEntityGUID());
         }
 
         public override void OnEntityInitialized(Entity entity)
         {
-            CharacterState.IsEntityInitialized = true;
+            Character.IsEntityInitialized = true;
             
             if (EntityManager.Instance.debug) 
                 Debug.Log($"Initialized Entity for {entity.name}");

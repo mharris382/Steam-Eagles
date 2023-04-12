@@ -20,7 +20,7 @@ namespace Characters
         [InlineEditor()]
         public Player player;
 
-        private CharacterState _characterState;
+        private Character _character;
         private PlayerInputWrapper _playerInputWrapper;
         private Camera _playerCamera;
         private InputSystemUIInputModule _eventSystem;
@@ -31,7 +31,7 @@ namespace Characters
 
         public bool IssCameraBound => _playerCamera != null;
 
-        public bool IsCharacterBound => _characterState != null;
+        public bool IsCharacterBound => _character != null;
         
         public bool IsUIModuleBound => _eventSystem != null;
         public bool IsUIRootBound => _localMultiplayerUIRoot != null;
@@ -85,9 +85,9 @@ namespace Characters
                 player.playerCamera.Value = _playerCamera;
         }
 
-        public void AssignCharacter(CharacterState state)
+        public void AssignCharacter(Character state)
         {
-            this._characterState = state;
+            this._character = state;
             InitializeIfFullyBound();
         }
 
@@ -113,14 +113,14 @@ namespace Characters
         {
             void InitCharacter()
             {
-                player.characterTransform.Value = _characterState.transform;
+                player.characterTransform.Value = _character.transform;
             }
 
             void InitInput()
             {
-                var characterInputState = _characterState.GetComponent<CharacterInputState>();
+                var characterInputState = _character.GetComponent<CharacterInputState>();
                 _playerInputWrapper.Assign(characterInputState);
-                player.AssignPlayer(_playerInputWrapper, _characterState);
+                player.AssignPlayer(_playerInputWrapper, _character);
                 MessageBroker.Default.Publish(new PlayerJoinedInfo()
                 {
                     playerNumber = player.playerNumber,

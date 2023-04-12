@@ -8,18 +8,18 @@ namespace Characters
     [Obsolete("Use CharacterInputProcessorV3")]
     public class CharacterInputProcessorV2  : IDisposable
     {
-        private readonly CharacterState characterState;
+        private readonly Character _character;
         private readonly ToolState toolState;
         private readonly ReadOnlyReactiveProperty<PlayerInput> _assignedPlayerInput;
         private readonly bool _debug;
         private readonly IDisposable _disposable;
 
-        public CharacterInputProcessorV2(CharacterState characterState,
+        public CharacterInputProcessorV2(Character character,
             ReadOnlyReactiveProperty<PlayerInput> assignedPlayerInput,
             bool debug)
         {
-            this.characterState = characterState;
-            toolState = this.characterState.Tool;
+            this._character = character;
+            toolState = this._character.Tool;
             _assignedPlayerInput = assignedPlayerInput;
             _debug = debug;
             CompositeDisposable cd = new CompositeDisposable();
@@ -61,17 +61,17 @@ namespace Characters
             bool jumpHeld = jumpAction.IsPressed();
             if (moveInput.y < -0.5f)
             {
-                characterState.DropPressed = jumpHeld;
-                characterState.JumpPressed = characterState.JumpHeld = false;
+                _character.DropPressed = jumpHeld;
+                _character.JumpPressed = _character.JumpHeld = false;
             }
             else
             {
-                characterState.DropPressed = false;
-                characterState.JumpPressed = jumpPressed;
-                characterState.JumpHeld = jumpHeld;
+                _character.DropPressed = false;
+                _character.JumpPressed = jumpPressed;
+                _character.JumpHeld = jumpHeld;
             }
 
-            characterState.MoveInput = moveInput;
+            _character.MoveInput = moveInput;
             toolState.Inputs.AimInput = aimInput;
             
             

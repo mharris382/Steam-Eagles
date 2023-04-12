@@ -125,7 +125,7 @@ namespace Players
             MessageBroker.Default.Publish(assignmentNotification);
         }
 
-        CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
+        Character SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
         {
             var wrapper = players[id];
             var obj = GameManager.Instance.GetPlayerDevice(id);
@@ -142,7 +142,7 @@ namespace Players
             Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
 
             
-            var character = Instantiate(prefab,parent.transform).GetComponent<CharacterState>();
+            var character = Instantiate(prefab,parent.transform).GetComponent<Character>();
             character.transform.localPosition = localOffset;
             
             Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
@@ -248,15 +248,15 @@ namespace Players
 
     [System.Obsolete("replace these IPlayerDependencyResolver nonsense")]
     [Serializable]
-    public class CharacterAssignments : IPlayerDependencyResolver<CharacterState>
+    public class CharacterAssignments : IPlayerDependencyResolver<Character>
     {
         [SerializeField] public List<CharacterAssignment> characterAssignments;
         
-        public CharacterState GetDependency(int playerNumber)
+        public Character GetDependency(int playerNumber)
         {
             var assignment = characterAssignments[playerNumber];
             var character = assignment.InstantiateCharacter();
-            return character.GetComponent<CharacterState>();
+            return character.GetComponent<Character>();
         }
     }
 

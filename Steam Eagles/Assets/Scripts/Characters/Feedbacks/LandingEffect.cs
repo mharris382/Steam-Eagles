@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UniRx;
+using UnityEngine.Serialization;
 
 public class LandingEffect : MonoBehaviour
 {
     
     public UnityEvent onCharacterLanded;
 
-    public CharacterState characterState;
+    [FormerlySerializedAs("characterState")] public Character character;
     
     [Tooltip("How long the character needs to remain in the air for the effect to trigger on character becoming grounded")]
     public float fallSpeedToTriggerEffect = 0.2f;
@@ -22,11 +23,11 @@ public class LandingEffect : MonoBehaviour
     
     private void Update()
     {
-        if (!characterState.IsGrounded)
+        if (!character.IsGrounded)
         {
-            bool falling = characterState.VelocityY < 0;
+            bool falling = character.VelocityY < 0;
             if (!falling) return;
-            float fallSpeed = Mathf.Abs(characterState.VelocityY);
+            float fallSpeed = Mathf.Abs(character.VelocityY);
             if (maxRecordedFallSpeed < fallSpeed)
             {
                 maxRecordedFallSpeed = fallSpeed;
@@ -37,37 +38,37 @@ public class LandingEffect : MonoBehaviour
     private void Awake()
     {
         _timeEnteredAir = Time.time;
-        characterState.IsGroundedEventStream
+        character.IsGroundedEventStream
             .Select(t => t ? Observable.EveryUpdate().AsUnitObservable() : Observable.Never<Unit>())
             .Switch()
             .TakeUntilDestroy(this)
             .Subscribe(
                 _ =>
                 {
-                    bool falling = characterState.VelocityY < 0;
+                    bool falling = character.VelocityY < 0;
                     if (!falling) return;
-                    float fallSpeed = Mathf.Abs(characterState.VelocityY);
+                    float fallSpeed = Mathf.Abs(character.VelocityY);
                     if (maxRecordedFallSpeed < fallSpeed)
                     {
                         maxRecordedFallSpeed = fallSpeed;
                     }
                 });
-        characterState.IsGroundedEventStream
+        character.IsGroundedEventStream
             .Where(t => t)
             .Select(t => Observable.EveryUpdate().AsUnitObservable())
             .Take(TimeSpan.FromSeconds(timeInAirToTrigger))
-            .TakeUntil(characterState.IsGroundedEventStream)
+            .TakeUntil(character.IsGroundedEventStream)
             .Subscribe(_ =>
             {
                 Debug.Log("Updating stuffs.0..");
             }, () =>
             {
-                if(characterState.IsGrounded)
+                if(character.IsGrounded)
                     Debug.Log($"Character Spent {timeInAirToTrigger} time in air");
                 return;
             });
 
-    characterState.IsGroundedEventStream.Subscribe(isGrounded =>
+    character.IsGroundedEventStream.Subscribe(isGrounded =>
         {
             if (isGrounded)
             {

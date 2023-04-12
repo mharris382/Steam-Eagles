@@ -15,7 +15,7 @@ public enum InteractionPhysicsMode
 [RequireComponent(typeof(ToolState))]
 [RequireComponent(typeof(CharacterInputState))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class CharacterState : MonoBehaviour
+public class Character : MonoBehaviour
 {
 
     public bool IsEntityInitialized { get; set; }

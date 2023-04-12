@@ -12,7 +12,7 @@ namespace Characters
     public class CharacterValveInputController : MonoBehaviour, ICharacterInput
     {
         private PlayerInput _input;
-        private CharacterState _characterState;
+        private Character _character;
         private IDisposable _inputDisposable;
         private Valve _activeValve;
 
@@ -36,13 +36,13 @@ namespace Characters
         
         private void Awake()
         {
-            _characterState = GetComponentInParent<CharacterState>();
-            Debug.Assert(_characterState != null, "Character Valve Input Controller needs a CharacterInputState", this);
+            _character = GetComponentInParent<Character>();
+            Debug.Assert(_character != null, "Character Valve Input Controller needs a CharacterInputState", this);
             
-            _characterState.HeldObject.Select(t => t == null ? null : t.GetComponent<Valve>()).TakeUntilDestroy(this)
+            _character.HeldObject.Select(t => t == null ? null : t.GetComponent<Valve>()).TakeUntilDestroy(this)
                 .Subscribe(valve => ActiveValve = valve);
             MessageBroker.Default.Receive<ValveActionEvent>().AsObservable()
-                .Where(t => t.characterState == this._characterState)
+                .Where(t => t.character == this._character)
                 .Subscribe(t =>
                 {
                     OnValve(t.context);

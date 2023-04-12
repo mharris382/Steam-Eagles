@@ -36,7 +36,7 @@ namespace Players
             [VerticalGroup("h1/Actual")]
             [BoxGroup("h1/Actual/Processor")]
             [ShowInInspector]
-            public CharacterState CharacterState
+            public Character Character
             {
                 get => _playerCharacterInput._assignedCharacterState.Value;
             }
@@ -67,7 +67,7 @@ namespace Players
             [BoxGroup("h1/Global/Game")]
             [VerticalGroup("h1/Global")]
             [ShowInInspector]
-            public CharacterState GlobalCharacterState
+            public Character GlobalCharacter
             {
                 get
                 {
@@ -82,7 +82,7 @@ namespace Players
                             GameManager.Instance.GetPlayerCharacterName(PlayerNumber));
                         if (go != null)
                         {
-                            return go.GetComponent<CharacterState>();
+                            return go.GetComponent<Character>();
                         }
                     }
 
@@ -102,7 +102,7 @@ namespace Players
             private readonly bool _debug;
 
             internal ReactiveProperty<PlayerInput> _assignedPlayerInput;
-            internal ReactiveProperty<CharacterState> _assignedCharacterState;
+            internal ReactiveProperty<Character> _assignedCharacterState;
             private IDisposable _disposable;
 
             public PlayerCharacterInput(int playerNumber,
@@ -113,7 +113,7 @@ namespace Players
                 this.playerNumber = playerNumber;
                 _inputProcessorManager = inputProcessorManager;
                 _debug = debug;
-                _assignedCharacterState = new ReactiveProperty<CharacterState>();
+                _assignedCharacterState = new ReactiveProperty<Character>();
                 _assignedPlayerInput = new ReactiveProperty<PlayerInput>();
                 var cd = new CompositeDisposable();
 
@@ -130,7 +130,7 @@ namespace Players
                     {
                         Debug.Assert(info.characterState != null, "info.characterState != null");
                         Debug.Assert(info.inputGo != null, "info.inputGo != null");
-                        _assignedCharacterState.Value = info.characterState as CharacterState;
+                        _assignedCharacterState.Value = info.characterState as Character;
                         _assignedPlayerInput.Value = info.inputGo.GetComponent<PlayerInput>();
                     }).AddTo(cd);
                     
@@ -160,7 +160,7 @@ namespace Players
                                     GameManager.Instance.GetPlayerCharacterName(playerNumber));
                                 if (go != null)
                                 {
-                                    _assignedCharacterState.Value = go.GetComponent<CharacterState>();
+                                    _assignedCharacterState.Value = go.GetComponent<Character>();
                                 }
                             }
                         });
@@ -177,7 +177,7 @@ namespace Players
                         GameManager.Instance.GetPlayerCharacterName(playerNumber));
                     if (go != null)
                     {
-                        _assignedCharacterState.Value = go.GetComponent<CharacterState>();
+                        _assignedCharacterState.Value = go.GetComponent<Character>();
                     }
                 }
             }

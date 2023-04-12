@@ -4,12 +4,12 @@ namespace Players
 {
     public static class GameEvents
     {
-        public static event Action<CharacterState> onCharacterSpawned;
+        public static event Action<Character> onCharacterSpawned;
         
         
-        public static void NotifyCharacterSpawned(CharacterState characterState)
+        public static void NotifyCharacterSpawned(Character character)
         {
-            onCharacterSpawned?.Invoke(characterState);
+            onCharacterSpawned?.Invoke(character);
         }
     }
 }

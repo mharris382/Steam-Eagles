@@ -14,7 +14,7 @@ namespace Characters.Interactables
     public class InteractionController : MonoBehaviour
     {
         public string tag;
-        private CharacterState _state;
+        private Character _state;
         private Transform _target;
         public float interactionRadius = 4;
         public Player player;
@@ -26,14 +26,14 @@ namespace Characters.Interactables
             {
                 _target = value;
                 if(_target)
-                    _state = _target.GetComponent<CharacterState>();
+                    _state = _target.GetComponent<Character>();
             }
             get => _target ? _target : transform;
         }
 
-        public CharacterState State
+        public Character State
         {
-            get => _state ? _state : (_state = Target.GetComponentInParent<CharacterState>());
+            get => _state ? _state : (_state = Target.GetComponentInParent<Character>());
         }
         
         public Vector2 Position => Target.position;

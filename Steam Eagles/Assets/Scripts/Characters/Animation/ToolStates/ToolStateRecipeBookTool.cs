@@ -5,7 +5,7 @@ namespace Characters.Animations
 {
     public class ToolStateRecipeBookTool : ToolAnimationStateBase
     {
-        public ToolStateRecipeBookTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget, b)
+        public ToolStateRecipeBookTool(Character character, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(character, characterToolState, skeletonAnimation, skinController, aimTarget, b)
         {
         }
 

@@ -16,14 +16,14 @@ namespace Players
         }
 
 
-        public static void MoveCharacterToSpawn(CharacterState characterState)
+        public static void MoveCharacterToSpawn(Character character)
         {
-            var spawnPosition = SpawnDatabase.Instance.GetSpawnPointForScene(characterState.tag,
+            var spawnPosition = SpawnDatabase.Instance.GetSpawnPointForScene(character.tag,
                 PersistenceManager.Instance.SaveDirectoryPath);
             
-            Debug.Log($"Spawning {characterState.tag} at {spawnPosition}",characterState);
+            Debug.Log($"Spawning {character.tag} at {spawnPosition}",character);
             
-            GameEvents.NotifyCharacterSpawned(characterState);
+            GameEvents.NotifyCharacterSpawned(character);
         }
     }
     

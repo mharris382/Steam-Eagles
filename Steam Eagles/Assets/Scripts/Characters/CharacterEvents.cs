@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class CharacterEvents : MonoBehaviour
 {
-     CharacterState characterState;
+     Character _character;
 
      public UnityEvent OnCharacterJumped;
      
@@ -24,15 +24,15 @@ public class CharacterEvents : MonoBehaviour
      
     void Awake()
     {
-        if (characterState == null)
+        if (_character == null)
         {
-            characterState = GetComponent<CharacterState>();
+            _character = GetComponent<Character>();
         }
     }
 
     private void Start()
     {
-        characterState.OnCharacterJumped.TakeUntilDisable(this).Subscribe(_ => OnCharacterJumped?.Invoke());
+        _character.OnCharacterJumped.TakeUntilDisable(this).Subscribe(_ => OnCharacterJumped?.Invoke());
     }
 
     private void OnCollisionEnter2D(Collision2D col)

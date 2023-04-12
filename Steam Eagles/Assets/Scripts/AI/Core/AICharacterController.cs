@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class AICharacterController : MonoBehaviour
 {
-    CharacterState _state;
+    Character _state;
     
     void Awake()
     {
-        _state = GetComponent<CharacterState>();
+        _state = GetComponent<Character>();
     }
 
     void Update()

@@ -12,7 +12,7 @@ namespace Characters
     {
         
         [TabGroup("Character")][GUIColor(nameof(GetGuiColor))]public string characterName;
-        [TabGroup("Character")][GUIColor(nameof(GetGuiColor))][SerializeField] CharacterState prefab;
+        [TabGroup("Character")][GUIColor(nameof(GetGuiColor))][SerializeField] Character prefab;
             
         
         [TabGroup("Spawn Point")][Obsolete("Use SpawnDatabase instead")]
@@ -70,12 +70,12 @@ namespace Characters
         }
         
             
-        public void DestroyCharacter(CharacterState character)
+        public void DestroyCharacter(Character character)
         {
             Object.Destroy(character.gameObject);
         }
             
-        public void MoveCharacterToSpawn(CharacterState character) => character.transform.position = SpawnPosition;
+        public void MoveCharacterToSpawn(Character character) => character.transform.position = SpawnPosition;
 
         public void ResetSpawnPosition()
         {

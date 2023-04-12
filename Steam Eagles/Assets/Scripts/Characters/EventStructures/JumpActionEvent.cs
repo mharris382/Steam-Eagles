@@ -10,7 +10,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public InputAction.CallbackContext context;
     }
     
@@ -21,7 +21,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public InputAction.CallbackContext context;
     }
     
@@ -32,7 +32,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public InputAction.CallbackContext context;
     }
     
@@ -43,7 +43,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public InputAction.CallbackContext context;
     }
 
@@ -61,7 +61,7 @@ namespace Characters
         public string tag;
         public PlayerAbilityID abilityID;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public CharacterInputState inputState;
         public InputAction.CallbackContext context;
     }
@@ -75,7 +75,7 @@ namespace Characters
         public int abilityIndex;
         public bool isRelative;
         public Transform transform;
-        public CharacterState characterState;
+        public Character character;
         public CharacterInputState inputState;
         public InputAction.CallbackContext context;
     }

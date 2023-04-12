@@ -5,6 +5,7 @@ using CoreLib;
 using CoreLib.SharedVariables;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using World;
 
@@ -64,7 +65,7 @@ public class AbilityUser : MonoBehaviour
     }
 
     
-    [SerializeField] private CharacterState characterState;
+    [FormerlySerializedAs("characterState")] [SerializeField] private Character character;
     [SerializeField] private SharedTransform characterTransform;
     
     public BlockInventory blockInventory = new BlockInventory();
@@ -88,16 +89,16 @@ public class AbilityUser : MonoBehaviour
 
             void TryGetStateFromTransform(Transform t)
             {
-                var characterState = t.GetComponent<CharacterState>();
+                var characterState = t.GetComponent<Character>();
                 if (characterState != null)
                 {
-                    this.characterState = characterState;
+                    this.character = characterState;
                     Debug.Log($"Ability user found character state {characterState.name}");
                 }
             }
         }
 
-        if (characterState == null) characterState = GetComponentInParent<CharacterState>();
+        if (character == null) character = GetComponentInParent<Character>();
     }
 }
 

@@ -6,7 +6,7 @@ namespace Characters.Animations
 {
     public abstract class ToolAnimationStateBase : StateBase
     {
-        private readonly CharacterState _characterState;
+        private readonly Character _character;
         private readonly ToolState _characterToolState;
         private readonly SkeletonAnimation _skeletonAnimation;
         private readonly SkinController _skinController;
@@ -14,18 +14,18 @@ namespace Characters.Animations
 
         public SkinController SkinController => _skinController;
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
-        public CharacterState CharacterState => _characterState;
+        public Character Character => _character;
         public ToolState CharacterToolState => _characterToolState;
         public Transform AimTarget => _aimTarget;
         
-        public ToolAnimationStateBase(CharacterState characterState, 
+        public ToolAnimationStateBase(Character character, 
             ToolState characterToolState, 
             SkeletonAnimation skeletonAnimation, 
             SkinController skinController,
             Transform aimTarget,
             bool b) : base(b)
         {
-            _characterState = characterState;
+            _character = character;
             _characterToolState = characterToolState;
             _skeletonAnimation = skeletonAnimation;
             _skinController = skinController;

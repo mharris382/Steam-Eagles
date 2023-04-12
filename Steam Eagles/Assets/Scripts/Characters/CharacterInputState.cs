@@ -11,7 +11,7 @@ namespace Characters
     /// <summary>
     /// acts as a proxy for passing input to the player character
     /// </summary>
-    [RequireComponent(typeof(CharacterState))]
+    [RequireComponent(typeof(Character))]
     public class CharacterInputState : MonoBehaviour
     {
         
@@ -28,7 +28,7 @@ namespace Characters
             [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpPressed;
             [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpHeld;
 
-            public void Update(CharacterState State)
+            public void Update(Character State)
             {
                 xInput = State.MoveX;
                 yInput = State.MoveY;
@@ -40,7 +40,7 @@ namespace Characters
         [SerializeField] private DebugVariables debugVariables;
         [SerializeField] private bool useEventsForJump;
         
-        private CharacterState _characterState;
+        private Character _character;
         private PlayerInput _playerInput;
 
 
@@ -55,9 +55,9 @@ namespace Characters
         
         
         
-        public CharacterState CharacterState => _characterState == null
-            ? (_characterState = GetComponent<CharacterState>())
-            : _characterState;
+        public Character Character => _character == null
+            ? (_character = GetComponent<Character>())
+            : _character;
 
 
         private PlayerInput PlayerInput => _playerInput;
@@ -66,33 +66,33 @@ namespace Characters
         
         public bool JumpPressed
         {
-            get => CharacterState.JumpPressed;
-            set => CharacterState.JumpPressed = value;
+            get => Character.JumpPressed;
+            set => Character.JumpPressed = value;
         }
 
         public bool JumpHeld
         {
-            get => CharacterState.JumpHeld;
-            set => CharacterState.JumpHeld = value;
+            get => Character.JumpHeld;
+            set => Character.JumpHeld = value;
         }
 
         public float MoveX
         {
-            get => CharacterState.MoveX;
-            set => CharacterState.MoveX = value;
+            get => Character.MoveX;
+            set => Character.MoveX = value;
         }
 
         public float MoveY
         {
-            get => CharacterState.MoveY;
-            set => CharacterState.MoveY = value;
+            get => Character.MoveY;
+            set => Character.MoveY = value;
         }
 
 
         public Vector2 MoveInput
         {
-            get => CharacterState.MoveInput;
-            set => CharacterState.MoveInput = value;
+            get => Character.MoveInput;
+            set => Character.MoveInput = value;
         }
 
 
@@ -103,8 +103,8 @@ namespace Characters
 
         public bool DropPressed
         {
-            get => CharacterState.DropPressed;
-            set => CharacterState.DropPressed = value;
+            get => Character.DropPressed;
+            set => Character.DropPressed = value;
         }
 
         public bool IsAssigned() => PlayerInput != null;
@@ -113,7 +113,7 @@ namespace Characters
 
         private void Awake()
         {
-            _characterState = GetComponent<CharacterState>();
+            _character = GetComponent<Character>();
             if (onJump == null) onJump = new UnityEvent<InputAction.CallbackContext>();
             if (onInteract == null) onInteract = new UnityEvent<InputAction.CallbackContext>();
             if (onPickup == null) onPickup = new UnityEvent<InputAction.CallbackContext>();
@@ -162,7 +162,7 @@ namespace Characters
             //
             // JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             // JumpHeld = PlayerInput.actions["Jump"].IsPressed();
-            debugVariables.Update(_characterState);
+            debugVariables.Update(_character);
         }
 
         public void OnJump(InputAction.CallbackContext context)
@@ -198,7 +198,7 @@ namespace Characters
         
         public void SetHeldItem(Rigidbody2D heldObject)
         {
-            CharacterState.heldObject.Value = heldObject;
+            Character.heldObject.Value = heldObject;
         }
     }
 }

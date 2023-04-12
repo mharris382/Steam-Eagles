@@ -82,7 +82,7 @@ namespace Characters
             {
                 context = context,
                 tag = _characterInput.gameObject.tag,
-                characterState = _characterInput.CharacterState,
+                character = _characterInput.Character,
                 transform = _characterInput.transform
             });
             //_characterInput.JumpPressed = context.performed;
@@ -108,7 +108,7 @@ namespace Characters
             MessageBroker.Default.Publish(new InteractActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform
             });
@@ -122,7 +122,7 @@ namespace Characters
             MessageBroker.Default.Publish(new PickupActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform
             });
@@ -135,7 +135,7 @@ namespace Characters
             MessageBroker.Default.Publish(new ValveActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform
             });
@@ -146,7 +146,7 @@ namespace Characters
             var eventInfo = new UseAbilityActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 inputState = this._characterInput,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform,
@@ -161,7 +161,7 @@ namespace Characters
             var eventInfo = new UseAbilityActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 inputState = this._characterInput,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform,
@@ -176,7 +176,7 @@ namespace Characters
             var eventInfo = new SelectAbilityActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform,
                 abilityIndex = 1,
@@ -190,7 +190,7 @@ namespace Characters
             var eventInfo = new SelectAbilityActionEvent()
             {
                 context = context,
-                characterState = this._characterInput.CharacterState,
+                character = this._characterInput.Character,
                 tag = _characterInput.gameObject.tag,
                 transform = _characterInput.transform,
                 abilityIndex = -1,
