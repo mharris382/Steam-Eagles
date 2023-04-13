@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace SaveLoad
@@ -112,6 +114,7 @@ namespace SaveLoad
         }
     }
     
+    [Obsolete("prefer async version. GetSpawnPoint")]
     public Vector3 GetSpawnPointForScene(string characterName, string persistentSaveDataPath)
     {
         Vector3 spawnPoint;
@@ -129,6 +132,43 @@ namespace SaveLoad
         
         return GetDefaultSpawnPointForCharacter(characterName);
     }
+
+    public async UniTask<Vector3> GetSpawnPoint(string characterName)
+    {
+        if (_dynamicSpawnPoints.ContainsKey(characterName))
+        {
+            if(_dynamicSpawnPoints[characterName] != null)
+                return _dynamicSpawnPoints[characterName].position;
+            else
+                _dynamicSpawnPoints.Remove(characterName);
+        }
+
+        if (string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath))
+        {
+            Debug.LogWarning("Save directory path is null, waiting for it to be set");
+            await new WaitUntil(() => !string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath));
+        }
+        
+        string filePath = Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "SpawnPoints.json");
+        if (!File.Exists(filePath))
+        {
+            return GetDefaultSpawnPointForCharacter(characterName);
+        }
+
+        var json = await File.ReadAllTextAsync(filePath);
+        var spawnPoints = JsonUtility.FromJson<SavedSpawnPoints>(json);
+        if (spawnPoints == null)
+        {
+            return GetDefaultSpawnPointForCharacter(characterName);
+        }
+        if(spawnPoints.GetSavePointFor(characterName, out var pnt))
+        {
+            return pnt;
+        };
+        return GetDefaultSpawnPointForCharacter(characterName);
+    }
+    
+    
     
     private bool TryLoadSpawnPoint(string characterName, string persistentSaveDataPath, out Vector3 spawnPoint)
     {

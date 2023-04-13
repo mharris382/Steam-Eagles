@@ -99,7 +99,17 @@ namespace Tools.BuildTool
             }
         }
 
-    
+
+        private void OnEnable()
+        {
+            Previewer.enabled = true;
+        }
+
+        private void OnDisable()
+        {
+            Previewer.enabled = false;
+        }
+
         void UpdatePath(Vector3Int hoveredPosition)
         {
             if (_pathStart == null)

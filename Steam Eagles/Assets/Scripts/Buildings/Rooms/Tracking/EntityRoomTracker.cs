@@ -113,6 +113,8 @@ namespace Buildings.Rooms.Tracking
 
         private void UpdateEntityRoom(Entity trackedEntity, Room room)
         {
+           
+            
             if (_entityRoomMap.ContainsKey(trackedEntity))
             {
                 var previous = _entityRoomMap[trackedEntity];
@@ -125,6 +127,10 @@ namespace Buildings.Rooms.Tracking
                 _entityRoomMap.Add(trackedEntity, room);
             }
             MessageBroker.Default.Publish(new EntityChangedRoomMessage(trackedEntity, room));
+            if(!trackedEntity.gameObject.TryGetComponent<EntityRoomState>(out var eState)) eState = trackedEntity.gameObject.AddComponent<EntityRoomState>();
+            if (!trackedEntity.LinkedGameObject.TryGetComponent<EntityRoomState>(out var lState)) lState = trackedEntity.LinkedGameObject.AddComponent<EntityRoomState>();
+            eState.SetCurrentRoom(room);
+            lState.SetCurrentRoom(room);
         }
 
         private Room SearchForEntityInBuilding(Entity entity)

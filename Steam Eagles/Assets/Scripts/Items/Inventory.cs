@@ -15,6 +15,8 @@ namespace Items
         private static ItemStackSorter _sorter;
         private static ItemStackSorter sorter => _sorter ?? (_sorter = new ItemStackSorter());
 
+        public bool isMain;
+
         void Start()
         {
             if (slotParent == null)

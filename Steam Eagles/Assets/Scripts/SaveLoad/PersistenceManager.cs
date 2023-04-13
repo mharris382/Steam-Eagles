@@ -60,20 +60,28 @@ namespace SaveLoad
                 .DelayFrame(1)
                 .Subscribe(info =>
                 {
-                    var position = SpawnDatabase.Instance.GetSpawnPointForScene(info.characterName, SaveDirectoryPath);
-                    position.z = 0;
-                    Debug.Log($"Loaded {position} from path {SaveDirectoryPath}");
-                    info.character.transform.localPosition = position;
-                    var go = GameObject.FindWithTag($"{info.characterName} Spawn");
-                    if (go != null)
-                    {
-                        info.character.transform.parent = go.transform.parent;
-                        info.character.transform.localPosition = position;
-                        info.character.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                    }
+                    StartCoroutine(SpawnCharacter(info.characterName, info.character));
+                    
                 }).AddTo(this);
         }
 
+        IEnumerator SpawnCharacter(string characterName, GameObject character)
+        {
+            yield return UniTask.ToCoroutine(async () =>
+            {
+                var pos = await SpawnDatabase.Instance.GetSpawnPoint(characterName);
+                pos.z = 0;
+                Debug.Log($"Loaded {pos} from path {SaveDirectoryPath}");
+                character.transform.localPosition = pos;
+                var go = GameObject.FindWithTag($"{characterName} Spawn");
+                if (go != null)
+                {
+                    character.transform.parent = go.transform.parent;
+                    character.transform.localPosition = pos;
+                    character.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                }
+            });
+        }
 
         private void Start()
         {

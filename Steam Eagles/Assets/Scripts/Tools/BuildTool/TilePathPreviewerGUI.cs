@@ -36,6 +36,18 @@ namespace Tools.BuildTool
             CreateHoverSprite();
         }
 
+        private void OnDisable()
+        {
+            if(_hoveredSprite != null)
+                _hoveredSprite.gameObject.SetActive(false);
+            foreach (var sprite in _activeSprites)
+            {
+                sprite.gameObject.SetActive(false);
+                _pooledSprites.Enqueue(sprite);
+            }
+            _activeSprites.Clear();
+        }
+
         private void CreateHoverSprite()
         {
             if (_hoveredSprite != null)
