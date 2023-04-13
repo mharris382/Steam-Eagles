@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms;
+using QuikGraph.Algorithms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -53,13 +54,7 @@ namespace Buildings
         private readonly Dictionary<BuildingLayers, Vector2> _layerToCellSize;
         private readonly Dictionary<BuildingLayers, Tilemap> _layerToTilemap;
 
-        private CellToRoomLookup GetMapForLayer(BuildingLayers layer)
-        {
-            if (!_layerToCellSize.ContainsKey(layer))
-                return _cellToRoomMaps[Vector2.one];
-            
-            return _cellToRoomMaps[_layerToCellSize[layer]];
-        }
+        public BuildingGraphs BuildingGraphs { get; }
 
         public BuildingMap(Building building, Room[] rooms)
         {
@@ -67,6 +62,7 @@ namespace Buildings
             _layerToCellSize = new Dictionary<BuildingLayers, Vector2>();
             _layerToTilemap = new Dictionary<BuildingLayers, Tilemap>();
             _roomGraph = new RoomGraph(building.GetComponentInChildren<Rooms.Rooms>());
+            
             BoundsInt buildingBounds = new BoundsInt();
             foreach (var buildingTilemap in building.GetAllBuildingLayers())
             {
@@ -84,8 +80,28 @@ namespace Buildings
                 if (!_cellToRoomMaps.ContainsKey(cellSize))
                     _cellToRoomMaps.Add(cellSize, new CellToRoomLookup(buildingTilemap.Tilemap.layoutGrid, rooms));
             }
+            //NOTE: must be called at the end of the constructor so the building map is fully initialized
+            BuildingGraphs = new BuildingGraphs(this);
         }
-        
+
+        public Tilemap GetTilemap(BuildingLayers layers)
+        {
+            return _layerToTilemap[layers];
+        }
+
+
+        public IEnumerable<(BuildingLayers layer, Vector2 cellSize)> GetUniqueLayers() => _layerToCellSize.Select(kvp => (kvp.Key, kvp.Value));
+
+        public RoomGraph RoomGraph => _roomGraph;
+
+        private CellToRoomLookup GetMapForLayer(BuildingLayers layer)
+        {
+            if (!_layerToCellSize.ContainsKey(layer))
+                return _cellToRoomMaps[Vector2.one];
+            
+            return _cellToRoomMaps[_layerToCellSize[layer]];
+        }
+
         public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
         public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);
         public bool CellIsInARoom(Vector3Int cell, BuildingLayers layer) => GetMapForLayer(layer).HasCell(cell);
@@ -142,6 +158,28 @@ namespace Buildings
                 return null;
             }
             return _layerToTilemap[layers].GetTile<T>(cell);
+        }
+
+        public List<Vector3Int> GetPath(Vector2Int pathStart, Vector2Int pathEnd, BuildingLayers getLayer)
+        {
+            if (pathStart == pathEnd)
+            {
+                return new List<Vector3Int> {(Vector3Int)pathStart};
+            }
+
+            var graph = BuildingGraphs.GetGraphForLayer(getLayer);
+            if (!graph.AdjacencyGraph.ContainsVertex(pathStart) ||
+                !graph.AdjacencyGraph.ContainsVertex(pathEnd))
+            {
+                return new List<Vector3Int> { (Vector3Int)pathStart,(Vector3Int) pathEnd };
+            }
+
+            var result = graph.AdjacencyGraph.ShortestPathsDijkstra(e => 1, pathStart);
+            if (result(pathEnd, out var path))
+            {
+                return path.Select(t =>(Vector3Int)t.Source).ToList();
+            }
+            return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
     }
 

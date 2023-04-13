@@ -14,12 +14,20 @@ namespace Characters.MyInput
         [Required]
         public Player player;
 
+        public float aimSpeed = 10f;
+        public Vector3 aimOriginOffset;
+        public float aimSmoothing = 0.1f;
+        
+        
+        
         private CharacterInputState _inputState;
+        private ToolState _toolState;
         private float moveY;
 
         private void Awake()
         {
             _inputState = GetComponent<CharacterInputState>();
+            _toolState = GetComponent<ToolState>();
         }
 
         bool HasInput()
@@ -60,6 +68,54 @@ namespace Characters.MyInput
 
             _inputState.MoveInput = moveInput;
             _inputState.AimInput = aimInput;
+
+            
+            
+            _toolState.Inputs.AimInputRaw = aimInput;
+            _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].WasPressedThisFrame();
+            _toolState.Inputs.CancelPressed = inputPlayer.actions["Ability Secondary"].WasPressedThisFrame() || 
+                                              inputPlayer.actions["Inventory"].WasPressedThisFrame() || 
+                                              inputPlayer.actions["Map"].WasPressedThisFrame() ||
+                                              inputPlayer.actions["Pause"].WasPressedThisFrame() ||
+                                              inputPlayer.actions["Codex"].WasPressedThisFrame() ||
+                                              inputPlayer.actions["Characters"].WasPressedThisFrame();
+            if (_toolState.Inputs.UsePressed) LogInput("UsePressed");
+            if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
+
+            bool usingMouse = inputPlayer.currentControlScheme.Contains("Keyboard");
+            HandleToolAim(Time.deltaTime, false);
+        }
+
+        private Vector2 _aimVelocity;
+
+        void LogInput(string input)
+        {
+            Debug.Log($"INPUT: {input}",this);
+        }
+
+        void HandleToolAim(float dt, bool usingMouse)
+        {
+            var pos = (Vector2) _toolState.AimPositionLocal;
+            var aimOrigin =(Vector2) aimOriginOffset;
+            if (!usingMouse)
+            {
+                var aimInput = _toolState.Inputs.AimInputRaw * (aimSpeed * dt);
+                pos += aimInput;
+            }
+            else
+            {
+                
+                pos =  _toolState.transform.InverseTransformVector(player.playerCamera.Value.ScreenToWorldPoint(Input.mousePosition));
+                _toolState.AimPositionWorld = pos;
+                return;
+            }
+            
+            var diff = pos - aimOrigin;
+            if (diff.sqrMagnitude > _toolState.SqrMaxToolRange)
+            {
+                pos = aimOrigin + diff.normalized * _toolState.maxToolRange;
+            }
+            _toolState.AimPositionLocal = pos;
         }
     }
 }

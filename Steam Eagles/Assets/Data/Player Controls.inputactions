@@ -330,9 +330,9 @@
                 {
                     "name": "",
                     "id": "deefce9a-4cae-4a8c-ac06-a93cc3a6213b",
-                    "path": "<Mouse>/position",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "StickDeadzone",
+                    "processors": "StickDeadzone,ScaleVector2(x=500,y=500)",
                     "groups": "Keyboard",
                     "action": "Aim",
                     "isComposite": false,
@@ -344,7 +344,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard 2;Keyboard",
                     "action": "Ability Primary",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -355,7 +355,7 @@
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller 1;Controller 2",
                     "action": "Ability Primary",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -366,7 +366,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard;Keyboard 2",
                     "action": "Ability Secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -377,7 +377,7 @@
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Ability Secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -388,7 +388,7 @@
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard 2;Keyboard",
                     "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -399,7 +399,7 @@
                     "path": "<VirtualMouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller 1;Controller 2",
                     "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -410,7 +410,7 @@
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller 1;Controller 2",
                     "action": "Open Wheel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -421,7 +421,7 @@
                     "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard;Keyboard 2",
                     "action": "Open Wheel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -432,7 +432,7 @@
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard;Keyboard 2",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -443,7 +443,7 @@
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -520,7 +520,7 @@
                     "path": "<Keyboard>/i",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard 2;Keyboard",
                     "action": "Inventory",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -531,19 +531,8 @@
                     "path": "<Keyboard>/m",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard",
                     "action": "Map",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2c139361-9ba1-4d52-9c6c-9d4970822ba8",
-                    "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Codex",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -553,8 +542,19 @@
                     "path": "<Keyboard>/l",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard",
                     "action": "Characters",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2c139361-9ba1-4d52-9c6c-9d4970822ba8",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Codex",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

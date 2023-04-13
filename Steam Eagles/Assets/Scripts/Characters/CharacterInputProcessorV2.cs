@@ -72,9 +72,10 @@ namespace Characters
             }
 
             _character.MoveInput = moveInput;
-            toolState.Inputs.AimInput = aimInput;
-            
-            
+            toolState.Inputs.AimInputRaw = aimInput;
+            toolState.Inputs.UsePressed = playerInput.actions["Use"].WasPressedThisFrame();
+            toolState.Inputs.CancelPressed = playerInput.actions["Cancel"].WasPressedThisFrame();
+
         }
         
         public void Dispose()

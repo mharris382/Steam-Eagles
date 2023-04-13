@@ -6,7 +6,12 @@ using UnityEngine.Tilemaps;
 
 namespace Buildings.Tiles
 {
-    public abstract class EditableTile : PuzzleTile
+    public interface IEditableTile
+    {
+        bool IsPlacementValid(Vector3Int cell, BuildingMap buildingMap);
+        BuildingLayers GetLayer();
+    }
+    public abstract class EditableTile : PuzzleTile, IEditableTile
     {
         
         public override bool CanTileBeDisconnected()

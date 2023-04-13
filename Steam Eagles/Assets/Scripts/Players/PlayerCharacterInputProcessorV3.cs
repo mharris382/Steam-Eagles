@@ -221,7 +221,7 @@ namespace Players
                 }
 
                 characterState.MoveInput = moveInput;
-                toolState.Inputs.AimInput = aimInput;
+                toolState.Inputs.AimInputRaw = aimInput;
             
                 toolState.Inputs.CurrentInputMode = usingKeyboardMouseInput ? InputMode.KeyboardMouse : InputMode.Gamepad;
             }
