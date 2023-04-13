@@ -50,5 +50,16 @@ namespace Buildings
             _entity.Remove(buildingMechanism);
             OnSubsystemEntityUnregistered(buildingMechanism);
         }
+        
+        
+        public IEnumerable<T> FindAllEntities()
+        {
+            var entities = GetComponentsInChildren<T>();
+            foreach (var entity in entities)
+            {
+                RegisterSubsystemEntity(entity);
+            }
+            return entities;
+        }
     }
 }

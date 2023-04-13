@@ -13,7 +13,7 @@ namespace Buildings.MyEditor
        
         
         [ShowInInspector]
-        protected readonly TSubsystem _buildingSubsystem;
+        public readonly TSubsystem _buildingSubsystem;
         
         [Button]
         void RefreshTable()

@@ -61,31 +61,31 @@ namespace CoreLib.Entities.Factory
 
         protected override void LoadFromSaveData(Entity entity, CharacterSaveData data)
         {
-            Debug.Assert(entity.linkedGameObject != null, "Character Factory: Entity has no linked game object", entity);
+            Debug.Assert(entity.LinkedGameObject != null, "Character Factory: Entity has no linked game object", entity);
             LoadInventoryData(entity, data);
         }
 
         protected override CharacterSaveData GetSaveDataFromEntity(Entity entity)
         {
-            Debug.Assert(entity.linkedGameObject != null, "Character Factory: Entity has no linked game object", entity);
+            Debug.Assert(entity.LinkedGameObject != null, "Character Factory: Entity has no linked game object", entity);
             var saveData = new CharacterSaveData();
-            saveData.characterName = entity.linkedGameObject.tag;
+            saveData.characterName = entity.LinkedGameObject.tag;
             SaveInventoryData(entity, saveData);
             return saveData;
         }
 
         private static void LoadInventoryData(Entity entity, CharacterSaveData data)
         {
-            var persistentInventories = entity.linkedGameObject.GetComponentsInChildren<PersistentInventoryBase>();
+            var persistentInventories = entity.LinkedGameObject.GetComponentsInChildren<PersistentInventoryBase>();
             if (EntityManager.Instance.debug)
                 Debug.Log(
-                    $"Character Factory: Expecting {persistentInventories.Length} persistent inventories by character entity \nEntity:{entity.entityGUID}\n{entity.linkedGameObject.name}",
-                    entity.linkedGameObject);
+                    $"Character Factory: Expecting {persistentInventories.Length} persistent inventories by character entity \nEntity:{entity.entityGUID}\n{entity.LinkedGameObject.name}",
+                    entity.LinkedGameObject);
 
             if (persistentInventories.Length == 0)
             {
                 Debug.LogWarning(
-                    $"Character Factory: Character Entity has no persistent inventories. Characters should have at least one inventory!\n(Entity GUID:{entity.entityGUID.Bolded()})\n(Linked GO:{entity.linkedGameObject.name.Bolded()})",
+                    $"Character Factory: Character Entity has no persistent inventories. Characters should have at least one inventory!\n(Entity GUID:{entity.entityGUID.Bolded()})\n(Linked GO:{entity.LinkedGameObject.name.Bolded()})",
                     entity.gameObject);
             }
             else if (data.inventorySaveData.Count == 0)
@@ -99,7 +99,7 @@ namespace CoreLib.Entities.Factory
                 Debug.LogWarning(
                     $"Expected number of inventories ({persistentInventories.Length}) does not match number of inventories in save data ({data.inventorySaveData.Count})\n" +
                     $"Entity GUID: {entity.entityGUID.Bolded()}\n" +
-                    $"Linked GO: {entity.linkedGameObject.name.Bolded()}", entity.gameObject);
+                    $"Linked GO: {entity.LinkedGameObject.name.Bolded()}", entity.gameObject);
             }
             else
             {
@@ -110,7 +110,7 @@ namespace CoreLib.Entities.Factory
                     var inventorySaveData = data.inventorySaveData[i];
                     if (EntityManager.Instance.debug)
                         Debug.Log($"Character Factory: Loading inventory {inventory.UniqueInventoryID} from save data",
-                            entity.linkedGameObject);
+                            entity.LinkedGameObject);
                     inventory.LoadFromSaveData(inventorySaveData.inventoryData.itemSlots.Select(itemSlot =>
                         (itemSlot.itemID, itemSlot.itemAmount)).ToArray());
                 }
@@ -120,18 +120,18 @@ namespace CoreLib.Entities.Factory
         private static void SaveInventoryData(Entity entity, CharacterSaveData saveData)
         {
             
-            var persistentInventories = entity.linkedGameObject.GetComponentsInChildren<PersistentInventoryBase>();
+            var persistentInventories = entity.LinkedGameObject.GetComponentsInChildren<PersistentInventoryBase>();
             if (persistentInventories.Length == 0)
             {
                 Debug.LogWarning(
-                    $"Character Factory: Character Entity has no persistent inventories. Characters should have at least one inventory!\n(Entity GUID:{entity.entityGUID.Bolded()})\n(Linked GO:{entity.linkedGameObject.name.Bolded()})",
+                    $"Character Factory: Character Entity has no persistent inventories. Characters should have at least one inventory!\n(Entity GUID:{entity.entityGUID.Bolded()})\n(Linked GO:{entity.LinkedGameObject.name.Bolded()})",
                     entity.gameObject);
             }
             else
             {
                 if (EntityManager.Instance.debug)
                     Debug.Log(
-                        $"Character Factory: Found {persistentInventories.Length} persistent inventories on character entity \nEntity:{entity.entityGUID}\n{entity.linkedGameObject.name}");
+                        $"Character Factory: Found {persistentInventories.Length} persistent inventories on character entity \nEntity:{entity.entityGUID}\n{entity.LinkedGameObject.name}");
                 saveData.inventorySaveData =
                     persistentInventories.Select(t => new CharacterSaveData.InventorySaveData(t)).ToList();
             }

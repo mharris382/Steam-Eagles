@@ -19,6 +19,7 @@ namespace CoreLib.Entities
         TERRAIN,
         WEAPON,
         NPC,
+        APPLIANCE,
         ALL = ~0
     }
 }

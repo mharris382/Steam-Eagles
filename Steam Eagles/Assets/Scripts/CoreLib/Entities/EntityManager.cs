@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using CoreLib.Entities.Factory;
+using Cysharp.Threading.Tasks;
 using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
@@ -26,7 +27,7 @@ namespace CoreLib.Entities
         private struct EntityHandle
         {
 
-            public GameObject Linker => Entity.linkedGameObject;
+            public GameObject Linker => Entity.LinkedGameObject;
             public Entity Entity;    
             public EntityType entityType => Entity.entityType;
             public string EntityGUID => Entity.entityGUID;
@@ -39,7 +40,7 @@ namespace CoreLib.Entities
                 var go = new GameObject($"{entityType} {entityGUID}");
                 go.transform.SetParent(Instance.transform);
                 Entity = go.AddComponent<Entity>();
-                Entity.linkedGameObject = initializer;
+                Entity.LinkedGameObject = initializer;
                 Entity.entityGUID = entityGUID;
                 Entity.entityType = entityType;
                 Instance.EntityFactory.CreateEntity(Entity, EntitySavePath);
@@ -67,7 +68,7 @@ namespace CoreLib.Entities
             
             public bool CanSave()
             {
-                return Entity != null && Entity.linkedGameObject;
+                return Entity != null && Entity.LinkedGameObject;
             }
             
             public void Save()
@@ -83,6 +84,14 @@ namespace CoreLib.Entities
                     Debug.LogError($"Cannot save entity: {EntityGUID} because it is not initialized yet!");
                 }
             }
+
+            public void Release()
+            {
+                Debug.Log($"Releasing Entity: {EntityGUID}");
+                if(Instance._entityChangeListeners.ContainsKey(EntityGUID))
+                    Instance._entityChangeListeners[EntityGUID].Value = null;
+                GameObject.Destroy(Entity.gameObject);
+            }
         }
 
         
@@ -92,9 +101,25 @@ namespace CoreLib.Entities
         {
             var guid = initializer.GetEntityGUID();
             var type = initializer.GetEntityType();
-            if(_entityHandles.ContainsKey(guid)) return _entityHandles[guid].Entity;
+            if (_entityHandles.ContainsKey(guid))
+            {
+                var e = _entityHandles[guid].Entity;
+                e.LinkedGameObject = initializer.gameObject;
+                return e;
+            }
             _entityHandles.Add(guid, new EntityHandle(initializer.gameObject, guid, type));
             return _entityHandles[guid].Entity;
+        }
+
+        public async UniTask<Entity> GetEntityAsync(EntityInitializer initializer)
+        {
+            if (string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath))
+            {
+                Debug.LogWarning("Save Directory Path is not set yet, waiting for it to be set...");
+                await new WaitUntil(() => !string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath));
+            }
+
+            return GetEntity(initializer);
         }
         [ShowInInspector]
         private Dictionary<string, EntityHandle> _entityHandles = new Dictionary<string, EntityHandle>();
@@ -190,6 +215,16 @@ namespace CoreLib.Entities
         {
             if(_entityHandles.ContainsKey(getEntityGUID))
                 _entityHandles[getEntityGUID].Save();
+        }
+
+        public void UnloadEntity(string getEntityGUID)
+        {
+            if (_entityHandles.ContainsKey(getEntityGUID))
+            {
+                var handle = _entityHandles[getEntityGUID];
+                handle.Release();
+                _entityHandles.Remove(getEntityGUID);
+            }
         }
     }
 

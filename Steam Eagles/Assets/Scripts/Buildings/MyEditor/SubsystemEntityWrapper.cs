@@ -32,6 +32,7 @@ namespace Buildings.MyEditor
         {
             Selection.activeGameObject = _entity.gameObject;
         }
+        
 
         public SubsystemEntityWrapper(SubSystemTable<TSubsystem, TEntity> table, TEntity entity)
         {

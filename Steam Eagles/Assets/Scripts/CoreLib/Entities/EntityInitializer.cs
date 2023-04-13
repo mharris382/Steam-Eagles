@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
@@ -30,12 +31,20 @@ namespace CoreLib.Entities
             
             var entityGUID = GetEntityGUID();
             var entityType = GetEntityType();
-            OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
+            yield return UniTask.ToCoroutine(async () =>
+            {
+                if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})");
+                var result = await EntityManager.Instance.GetEntityAsync(this);
+                if (EntityManager.Instance.debug) Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
+                OnEntityInitialized(result);
+            });
+            //OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
         }
         
         private void OnDestroy()
         {
             EntityManager.Instance.SaveEntity(GetEntityGUID());
+            EntityManager.Instance.UnloadEntity(GetEntityGUID());
             _entity.Dispose();
         }
     }

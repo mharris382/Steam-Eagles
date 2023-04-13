@@ -64,33 +64,50 @@ namespace Buildings.Rooms.Tracking
                     }
                 }
 
-                if (trackedEntity.linkedGameObject == null)
+                if (trackedEntity.LinkedGameObject == null)
                 {
                     Debug.LogWarning("Cannot track entity without a linked game object", trackedEntity);
                     continue;
                 }
-                var lastSeenRoom = _entityRoomMap[trackedEntity];
-                var currentPositionWS = trackedEntity.linkedGameObject.transform.position;
-                var currentPositionRS = Building.transform.InverseTransformPoint(currentPositionWS);
-                if (lastSeenRoom.RoomBounds.Contains(currentPositionRS))
+
+                if (!trackedEntity.dynamic)
+                    continue;
+                
+                CheckForDynamicEntityChangedRooms(trackedEntity);
+            }
+        }
+
+        private void CheckForDynamicEntityChangedRooms(Entity trackedEntity)
+        {
+            var lastSeenRoom = _entityRoomMap[trackedEntity];
+            var currentPositionWs = trackedEntity.LinkedGameObject.transform.position;
+            var currentPositionRs = Building.transform.InverseTransformPoint(currentPositionWs);
+            //Entity is still in the same room
+            if (lastSeenRoom.RoomBounds.Contains(currentPositionRs))
+                return;
+            
+            //Entity has most likely moved to a new room that is adjacent to the last seen room
+            if (Building.Map.RoomGraph.Graph.TryGetOutEdges(lastSeenRoom, out var neighbors))
+            {
+                foreach (var room in neighbors.Select(t => t.Target))
                 {
-                    //Entity is still in the same room
-                }
-                //Entity has most likely moved to a new room that is adjacent to the last seen room
-                else if (Building.Map.RoomGraph.Graph.TryGetOutEdges(lastSeenRoom, out var neighbors))
-                {
-                    foreach (var room in neighbors.Select(t => t.Target))
+                    if (room.RoomBounds.Contains(currentPositionRs))
                     {
-                        if (room.RoomBounds.Contains(currentPositionRS))
-                        {
-                            UpdateEntityRoom(trackedEntity, room);
-                        }
+                        UpdateEntityRoom(trackedEntity, room);
                     }
                 }
-                else
+            }
+            //Entity has moved to a room that is not adjacent to the last seen room, need to perform a full search to re-locate the entity
+            else
+            {
+                var room = SearchForEntityInBuilding(trackedEntity);
+                if (room == null)
                 {
-                    //Entity has moved to a room that is not adjacent to the last seen room, need to perform a full search to re-locate the entity
+                    throw new NotImplementedException(
+                        $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
+                        $"a room that is not adjacent to the last seen room, and could not be found in the building");
                 }
+                UpdateEntityRoom(trackedEntity, room);
             }
         }
 
@@ -110,16 +127,15 @@ namespace Buildings.Rooms.Tracking
             MessageBroker.Default.Publish(new EntityChangedRoomMessage(trackedEntity, room));
         }
 
-
         private Room SearchForEntityInBuilding(Entity entity)
         {
-            if (entity.linkedGameObject == null)
+            if (entity.LinkedGameObject == null)
             {
                Debug.LogWarning($"Cannot search for entity without a linked game object, {entity.name}");
                return null;
             }
 
-            var lsPos = Building.transform.InverseTransformPoint(entity.linkedGameObject.transform.position);
+            var lsPos = Building.transform.InverseTransformPoint(entity.LinkedGameObject.transform.position);
             foreach (var graphVertex in Building.Map.RoomGraph.Graph.Vertices)
             {
                 if (graphVertex.RoomBounds.Contains(lsPos))
