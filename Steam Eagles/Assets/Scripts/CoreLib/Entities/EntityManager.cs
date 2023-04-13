@@ -30,7 +30,7 @@ namespace CoreLib.Entities
             public Entity Entity;    
             public EntityType entityType => Entity.entityType;
             public string EntityGUID => Entity.entityGUID;
-            public string EntitySavePath => Path.Combine(Instance._entityPersistentSavePath, $"{EntityGUID}.json");
+            public string EntitySavePath => Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "Entities", $"{EntityGUID}.json");
 
             public bool doneLoading => Entity != null;
             public EntityHandle(GameObject initializer, string entityGUID, EntityType entityType)
@@ -47,6 +47,7 @@ namespace CoreLib.Entities
                     Debug.Log($"Created Entity: {entityGUID}");
                 if(Instance._entityChangeListeners.ContainsKey(entityGUID))
                     Instance._entityChangeListeners[entityGUID].Value = Entity;
+                MessageBroker.Default.Publish<Entity>(Entity);
             }
             
             public EntityHandle(Entity entity)
@@ -122,6 +123,14 @@ namespace CoreLib.Entities
         
         private EntityFactory _entityFactory;
         private EntityFactory EntityFactory => _entityFactory ??= new EntityFactory();
+
+        public IEnumerable<Entity> GetAllEntities()
+        {
+            foreach (var entityHandle in _entityHandles)
+            {
+                yield return entityHandle.Value.Entity;
+            }
+        }
 
         protected override void Init()
         {

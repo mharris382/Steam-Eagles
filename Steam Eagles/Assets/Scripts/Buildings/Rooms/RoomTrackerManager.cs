@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoreLib;
 using PhysicsFun.Buildings.Rooms;
 using UniRx;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace Buildings.Rooms
 {
+    [Obsolete]
     public class RoomTrackerManager : Singleton<RoomTrackerManager>
     {
         public override bool DestroyOnLoad => false;
@@ -33,7 +35,7 @@ namespace Buildings.Rooms
             
             Debug.Log($"Created Room Tracker for {characterName}",this);
             roomTracker = go.AddComponent<CharacterRoomTracker>();
-            roomTracker.characterName = characterName;
+           // roomTracker.characterName = characterName;
             roomTrackers.Add(characterName, roomTracker);
             return roomTracker;
         }
