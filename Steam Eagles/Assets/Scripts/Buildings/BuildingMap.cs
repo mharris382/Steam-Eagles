@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms;
+using Buildings.Tiles;
 using QuikGraph.Algorithms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -160,7 +161,7 @@ namespace Buildings
             return _layerToTilemap[layers].GetTile<T>(cell);
         }
 
-        public List<Vector3Int> GetPath(Vector2Int pathStart, Vector2Int pathEnd, BuildingLayers getLayer)
+        public IEnumerable<Vector3Int> GetPath(Vector2Int pathStart, Vector2Int pathEnd, BuildingLayers getLayer)
         {
             if (pathStart == pathEnd)
             {
@@ -177,9 +178,15 @@ namespace Buildings
             var result = graph.AdjacencyGraph.ShortestPathsDijkstra(e => 1, pathStart);
             if (result(pathEnd, out var path))
             {
-                return path.Select(t =>(Vector3Int)t.Source).ToList();
+                return path.Select(t => (Vector3Int)t.Target);
             }
             return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
+        }
+
+        public void SetTile(Vector3Int cell, BuildingLayers getLayer, EditableTile tile)
+        {
+            var tm = GetTilemap(getLayer);
+            tm.SetTile(cell, tile);
         }
     }
 

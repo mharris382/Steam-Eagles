@@ -1,4 +1,6 @@
-﻿namespace UI.PlayerGUIs
+﻿using UnityEngine;
+
+namespace UI.PlayerGUIs
 {
     public partial class PlayerCharacterGUIWindowRoot
     {
@@ -10,6 +12,14 @@
             {
                 GUIController.Close();
                 PlayerCharacterHUD.Open();
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Confined;
+            }
+
+            public override void OnExit()
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
             }
         }
     }

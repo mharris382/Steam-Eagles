@@ -17,6 +17,13 @@ namespace Tools.BuildTool
         private TilePathPreviewerGUI _previewer;
         private ToolState _toolState;
         private Building _building;
+        public PlacementMode mode = PlacementMode.ShortestPath;
+        
+        public enum PlacementMode
+        {
+            ShortestPath,
+            Line,
+        }
 
         private Building Building => _building != null ? _building : (_building = GetComponentInParent<Building>());
         private TilePathPreviewerGUI Previewer => _previewer ??= GetComponent<TilePathPreviewerGUI>();
@@ -71,6 +78,23 @@ namespace Tools.BuildTool
             else
             {
                 //TODO: check if path if valid, if so build
+                bool allValid = true;
+                foreach (var cell in _path)
+                {
+                    if (!tile.IsPlacementValid(cell, _building.Map))
+                    {
+                        allValid = false;
+                        break;
+                    }
+                }
+
+                if (allValid)
+                {
+                    foreach (var cell in _path)
+                    {
+                        _building.Map.SetTile(cell, tile.GetLayer(), tile);
+                    }
+                }
                 _pathStart = null;
             }
         }
@@ -90,19 +114,35 @@ namespace Tools.BuildTool
             {
                 var current = _pathStart.Value;
                 _path = new List<Vector3Int> { current };
-                BuildPath(hoveredPosition, current);
+                BuildPathShortest(hoveredPosition, current);
                 _pathSubject.OnNext(_path);
             }
         }
+
+        private void BuildPathLine(Vector3Int end, Vector3Int start)
+        {
+            
+        }
         
-        private void BuildPath(Vector3Int hoveredPosition, Vector3Int current)
+        private void BuildPathShortest(Vector3Int hoveredPosition, Vector3Int current)
         {
             if (_pathStart == null)
                 return;
+            if (_path == null) _path = new List<Vector3Int>(maxPathLength);
             _path.Clear();
             var start = (Vector2Int) _pathStart.Value;
             var end =(Vector2Int) hoveredPosition;
-            _path = _building.Map.GetPath(start, end, Tile.GetLayer());
+            var path = _building.Map.GetPath(start, end, Tile.GetLayer());
+            
+            
+            int length = 0;
+            foreach (var position in path)
+            {
+                if (length >= maxPathLength)
+                    break;
+                _path.Add(position);
+                length++;
+            }
             _pathSubject.OnNext(_path);
             // Vector3Int direction = Vector3Int.zero;
             //

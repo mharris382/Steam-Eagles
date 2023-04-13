@@ -109,6 +109,7 @@ namespace Tools.BuildTool
             _selectedTile = selectedTile;
             _selectedTilePath = selectedTilePath;
             _buildingMap = buildingMap;
+            
             hoveredTile.Where(_ => _selectedTile.Value != null)
                 .Subscribe(cell =>
                 {
@@ -116,17 +117,33 @@ namespace Tools.BuildTool
                     _hoveredSprite.transform.position = wsPos;
                     bool isValid = selectedTile.Value.IsPlacementValid(cell, buildingMap);
                     _hoveredSprite.color = (isValid ? validColor : invalidColor).Lighten(0.25f);
-                    _hoveredSprite.gameObject.SetActive(true);
                 }).AddTo(this);
+            
+            var hasPath = _selectedTilePath.Select(t => t.Count > 1);
+            hasPath.Subscribe(t => _hoveredSprite.gameObject.SetActive(t));
+            //var pathEnd = _selectedTilePath
+            //    .Where(t => t is { Count: > 0 })
+            //    .Select(t => t[^1]);
+//
+            //hasPath.Select(t => t ? pathEnd : hoveredTile).Switch().Where(t => _selectedTile.Value != null)
+            //    .Subscribe(SetEndPosition).AddTo(this);
+            
             selectedTile.Select(t => t != null).Subscribe(hasTile =>
             {
                 _hoveredSprite.gameObject.SetActive(hasTile);
             });
+            
             _selectedTilePath.Where(_ => _selectedTile.Value != null)
                 .Subscribe(ShowPath)
                 .AddTo(this);
         }
 
+        void SetEndPosition(Vector3Int cell)
+        {
+            var wsPos = GetWorldPosition(cell);
+            _hoveredSprite.transform.position = wsPos;
+        }
+        
         Vector3 GetWorldPosition(Vector3Int cell) => _buildingMap.CellToWorld(cell, _selectedTile.Value.GetLayer());
     }
 }
