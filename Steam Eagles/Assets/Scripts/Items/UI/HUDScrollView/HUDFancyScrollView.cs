@@ -43,8 +43,19 @@ namespace Items.UI.HUDScrollView
 
         public void SelectCell(int index)
         {
-            if(index < 0 || index >= ItemsSource.Count || index == Context.SelectedIndex)
-                return;
+            if (index < 0 || index >= ItemsSource.Count || index == Context.SelectedIndex)
+            {
+                if(index == Context.SelectedIndex)
+                    return;
+                if (index < 0)
+                {
+                    index = ItemsSource.Count - 1;
+                }
+                else if (index == ItemsSource.Count)
+                {
+                    index = 0;
+                }
+            }
             
             UpdateSelection(index);
             scroller.ScrollTo(index, 0.34f, FancyEase.OutCubic);

@@ -97,17 +97,34 @@ namespace Items.UI.HUDScrollView
             _waitForEntitySetup = null;
         }
 
-
+        private bool inited = false;
+        
+        private float _timeLastUpdated;
+        const float UpdateInterval = 0.25f;
         private void Update()
         {
-            if(guiController.HasAllResources()==false)
+            if (guiController.HasAllResources() == false)
+            {
+                inited = false;
                 return;
-            
+            }
+
+            if (inited == false)
+            {
+                inited = true;
+                var backpack = GetBackpack();
+                Debug.Assert(backpack != null, "Backpack is null");
+                Setup(testTool, backpack);
+            }
             var inputPlayer = guiController.playerInput;
             
-            var recipeSelect = inputPlayer.actions["Select Recipe"].ReadValue<int>();
+            var recipeSelect = inputPlayer.actions["Select Recipe"].ReadValue<float>();
             if (recipeSelect != 0)
             {
+                if(Time.realtimeSinceStartup - _timeLastUpdated > UpdateInterval)
+                    _timeLastUpdated = Time.realtimeSinceStartup;
+                else
+                    return;
                 if (recipeSelect > 0)
                 {
                     if(invertSelection)scrollView.SelectPrev();

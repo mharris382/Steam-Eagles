@@ -168,7 +168,33 @@ namespace UI.PlayerGUIs
                 else rootWindow.DisableWindow();
             }).AddTo(this);
         }
+
         
+        private void Update()
+        {
+            if (!HasAllResources())
+            {
+                if (!GameManager.Instance.PlayerHasCharacterAssigned(this.playerID))
+                {
+                    return;
+                }
+
+                string character = GameManager.Instance.GetPlayerCharacterName(playerID);
+                if (EntityManager.Instance.TryGetEntity(character, out var e))
+                {
+                    pcEntity = e;
+                    Debug.Assert(e.LinkedGameObject != null);
+                }
+
+                if (playerInput == null)
+                {
+                    Debug.Assert((GameManager.Instance.GetPlayerDevice(playerID)
+                        .TryGetComponent<PlayerInput>(out var pinput)));
+                    playerInput = pinput;
+                }
+            }
+        }
+
         private void OnDestroy()
         {
             if (_entityListener != null)
@@ -214,6 +240,7 @@ namespace UI.PlayerGUIs
         /// when the player controlled character is destroyed and the entity is set to null)
         /// </summary>
         /// <param name="entity"></param>
+        [Obsolete("Too much of mess, use WaitForInitialization")]
         private void UpdateEntity(Entity entity)
         {
             if (entity == null)

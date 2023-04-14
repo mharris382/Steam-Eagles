@@ -44,50 +44,43 @@ MonoBehaviour:
     bindingName: Gameplay/Move
     inputStyleString: <sprite="Keyboard and Mouse" name="W"><sprite="Keyboard and
       Mouse" name="S"><sprite="Keyboard and Mouse" name="A"><sprite="Keyboard and
-      Mouse" name="D"> <size=80%>or</size> <sprite="Keyboard and Mouse" name="UPARROW"><sprite="Keyboard
-      and Mouse" name="DOWNARROW"><sprite="Keyboard and Mouse" name="LEFTARROW"><sprite="Keyboard
-      and Mouse" name="RIGHTARROW">
+      Mouse" name="D">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="W"><sprite="Keyboard
       and Mouse" name="S"><sprite="Keyboard and Mouse" name="A"><sprite="Keyboard
       and Mouse" name="D">
-    humanReadableString: W, S, A, D <size=80%>or</size> UP ARROW, DOWN ARROW, LEFT
-      ARROW, RIGHT ARROW
+    humanReadableString: W, S, A, D
     humanReadableString_singleInput: W, S, A, D
   - isComposite: 0
     isPartOfComposite: 1
     tmproReferenceText: <style=Gameplay/Move/up>
     bindingName: Gameplay/Move/up
-    inputStyleString: <sprite="Keyboard and Mouse" name="W"> <size=80%>or</size>
-      <sprite="Keyboard and Mouse" name="UPARROW">
+    inputStyleString: <sprite="Keyboard and Mouse" name="W">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="W">
-    humanReadableString: W <size=80%>or</size> UP ARROW
+    humanReadableString: W
     humanReadableString_singleInput: W
   - isComposite: 0
     isPartOfComposite: 1
     tmproReferenceText: <style=Gameplay/Move/down>
     bindingName: Gameplay/Move/down
-    inputStyleString: <sprite="Keyboard and Mouse" name="S"> <size=80%>or</size>
-      <sprite="Keyboard and Mouse" name="DOWNARROW">
+    inputStyleString: <sprite="Keyboard and Mouse" name="S">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="S">
-    humanReadableString: S <size=80%>or</size> DOWN ARROW
+    humanReadableString: S
     humanReadableString_singleInput: S
   - isComposite: 0
     isPartOfComposite: 1
     tmproReferenceText: <style=Gameplay/Move/left>
     bindingName: Gameplay/Move/left
-    inputStyleString: <sprite="Keyboard and Mouse" name="A"> <size=80%>or</size>
-      <sprite="Keyboard and Mouse" name="LEFTARROW">
+    inputStyleString: <sprite="Keyboard and Mouse" name="A">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="A">
-    humanReadableString: A <size=80%>or</size> LEFT ARROW
+    humanReadableString: A
     humanReadableString_singleInput: A
   - isComposite: 0
     isPartOfComposite: 1
     tmproReferenceText: <style=Gameplay/Move/right>
     bindingName: Gameplay/Move/right
-    inputStyleString: <sprite="Keyboard and Mouse" name="D"> <size=80%>or</size>
-      <sprite="Keyboard and Mouse" name="RIGHTARROW">
+    inputStyleString: <sprite="Keyboard and Mouse" name="D">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="D">
-    humanReadableString: D <size=80%>or</size> RIGHT ARROW
+    humanReadableString: D
     humanReadableString_singleInput: D
   - isComposite: 0
     isPartOfComposite: 0
@@ -135,10 +128,162 @@ MonoBehaviour:
     isPartOfComposite: 0
     tmproReferenceText: <style=Gameplay/Aim>
     bindingName: Gameplay/Aim
+    inputStyleString: <sprite="Keyboard and Mouse" name="DELTA">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DELTA">
+    humanReadableString: MOUSE
+    humanReadableString_singleInput: MOUSE
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Ability Primary>
+    bindingName: Gameplay/Ability Primary
+    inputStyleString: <sprite="Keyboard and Mouse" name="LEFTBUTTON">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="LEFTBUTTON">
+    humanReadableString: LMB
+    humanReadableString_singleInput: LMB
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Ability Secondary>
+    bindingName: Gameplay/Ability Secondary
+    inputStyleString: <sprite="Keyboard and Mouse" name="RIGHTBUTTON">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="RIGHTBUTTON">
+    humanReadableString: RMB
+    humanReadableString_singleInput: RMB
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select>
+    bindingName: Gameplay/Select
     inputStyleString: <sprite="Keyboard and Mouse" name="POSITION">
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="POSITION">
     humanReadableString: MOUSE
     humanReadableString_singleInput: MOUSE
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Open Wheel>
+    bindingName: Gameplay/Open Wheel
+    inputStyleString: <sprite="Keyboard and Mouse" name="TAB">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="TAB">
+    humanReadableString: TAB
+    humanReadableString_singleInput: TAB
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Pause>
+    bindingName: Gameplay/Pause
+    inputStyleString: <sprite="Keyboard and Mouse" name="ESCAPE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="ESCAPE">
+    humanReadableString: ESCAPE
+    humanReadableString_singleInput: ESCAPE
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Move X>
+    bindingName: Gameplay/Move X
+    inputStyleString: <sprite="Keyboard and Mouse" name="A"><sprite="Keyboard and
+      Mouse" name="D">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="A"><sprite="Keyboard
+      and Mouse" name="D">
+    humanReadableString: A, D
+    humanReadableString_singleInput: A, D
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Move X/negative>
+    bindingName: Gameplay/Move X/negative
+    inputStyleString: <sprite="Keyboard and Mouse" name="A">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="A">
+    humanReadableString: A
+    humanReadableString_singleInput: A
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Move X/positive>
+    bindingName: Gameplay/Move X/positive
+    inputStyleString: <sprite="Keyboard and Mouse" name="D">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="D">
+    humanReadableString: D
+    humanReadableString_singleInput: D
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Move Y>
+    bindingName: Gameplay/Move Y
+    inputStyleString: <sprite="Keyboard and Mouse" name="S"><sprite="Keyboard and
+      Mouse" name="W">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="S"><sprite="Keyboard
+      and Mouse" name="W">
+    humanReadableString: S, W
+    humanReadableString_singleInput: S, W
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Move Y/negative>
+    bindingName: Gameplay/Move Y/negative
+    inputStyleString: <sprite="Keyboard and Mouse" name="S">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="S">
+    humanReadableString: S
+    humanReadableString_singleInput: S
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Move Y/positive>
+    bindingName: Gameplay/Move Y/positive
+    inputStyleString: <sprite="Keyboard and Mouse" name="W">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="W">
+    humanReadableString: W
+    humanReadableString_singleInput: W
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Inventory>
+    bindingName: Gameplay/Inventory
+    inputStyleString: <sprite="Keyboard and Mouse" name="I">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="I">
+    humanReadableString: I
+    humanReadableString_singleInput: I
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Map>
+    bindingName: Gameplay/Map
+    inputStyleString: <sprite="Keyboard and Mouse" name="M">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="M">
+    humanReadableString: M
+    humanReadableString_singleInput: M
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Codex>
+    bindingName: Gameplay/Codex
+    inputStyleString: <sprite="Keyboard and Mouse" name="K">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="K">
+    humanReadableString: K
+    humanReadableString_singleInput: K
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Characters>
+    bindingName: Gameplay/Characters
+    inputStyleString: <sprite="Keyboard and Mouse" name="L">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="L">
+    humanReadableString: L
+    humanReadableString_singleInput: L
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select Recipe>
+    bindingName: Gameplay/Select Recipe
+    inputStyleString: <sprite="Keyboard and Mouse" name="DOWNARROW"><sprite="Keyboard
+      and Mouse" name="UPARROW"> <size=80%>or</size> <sprite="Keyboard and Mouse"
+      name="DOWNARROW"><sprite="Keyboard and Mouse" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DOWNARROW"><sprite="Keyboard
+      and Mouse" name="UPARROW">
+    humanReadableString: DOWN ARROW, UP ARROW <size=80%>or</size> DOWN ARROW, UP
+      ARROW
+    humanReadableString_singleInput: DOWN ARROW, UP ARROW
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Recipe/negative>
+    bindingName: Gameplay/Select Recipe/negative
+    inputStyleString: <sprite="Keyboard and Mouse" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DOWNARROW">
+    humanReadableString: DOWN ARROW
+    humanReadableString_singleInput: DOWN ARROW
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Recipe/positive>
+    bindingName: Gameplay/Select Recipe/positive
+    inputStyleString: <sprite="Keyboard and Mouse" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="UPARROW">
+    humanReadableString: UP ARROW
+    humanReadableString_singleInput: UP ARROW
   - isComposite: 0
     isPartOfComposite: 0
     tmproReferenceText: <style=Wheel/Preview>

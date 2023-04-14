@@ -30,6 +30,7 @@ namespace Items.UI.HUDScrollView
             string s = string.Format(textFormat, componentStack.Count, count);
             amountText.text = s;
             amountText.color = color;
+            iconImage.sprite = componentStack.item.icon;
         }
     }
 }

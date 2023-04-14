@@ -35,6 +35,7 @@ namespace Items.UI.HUDScrollView
             scrollView.SetContextInfo(tool, inventory);
             scrollView.UpdateData(tool.Recipes.ToList());
             scrollView.gameObject.SetActive(true);
+            scrollView.SelectCell(0);
         }
 
     }

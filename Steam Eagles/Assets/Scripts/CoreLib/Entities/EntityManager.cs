@@ -127,6 +127,21 @@ namespace CoreLib.Entities
         /// <summary> entities that have been registered by scene but custom data has not yet loaded from disk, so entity is not ready yet to be used. </summary>
         private Queue<Entity> _uninitializedEntities = new Queue<Entity>();
         
+        public bool HasEntityFor(string entityGUID)
+        {
+            return _entityHandles.ContainsKey(entityGUID);
+        }
+
+        public bool TryGetEntity(string entityGUID, out Entity e)
+        {
+            e = null;
+            if (HasEntityFor(entityGUID))
+            {
+                e = _entityHandles[entityGUID].Entity;
+                return true;
+            }
+            return false;
+        }
         
         /// <summary>
         /// allows for listening to entity changes from anywhere in the game, including persistent game elements such as UI.
