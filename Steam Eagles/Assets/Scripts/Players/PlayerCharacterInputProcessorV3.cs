@@ -121,7 +121,7 @@ namespace Players
                 _assignedCharacterState.AddTo(cd);
                 processorManager.Subscribe(_ => Debug.Log("Updating!")).AddTo(cd);
                 
-                MessageBroker.Default.Receive<PlayerDeviceJoined>().Where(t => t.Index == playerNumber)
+                MessageBroker.Default.Receive<PlayerDeviceJoined>().Where(t => t.PlayerNumber == playerNumber)
                     .Subscribe(t => _assignedPlayerInput.Value = t.PlayerInput.GetComponent<PlayerInput>()).AddTo(cd);
                 
                 MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()

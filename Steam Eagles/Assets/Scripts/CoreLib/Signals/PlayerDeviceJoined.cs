@@ -4,12 +4,12 @@ namespace Players.Shared
 {
     public class PlayerDeviceJoined
     {
-        public int Index { get; }
+        public int PlayerNumber { get; }
         public GameObject PlayerInput { get; }
 
-        public PlayerDeviceJoined(int index, GameObject playerInput)
+        public PlayerDeviceJoined(int playerNumber, GameObject playerInput)
         {
-            Index = index;
+            PlayerNumber = playerNumber;
             PlayerInput = playerInput;
         }
     }

@@ -148,6 +148,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Select Recipe",
+                    "type": "Value",
+                    "id": "c9328775-13a0-4291-bab8-04602e5f2d0b",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -527,6 +536,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c5ebc4ba-bcfc-4b25-a631-e0c3a3de2f58",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "31ce8b99-cf92-42c2-8e73-7dd5b9fa025c",
                     "path": "<Keyboard>/m",
                     "interactions": "",
@@ -557,6 +577,72 @@
                     "action": "Codex",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "d9643962-ed5a-4d7a-a57b-b8e5b17c266f",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select Recipe",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "c3dc6a3e-fbee-436d-aeed-9eae7d4a5502",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2;Keyboard",
+                    "action": "Select Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "f5c27fd7-464c-49da-b413-7f2c5cc9dc64",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2;Keyboard",
+                    "action": "Select Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "fa3814b6-7794-4a45-88bb-3c3742ae4c83",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select Recipe",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "80e4a1f8-d4e6-410c-b38f-7df211239b9c",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Select Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "eddec86f-d467-4b8c-9eb3-e0459bbb4ad9",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Select Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

@@ -72,13 +72,13 @@ namespace Game
 
         private void OnPlayerDeviceJoined(PlayerDeviceJoined playerDeviceJoined)
         {
-            if (_playerDevices.ContainsKey(playerDeviceJoined.Index))
+            if (_playerDevices.ContainsKey(playerDeviceJoined.PlayerNumber))
             {
-                _playerDevices[playerDeviceJoined.Index] = playerDeviceJoined.PlayerInput;
+                _playerDevices[playerDeviceJoined.PlayerNumber] = playerDeviceJoined.PlayerInput;
             }
             else
             {
-                _playerDevices.Add(playerDeviceJoined.Index, playerDeviceJoined.PlayerInput);
+                _playerDevices.Add(playerDeviceJoined.PlayerNumber, playerDeviceJoined.PlayerInput);
             }
             NumberOfPlayerDevicesChanged?.Invoke(_playerDevices.Count);
         }

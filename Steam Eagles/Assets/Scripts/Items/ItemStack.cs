@@ -10,9 +10,17 @@ namespace Items
         IEquatable<ItemStack>,
         IComparable<ItemStack>
     {
+        [ShowInInspector, HideLabel]
+        public string ItemName
+        {
+            get => item == null ? "Empty" : item.itemName;
+        }
         [HideLabel, LabelWidth(45)] public ItemBase item;
+        
+        [PropertyRange(1, nameof(MaxAmount))]
         [LabelText("Count"), LabelWidth(45),SerializeField] private int itemCount;
 
+        public int MaxAmount => item == null ? 1 : item.MaxStackSize;
         public ItemStack(ItemBase item, int itemCount)
         {
             this.item = item;
@@ -49,6 +57,12 @@ namespace Items
 
         public bool IsEmpty => item == null || itemCount <= 0;
 
+        public void SetCount(int amount)
+        {
+            this.itemCount = amount;
+        }
+        
+        
         public bool Equals(ItemStack other)
         {
             return Equals(item, other.item) && itemCount == other.itemCount;

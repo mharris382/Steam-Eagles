@@ -31,7 +31,7 @@ namespace SaveLoad.CoreSave
         //     
         //     return true;
         // }
-        public async override UniTask<bool> LoadData(string savePath, CoreSaveData data)
+        public override async UniTask<bool> LoadData(string savePath, CoreSaveData data)
         {
             var loadSceneOp = SceneManager.LoadSceneAsync(data.Scene);
             LoadedCharacterPrefabs.BuilderPrefabLoadOp = Addressables.LoadAssetAsync<GameObject>("Builder_Prefab");
@@ -48,6 +48,7 @@ namespace SaveLoad.CoreSave
             Debug.Assert(LoadedCharacterPrefabs.LoadedTransporterPrefab != null, "Failed to load transporter prefab");
             for (int i = 0; i < data.PlayerCharacterNames.Length; i++)
             {
+               
                 var playerCharacter = data.PlayerCharacterNames[i];
                 var spawnPoint = SpawnDatabase.Instance.GetSpawnPointForScene(playerCharacter, savePath);
                 var prefab = playerCharacter == "Builder"

@@ -17,6 +17,7 @@ namespace Items
 
         public bool isMain;
 
+        public bool isToolbelt;
         void Start()
         {
             if (slotParent == null)
@@ -235,4 +236,5 @@ namespace Items
         }
     }
 
+    
 }

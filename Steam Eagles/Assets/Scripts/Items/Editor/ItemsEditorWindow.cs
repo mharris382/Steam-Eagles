@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using CoreLib.Pickups;
 using UnityEditor;
 using Sirenix.OdinInspector;
@@ -23,9 +24,9 @@ namespace Items
             
             var tree = new OdinMenuTree();
             var items = AssetDatabase.FindAssets("t:Item")
-                .Select(t => AssetDatabase.LoadAssetAtPath<Item>(AssetDatabase.GUIDToAssetPath(t)));
+                .Select(t => AssetDatabase.LoadAssetAtPath<Item>(AssetDatabase.GUIDToAssetPath(t))).ToArray();
             var tools = AssetDatabase.FindAssets("t:Tool")
-                .Select(t => AssetDatabase.LoadAssetAtPath<Tool>(AssetDatabase.GUIDToAssetPath(t)));
+                .Select(t => AssetDatabase.LoadAssetAtPath<Tool>(AssetDatabase.GUIDToAssetPath(t))).ToArray();
             
             ItemOverview.Instance.UpdateItems(); 
             tree.Add("Items",ItemOverview.Instance);
@@ -37,7 +38,7 @@ namespace Items
             {
                 AddItemToTree(tool, tree, "Tools");
             }
-            AddRecipesToMenu(tree);
+            AddRecipesToMenu(tree, items);
             AddPickupsToMenu(tree);
             return tree;
         }
@@ -104,10 +105,13 @@ namespace Items
             }
         }
 
-        private static void AddRecipesToMenu(OdinMenuTree tree)
+        private static void AddRecipesToMenu(OdinMenuTree tree, IEnumerable<ItemBase> items)
         {
+            string group = "Recipes";
             var recipes = AssetDatabase.FindAssets("t:Recipe")
-                .Select(t => AssetDatabase.LoadAssetAtPath<Recipe>(AssetDatabase.GUIDToAssetPath(t)));
+                .Select(t => AssetDatabase.LoadAssetAtPath<Recipe>(AssetDatabase.GUIDToAssetPath(t))).ToArray();
+            var recipeEditor = new RecipeEditor(recipes, items);
+            tree.Add(group, recipeEditor);
             foreach (var recipe in recipes)
             {
                 AddRecipeToTree(recipe, tree);

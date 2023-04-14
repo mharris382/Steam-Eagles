@@ -16,6 +16,8 @@ namespace CoreLib.Entities
         public Entity Entity => _entity.Value;
         public IReadOnlyReactiveProperty<Entity> EntityProperty => _entity;
 
+        public bool isDoneInitializing;
+
         /// <summary>
         /// once entity has been setup to store correct custom data (such as inventory data) and all
         /// save data has been loaded, this method is called to all implementing classes to then
@@ -26,17 +28,21 @@ namespace CoreLib.Entities
         
         private IEnumerator Start()
         {
+            isDoneInitializing = false;
             while(EntityManager.Instance == null)
                 yield return null;
             
             var entityGUID = GetEntityGUID();
             var entityType = GetEntityType();
+            
             yield return UniTask.ToCoroutine(async () =>
             {
                 if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})");
                 var result = await EntityManager.Instance.GetEntityAsync(this);
                 if (EntityManager.Instance.debug) Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
+                _entity.Value = result;
                 OnEntityInitialized(result);
+                isDoneInitializing = true;
             });
             //OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
         }

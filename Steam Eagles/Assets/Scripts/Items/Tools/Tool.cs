@@ -17,5 +17,8 @@ namespace Items
         [SerializeField] private List<Recipe> recipes;
 
         public override ItemType ItemType => ItemType.TOOL;
+
+
+        public IEnumerable<Recipe> Recipes => recipes;
     }
 }

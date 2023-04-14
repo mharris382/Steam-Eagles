@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using CoreLib;
 using CoreLib.Entities;
 using Game;
@@ -23,31 +24,53 @@ namespace UI.PlayerGUIs
 
         private ReactiveProperty<bool> _isGuiActive = new ReactiveProperty<bool>(false);
         private IDisposable _entityListener;
-        private Entity _pcEntity;
-        private PlayerInput _playerInput;
+        private ReactiveProperty<Entity> __pcEntity = new ReactiveProperty<Entity>();
+        private ReactiveProperty<PlayerInput> __playerInput = new ReactiveProperty<PlayerInput>();
 
-        private PlayerInput playerInput
+        [SerializeField]
+        private BoolReactiveProperty showRecipeHUD = new BoolReactiveProperty(true);
+
+        
+        public IReadOnlyReactiveProperty<bool> ShowRecipeHUD => showRecipeHUD;
+
+        private Entity _pcEntity
+        {
+            get => __pcEntity.Value;
+            set => __pcEntity.Value = value;
+        }
+
+        private PlayerInput _playerInput
+        {
+            get => __playerInput.Value;
+            set => __playerInput.Value = value;
+        }
+
+        public PlayerInput playerInput
         {
             get => _playerInput;
-            set
+           private set
             {
                 _playerInput = value;
                 UpdateGUIActiveState();
             }
         }
 
-        private Entity pcEntity
+        public Entity pcEntity
         {
             get => _pcEntity;
-            set
+            private set
             {
                 _pcEntity = value;
                 UpdateGUIActiveState();
             }
         }
 
+
+        public IReadOnlyReactiveProperty<PlayerInput> PlayerInputProperty => __playerInput ??= new ReactiveProperty<PlayerInput>();
+        public IReadOnlyReactiveProperty<Entity> PcEntityProperty => __pcEntity ??= new ReactiveProperty<Entity>();
+
         /// <summary> game object that represents the player character </summary>
-        private GameObject PlayerCharacter => pcEntity != null ? pcEntity.gameObject : null;
+        public GameObject PlayerCharacter => pcEntity != null ? pcEntity.LinkedGameObject : null;
 
         
         
@@ -87,7 +110,7 @@ namespace UI.PlayerGUIs
             
             //react to player joining
             MessageBroker.Default.Receive<PlayerDeviceJoined>()
-                .Where(t => t.Index == playerID)
+                .Where(t => t.PlayerNumber == playerID)
                 .Select(t => t.PlayerInput.GetComponent<PlayerInput>())
                 .Where(t => t != null)
                 .Subscribe(UpdatePlayerInput).AddTo(this);
@@ -99,17 +122,40 @@ namespace UI.PlayerGUIs
                 .AddTo(this);
             
             //react to player character being assigned
-            
             MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()
-                .Where(t => t.playerNumber == playerID)
-                .Select(t=> t.characterName)
-                .Subscribe(UpdatePlayerControlledCharacter).AddTo(this);
-            
-            MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()
-                .Where(t=> t.playerNumber == playerID)
-                .Select(t => EntityManager.Instance.GetEntityProperty(t.characterName))
-                .Switch().Subscribe(UpdateEntity).AddTo(this);
+                .Subscribe(info =>
+                {
+                    Debug.Log("GUI Waiting For Entity Initialization",this);
+                    if (_initialization != null) StopCoroutine(_initialization);
+                    var initializer = info.characterState.GetComponent<EntityInitializer>();
+                    Debug.Assert(initializer != null, info.characterState);
+                    this.__playerInput.Value = info.inputGo.GetComponent<PlayerInput>();
+                    _initialization = StartCoroutine(WaitForInitialization(initializer));
+                })
+                .AddTo(this);
+           //MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()
+           //    .Where(t => t.playerNumber == playerID)
+           //    .Select(t=> t.characterName)
+           //    .Subscribe(UpdatePlayerControlledCharacter).AddTo(this);
+           //
+           //MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()
+           //    .Where(t=> t.playerNumber == playerID)
+           //    .Select(t => EntityManager.Instance.GetEntityProperty(t.characterName))
+           //    .Switch().Subscribe(UpdateEntity).AddTo(this);
           
+        }
+
+        private Coroutine _initialization;
+        IEnumerator WaitForInitialization(EntityInitializer ei)
+        {
+            while (ei.isDoneInitializing == false)
+            {
+                yield return null;
+            }
+
+            __pcEntity.Value = ei.Entity;
+            _initialization = null;
+            UpdateGUIActiveState();
         }
 
         
