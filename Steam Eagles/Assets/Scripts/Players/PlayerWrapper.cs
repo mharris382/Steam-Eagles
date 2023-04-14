@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CoreLib;
 using Players;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,7 +21,7 @@ namespace Characters
         [InlineEditor()]
         public Player player;
 
-        private Character _character;
+        private CharacterState _characterState;
         private PlayerInputWrapper _playerInputWrapper;
         private Camera _playerCamera;
         private InputSystemUIInputModule _eventSystem;
@@ -31,7 +32,7 @@ namespace Characters
 
         public bool IssCameraBound => _playerCamera != null;
 
-        public bool IsCharacterBound => _character != null;
+        public bool IsCharacterBound => _characterState != null;
         
         public bool IsUIModuleBound => _eventSystem != null;
         public bool IsUIRootBound => _localMultiplayerUIRoot != null;
@@ -85,9 +86,9 @@ namespace Characters
                 player.playerCamera.Value = _playerCamera;
         }
 
-        public void AssignCharacter(Character state)
+        public void AssignCharacter(CharacterState state)
         {
-            this._character = state;
+            this._characterState = state;
             InitializeIfFullyBound();
         }
 
@@ -113,14 +114,14 @@ namespace Characters
         {
             void InitCharacter()
             {
-                player.characterTransform.Value = _character.transform;
+                player.characterTransform.Value = _characterState.transform;
             }
 
             void InitInput()
             {
-                var characterInputState = _character.GetComponent<CharacterInputState>();
+                var characterInputState = _characterState.GetComponent<CharacterInputState>();
                 _playerInputWrapper.Assign(characterInputState);
-                player.AssignPlayer(_playerInputWrapper, _character);
+                player.AssignPlayer(_playerInputWrapper, _characterState);
                 MessageBroker.Default.Publish(new PlayerJoinedInfo()
                 {
                     playerNumber = player.playerNumber,

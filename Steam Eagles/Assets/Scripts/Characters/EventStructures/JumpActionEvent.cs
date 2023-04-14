@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SteamEagles.Characters;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Characters
@@ -10,7 +11,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
     
@@ -21,7 +22,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
     
@@ -32,7 +33,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
     
@@ -43,7 +44,7 @@ namespace Characters
     {
         public string tag;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public InputAction.CallbackContext context;
     }
 
@@ -61,7 +62,7 @@ namespace Characters
         public string tag;
         public PlayerAbilityID abilityID;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public CharacterInputState inputState;
         public InputAction.CallbackContext context;
     }
@@ -75,7 +76,7 @@ namespace Characters
         public int abilityIndex;
         public bool isRelative;
         public Transform transform;
-        public Character character;
+        public CharacterState characterState;
         public CharacterInputState inputState;
         public InputAction.CallbackContext context;
     }

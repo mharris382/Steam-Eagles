@@ -2,6 +2,7 @@
 using CoreLib;
 using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,7 +13,7 @@ namespace Characters
     {
         
         [TabGroup("Character")][GUIColor(nameof(GetGuiColor))]public string characterName;
-        [TabGroup("Character")][GUIColor(nameof(GetGuiColor))][SerializeField] Character prefab;
+        [TabGroup("Character")][GUIColor(nameof(GetGuiColor))][SerializeField] CharacterState prefab;
             
         
         [TabGroup("Spawn Point")][Obsolete("Use SpawnDatabase instead")]
@@ -70,12 +71,12 @@ namespace Characters
         }
         
             
-        public void DestroyCharacter(Character character)
+        public void DestroyCharacter(CharacterState characterState)
         {
-            Object.Destroy(character.gameObject);
+            Object.Destroy(characterState.gameObject);
         }
             
-        public void MoveCharacterToSpawn(Character character) => character.transform.position = SpawnPosition;
+        public void MoveCharacterToSpawn(CharacterState characterState) => characterState.transform.position = SpawnPosition;
 
         public void ResetSpawnPosition()
         {

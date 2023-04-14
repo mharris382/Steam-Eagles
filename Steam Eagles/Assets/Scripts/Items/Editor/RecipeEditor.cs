@@ -30,7 +30,7 @@ namespace Items
             {
                 get { return _recipe.name; }
             }
-            [ShowInInspector,TableColumnWidth(50, false)]
+            [ShowInInspector,InlineEditor(Expanded = false)]
             private readonly Recipe _recipe;
             private readonly RecipeEditor _recipeEditor;
 

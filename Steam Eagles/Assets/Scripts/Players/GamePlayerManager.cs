@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using Game;
+using SteamEagles.Characters;
 
 namespace Players
 {
@@ -125,7 +126,7 @@ namespace Players
             MessageBroker.Default.Publish(assignmentNotification);
         }
 
-        Character SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
+        CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
         {
             var wrapper = players[id];
             var obj = GameManager.Instance.GetPlayerDevice(id);
@@ -142,7 +143,7 @@ namespace Players
             Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
 
             
-            var character = Instantiate(prefab,parent.transform).GetComponent<Character>();
+            var character = Instantiate(prefab,parent.transform).GetComponent<CharacterState>();
             character.transform.localPosition = localOffset;
             
             Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);
@@ -248,15 +249,15 @@ namespace Players
 
     [System.Obsolete("replace these IPlayerDependencyResolver nonsense")]
     [Serializable]
-    public class CharacterAssignments : IPlayerDependencyResolver<Character>
+    public class CharacterAssignments : IPlayerDependencyResolver<CharacterState>
     {
         [SerializeField] public List<CharacterAssignment> characterAssignments;
         
-        public Character GetDependency(int playerNumber)
+        public CharacterState GetDependency(int playerNumber)
         {
             var assignment = characterAssignments[playerNumber];
             var character = assignment.InstantiateCharacter();
-            return character.GetComponent<Character>();
+            return character.GetComponent<CharacterState>();
         }
     }
 

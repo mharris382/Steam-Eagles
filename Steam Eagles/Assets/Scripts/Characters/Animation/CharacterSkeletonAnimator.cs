@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using CoreLib;
 using Spine.Unity;
+using SteamEagles.Characters;
 using UnityEngine;
 using UnityEngine.Events;
 using Animation = Spine.Animation;
@@ -17,7 +18,7 @@ public class CharacterSkeletonAnimator : MonoBehaviour
     private SkeletonAnimation _spineAnimation;
     private AnimationState _animationState;
     private Spine.Skeleton _skeleton;
-    private Character _character;
+    private CharacterState _characterState;
     private Collider2D _collider;
     List<ContactPoint2D> _contactPoint2Ds;
     public SharedBool isFacingRight;
@@ -72,9 +73,9 @@ public class CharacterSkeletonAnimator : MonoBehaviour
         this._spineAnimation = GetComponent<Spine.Unity.SkeletonAnimation>();
         this._animationState = _spineAnimation.AnimationState;
         this._skeleton = _spineAnimation.Skeleton;
-        this._character = GetComponentInParent<Character>();
-        Debug.Assert(_character!=null, this);
-        _collider = _character.GetComponent<Collider2D>();
+        this._characterState = GetComponentInParent<CharacterState>();
+        Debug.Assert(_characterState!=null, this);
+        _collider = _characterState.GetComponent<Collider2D>();
     }
 
     void Update()
@@ -94,12 +95,12 @@ public class CharacterSkeletonAnimator : MonoBehaviour
         }
         else
         {
-            isGrounded = _character.IsGrounded;
+            isGrounded = _characterState.IsGrounded;
         }
 
-        Vector2 moveInput = new Vector2(_character.MoveX, _character.MoveY);
-        Vector2 velocity = new Vector2(_character.VelocityX, _character.VelocityY);
-        bool isJumping = _character.JumpHeld;
+        Vector2 moveInput = new Vector2(_characterState.MoveX, _characterState.MoveY);
+        Vector2 velocity = new Vector2(_characterState.VelocityX, _characterState.VelocityY);
+        bool isJumping = _characterState.JumpHeld;
         
         SetAnimation(moveInput, velocity, isJumping, isGrounded);
     }

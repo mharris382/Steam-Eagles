@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using SteamEagles.Characters;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Character))]
+[RequireComponent(typeof(CharacterState))]
 public class InputHandler : MonoBehaviour
 {
-    private Character _state;
+    private CharacterState _state;
     [SerializeField]
     private string horizontalAxisName = "Horizontal";
 
@@ -16,7 +17,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private KeyCode additionalJumpInput = KeyCode.Space;
     private void Awake()
     {
-        _state = GetComponent<Character>();
+        _state = GetComponent<CharacterState>();
     }
 
     public bool useLegacyInput;
@@ -109,7 +110,7 @@ public class InputHandler : MonoBehaviour
     }
 }
 
-[RequireComponent(typeof(Character))]
+[RequireComponent(typeof(CharacterState))]
 public class NewInputHandler : MonoBehaviour
 {
     

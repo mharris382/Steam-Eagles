@@ -1,15 +1,16 @@
 ﻿using System;
+using SteamEagles.Characters;
 
 namespace Players
 {
     public static class GameEvents
     {
-        public static event Action<Character> onCharacterSpawned;
+        public static event Action<CharacterState> onCharacterSpawned;
         
         
-        public static void NotifyCharacterSpawned(Character character)
+        public static void NotifyCharacterSpawned(CharacterState characterState)
         {
-            onCharacterSpawned?.Invoke(character);
+            onCharacterSpawned?.Invoke(characterState);
         }
     }
 }

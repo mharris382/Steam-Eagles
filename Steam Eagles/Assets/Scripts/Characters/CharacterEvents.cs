@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CharacterEvents : MonoBehaviour
 {
-     Character _character;
+     CharacterState _characterState;
 
      public UnityEvent OnCharacterJumped;
      
@@ -24,15 +25,15 @@ public class CharacterEvents : MonoBehaviour
      
     void Awake()
     {
-        if (_character == null)
+        if (_characterState == null)
         {
-            _character = GetComponent<Character>();
+            _characterState = GetComponent<CharacterState>();
         }
     }
 
     private void Start()
     {
-        _character.OnCharacterJumped.TakeUntilDisable(this).Subscribe(_ => OnCharacterJumped?.Invoke());
+        _characterState.OnCharacterJumped.TakeUntilDisable(this).Subscribe(_ => OnCharacterJumped?.Invoke());
     }
 
     private void OnCollisionEnter2D(Collision2D col)

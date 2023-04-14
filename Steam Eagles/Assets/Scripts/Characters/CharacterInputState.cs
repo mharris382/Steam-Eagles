@@ -1,6 +1,7 @@
 ﻿using System;
 using Game;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +12,7 @@ namespace Characters
     /// <summary>
     /// acts as a proxy for passing input to the player character
     /// </summary>
-    [RequireComponent(typeof(Character))]
+    [RequireComponent(typeof(CharacterState))]
     public class CharacterInputState : MonoBehaviour
     {
         
@@ -28,7 +29,7 @@ namespace Characters
             [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpPressed;
             [NaughtyAttributes.HideIf(nameof(hasPlayerAssigned))][NaughtyAttributes.BoxGroup("Jump")] public bool jumpHeld;
 
-            public void Update(Character State)
+            public void Update(CharacterState State)
             {
                 xInput = State.MoveX;
                 yInput = State.MoveY;
@@ -40,7 +41,7 @@ namespace Characters
         [SerializeField] private DebugVariables debugVariables;
         [SerializeField] private bool useEventsForJump;
         
-        private Character _character;
+        private CharacterState _characterState;
         private PlayerInput _playerInput;
 
 
@@ -55,9 +56,9 @@ namespace Characters
         
         
         
-        public Character Character => _character == null
-            ? (_character = GetComponent<Character>())
-            : _character;
+        public CharacterState CharacterState => _characterState == null
+            ? (_characterState = GetComponent<CharacterState>())
+            : _characterState;
 
 
         private PlayerInput PlayerInput => _playerInput;
@@ -66,33 +67,33 @@ namespace Characters
         
         public bool JumpPressed
         {
-            get => Character.JumpPressed;
-            set => Character.JumpPressed = value;
+            get => CharacterState.JumpPressed;
+            set => CharacterState.JumpPressed = value;
         }
 
         public bool JumpHeld
         {
-            get => Character.JumpHeld;
-            set => Character.JumpHeld = value;
+            get => CharacterState.JumpHeld;
+            set => CharacterState.JumpHeld = value;
         }
 
         public float MoveX
         {
-            get => Character.MoveX;
-            set => Character.MoveX = value;
+            get => CharacterState.MoveX;
+            set => CharacterState.MoveX = value;
         }
 
         public float MoveY
         {
-            get => Character.MoveY;
-            set => Character.MoveY = value;
+            get => CharacterState.MoveY;
+            set => CharacterState.MoveY = value;
         }
 
 
         public Vector2 MoveInput
         {
-            get => Character.MoveInput;
-            set => Character.MoveInput = value;
+            get => CharacterState.MoveInput;
+            set => CharacterState.MoveInput = value;
         }
 
 
@@ -103,8 +104,8 @@ namespace Characters
 
         public bool DropPressed
         {
-            get => Character.DropPressed;
-            set => Character.DropPressed = value;
+            get => CharacterState.DropPressed;
+            set => CharacterState.DropPressed = value;
         }
 
         public bool IsAssigned() => PlayerInput != null;
@@ -113,7 +114,7 @@ namespace Characters
 
         private void Awake()
         {
-            _character = GetComponent<Character>();
+            _characterState = GetComponent<CharacterState>();
             if (onJump == null) onJump = new UnityEvent<InputAction.CallbackContext>();
             if (onInteract == null) onInteract = new UnityEvent<InputAction.CallbackContext>();
             if (onPickup == null) onPickup = new UnityEvent<InputAction.CallbackContext>();
@@ -162,7 +163,7 @@ namespace Characters
             //
             // JumpPressed = PlayerInput.actions["Jump"].WasPressedThisFrame();
             // JumpHeld = PlayerInput.actions["Jump"].IsPressed();
-            debugVariables.Update(_character);
+            debugVariables.Update(_characterState);
         }
 
         public void OnJump(InputAction.CallbackContext context)
@@ -198,7 +199,7 @@ namespace Characters
         
         public void SetHeldItem(Rigidbody2D heldObject)
         {
-            Character.heldObject.Value = heldObject;
+            CharacterState.heldObject.Value = heldObject;
         }
     }
 }

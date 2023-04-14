@@ -13,6 +13,7 @@ namespace Buildings.Tiles
     }
     public abstract class EditableTile : PuzzleTile, IEditableTile
     {
+        public string recipeName;
         
         public override bool CanTileBeDisconnected()
         {

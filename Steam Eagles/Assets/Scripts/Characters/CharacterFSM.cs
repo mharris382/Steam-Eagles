@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using CoreLib;
 using CoreLib.Interactions;
 using FSM;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,12 +22,12 @@ namespace Characters
         
         private FSM.StateMachine _defaultStateMachine;
         private FSM.StateMachine _toolStateMachine;
-        private Character _state;
+        private CharacterState _state;
         private StructureState _structureState;
         private IPilot _pilot;
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
-        public Character State => _state;
+        public CharacterState State => _state;
         
         public StructureState StructureState => _structureState != null ? _structureState : _structureState = GetComponent<StructureState>();
         
@@ -47,15 +48,15 @@ namespace Characters
         private class NullPilot : IPilot
         {
             public string tag => owner.tag;
-            private Character _character;
+            private CharacterState _characterState;
             public NullPilot(GameObject owner)
             {
                 this.owner = owner;
-                _character = this.owner.GetComponent<Character>();
+                _characterState = this.owner.GetComponent<CharacterState>();
             }
 
-            public float XInput => _character.MoveX;
-            public float YInput => _character.MoveY;
+            public float XInput => _characterState.MoveX;
+            public float YInput => _characterState.MoveY;
             public event Action<int> OnPowerToThrustersChanged;
             public event Action<int> OnPowerToHeatChanged;
             private GameObject owner;
@@ -112,7 +113,7 @@ namespace Characters
         private void Start()
         {
             _controller = GetComponent<CharacterController2>();
-            _state = GetComponent<Character>();
+            _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
  
             

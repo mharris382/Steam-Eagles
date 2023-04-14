@@ -1,6 +1,7 @@
 ﻿using System;
 using CoreLib.SaveLoad;
 using SaveLoad;
+using SteamEagles.Characters;
 using UnityEngine;
 
 namespace Players
@@ -16,14 +17,14 @@ namespace Players
         }
 
 
-        public static void MoveCharacterToSpawn(Character character)
+        public static void MoveCharacterToSpawn(CharacterState characterState)
         {
-            var spawnPosition = SpawnDatabase.Instance.GetSpawnPointForScene(character.tag,
+            var spawnPosition = SpawnDatabase.Instance.GetSpawnPointForScene(characterState.tag,
                 PersistenceManager.Instance.SaveDirectoryPath);
             
-            Debug.Log($"Spawning {character.tag} at {spawnPosition}",character);
+            Debug.Log($"Spawning {characterState.tag} at {spawnPosition}",characterState);
             
-            GameEvents.NotifyCharacterSpawned(character);
+            GameEvents.NotifyCharacterSpawned(characterState);
         }
     }
     

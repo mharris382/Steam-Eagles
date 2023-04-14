@@ -1,4 +1,5 @@
 ﻿using System;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +13,7 @@ namespace Characters
     public class CharacterValveInputController : MonoBehaviour, ICharacterInput
     {
         private PlayerInput _input;
-        private Character _character;
+        private CharacterState _characterState;
         private IDisposable _inputDisposable;
         private Valve _activeValve;
 
@@ -36,13 +37,13 @@ namespace Characters
         
         private void Awake()
         {
-            _character = GetComponentInParent<Character>();
-            Debug.Assert(_character != null, "Character Valve Input Controller needs a CharacterInputState", this);
+            _characterState = GetComponentInParent<CharacterState>();
+            Debug.Assert(_characterState != null, "Character Valve Input Controller needs a CharacterInputState", this);
             
-            _character.HeldObject.Select(t => t == null ? null : t.GetComponent<Valve>()).TakeUntilDestroy(this)
+            _characterState.HeldObject.Select(t => t == null ? null : t.GetComponent<Valve>()).TakeUntilDestroy(this)
                 .Subscribe(valve => ActiveValve = valve);
             MessageBroker.Default.Receive<ValveActionEvent>().AsObservable()
-                .Where(t => t.character == this._character)
+                .Where(t => t.characterState == this._characterState)
                 .Subscribe(t =>
                 {
                     OnValve(t.context);

@@ -3,6 +3,7 @@ using System.Collections;
 using CoreLib;
 using DefaultNamespace;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -22,7 +23,7 @@ namespace Characters
         
         
         public Transform groundCheck;
-        private Character _state;
+        private CharacterState _state;
         private Rigidbody2D _rigidbody2D;
         private CharacterInputState _input;
         private CapsuleCollider2D _capsuleCollider;
@@ -192,7 +193,7 @@ namespace Characters
             }
         }
 
-        private Character State => _state != null ? _state : (_state = GetComponent<Character>());
+        private CharacterState State => _state != null ? _state : (_state = GetComponent<CharacterState>());
         public CharacterConfig Config => State.config;
         public Rigidbody2D rb => _rigidbody2D;
         public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
@@ -222,7 +223,7 @@ namespace Characters
                 _structureState = gameObject.AddComponent<StructureState>();
             }
             
-            _state = GetComponent<Character>();
+            _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _capsuleCollider = GetComponent<CapsuleCollider2D>();

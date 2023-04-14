@@ -1,12 +1,13 @@
 ﻿using FSM;
 using Spine.Unity;
+using SteamEagles.Characters;
 using UnityEngine;
 
 namespace Characters.Animations
 {
     public class ToolStateBuildTool : ToolAnimationStateBase
     {
-        public ToolStateBuildTool(Character character, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(character, characterToolState, skeletonAnimation, skinController, aimTarget, b)
+        public ToolStateBuildTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget, b)
         {
         }
 

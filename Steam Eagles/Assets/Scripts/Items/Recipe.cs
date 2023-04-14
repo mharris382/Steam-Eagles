@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 #if UNITY_EDITOR
 using UnityEditor;
 using Sirenix.OdinInspector.Editor;
@@ -20,12 +21,40 @@ namespace Items
         public List<ItemStack> components;
         
         
+        [SerializeField, EnumPaging] private RecipeType recipeType;
         
-        public bool HasComponent(ItemBase item)
+        [ShowIf(nameof(UseInstanceReference))]
+        [SerializeField] private RecipeInstanceReference instanceReference;
+        
+        [ShowIf(nameof(UseTileReference))]
+        [SerializeField] private TileReference tileReference;
+        
+        bool UseTileReference => recipeType == RecipeType.TILE;
+        bool UseInstanceReference => recipeType == RecipeType.MACHINE;
+        public enum RecipeType
         {
-            return components.Any(t => t.Item == item);
+            TILE,
+            MACHINE
         }
         
+        
+        public bool HasComponent(ItemBase item) => components.Any(t => t.Item == item);
+
+        public AssetReference InstanceReference
+        {
+            get
+            {
+                switch (recipeType)
+                {
+                    case RecipeType.TILE:
+                        return tileReference;
+                    case RecipeType.MACHINE:
+                        return instanceReference;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
         
     }
 

@@ -1,12 +1,13 @@
 ﻿using FSM;
 using Spine.Unity;
+using SteamEagles.Characters;
 using UnityEngine;
 
 namespace Characters.Animations
 {
     public abstract class ToolAnimationStateBase : StateBase
     {
-        private readonly Character _character;
+        private readonly CharacterState _characterState;
         private readonly ToolState _characterToolState;
         private readonly SkeletonAnimation _skeletonAnimation;
         private readonly SkinController _skinController;
@@ -14,18 +15,18 @@ namespace Characters.Animations
 
         public SkinController SkinController => _skinController;
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
-        public Character Character => _character;
+        public CharacterState CharacterState => _characterState;
         public ToolState CharacterToolState => _characterToolState;
         public Transform AimTarget => _aimTarget;
         
-        public ToolAnimationStateBase(Character character, 
+        public ToolAnimationStateBase(CharacterState characterState, 
             ToolState characterToolState, 
             SkeletonAnimation skeletonAnimation, 
             SkinController skinController,
             Transform aimTarget,
             bool b) : base(b)
         {
-            _character = character;
+            _characterState = characterState;
             _characterToolState = characterToolState;
             _skeletonAnimation = skeletonAnimation;
             _skinController = skinController;

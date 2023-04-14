@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Characters.Actions;
+using SteamEagles.Characters;
 using UnityEngine;
 
 [System.Obsolete("Ability system prototypes will be phased out and replaced by the tool system")]
 public class AbilityButtonInput : MonoBehaviour
 {
-    private Character _character;
+    private CharacterState _characterState;
 
     public AbilityController downAbility;
     public AbilityController upAbility;
@@ -22,7 +23,7 @@ public class AbilityButtonInput : MonoBehaviour
 
     private void Awake()
     {
-        _character = GetComponentInParent<Character>();
+        _characterState = GetComponentInParent<CharacterState>();
     }
 
     void ResetCooldown()
@@ -53,15 +54,15 @@ public class AbilityButtonInput : MonoBehaviour
     IEnumerable<AbilityController> GetAbilityCheckOrder()
     {
         var vel = new Vector2(
-            Mathf.Abs(_character.VelocityX > 0.1f ? _character.VelocityX : lastVelocity.x),
-            Mathf.Abs(_character.VelocityY> 0.1f ? _character.VelocityY : lastVelocity.y));
+            Mathf.Abs(_characterState.VelocityX > 0.1f ? _characterState.VelocityX : lastVelocity.x),
+            Mathf.Abs(_characterState.VelocityY> 0.1f ? _characterState.VelocityY : lastVelocity.y));
         lastVelocity = vel;
         
-        var move = new Vector2(_character.MoveX, _character.MoveY);
+        var move = new Vector2(_characterState.MoveX, _characterState.MoveY);
         
         var moveAim = new Vector2(
-            Mathf.Abs(_character.MoveX) > 0.1f ? move.x : vel.x,
-            Mathf.Abs(_character.MoveY) > 0.1f ? move.y : vel.y);
+            Mathf.Abs(_characterState.MoveX) > 0.1f ? move.x : vel.x,
+            Mathf.Abs(_characterState.MoveY) > 0.1f ? move.y : vel.y);
         
         bool checkHorizontal = Mathf.Abs(moveAim.x) > 0;
         bool checkVertical = Mathf.Abs(moveAim.y) > 0;

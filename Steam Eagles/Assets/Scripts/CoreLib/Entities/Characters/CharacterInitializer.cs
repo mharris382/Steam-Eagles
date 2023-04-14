@@ -1,21 +1,22 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 
 namespace CoreLib.Entities.Characters
 {
-    [RequireComponent(typeof(Character))]
+    [RequireComponent(typeof(CharacterState))]
     public class CharacterInitializer : EntityInitializer
     {
-        private Character _character;
+        private CharacterState _characterState;
         
         [ShowInInspector]
         private IReadOnlyReactiveProperty<Entity> _listener;
 
-        private Character Character => _character != null
-            ? _character
-            : _character = GetComponent<Character>();
+        private CharacterState CharacterState => _characterState != null
+            ? _characterState
+            : _characterState = GetComponent<CharacterState>();
         
         public override string GetEntityGUID() => tag;
 
@@ -24,13 +25,13 @@ namespace CoreLib.Entities.Characters
 
         private void Awake()
         {
-            Character.IsEntityInitialized = false;
+            CharacterState.IsEntityInitialized = false;
             _listener = EntityManager.Instance.GetEntityProperty(GetEntityGUID());
         }
 
         public override void OnEntityInitialized(Entity entity)
         {
-            Character.IsEntityInitialized = true;
+            CharacterState.IsEntityInitialized = true;
             
             if (EntityManager.Instance.debug) 
                 Debug.Log($"Initialized Entity for {entity.name}");

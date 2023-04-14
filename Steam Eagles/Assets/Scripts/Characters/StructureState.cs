@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 
@@ -36,13 +37,13 @@ namespace Characters
         }
         
         private FixedJoint2D _buildingJoint;
-        private Character _state;
+        private CharacterState _state;
         private BoolReactiveProperty _isJointEnabled = new BoolReactiveProperty(false);
         private ReactiveProperty<Rigidbody2D> _buildingRigidbody = new ReactiveProperty<Rigidbody2D>();
         private ReactiveProperty<Rigidbody2D> _platformRigidbody = new ReactiveProperty<Rigidbody2D>();
         private BoolReactiveProperty _hasLadder = new BoolReactiveProperty(false);
         private ReactiveProperty<JointMode> _jointMode = new ReactiveProperty<JointMode>();
-        private Character _character;
+        private CharacterState _characterState;
         private LayerMask _buildingLayerMask;
         private int _triggerHits = 0;
         private Collider2D[] _triggerColliders;
@@ -51,7 +52,7 @@ namespace Characters
         private IDisposable _enableJointDisposable;
         public FixedJoint2D BuildingJoint => _buildingJoint;
         
-        private Character State => _state ??= GetComponent<Character>();
+        private CharacterState State => _state ??= GetComponent<CharacterState>();
 
         [ShowInInspector]
         public Rigidbody2D BuildingRigidbody
@@ -102,7 +103,7 @@ namespace Characters
         {
             _triggerColliders = new Collider2D[maxTriggerCount];
             _buildingJoint = GetComponent<FixedJoint2D>();
-            _character = GetComponent<Character>();
+            _characterState = GetComponent<CharacterState>();
             _buildingJoint.autoConfigureConnectedAnchor = false;
             _buildingJoint.enabled = false;
             _isJointEnabled = new BoolReactiveProperty(false);
@@ -115,7 +116,7 @@ namespace Characters
                 }
                 BuildingJoint.enabled = jointEnabled;
             }).AddTo(this);
-            _character = GetComponent<Character>();
+            _characterState = GetComponent<CharacterState>();
             _buildingLayerMask = LayerMask.GetMask("Triggers");
             
             JointModeProperty.Subscribe(mode =>
@@ -188,7 +189,7 @@ namespace Characters
 
         private void Update()
         {
-            if (_character.IsDropping)
+            if (_characterState.IsDropping)
             {
                 _buildingJoint.enabled = false;
                 return;

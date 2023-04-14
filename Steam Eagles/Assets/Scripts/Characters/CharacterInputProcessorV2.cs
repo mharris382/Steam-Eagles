@@ -1,4 +1,5 @@
 using System;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,18 +9,18 @@ namespace Characters
     [Obsolete("Use CharacterInputProcessorV3")]
     public class CharacterInputProcessorV2  : IDisposable
     {
-        private readonly Character _character;
+        private readonly CharacterState _characterState;
         private readonly ToolState toolState;
         private readonly ReadOnlyReactiveProperty<PlayerInput> _assignedPlayerInput;
         private readonly bool _debug;
         private readonly IDisposable _disposable;
 
-        public CharacterInputProcessorV2(Character character,
+        public CharacterInputProcessorV2(CharacterState characterState,
             ReadOnlyReactiveProperty<PlayerInput> assignedPlayerInput,
             bool debug)
         {
-            this._character = character;
-            toolState = this._character.Tool;
+            this._characterState = characterState;
+            toolState = this._characterState.Tool;
             _assignedPlayerInput = assignedPlayerInput;
             _debug = debug;
             CompositeDisposable cd = new CompositeDisposable();
@@ -61,17 +62,17 @@ namespace Characters
             bool jumpHeld = jumpAction.IsPressed();
             if (moveInput.y < -0.5f)
             {
-                _character.DropPressed = jumpHeld;
-                _character.JumpPressed = _character.JumpHeld = false;
+                _characterState.DropPressed = jumpHeld;
+                _characterState.JumpPressed = _characterState.JumpHeld = false;
             }
             else
             {
-                _character.DropPressed = false;
-                _character.JumpPressed = jumpPressed;
-                _character.JumpHeld = jumpHeld;
+                _characterState.DropPressed = false;
+                _characterState.JumpPressed = jumpPressed;
+                _characterState.JumpHeld = jumpHeld;
             }
 
-            _character.MoveInput = moveInput;
+            _characterState.MoveInput = moveInput;
             toolState.Inputs.AimInputRaw = aimInput;
             toolState.Inputs.UsePressed = playerInput.actions["Use"].WasPressedThisFrame();
             toolState.Inputs.CancelPressed = playerInput.actions["Cancel"].WasPressedThisFrame();

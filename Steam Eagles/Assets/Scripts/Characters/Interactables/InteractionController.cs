@@ -1,5 +1,6 @@
 ﻿using System;
 using Players;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using Observable = UnityEngine.InputSystem.Utilities.Observable;
@@ -14,7 +15,7 @@ namespace Characters.Interactables
     public class InteractionController : MonoBehaviour
     {
         public string tag;
-        private Character _state;
+        private CharacterState _state;
         private Transform _target;
         public float interactionRadius = 4;
         public Player player;
@@ -26,14 +27,14 @@ namespace Characters.Interactables
             {
                 _target = value;
                 if(_target)
-                    _state = _target.GetComponent<Character>();
+                    _state = _target.GetComponent<CharacterState>();
             }
             get => _target ? _target : transform;
         }
 
-        public Character State
+        public CharacterState State
         {
-            get => _state ? _state : (_state = Target.GetComponentInParent<Character>());
+            get => _state ? _state : (_state = Target.GetComponentInParent<CharacterState>());
         }
         
         public Vector2 Position => Target.position;

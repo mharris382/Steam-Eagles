@@ -4,6 +4,7 @@ using Characters;
 using CoreLib;
 using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -82,7 +83,7 @@ namespace Players
         public PlayerInputWrapper InputWrapper { get; private set; }
 
         public PlayerInput PlayerInput => InputWrapper == null ? null : InputWrapper.PlayerInput;
-        public Character State { get; private set; }
+        public CharacterState State { get; private set; }
 
         
         private Dictionary<Action<Camera>, IDisposable> _cameraSubscriptions = new Dictionary<Action<Camera>, IDisposable>();
@@ -105,9 +106,9 @@ namespace Players
             }
         }
 
-        public void AssignPlayer(PlayerInputWrapper playerInputWrapper,Character assignedCharacter)
+        public void AssignPlayer(PlayerInputWrapper playerInputWrapper,CharacterState assignedCharacterState)
         {
-            this.State = assignedCharacter;
+            this.State = assignedCharacterState;
             this.InputWrapper = playerInputWrapper;
             playerInputWrapper.Assign(State.GetComponent<CharacterInputState>());
             events.Update(this);

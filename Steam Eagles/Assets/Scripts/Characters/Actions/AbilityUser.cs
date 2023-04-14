@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using CoreLib.SharedVariables;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -65,7 +66,7 @@ public class AbilityUser : MonoBehaviour
     }
 
     
-    [FormerlySerializedAs("characterState")] [SerializeField] private Character character;
+    [FormerlySerializedAs("character")] [SerializeField] private CharacterState characterState;
     [SerializeField] private SharedTransform characterTransform;
     
     public BlockInventory blockInventory = new BlockInventory();
@@ -89,16 +90,16 @@ public class AbilityUser : MonoBehaviour
 
             void TryGetStateFromTransform(Transform t)
             {
-                var characterState = t.GetComponent<Character>();
+                var characterState = t.GetComponent<CharacterState>();
                 if (characterState != null)
                 {
-                    this.character = characterState;
+                    this.characterState = characterState;
                     Debug.Log($"Ability user found character state {characterState.name}");
                 }
             }
         }
 
-        if (character == null) character = GetComponentInParent<Character>();
+        if (characterState == null) characterState = GetComponentInParent<CharacterState>();
     }
 }
 

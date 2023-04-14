@@ -5,6 +5,7 @@ using CoreLib;
 using CoreLib.Entities;
 using Game;
 using Sirenix.OdinInspector;
+using SteamEagles.Characters;
 using UI.PlayerGUIs;
 using UniRx;
 using UnityEngine;
@@ -84,7 +85,7 @@ namespace Items.UI.HUDScrollView
                 yield return null;
             }
 
-            var character = e.LinkedGameObject.GetComponent<Character>();
+            var character = e.LinkedGameObject.GetComponent<CharacterState>();
             while (!character.IsEntityInitialized)
             {
                 Debug.Log($"Waiting for character {character.name} to be initialized",this);

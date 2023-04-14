@@ -4,6 +4,7 @@ using UnityEngine;
 using FSM;
 using Sirenix.OdinInspector;
 using Spine.Unity;
+using SteamEagles.Characters;
 using UnityEngine.Events;
 using Fsm = FSM.StateMachine;
 namespace Characters.Animations
@@ -21,7 +22,7 @@ namespace Characters.Animations
         public bool debug = true;
 
         private SpineAnimationHandler _animationHandler;
-        private Character _character;
+        private CharacterState _characterState;
         private ToolState _characterToolState;
         private SkeletonAnimation _skeletonAnimation;
         private SkinController _skinController;
@@ -29,8 +30,8 @@ namespace Characters.Animations
 
         void Awake()
         {
-            _character = GetComponentInParent<Character>();
-            _characterToolState = _character.Tool;
+            _characterState = GetComponentInParent<CharacterState>();
+            _characterToolState = _characterState.Tool;
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
             _animationHandler = GetComponent<SpineAnimationHandler>();
             _skinController = GetComponent<SkinController>();
@@ -42,20 +43,20 @@ namespace Characters.Animations
         {
             var toolFsm = new Fsm();
             
-            Debug.Assert(_skeletonAnimation.skeletonDataAsset != null, $"Spine Animation Controller with skeleton({_skeletonAnimation.skeletonDataAsset.name}) has no skeleton data asset specified, add one in prefab ({_character.name})!", this);
-            Debug.Assert(aimTarget != null, $"Spine Animation Controller with skeleton({_skeletonAnimation.skeletonDataAsset.name}) has no aim target transform specified, add one in prefab ({_character.name})!", this);
+            Debug.Assert(_skeletonAnimation.skeletonDataAsset != null, $"Spine Animation Controller with skeleton({_skeletonAnimation.skeletonDataAsset.name}) has no skeleton data asset specified, add one in prefab ({_characterState.name})!", this);
+            Debug.Assert(aimTarget != null, $"Spine Animation Controller with skeleton({_skeletonAnimation.skeletonDataAsset.name}) has no aim target transform specified, add one in prefab ({_characterState.name})!", this);
             
             AddToolStateFromStateObject(ToolStates.Repair, 
-                new ToolStateRepairTool(_character, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateRepairTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
             
             AddToolStateFromStateObject(ToolStates.Build,
-                new ToolStateBuildTool(_character, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateBuildTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
             
             AddToolStateFromStateObject(ToolStates.Destruct,
-                new ToolStateDestructTool(_character, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateDestructTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
             
             AddToolStateFromStateObject(ToolStates.Recipe, 
-                new ToolStateRecipeBookTool(_character, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateRecipeBookTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
             
             toolFsm.SetStartState(ToolStates.Build.ToString());
             toolFsm.Init();
@@ -160,8 +161,8 @@ namespace Characters.Animations
                     UpdateFacingDirection();
                 });
 
-            aerialFsm.AddTransition("Jump", "Fall", t => !_character.IsJumping);
-            aerialFsm.AddTransition("Falling", "Jump", t => _character.IsJumping);
+            aerialFsm.AddTransition("Jump", "Fall", t => !_characterState.IsJumping);
+            aerialFsm.AddTransition("Falling", "Jump", t => _characterState.IsJumping);
             aerialFsm.SetStartState("Fall");
             aerialFsm.Init();
             return aerialFsm;
@@ -178,8 +179,8 @@ namespace Characters.Animations
             _stateMachine.AddState("Default", stateMachine);
             _stateMachine.AddState("Tool", toolFsm);
             
-            _stateMachine.AddTransition("Default", "Tool" , _ => _character.UsingTool);
-            _stateMachine.AddTransition("Tool" , "Default", _ => !_character.UsingTool);
+            _stateMachine.AddTransition("Default", "Tool" , _ => _characterState.UsingTool);
+            _stateMachine.AddTransition("Tool" , "Default", _ => !_characterState.UsingTool);
             
             _stateMachine.SetStartState("Default");
             _stateMachine.Init();
@@ -194,26 +195,26 @@ namespace Characters.Animations
 
         public void UpdateFacingDirection()
         {
-            _skeletonAnimation.skeleton.ScaleX = _character.FacingRight ? 1 : -1;
+            _skeletonAnimation.skeleton.ScaleX = _characterState.FacingRight ? 1 : -1;
         }
         
         
 
         bool CheckAirCondition()
         {
-            if (_character.IsJumping)
+            if (_characterState.IsJumping)
                 return true;
-            return !_character.IsGrounded;
+            return !_characterState.IsGrounded;
         }
 
         bool IsMoving()
         {
-            return Mathf.Abs(_character.MoveX) > 0.1f;
+            return Mathf.Abs(_characterState.MoveX) > 0.1f;
         }
 
         bool IsGrounded()
         {
-            return _character.IsGrounded && !_character.IsJumping;
+            return _characterState.IsGrounded && !_characterState.IsJumping;
         }
 
 
