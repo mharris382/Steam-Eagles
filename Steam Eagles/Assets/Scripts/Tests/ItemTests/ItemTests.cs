@@ -157,7 +157,7 @@ namespace Tests.ItemTests
             Assert.NotNull(key);
             yield return UniTask.ToCoroutine(async () =>
             {
-                var pickup = await PickupLoader.Instance.LoadPickupAsync(key);
+                var pickup = await PickupLoader.Instance.LoadPickupAsync(key.Replace(" ", ""));
                 Assert.NotNull(pickup);
             });
         }

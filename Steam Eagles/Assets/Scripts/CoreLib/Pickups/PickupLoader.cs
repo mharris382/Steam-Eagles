@@ -24,7 +24,7 @@ namespace CoreLib.Pickups
 
             public LoadedPickupSpawner(string key)
             {
-                this.key = key;
+                this.key = key.Replace(" ", "");
                 this.loadOp = Addressables.LoadAssetAsync<Pickup>(GetAddressFromKey(key));
                 loadOp.Completed += res =>
                 {

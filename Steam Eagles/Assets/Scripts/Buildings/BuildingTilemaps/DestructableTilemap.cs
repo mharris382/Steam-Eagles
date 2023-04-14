@@ -19,15 +19,32 @@ namespace Buildings.BuildingTilemaps
     {
         public virtual bool IsFullyDestroyed => false;
         public bool debug = true;
+        public int checkIterations = 10;
         public bool TryToDestruct(DestructParams destructParams)
         {
-            if (IsFullyLoaded)
+            if (!IsFullyLoaded)
             {
                 return false;
             }
-            var tilePosition = destructParams.position + (destructParams.direction * 0.1f);
+
+            var tilePosition = destructParams.position;/// + (destructParams.direction * 0.1f);
             var cellPosition = Tilemap.layoutGrid.WorldToCell(tilePosition);
-            var tile = Tilemap.GetTile<EditableTile>(cellPosition);
+            var aboveCell = cellPosition + Vector3Int.up;
+            var belowCell = cellPosition + Vector3Int.down;
+            var leftCell = cellPosition + Vector3Int.left;
+            var rightCell = cellPosition + Vector3Int.right;
+            
+            EditableTile tile = null;//= Tilemap.GetTile<EditableTile>(cellPosition);
+            var cells = new List<Vector3Int>{cellPosition, aboveCell, belowCell, leftCell, rightCell, leftCell + Vector3Int.up, rightCell + Vector3Int.up, leftCell +Vector3Int.down, rightCell + Vector3Int.down};
+            foreach (var cell in cells)
+            {
+                tile = Tilemap.GetTile<EditableTile>(cell);
+                if (tile != null)
+                {
+                    cellPosition = cell;
+                    break;
+                }
+            }
             if (tile == null)
             {
                 return false;

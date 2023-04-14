@@ -96,8 +96,8 @@ namespace Items
             return null;
         }
 
-        public static UniTask<Pickup> LoadPickup(this ItemBase item) => LoadPickup(item.itemName.Trim());
-        public static UniTask<Pickup> LoadPickup(this string itemName) => PickupLoader.Instance.LoadPickupAsync(itemName.Trim());
+        public static UniTask<Pickup> LoadPickup(this ItemBase item) => LoadPickup(item.itemName.Replace(" ", ""));
+        public static UniTask<Pickup> LoadPickup(this string itemName) => PickupLoader.Instance.LoadPickupAsync(itemName.Replace(" ", ""));
 
         public static IEnumerator LoadPickup(this string itemName, Action<Pickup> callback)
         {

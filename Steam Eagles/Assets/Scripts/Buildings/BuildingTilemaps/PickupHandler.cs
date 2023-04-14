@@ -16,6 +16,7 @@ namespace Buildings.BuildingTilemaps
         private readonly EditableTile _tile;
         private readonly Recipe _recipe;
         private Pickup[] _recipePickups;
+        private int[] _counts;
             
         public bool IsReady =>_recipePickups != null && _recipePickups.All(t => t != null);
 
@@ -30,6 +31,7 @@ namespace Buildings.BuildingTilemaps
 
         public async UniTask LoadPickups()
         {
+            _counts = _recipe.components.Select(t => t.Count).ToArray();
             _recipePickups = await UniTask.WhenAll(_recipe.components.Select(t => t.item)
                 .Where(t => t != null)
                 .Select(t => t.LoadPickup()));
@@ -39,11 +41,15 @@ namespace Buildings.BuildingTilemaps
         {
                 
             Debug.Log($"Spawning pickups for {_recipe.name} ");
-            foreach (var recipePickup in _recipePickups)
+            for (int i = 0; i < _recipePickups.Length; i++)
             {
-                if (recipePickup == null) continue;
-                var instance =recipePickup.SpawnPickup(destructParams.position);
-                MessageBroker.Default.Publish(new SpawnedPickupInfo(recipePickup, instance.gameObject));
+                var pickup = _recipePickups[i];
+                var count = _counts[i];
+                for (int j = 0; j < count; j++)
+                {
+                    var instance= pickup.SpawnPickup(destructParams.position);
+                    MessageBroker.Default.Publish(new SpawnedPickupInfo(pickup, instance.gameObject));
+                }
             }
         }
     }
