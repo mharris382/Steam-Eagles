@@ -40,10 +40,37 @@ namespace Items
                 return _loadOp.Result;
             }
         }
+        
+        private class LoadedRecipe
+        {
+            private readonly AsyncOperationHandle<Recipe> _loadOp;
+
+            public LoadedRecipe(ItemLoader loader, string key)
+            {
+                this.Key = key;
+                this.Address = key.Contains("Recipe") ? key : $"Recipe_{key}";
+                Debug.Log($"Loading Recipe at {Address.Bolded()}");
+                _loadOp = Addressables.LoadAssetAsync<Recipe>(Address);
+            }
+
+            public string Key { get;  }
+
+            public string Address { get;  }
+            
+            public bool IsLoaded => _loadOp.IsDone && _loadOp.Status == AsyncOperationStatus.Succeeded;
+            
+            public async UniTask<Recipe> GetRecipe()
+            {
+                await _loadOp.Task;
+                return _loadOp.Result;
+            }
+        }
+        
 
         public List<string> autoLoadItems;
         private Dictionary<string, LoadedItem> _loadedItems = new Dictionary<string, LoadedItem>();
         private Dictionary<ItemBase, string> _loadedKeys = new Dictionary<ItemBase, string>();
+        private Dictionary<string, LoadedRecipe> _loadedRecipes = new Dictionary<string, LoadedRecipe>();
 
         protected override void Init()
         {
@@ -119,6 +146,7 @@ namespace Items
                 LoadItemAsync(key3),
                 LoadItemAsync(key4));
         }
+
         public async UniTaskVoid LoadItemsParallel(string key1, string key2, string key3, string key4, string key5)
         {
             var (a, b, c, d, e) = await UniTask.WhenAll(
@@ -127,6 +155,18 @@ namespace Items
                 LoadItemAsync(key3),
                 LoadItemAsync(key4), 
                 LoadItemAsync(key5));
+        }
+
+        public async UniTask<Recipe> LoadRecipeAsync(string key)
+        {
+            if(!_loadedRecipes.TryGetValue(key, out var loadedRecipe))
+            {
+                loadedRecipe = new LoadedRecipe(this, key);
+                _loadedRecipes.Add(key, loadedRecipe);
+            }
+            var res = await _loadedRecipes[key].GetRecipe();
+            Debug.Assert(res != null, $"Failed to load recipe for {key}");
+            return res;
         }
 
         public async UniTask<ItemBase> LoadItemAsync(string key)

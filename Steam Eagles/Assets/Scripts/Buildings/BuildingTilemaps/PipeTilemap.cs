@@ -1,9 +1,10 @@
-﻿using PhysicsFun.Buildings;
+﻿using System.Collections.Generic;
+using PhysicsFun.Buildings;
 using World;
 
 namespace Buildings.BuildingTilemaps
 {
-    public class PipeTilemap : EditableTilemap
+    public class PipeTilemap : DestructableTilemap
     {
         public override BuildingLayers Layer => BuildingLayers.PIPE;
         public override string GetSaveID()
@@ -21,6 +22,11 @@ namespace Buildings.BuildingTilemaps
         public override int GetSortingOrder(Building building)
         {
             return building.orderInLayer - SolidTilemap.ORDER_IN_LAYER - 1;
+        }
+
+        public override IEnumerable<string> GetTileAddresses()
+        {
+            yield return "PipeTile";
         }
     }
 }

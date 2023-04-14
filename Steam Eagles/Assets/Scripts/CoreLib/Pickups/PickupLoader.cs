@@ -80,6 +80,7 @@ namespace CoreLib.Pickups
 
         public void LoadPickup(string key)
         {
+            key = key.Replace(" ", "");
             if (_pickupSpawners.ContainsKey(key)) return;
             Debug.Log($"Now Loading Pickup: {key}\nAddress:{GetAddressFromKey(key)}");
             var spawner = new LoadedPickupSpawner(key);
@@ -88,6 +89,7 @@ namespace CoreLib.Pickups
         
         public bool IsPickupLoaded(string pickupName)
         {
+            pickupName = pickupName.Replace(" ", "");
             if (!_pickupSpawners.ContainsKey(pickupName))
             {
                 LoadPickup(pickupName);

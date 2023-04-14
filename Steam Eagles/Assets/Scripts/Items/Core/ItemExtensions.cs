@@ -84,6 +84,9 @@ namespace Items
 
         public static UniTask<ItemBase> LoadItemAsync(this string itemName) => ItemLoader.Instance.LoadItemAsync(itemName);
 
+        public static UniTask<Recipe> LoadRecipe(this string recipeName) =>
+            ItemLoader.Instance.LoadRecipeAsync(recipeName);
+
         public static ItemBase GetItem(this string itemName)
         {
             if(ItemLoader.Instance.IsItemLoaded(itemName))
@@ -92,7 +95,10 @@ namespace Items
             }
             return null;
         }
-        
+
+        public static UniTask<Pickup> LoadPickup(this ItemBase item) => LoadPickup(item.itemName.Trim());
+        public static UniTask<Pickup> LoadPickup(this string itemName) => PickupLoader.Instance.LoadPickupAsync(itemName.Trim());
+
         public static IEnumerator LoadPickup(this string itemName, Action<Pickup> callback)
         {
             yield return PickupLoader.Instance.LoadAndWaitForPickup(itemName);

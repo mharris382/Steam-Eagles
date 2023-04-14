@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,13 +12,16 @@ namespace CoreLib
         public Vector3 WorldPosition => tilemap.CellToWorld(cellPosition);
         public Vector3Int cellPosition;
         public Tilemap tilemap;
+        
+        [Obsolete("Use BuildingLayers instead")]
         public TilemapTypes tilemapType;
-        public Tile tile;
-        public DisconnectActionInfo(Tilemap tilemap, Vector3Int cellPosition)
+        
+        public TileBase tile;
+        public DisconnectActionInfo(Tilemap tilemap, Vector3Int cellPosition, TileBase tile=null)
         {
             this.cellPosition = cellPosition;
             this.tilemap = tilemap;
-            tile = tilemap.GetTile(cellPosition) as Tile;
+            this.tile = tile ? tile : (tilemap.GetTile(cellPosition));
             if (tilemap.gameObject.CompareTag("Pipe Tilemap"))
             {
                 tilemapType = TilemapTypes.PIPE;
