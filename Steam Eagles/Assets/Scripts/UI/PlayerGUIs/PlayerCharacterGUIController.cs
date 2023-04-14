@@ -33,18 +33,18 @@ namespace UI.PlayerGUIs
         
         public IReadOnlyReactiveProperty<bool> ShowRecipeHUD => showRecipeHUD;
 
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         private Entity _pcEntity
         {
             get => __pcEntity.Value;
             set => __pcEntity.Value = value;
         }
-
         private PlayerInput _playerInput
         {
             get => __playerInput.Value;
             set => __playerInput.Value = value;
         }
-
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         public PlayerInput playerInput
         {
             get => _playerInput;
@@ -55,6 +55,7 @@ namespace UI.PlayerGUIs
             }
         }
 
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         public Entity pcEntity
         {
             get => _pcEntity;
@@ -70,6 +71,7 @@ namespace UI.PlayerGUIs
         public IReadOnlyReactiveProperty<Entity> PcEntityProperty => __pcEntity ??= new ReactiveProperty<Entity>();
 
         /// <summary> game object that represents the player character </summary>
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         public GameObject PlayerCharacter => pcEntity != null ? pcEntity.LinkedGameObject : null;
 
         

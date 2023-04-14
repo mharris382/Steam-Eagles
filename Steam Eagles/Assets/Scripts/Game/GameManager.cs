@@ -210,6 +210,13 @@ namespace Game
             }
         }
 
+
+        private void OnApplicationQuit()
+        {
+            ((IDisposable)MessageBroker.Default).Dispose();
+            MessageBroker.Default = new MessageBroker();
+        }
+
         public bool CanStartGameInMultiplayer()
         {
             throw new NotImplementedException();
