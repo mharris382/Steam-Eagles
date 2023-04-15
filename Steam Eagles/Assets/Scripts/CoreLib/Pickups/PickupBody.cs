@@ -19,5 +19,6 @@ public class PickupBody : MonoBehaviour
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _collider2D = GetComponent<Collider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        gameObject.layer = LayerMask.NameToLayer("Pickups");
     }
 }

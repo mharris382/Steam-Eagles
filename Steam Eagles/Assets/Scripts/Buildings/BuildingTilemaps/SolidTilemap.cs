@@ -28,6 +28,7 @@ namespace Buildings.BuildingTilemaps
         public override IEnumerable<string> GetTileAddresses()
         {
             yield return "SolidTile";
+            yield return "SolidTile_Angled";
         }
     }
 }

@@ -52,5 +52,26 @@ namespace Buildings.BuildingTilemaps
                 }
             }
         }
+        public void SpawnLocal(Transform parent, Vector3 localPosition, DestructParams destructParams)
+        {
+                
+            Debug.Log($"Spawning pickups for {_recipe.name} ");
+            for (int i = 0; i < _recipePickups.Length; i++)
+            {
+                var pickup = _recipePickups[i];
+                var count = _counts[i];
+                for (int j = 0; j < count; j++)
+                {
+                    var instance= pickup.SpawnPickup(parent.TransformPoint(localPosition));
+                    instance.transform.SetParent(parent, true);
+                    var rb = instance.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.velocity =destructParams.direction * 2f;
+                    }
+                    MessageBroker.Default.Publish(new SpawnedPickupInfo(pickup, instance.gameObject));
+                }
+            }
+        }
     }
 }

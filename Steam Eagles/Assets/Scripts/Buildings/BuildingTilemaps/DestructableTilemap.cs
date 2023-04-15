@@ -26,35 +26,54 @@ namespace Buildings.BuildingTilemaps
             {
                 return false;
             }
-
-            var tilePosition = destructParams.position;/// + (destructParams.direction * 0.1f);
-            var cellPosition = Tilemap.layoutGrid.WorldToCell(tilePosition);
-            var aboveCell = cellPosition + Vector3Int.up;
-            var belowCell = cellPosition + Vector3Int.down;
-            var leftCell = cellPosition + Vector3Int.left;
-            var rightCell = cellPosition + Vector3Int.right;
-            
-            EditableTile tile = null;//= Tilemap.GetTile<EditableTile>(cellPosition);
-            var cells = new List<Vector3Int>{cellPosition, aboveCell, belowCell, leftCell, rightCell, leftCell + Vector3Int.up, rightCell + Vector3Int.up, leftCell +Vector3Int.down, rightCell + Vector3Int.down};
-            foreach (var cell in cells)
+            EditableTile tile = null;
+            Vector3Int cellPosition = default;
+            if (destructParams.isCellTarget)
             {
-                tile = Tilemap.GetTile<EditableTile>(cell);
-                if (tile != null)
+                cellPosition = destructParams.cellPosition;
+                tile = Tilemap.GetTile(cellPosition) as EditableTile;
+                if (tile == null)
                 {
-                    cellPosition = cell;
-                    break;
+                    return false;
                 }
+                MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cellPosition, tile));
+                Debug.Assert(_deconstructionPickupSpawners.ContainsKey(tile),
+                    $"Destructable tile ({tile.name}) found on tilemap ({name}, Type:{this.GetType().Name}), but no pickup spawner found for it.", this);
+                _deconstructionPickupSpawners[tile].SpawnLocal(transform, Tilemap.CellToLocal(cellPosition), new DestructParams(default, default));
+                Tilemap.SetTile(cellPosition, null);
+                return true;
             }
-            if (tile == null)
+            else
             {
-                return false;
+                var tilePosition = destructParams.position;/// + (destructParams.direction * 0.1f);
+                cellPosition = Tilemap.layoutGrid.WorldToCell(tilePosition);
+                var aboveCell = cellPosition + Vector3Int.up;
+                var belowCell = cellPosition + Vector3Int.down;
+                var leftCell = cellPosition + Vector3Int.left;
+                var rightCell = cellPosition + Vector3Int.right;
+            
+                //= Tilemap.GetTile<EditableTile>(cellPosition);
+                var cells = new List<Vector3Int>{cellPosition, aboveCell, belowCell, leftCell, rightCell, leftCell + Vector3Int.up, rightCell + Vector3Int.up, leftCell +Vector3Int.down, rightCell + Vector3Int.down};
+                foreach (var cell in cells)
+                {
+                    tile = Tilemap.GetTile<EditableTile>(cell);
+                    if (tile != null)
+                    {
+                        cellPosition = cell;
+                        break;
+                    }
+                }
+                if (tile == null)
+                {
+                    return false;
+                }
+                MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cellPosition, tile));
+                Debug.Assert(_deconstructionPickupSpawners.ContainsKey(tile),
+                    $"Destructable tile ({tile.name}) found on tilemap ({name}, Type:{this.GetType().Name}), but no pickup spawner found for it.", this);
+                _deconstructionPickupSpawners[tile].SpawnFrom(destructParams);
+                Tilemap.SetTile(cellPosition, null);
+                return true;
             }
-            MessageBroker.Default.Publish(new DisconnectActionInfo(Tilemap, cellPosition, tile));
-            Debug.Assert(_deconstructionPickupSpawners.ContainsKey(tile),
-                $"Destructable tile ({tile.name}) found on tilemap ({name}, Type:{this.GetType().Name}), but no pickup spawner found for it.", this);
-            _deconstructionPickupSpawners[tile].SpawnFrom(destructParams);
-            Tilemap.SetTile(cellPosition, null);
-            return true;
         }
 
 

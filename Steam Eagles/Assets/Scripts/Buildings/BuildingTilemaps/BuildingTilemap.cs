@@ -15,6 +15,8 @@ namespace Buildings.BuildingTilemaps
         public Tilemap Tilemap => _tm ? _tm : _tm = GetComponent<Tilemap>();
 
         private Building _building;
+
+        public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
         
         public abstract BuildingLayers Layer { get; }
 

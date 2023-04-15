@@ -18,6 +18,22 @@ namespace UI
         public GameObject defaultSelectable;
         private PlayerInput _openedByPlayerInput;
         public UIWindowPanel windowPanel;
+        [Required]
+        public Animator pauseAnimator;
+
+        private static readonly int IsOpen = Animator.StringToHash("IsOpen");
+
+        public override void Open()
+        {
+            base.Open();
+            pauseAnimator.SetBool(IsOpen, true);
+        }
+        
+        public override void Close()
+        {
+            base.Close();
+            pauseAnimator.SetBool(IsOpen, false);
+        }
 
         private void Awake()
         {

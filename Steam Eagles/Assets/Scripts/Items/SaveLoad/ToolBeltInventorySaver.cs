@@ -2,7 +2,7 @@
 
 namespace Items.SaveLoad
 {
-    public class ToolBeltInventory : CharacterInventoryBase
+    public class ToolBeltInventorySaver : CharacterInventoryBase
     {
         [SerializeField] private InventorySlot recipeToolSlot;
         [SerializeField] private InventorySlot buildToolSlot;

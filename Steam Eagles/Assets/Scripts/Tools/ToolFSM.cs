@@ -15,14 +15,27 @@ using ToolControllerBase = Tools.BuildTool.ToolControllerBase;
 
 namespace Tools
 {
+    public abstract  class ToolFSMBase : SerializedMonoBehaviour
+    {
+        private CharacterState _character;
+        private ToolState _toolState;
+
+        public CharacterState CharacterState =>
+            _character ? _character : (_character = GetComponentInParent<CharacterState>());
+        public ToolState ToolState =>
+            _toolState ? _toolState : (_toolState = GetComponentInParent<ToolState>());
+    }
     public class ToolFSM : SerializedMonoBehaviour
     {
         private CharacterState _character;
 
+        
         public Dictionary<ToolStates, ToolControllerBase> toolControllers = new Dictionary<ToolStates, ToolControllerBase>();
+        
         public ToolSlots toolSlots;
         public ToolBeltInventory toolBeltInventory;
         private ToolBelt _toolbelt;
+       
         [Required]
         public Transform toolControllerParent;
         
@@ -30,7 +43,7 @@ namespace Tools
         private Dictionary<Tool, ToolControllerBase> _controllers = new Dictionary<Tool, ToolControllerBase>();
         private void Awake()
         {
-            _character = GetComponent<CharacterState>();
+            _character = GetComponentInParent<CharacterState>();
             _toolbelt = new ToolBelt(_character, build:toolBeltInventory.buildToolSlot.Tool, destruct:toolBeltInventory.destructToolSlot.Tool, craft:toolBeltInventory.craftToolSlot.Tool, repair:toolBeltInventory.repairToolSlot.Tool);
             CurrentTool = _toolbelt.CurrentTool;
             CurrentTool.Subscribe(t =>
@@ -71,9 +84,6 @@ namespace Tools
         
         public ReadOnlyReactiveProperty<Tool> CurrentTool { get; set; }
     }
-
-
-
     public class ToolBelt
     {
         private const int BUILD_TOOL_SLOT = 0;
@@ -113,7 +123,6 @@ namespace Tools
         
         
     }
-
     public class ToolBeltSlot : IDisposable
     {
         private readonly ToolStates _state;
