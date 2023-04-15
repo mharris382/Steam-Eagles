@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Items
 {
+    
     public class ToolSlot : MonoBehaviour
     {
         public Tool tool;

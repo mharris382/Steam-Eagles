@@ -72,5 +72,10 @@ namespace Tools.BuildTool
 
 
         protected abstract void OnRoomChanged(Room room);
+
+        public void Activate(Tool tool)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

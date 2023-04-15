@@ -9,6 +9,8 @@ namespace Items.SaveLoad
         [SerializeField] private InventorySlot repairToolSlot;
         [SerializeField] private InventorySlot destructToolSlot;
         
+        
+        
         public override string UniqueInventoryID => "ToolBelt";
         public override int NumberOfSlots => 4;
 

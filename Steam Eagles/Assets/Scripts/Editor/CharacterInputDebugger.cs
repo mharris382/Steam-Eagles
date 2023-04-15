@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Characters;
+using CoreLib;
 using CoreLib.Entities;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;

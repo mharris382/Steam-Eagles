@@ -2,6 +2,7 @@
 using System.Linq;
 using Characters;
 using Characters.Narrative;
+using CoreLib;
 using CoreLib.Entities;
 using NUnit.Framework;
 using Statuses;

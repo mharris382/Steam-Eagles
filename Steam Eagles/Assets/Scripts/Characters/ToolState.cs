@@ -1,27 +1,34 @@
 ﻿using CoreLib;
+using UniRx;
 using UnityEngine;
 // ReSharper disable InconsistentNaming
 
+namespace CoreLib
+{
+}
+
 namespace Characters
 {
-    public enum ToolStates
-    {
-        None,
-        Recipe,
-        Build,
-        Destruct,
-        Repair,
-        
-    }
+    [System.Serializable]
+    public class ToolStateReactiveProperty : ReactiveProperty<ToolStates> { }
+
     public class ToolState : MonoBehaviour
     {
-        public ToolStates currentToolState; 
         public float maxToolRange = 5f;
+
+        public ToolStates currentToolState
+        {
+            get => toolState.Value;
+            set => toolState.Value = value;
+        }
+
         public void SetToolState(ToolStates toolState)
         {
             currentToolState = toolState;
         }
 
+        public ToolStateReactiveProperty toolState = new ToolStateReactiveProperty();
+        
 
 
         private ToolInputs _inputs = new ToolInputs();
@@ -65,6 +72,13 @@ namespace Characters
             }
             
             public bool CancelPressed
+            {
+                get;
+                set;
+            }
+            
+            
+            public int CurrentToolIndex
             {
                 get;
                 set;

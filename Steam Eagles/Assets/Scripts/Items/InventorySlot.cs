@@ -109,16 +109,17 @@ namespace Items
                 Debug.LogError($"Tried to set an item stack with a count greater than the max stack size of item {itemStack.item.name}");
                 return false;
             }
-
-            ItemStack = itemStack;
+            if(itemStack.item == null || !AllowItem(itemStack.item))
+                return false;
+            if(!AllowsStack(ItemStack))
+                ItemStack = itemStack;
+            RaiseEvent();
             return true;
         }
-
-        public bool SetItemStack(ItemBase itemBase, int cnt)
-        {
-            return SetItemStack(new ItemStack(itemBase, cnt));
-        }
         
+        public virtual bool AllowsStack(ItemStack stack) => true;
+        public virtual bool AllowItem(ItemBase item) => true;
+        public bool SetItemStack(ItemBase itemBase, int cnt) => SetItemStack(new ItemStack(itemBase, cnt));
         public void SetItemStackSafe(ItemStack itemStack)
         {
             if (itemStack.item == null || itemStack.Count <= 0)
@@ -137,6 +138,7 @@ namespace Items
             {
                 ItemStack = itemStack;
             }
+            RaiseEvent();
         }
 
         public void SetItemStackSafe(ItemBase itemBase, int cnt)
@@ -167,10 +169,19 @@ namespace Items
         {
             SetItemStack(new ItemStack());
         }
-        public void SwapSlots(InventorySlot other)
+        public bool SwapSlots(InventorySlot other)
         {
-            (ItemStack, other.ItemStack) = (other.ItemStack, ItemStack);
+            if(other.AllowsStack(this.ItemStack) && other.AllowItem(Item) && this.AllowsStack(other.ItemStack) && this.AllowItem(other.Item))
+            {
+                (ItemStack, other.ItemStack) = (other.ItemStack, ItemStack);
+                RaiseEvent();
+                other.RaiseEvent();
+                return true;
+            }
+            return false;
         }
+
+        private void RaiseEvent() => this.onStackChanged?.Invoke(this.ItemStack);
 
         public override string ToString()
         {
@@ -183,5 +194,11 @@ namespace Items
             if (ReferenceEquals(null, other)) return 1;
             return itemStack.CompareTo(other.itemStack);
         }
+    }
+
+
+    public class InventorySlot<T> : InventorySlot where T : ItemBase
+    {
+        public override bool AllowItem(ItemBase item) => item is T;
     }
 }

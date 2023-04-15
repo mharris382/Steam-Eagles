@@ -1,0 +1,11 @@
+- [ ] create `PickupInventoryHandler` which should have a `CharacterPickupController` and an `Inventory`
+- [ ] `CharacterPickupController` should have circle collider trigger
+- [ ] add `ToolFSM` to player character
+- [ ] create tool controller prefabs for all default tools
+	- [ ] assign asset references from tool item to tool controller 
+	- [ ] create tool loader to handle loading tool controller prefabs from tool items
+	- [ ] create tool slots which react to item changes in a particular inventory
+	- [ ] item changes messages are pushed to tool controller via tool belt slots
+- [ ] create input handler to cycle between available items in slots
+	- [ ] basically this means that their will only be one enum for each tool slot type, but could be multiple controllers that are associated with that type
+	- [ ] additionally we may extend this functionality to allow scontroller

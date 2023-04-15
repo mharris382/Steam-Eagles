@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters;
+using CoreLib;
 using DefaultNamespace;
 using UniRx;
 using UnityEngine;

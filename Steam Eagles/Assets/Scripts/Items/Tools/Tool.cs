@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -20,5 +21,17 @@ namespace Items
 
 
         public IEnumerable<Recipe> Recipes => recipes;
+
+
+        
+        [ValidateInput(nameof(ValidateState), "Must assign a valid tool state!")]
+        public ToolStates toolState;
+
+        public ToolControllerReference controllerPrefab;
+        
+        bool ValidateState(ToolStates state)
+        {
+            return state != ToolStates.None;
+        }
     }
 }

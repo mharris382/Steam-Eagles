@@ -6,7 +6,15 @@ using UnityEngine;
 
 namespace Items
 {
-   
+    public struct ItemAddedEventArgs
+    {
+        
+    }
+    
+    public struct ItemRemovedEventArgs
+    {
+           
+    }
 
     public class Inventory : MonoBehaviour, IInventory
     {
@@ -18,6 +26,9 @@ namespace Items
         public bool isMain;
 
         public bool isToolbelt;
+        
+        
+        
         void Start()
         {
             if (slotParent == null)
