@@ -67,7 +67,7 @@ namespace Buildings.BuildingTilemaps
                     var rb = instance.GetComponent<Rigidbody>();
                     if (rb != null)
                     {
-                        rb.velocity =destructParams.direction * 2f;
+                        rb.velocity =destructParams.direction * 2f  ;
                     }
                     MessageBroker.Default.Publish(new SpawnedPickupInfo(pickup, instance.gameObject));
                 }

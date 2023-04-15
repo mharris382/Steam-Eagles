@@ -20,5 +20,10 @@ namespace CoreLib.Pickups
             var id = gameObject.AddComponent<PickupID>();
             id.Key = _pickup.key;
         }
+
+        public void DisablePhysics()
+        {
+            PickupBody.DisablePhysics();
+        }
     }
 }

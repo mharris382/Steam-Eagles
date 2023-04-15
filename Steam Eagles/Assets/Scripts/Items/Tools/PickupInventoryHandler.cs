@@ -39,7 +39,7 @@ namespace Items
             Debug.Assert(ItemLoader.Instance.IsItemLoaded(obj.key), "Filter should have prevented this",this);
             var item = ItemLoader.Instance.GetItem(obj.key);
             inventory.AddItem(item, 1);
-            Debug.Log($"Picked up {item.name}",this);
+            Debug.Log($"{inventory.name} Picked up {item.name}",this);
         }
     }
 }

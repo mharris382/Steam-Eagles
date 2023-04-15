@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using CoreLib;
 using CoreLib.SaveLoad;
 using Cysharp.Threading.Tasks;
@@ -45,8 +47,11 @@ namespace SaveLoad
             {
                 SaveDirectoryPath = presetPath;
             }
+            this.saveHistory = new SaveHistoryLoader();
+            GameSaved+= saveHistory.OnSave;
             base.Init();
             inited = true;
+            
             MessageBroker.Default.Receive<SaveGameRequestedInfo>()
                 .Select(t => t.savePath)
                 .Subscribe(SaveGameAtPath)
@@ -93,6 +98,10 @@ namespace SaveLoad
 
         void SaveGameAtPath(string savePath)
         {
+            if (string.IsNullOrEmpty(savePath))
+            {
+                savePath = GetLastSavePath();
+            }
             Debug.Log($"Saving Game at path: {savePath}");
             savePath = GetPathSafe(savePath);
             if (!Directory.Exists(savePath))
@@ -105,16 +114,77 @@ namespace SaveLoad
             OnGameSaved(savePath);
         }
 
+        private string GetLastSavePath()
+        {
+            return saveHistory.GetSavePaths().FirstOrDefault(t => !string.IsNullOrEmpty(t)) ?? PlayerPrefs.GetString("Last Save Path");
+        }
+
+        private class SaveHistoryLoader
+        {
+            private readonly SaveHistory _saveHistory;
+
+            public SaveHistoryLoader()
+            {
+                var path = SaveHistory.GetSaveHistorySavePath();
+                if (File.Exists(path))
+                {
+                    var json = File.ReadAllText(path);
+                    _saveHistory = JsonUtility.FromJson<SaveHistory>(json);
+                }
+                else
+                {
+                    _saveHistory = new SaveHistory();
+                }
+            }
+
+            public void OnSave(string path)
+            {
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                {
+                    _saveHistory.savePaths.Add(path);
+                    var newJson = JsonUtility.ToJson(_saveHistory);
+                    File.WriteAllText(SaveHistory.GetSaveHistorySavePath(), newJson);
+                }
+            }
+            
+            /// <summary>
+            /// return the last 10 save paths
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerable<string> GetSavePaths()
+            {
+                var count = 0;
+                for (int i = _saveHistory.savePaths.Count - 1; i >= 0; i--)
+                {
+                    if (count > 10)
+                    {
+                        break;
+                    }
+                    count++;
+                    yield return _saveHistory.savePaths[i];
+                }
+            }
+        }
+        
+        [Serializable]
+        private class SaveHistory
+        {
+            public static string GetSaveHistorySavePath() => Path.Combine(Application.persistentDataPath, "SaveHistory.json");
+            public List<string> savePaths;
+        }
+
         string GetPathSafe(string path)
         {
             if (!path.Contains(Application.persistentDataPath))
             {
-                path = $"{Application.persistentDataPath}/{path}";
+                path = Path.Combine(Application.persistentDataPath, path);
             }
             return path;
         }
 
         private Coroutine _loadRoutine;
+        private SaveHistoryLoader saveHistory { get; set; } 
+
         void LoadGameRequest(LoadGameRequestedInfo info)
         {
             Debug.Log($"Received Load Game Request: {info.loadPath}");
