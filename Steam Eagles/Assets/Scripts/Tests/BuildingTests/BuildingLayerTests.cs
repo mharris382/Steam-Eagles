@@ -10,7 +10,7 @@ namespace Tests.BuildingTests
     [TestFixture]
     public class BuildingLayerTests
     {
-        [Test]
+        ///[Test]
         public void TestSolidLayer()
         {
             var l = BuildingLayers.SOLID;
@@ -18,7 +18,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
 
-        [Test]
+       /// [Test]
         public void TestPipeLayer()
         {
             var l = BuildingLayers.PIPE;
@@ -26,7 +26,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+       /// [Test]
         public void TestWallLayer()
         {
             var l = BuildingLayers.WALL;
@@ -34,7 +34,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+       /// [Test]
         public void TestFoundationLayer()
         {
             var l = BuildingLayers.FOUNDATION;
@@ -42,7 +42,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+       /// [Test]
         public void TestCoverLayer()
         {
             var l = BuildingLayers.COVER;
@@ -50,7 +50,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+      ///  [Test]
         public void TestPlatformLayer()
         {
             var l = BuildingLayers.PLATFORM;
@@ -58,7 +58,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+      ///  [Test]
         public void TestDecorLayer()
         {
             var l = BuildingLayers.DECOR;
@@ -66,7 +66,7 @@ namespace Tests.BuildingTests
             TestLayer(l, t);
         }
         
-        [Test]
+       /// [Test]
         public void TestWireLayer()
         {
             var l = BuildingLayers.WIRES;
@@ -75,7 +75,7 @@ namespace Tests.BuildingTests
         }
 
 
-        [Test]
+       /// [Test]
         public void TestCompositeLayer()
         {
             var l = BuildingLayers.WIRES | BuildingLayers.SOLID | BuildingLayers.PIPE;

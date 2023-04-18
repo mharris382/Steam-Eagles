@@ -14,6 +14,7 @@ namespace Characters.MyInput
         [Required]
         public Player player;
 
+        public bool autoPickup = false;
         public float aimSpeed = 10f;
         public Vector3 aimOriginOffset;
         public float aimSmoothing = 0.1f;
@@ -47,7 +48,7 @@ namespace Characters.MyInput
         
             var aimInput = inputPlayer.actions["Aim"].ReadValue<Vector2>();
             var jumpAction = inputPlayer.actions["Jump"];
-        
+            _inputState.IsPickupHeld = inputPlayer.actions["Pickup"].IsPressed();
             var moveX = moveInput.x;
             this.moveY = moveInput.y;
             bool jumpPressed = jumpAction.WasPressedThisFrame();

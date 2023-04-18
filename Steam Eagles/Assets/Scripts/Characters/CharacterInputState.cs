@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using Game;
 using Sirenix.OdinInspector;
 using SteamEagles.Characters;
@@ -13,7 +14,7 @@ namespace Characters
     /// acts as a proxy for passing input to the player character
     /// </summary>
     [RequireComponent(typeof(CharacterState))]
-    public class CharacterInputState : MonoBehaviour
+    public class CharacterInputState : MonoBehaviour, IPickupInput
     {
         
         
@@ -51,11 +52,25 @@ namespace Characters
         public UnityEvent<InputAction.CallbackContext> onPickup = new UnityEvent<InputAction.CallbackContext>();
         public UnityEvent<InputAction.CallbackContext> onValve = new UnityEvent<InputAction.CallbackContext>();
 
+        public bool EnableAutoPickup { get; set; }
         
-        
-        
-        
-        
+        public Predicate<string> PickupFilter { get; set; }
+
+        private BoolReactiveProperty _isPickupInputHeld = new BoolReactiveProperty();
+        private ReadOnlyReactiveProperty<bool> _isPickingUp;
+        private BoolReactiveProperty isPickupInputHeld => _isPickupInputHeld ??= new BoolReactiveProperty();
+
+
+        public bool IsPickupHeld
+        {
+            set
+            {
+                isPickupInputHeld.Value = value;
+            }
+        }
+        public ReadOnlyReactiveProperty<bool> IsPickingUp => _isPickingUp ??= isPickupInputHeld.Select(t => EnableAutoPickup || t).ToReadOnlyReactiveProperty();
+
+
         public CharacterState CharacterState => _characterState == null
             ? (_characterState = GetComponent<CharacterState>())
             : _characterState;
@@ -115,6 +130,8 @@ namespace Characters
         private void Awake()
         {
             _characterState = GetComponent<CharacterState>();
+            if(_isPickingUp == null)
+                this._isPickingUp = _isPickupInputHeld.Select(t => EnableAutoPickup || t).ToReadOnlyReactiveProperty();
             if (onJump == null) onJump = new UnityEvent<InputAction.CallbackContext>();
             if (onInteract == null) onInteract = new UnityEvent<InputAction.CallbackContext>();
             if (onPickup == null) onPickup = new UnityEvent<InputAction.CallbackContext>();
@@ -200,6 +217,12 @@ namespace Characters
         public void SetHeldItem(Rigidbody2D heldObject)
         {
             CharacterState.heldObject.Value = heldObject;
+        }
+
+
+        public bool WantsToPickup(string itemID)
+        {
+            return IsPickingUp.Value;
         }
     }
 }

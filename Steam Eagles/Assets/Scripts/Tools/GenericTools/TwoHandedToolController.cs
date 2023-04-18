@@ -1,6 +1,10 @@
-﻿using Buildings.Rooms;
-using Tools.BuildTool;
+﻿using System;
+using System.Collections.Generic;
+using Buildings.Rooms;
+using CoreLib;
+using Items;
 using UnityEngine;
+using ToolControllerBase = Tools.BuildTool.ToolControllerBase;
 
 namespace Tools.GenericTools
 {
@@ -25,6 +29,21 @@ namespace Tools.GenericTools
         protected override void OnRoomChanged(Room room)
         {
             Debug.LogWarning($"{nameof(TwoHandedToolController)} throw new System.NotImplementedException();");
+        }
+
+        public override ToolStates GetToolState()
+        {
+            return ToolStates.HAND_BOTH;
+        }
+
+        public override bool UsesRecipes(out List<Recipe> recipes)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual void SelectRecipe(int index)
+        {
+            throw new NotImplementedException();
         }
     }
 }

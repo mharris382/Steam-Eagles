@@ -2,10 +2,11 @@
 using Buildings.Rooms;
 using CoreLib;
 using CoreLib.Interfaces;
+using Items;
 using Sirenix.OdinInspector;
-using Tools.BuildTool;
 using UnityEngine;
 using UnityEngine.Serialization;
+using ToolControllerBase = Tools.BuildTool.ToolControllerBase;
 
 namespace Tools.DestructTool
 {
@@ -70,6 +71,17 @@ namespace Tools.DestructTool
         protected override void OnRoomChanged(Room room)
         {
             HasRoom = room != null && room.buildLevel == BuildLevel.FULL;
+        }
+
+        public override ToolStates GetToolState()
+        {
+            return ToolStates.Destruct;
+        }
+
+        public override bool UsesRecipes(out List<Recipe> recipes)
+        {
+            recipes = null;
+            return false;
         }
 
         private void Update()

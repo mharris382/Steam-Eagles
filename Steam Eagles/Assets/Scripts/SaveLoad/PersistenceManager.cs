@@ -170,7 +170,7 @@ namespace SaveLoad
         private class SaveHistory
         {
             public static string GetSaveHistorySavePath() => Path.Combine(Application.persistentDataPath, "SaveHistory.json");
-            public List<string> savePaths;
+            public List<string> savePaths = new List<string>();
         }
 
         string GetPathSafe(string path)

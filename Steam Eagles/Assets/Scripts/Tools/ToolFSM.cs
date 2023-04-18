@@ -25,11 +25,9 @@ namespace Tools
         public ToolState ToolState =>
             _toolState ? _toolState : (_toolState = GetComponentInParent<ToolState>());
     }
-    public class ToolFSM : SerializedMonoBehaviour
+    public class ToolFSM : ToolFSMBase
     {
         private CharacterState _character;
-
-        
         public Dictionary<ToolStates, ToolControllerBase> toolControllers = new Dictionary<ToolStates, ToolControllerBase>();
         
         public ToolSlots toolSlots;

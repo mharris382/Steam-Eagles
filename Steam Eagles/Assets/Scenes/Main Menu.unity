@@ -12528,6 +12528,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1043218798}
   - component: {fileID: 1043218799}
+  - component: {fileID: 1043218800}
   m_Layer: 5
   m_Name: Recipe HUD
   m_TagString: Untagged
@@ -12575,6 +12576,18 @@ MonoBehaviour:
   autoSetup: 1
   testTool: {fileID: 11400000, guid: 9ff7e3672c0b5d3419d156180a045f55, type: 2}
   invertSelection: 0
+--- !u!225 &1043218800
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043218797}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1043479056
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20563,7 +20576,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1847883661}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -645.0138, y: 147.43379, z: -373.49237}
+  m_LocalPosition: {x: -198, y: 188.7, z: -104.25365}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20595,10 +20608,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 10000
+  far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 134.91
+  orthographic size: 12.61
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -24634,6 +24647,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 378778757
       objectReference: {fileID: 0}
+    - target: {fileID: 1310167412271338402, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1729249948584838780, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -24711,9 +24728,9 @@ PrefabInstance:
       value: 'Interact <style=Gameplay/Interact>
 
         Pickup <style=Gameplay/Pickup>
+        <size=35>(hold)</size>
 
-        Select
-        Recipe <style=Gameplay/Select Recipe>
+        Select Recipe <style=Gameplay/Select Recipe>
 
 '
       objectReference: {fileID: 0}
@@ -25711,7 +25728,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847354662721, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00022118652
+      value: 0.00081534695
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847738329113, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchorMax.x
@@ -25731,7 +25748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847952379971, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00032526802
+      value: -0.00025214363
       objectReference: {fileID: 0}
     - target: {fileID: 7041872848122646998, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_Size
@@ -25743,7 +25760,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7041872848143655870, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_Alpha
-      value: 0
+      value: 0.97
       objectReference: {fileID: 0}
     - target: {fileID: 7041872848143655870, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_Interactable

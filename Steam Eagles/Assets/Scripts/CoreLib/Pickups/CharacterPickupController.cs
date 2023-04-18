@@ -22,7 +22,8 @@ namespace CoreLib.Pickups
 
         [SerializeField] private FadeModifier fadeModifier;
         [SerializeField] private ScaleModifier scaleModifier;
-        
+        private IPickupInput _input;
+
         private abstract class SequenceModifer
         {
             public bool enabled = true;
@@ -59,13 +60,6 @@ namespace CoreLib.Pickups
         [Serializable]
         private class FadeModifier : SequenceModifer
         {
-            public bool enabled = true;
-            [Range(0, 1)]
-            public float fadeStart = 0.7f;
-
-            public Ease ease = Ease.Linear;
-
-
             public override Sequence Modify(Sequence sequence, PickupInstance instance, float duration, float delay)
             {
                 var sr = instance.GetComponent<SpriteRenderer>();
@@ -75,6 +69,9 @@ namespace CoreLib.Pickups
 
         private void Awake()
         {
+            _input = GetComponentInParent<IPickupInput>();
+            _input.IsPickingUp.Subscribe(t => triggerArea.enabled = t).AddTo(this);
+            Debug.Assert(_input !=null, "Missing Pickup Input", this);
             triggerArea.OnTriggerEnter2DAsObservable()
                 .Select(t => t.GetComponent<PickupInstance>())
                 .Where(t => t != null)
@@ -93,7 +90,10 @@ namespace CoreLib.Pickups
 
         void TriggerPickup(PickupInstance pickupInstance)
         {
-            
+            if (!_input.WantsToPickup(pickupInstance.Pickup.key))
+            {
+                return;
+            }
             StartCoroutine(UniTask.ToCoroutine(async () =>
             { 
                 var position = jumpTarget.position;
