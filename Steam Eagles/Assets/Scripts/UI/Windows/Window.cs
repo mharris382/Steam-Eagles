@@ -2,12 +2,37 @@
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace UI
 {
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class Window : MonoBehaviour
     {
+        
+        [Serializable]
+        public class ActivationEvents
+        {
+            public UnityEvent onWindowOpened;
+            public UnityEvent onWindowClosed;
+            public UnityEvent<bool> onWindowStateChanged;
+
+            public void SetWindow(bool open)
+            {
+                onWindowStateChanged?.Invoke(open);
+                if (open)
+                {
+                    onWindowOpened?.Invoke();
+                }
+                else
+                {
+                    onWindowClosed?.Invoke();
+                }
+            }
+        }
+        
+        public ActivationEvents activationEvents;
+        
         private bool _isOpen;
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
@@ -52,11 +77,13 @@ namespace UI
         public virtual void Open()
         {
             IsVisible = true;
+            
         }
 
         public virtual void Close()
         {
             IsVisible = false;
+            
         }
 
         public bool IsVisible
@@ -71,6 +98,7 @@ namespace UI
         
         public void SetWindowVisible(bool visible)
         {
+            activationEvents.SetWindow(visible);
             if (visible)
             {
                 CanvasGroup.alpha = 1;

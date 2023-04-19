@@ -26,12 +26,19 @@ namespace Tools.BuildTool
         public int AvailableTools => tools.Count;
         private IntReactiveProperty _currentToolIndex = new IntReactiveProperty(0);
 
-        [Button]
+        public int CurrentToolIndex
+        {
+            get => _currentToolIndex.Value;
+            set => _currentToolIndex.Value = value;
+        }
+        
+
+        
         public void NextTool()
         {
             if (tools.Count == 0)
                 return;
-            _currentToolIndex.Value = (_currentToolIndex.Value + 1) % tools.Count;
+            CurrentToolIndex = (_currentToolIndex.Value + 1) % tools.Count;
             activeTool.Value = tools[_currentToolIndex.Value];
             Debug.Log($"Current Tool: {activeTool.Value}");
         }
@@ -42,7 +49,7 @@ namespace Tools.BuildTool
             {
                 return;
             }
-            _currentToolIndex.Value = (_currentToolIndex.Value - 1) % tools.Count;
+            CurrentToolIndex = (_currentToolIndex.Value - 1) % tools.Count;
             activeTool.Value = tools[_currentToolIndex.Value];
             Debug.Log($"Current Tool: {activeTool.Value}");
         }
@@ -60,8 +67,21 @@ namespace Tools.BuildTool
                     tool.gameObject.SetActive(tool == t);
                 }
             }).AddTo(this);
-        }
+            _currentToolIndex.Subscribe(index =>
+            {
+                Debug.Log($"Current Tool Index: {index}",this);
+                index = Mathf.Clamp(index, 0, tools.Count - 1);
+                if (tools.Count == 0)
+                {
 
+                    return;
+                }
+
+                var tool = tools[index];
+                activeTool.Value = tool;
+            }).AddTo(this);
+        }
+        
         public void RegisterTool(ToolControllerBase tool)
         {
             if (activeTool == null)
@@ -94,6 +114,11 @@ namespace Tools.BuildTool
             {
                 toolItems.Add(tool);
             }
+        }
+
+        public void UpdateTool()
+        {
+            throw new NotImplementedException();
         }
     }
 }

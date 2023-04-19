@@ -42,11 +42,13 @@ namespace UI
         
             if (selected == null)
             {
+                IsVisible = false;
                 return;
             }
             var selectedRect = selected.GetComponent<RectTransform>();
             if (selectedRect == null)
             {
+                IsVisible = false;
                 return;
             }
             if (!IsValidSelectableForTooltip(selected))

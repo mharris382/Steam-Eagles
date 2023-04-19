@@ -97,6 +97,9 @@ namespace Items.SaveLoad
                 Debug.Log($"Setting Item Stack: {item.name} x {itemAmount}, in slot {i} on inventory {name}");
                 Debug.Assert(slot.SetItemStack(new ItemStack(item, itemAmount)),
                     $"Failed to set item stack: {item.name} x {itemAmount}, in slot {i} on inventory {name}", Inventory);
+                Debug.Assert(slot.ItemStack.item==item, "slot.ItemStack.item!=item", this);
+                Debug.Assert(slot.ItemStack.Count == itemAmount, "slot.ItemStack.Count != itemAmount", this);
+                
             }
         }
     }

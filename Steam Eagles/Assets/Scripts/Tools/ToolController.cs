@@ -27,5 +27,17 @@ namespace Tools
             _toolData = GetComponentInParent<ToolControllerSharedData>();
             
         }
+
+        private void Update()
+        {
+
+            ToolState.Inputs.AvailableNumberOfTools = ToolData.AvailableTools;
+            int currentIndex = ToolState.Inputs.CurrentToolIndex;
+            if (currentIndex != ToolData.CurrentToolIndex)
+            {
+                ToolData.CurrentToolIndex = currentIndex;
+                ToolData.UpdateTool();
+            }
+        }
     }
 }

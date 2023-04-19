@@ -83,6 +83,12 @@ namespace Characters
                 get;
                 set;
             }
+            
+            public int AvailableNumberOfTools
+            {
+                get;
+                set;
+            }
         }
     }
 }

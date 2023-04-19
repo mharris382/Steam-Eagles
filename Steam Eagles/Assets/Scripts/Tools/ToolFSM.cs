@@ -17,7 +17,7 @@ namespace Tools
 {
     public abstract  class ToolFSMBase : SerializedMonoBehaviour
     {
-        private CharacterState _character;
+        protected CharacterState _character;
         private ToolState _toolState;
 
         public CharacterState CharacterState =>
@@ -27,7 +27,6 @@ namespace Tools
     }
     public class ToolFSM : ToolFSMBase
     {
-        private CharacterState _character;
         public Dictionary<ToolStates, ToolControllerBase> toolControllers = new Dictionary<ToolStates, ToolControllerBase>();
         
         public ToolSlots toolSlots;

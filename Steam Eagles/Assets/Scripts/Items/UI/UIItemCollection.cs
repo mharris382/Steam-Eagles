@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Items.UI
 {
@@ -11,7 +16,7 @@ namespace Items.UI
         public string slotKey = "ItemSlot";
 
         public Transform itemContainer;
-
+        public bool clearOnStart = true;
         public bool IsVisible
         {
             set
@@ -22,7 +27,19 @@ namespace Items.UI
                 }
             }
         }
+
+
+        private UIItem itemPrefab;
         
+        private IEnumerator Start()
+        {
+            yield return LoadPrefab();
+            if (clearOnStart)
+            {
+                ClearContainer();
+            }
+        }
+
         public void LinkContainer(List<InventorySlot> slots)
         {
             int count = fixedSize ? size : slots.Count;
@@ -44,13 +61,51 @@ namespace Items.UI
             }
         }
 
+
+        IEnumerator LoadPrefab()
+        {
+            yield return  UniTask.ToCoroutine(async () =>
+            {
+                var prefabLoadOp = Addressables.LoadAssetAsync<GameObject>(slotKey);
+                await prefabLoadOp.ToUniTask();
+                Debug.Assert(prefabLoadOp.Status == AsyncOperationStatus.Succeeded,
+                    $"Failed to load prefab with key {slotKey}",this);
+                itemPrefab = prefabLoadOp.Result.GetComponent<UIItem>();
+                Debug.Assert(itemPrefab != null, $"Prefab with key {slotKey} does not contain a UIItem component",this);
+            });
+        }
+        IEnumerator LoadAndPopulate(List<ItemStack> items)
+        {
+            if (itemPrefab != null)
+            {
+                
+                INTERNAL_PopulateContainer(items);
+                yield break;
+            }
+            else
+            {
+                yield return LoadPrefab();
+                INTERNAL_PopulateContainer(items);
+            }
+        }
+        
         public void PopulateContainer(List<ItemStack> items)
+        {
+            if(itemPrefab == null)
+                StartCoroutine(LoadAndPopulate(items));
+            else
+            {
+                ClearContainer();
+                INTERNAL_PopulateContainer(items);
+            }
+        }
+
+        private void INTERNAL_PopulateContainer(List<ItemStack> items)
         {
             int count = fixedSize ? size : items.Count;
             for (int i = 0; i < count; i++)
             {
-                var uiSlot =  UIInventoryItemSlots.Instance.GetUIItem(slotKey);
-                uiSlot.transform.SetParent(itemContainer);
+                var uiSlot = Instantiate(itemPrefab, itemContainer);
                 if(items.Count > i)
                 {
                     //show item
@@ -71,7 +126,7 @@ namespace Items.UI
             foreach (var uiElement in uiElements)
             {
                 uiElement.IsVisible = false;
-                UIInventoryItemSlots.Instance.ReturnUIItemSlot(slotKey, uiElement);
+                Destroy(uiElement.gameObject);
             }
         }
     }

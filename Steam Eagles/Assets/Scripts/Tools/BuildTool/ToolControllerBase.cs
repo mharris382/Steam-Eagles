@@ -23,16 +23,15 @@ namespace Tools.BuildTool
         private Inventory _inventory;
         private EntityRoomState _roomState;
         private BoolReactiveProperty _hasRoom = new BoolReactiveProperty(false);
+        private ToolControllerSharedData _toolData;
+        private bool _isActive;
 
         protected CharacterState CharacterState => _characterState;
         protected Inventory Inventory => _inventory;
         protected EntityRoomState RoomState => _roomState;
 
 
-        private BoolReactiveProperty _isInitialized;
-        private BoolReactiveProperty _isActivated;
-        private ToolControllerSharedData _toolData;
-
+        
         
         [Serializable]
         public class ActivationEvents
@@ -55,31 +54,23 @@ namespace Tools.BuildTool
             get => _hasRoom.Value;
             protected set => _hasRoom.Value = value;
         }
+
+        public void SetActive(bool isActive)
+        {
+            if (isActive != _isActive)
+            {
+                _isActive = isActive;
+                activationEvents.OnActivationStateChanged(isActive);
+            }
+        }
+        
         private void Awake()
         {
+            _isActive = false;
             _characterState = GetComponentInParent<CharacterState>();
             var inputState = _characterState.GetComponentInChildren<CharacterInputState>();
             _toolData = GetComponentInParent<ToolControllerSharedData>();
 
-
-            _isActivated = new BoolReactiveProperty();
-            _isInitialized = new BoolReactiveProperty();
-            _isActivated.StartWith(false)
-                .ZipLatest(_isInitialized.StartWith(false),
-                    (active, inited) =>
-                    {
-                        Debug.Log($"{name} Received activation state change: Equipped:{active} Initialized:{inited}",this);
-                        return active && inited;
-                    })
-                .DistinctUntilChanged()
-                .Subscribe(activationEvents.OnActivationStateChanged)
-                .AddTo(this);
-            
-            if (_toolData.ActiveTool == null)
-            {
-                _toolData.ActiveTool.Value = this;
-            }
-            
             Debug.Assert(_toolData != null, "ToolControllerSharedData not found", this);
             _toolData.RegisterTool(this);
             if(!_characterState.gameObject.TryGetComponent(out _roomState))
@@ -116,11 +107,7 @@ namespace Tools.BuildTool
             {
                 _toolData.ActiveTool.Value = this;
             }
-            _toolData.ActiveTool.Select(t=> t == this)
-                .StartWith(_toolData.ActiveTool.Value == this)
-                .Subscribe(isActive=> this._isActivated.Value = isActive)
-                .AddTo(this);
-            
+           
             _roomState.CurrentRoom.Subscribe(OnRoomChanged).AddTo(this);
             OnRoomChanged(_roomState.CurrentRoom.Value);
             OnStart();

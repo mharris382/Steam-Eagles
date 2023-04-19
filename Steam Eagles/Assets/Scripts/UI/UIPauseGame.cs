@@ -46,12 +46,16 @@ namespace UI
             var pressedInput = pressedPausedSignal.PlayerInput as PlayerInput;
             if (IsVisible)
             {
+                Debug.Assert(_openedByPlayerInput != null);
+                _openedByPlayerInput.SwitchCurrentActionMap("Gameplay");
                CloseBy(pressedInput);
             }
             else
             {
                 Open();
+                Debug.Assert(_openedByPlayerInput != null, "Should always be opened by a player input");
                 _openedByPlayerInput = pressedInput;
+                _openedByPlayerInput.SwitchCurrentActionMap("UI");
                 var go = GetSelectable(pressedInput);
                 windowPanel.OnSelected(go);
                 EventSystem.current.SetSelectedGameObject(go);

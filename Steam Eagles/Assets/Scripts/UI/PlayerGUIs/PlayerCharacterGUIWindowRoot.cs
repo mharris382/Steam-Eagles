@@ -63,10 +63,10 @@ namespace UI.PlayerGUIs
                 .Subscribe(isCharacterWindowOpen => _guiState.Value = isCharacterWindowOpen ? GUIState.CHARACTER_WINDOW : GUIState.NORMAL_GAMEPLAY_HUD)
                 .AddTo(this);
 
-            _guiState.Select(t => t != GUIState.DISABLED)
-                .Subscribe(enable => characterWindowController.enabled = enable)
-                .AddTo(this);
-            characterWindowController.enabled = _guiState.Value != GUIState.DISABLED;
+            //_guiState.Select(t => t != GUIState.DISABLED)
+            //    .Subscribe(enable => characterWindowController.enabled = enable)
+            //    .AddTo(this);
+           // characterWindowController.enabled = _guiState.Value != GUIState.DISABLED;
         }
 
         private void Update()

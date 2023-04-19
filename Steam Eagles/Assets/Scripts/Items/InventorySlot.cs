@@ -92,11 +92,12 @@ namespace Items
         /// </summary>
         /// <param name="itemStack"></param>
         /// <returns>true if the slot was changed, false if the provided stack was invalid</returns>
-        public bool SetItemStack(ItemStack itemStack)
+        public bool SetItemStack(ItemStack iStack)
         {
             if (itemStack.item == null || itemStack.Count <= 0)
             {
-                ItemStack = itemStack;
+                RaiseEvent();
+                ItemStack = iStack;
                 return true;
             }
             if(!itemStack.item.IsStackable && itemStack.Count > 1)
@@ -109,10 +110,14 @@ namespace Items
                 Debug.LogError($"Tried to set an item stack with a count greater than the max stack size of item {itemStack.item.name}");
                 return false;
             }
-            if(itemStack.item == null || !AllowItem(itemStack.item))
+            if(!AllowItem(itemStack.item))
                 return false;
-            if(!AllowsStack(ItemStack))
-                ItemStack = itemStack;
+            if (!AllowsStack(ItemStack))
+            {
+                Debug.LogWarning($"Tried to set an item {iStack} stack that was not allowed!", this);
+                return false;
+            }
+            ItemStack = iStack;
             RaiseEvent();
             return true;
         }
