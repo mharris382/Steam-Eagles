@@ -1,4 +1,5 @@
 using System;
+using Items.Slot;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -18,6 +19,9 @@ namespace Items
 
         
         private ReactiveProperty<bool> _isSlotLoading = new ReactiveProperty<bool>(false);
+        private ReactiveProperty<SlotState> _state = new ReactiveProperty<SlotState>(SlotState.NONE);
+        
+        public ReadOnlyReactiveProperty<SlotState> StateReadOnly => _state.ToReadOnlyReactiveProperty();
 
         public bool IsSlotLoading
         {
@@ -25,6 +29,11 @@ namespace Items
             set => _isSlotLoading.Value = value;
         }
 
+        public SlotState State
+        {
+            get => _state.Value;
+            set => _state.Value = value;
+        }
         
       
 

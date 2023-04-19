@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Items.Slot;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
@@ -24,17 +25,33 @@ namespace Items
         public int EquippableToolCount => _equippableSlots.Count;
         public Tool EquippedTool => HasToolEquipped ? _currentSlot.Value.Tool : null;
 
+        public bool activateToolOnStart = true;
+        
+        private SlotController _slotController;
 
         private void Start()
         {
             foreach (var toolSlot in toolSlots)
             {
+                Debug.Assert(toolSlot.GetComponent<InventorySlot>() != null, "ToolSlot must be have an InventorySlot", toolSlot);
                 //rebuild the linked list whenever any tool slot is changed
                 toolSlot.OnToolChanged.AsObservable()
                     .Subscribe(_ => UpdateLinkedListOnAnyToolSlotChanged())
                     .AddTo(this);
             }
 
+            _slotController = new SlotController(toolSlots.Select(t => t.GetComponent<InventorySlot>()));
+            if (activateToolOnStart && _slotController.ActiveSlot.Value == null)
+            {
+                Debug.Assert(_slotController.slots.Count > 0, "No tool slots found", this);
+                
+                var firstSlot = _slotController.slots.First();
+                
+                Debug.Assert(firstSlot != null, "No tool slots found");
+                
+                firstSlot.State = SlotState.ACTIVE;
+                Debug.Log($"Activating {firstSlot.name}");
+            }
             //build the linked list on start
             UpdateLinkedListOnAnyToolSlotChanged();
         }

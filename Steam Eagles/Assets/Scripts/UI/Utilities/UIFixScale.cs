@@ -14,7 +14,7 @@ namespace UI.Utilities
 
         public void ResetScale()
         {
-            transform.localScale = _scale;
+            transform.localScale = Vector3.one;
         }
     }
 }

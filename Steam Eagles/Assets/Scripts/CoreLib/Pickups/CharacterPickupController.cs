@@ -104,7 +104,7 @@ namespace CoreLib.Pickups
                 sequence = scaleModifier.ModifySequence(sequence, pickupInstance, this);
                 sequence.SetEase(ease);
                 sequence.Play();
-                await sequence.ToUniTask();
+                await UniTask.WaitUntil(sequence.IsComplete);
                 OnPickup.OnNext(pickupInstance.Pickup);
                 await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 DestroyInstance(pickupInstance);

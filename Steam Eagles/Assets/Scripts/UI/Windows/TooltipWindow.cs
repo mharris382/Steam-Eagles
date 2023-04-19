@@ -38,6 +38,8 @@ namespace UI
         public void Update()
         {
             var mousePos = Input.mousePosition;
+            if(eventSystem == null)
+                return;
             var selected = eventSystem.currentSelectedGameObject;
         
             if (selected == null)

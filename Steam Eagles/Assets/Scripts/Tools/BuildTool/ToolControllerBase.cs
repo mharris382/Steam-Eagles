@@ -8,6 +8,7 @@ using Characters;
 using CoreLib;
 using Items;
 using SteamEagles.Characters;
+using Tools.RecipeTool;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,9 +28,11 @@ namespace Tools.BuildTool
         private bool _isActive;
 
         protected CharacterState CharacterState => _characterState;
+        public ToolState ToolState => CharacterState.Tool;
         protected Inventory Inventory => _inventory;
         protected EntityRoomState RoomState => _roomState;
 
+        public Tool tool;
 
         
         
@@ -99,20 +102,61 @@ namespace Tools.BuildTool
             return _inventory != null && _characterState != null && _roomState != null;
         }
 
+        private RecipeSelector _recipe;
+
+        public RecipeSelector Recipe
+        {
+            get
+            {
+                if (_recipe == null && UsesRecipes(out var recipes))
+                {
+                    _recipe = new RecipeSelector(recipes);
+                    SetRecipeSelector(_recipe);
+                }
+                return _recipe;
+            }
+        }
+        
         private IEnumerator Start()
         {
+            
             while (!_characterState.IsEntityInitialized)
                 yield return null;
+            
+            StartLoading();
+            while (!IsDoneLoading())
+                yield return null;
+            
             if (_toolData.ActiveTool.Value == null)
             {
                 _toolData.ActiveTool.Value = this;
             }
            
             _roomState.CurrentRoom.Subscribe(OnRoomChanged).AddTo(this);
+            _roomState.CurrentRoom.Subscribe(room =>
+            {
+                if (room != null)
+                {
+                    targetBuilding = room.GetComponentInParent<Building>();
+                }
+            }).AddTo(this);
             OnRoomChanged(_roomState.CurrentRoom.Value);
             OnStart();
         }
+        
 
+        public virtual void StartLoading()
+        {
+            
+        }
+        public virtual bool IsDoneLoading()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// completely finished loading and ready to go
+        /// </summary>
         protected virtual void OnStart()
         {
         }
@@ -134,6 +178,11 @@ namespace Tools.BuildTool
         public abstract ToolStates GetToolState();
         
         public abstract bool UsesRecipes(out List<Recipe> recipes);
+
+        public virtual void SetRecipeSelector(RecipeSelector recipeSelector)
+        {
+            Debug.Log($"{recipeSelector}");
+        }
     }
 
 

@@ -32,6 +32,8 @@ namespace Buildables
                 return (Vector2Int) GridLayout.WorldToCell(transform.position);
             }
         }
+        
+        public bool Flipped { get; set; }
 
         public GridLayout GridLayout
         {
@@ -81,6 +83,21 @@ namespace Buildables
             return grid;
         }
 
+
+        public void CopySizeOntoPreviewSprite(SpriteRenderer previewSpriteRenderer)
+        {
+            previewSpriteRenderer.drawMode = SpriteDrawMode.Sliced;
+            var size = MachineGridSize;
+            previewSpriteRenderer.size = new Vector2(size.x, size.y);
+            previewSpriteRenderer.flipX = this.Flipped;
+            
+            var sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr != null)
+            {
+                previewSpriteRenderer.sprite = sr.sprite;
+                sr.flipX = Flipped;
+            }
+        }
         
         
         #region [Editor]
@@ -183,5 +200,10 @@ namespace Buildables
         }
 
         #endregion
+
+        public bool IsPlacementValid(Building building, Vector3Int cell)
+        {
+            return true;
+        }
     }
 }
