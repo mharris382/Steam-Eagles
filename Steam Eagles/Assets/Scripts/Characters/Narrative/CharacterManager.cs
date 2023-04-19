@@ -68,6 +68,21 @@ namespace Characters.Narrative
 #pragma warning restore CS1998
         {
             CharacterDescription characterDescription;
+            string key = $"{characterName}_Prefab";
+            var result = Addressables.LoadAssetAsync<GameObject>(key);
+            await result.Task;
+            if (result.Status == AsyncOperationStatus.Succeeded)
+            {
+                var character = result.Result.GetComponent<Character>();
+                _loadedCharacters.Add(characterName, result);
+                OnCharacterLoaded?.Invoke(character.gameObject);
+                return character;
+            }
+            else
+            {
+                Debug.LogError($"LoadCharacterAsync {characterName} failed. Expected key {key}");
+                throw new Exception();
+            }
             // if (IsCharacterLoaded(characterName))
             // {
             //     return _loadedCharacters[characterName].Result.GetComponent<Character>();

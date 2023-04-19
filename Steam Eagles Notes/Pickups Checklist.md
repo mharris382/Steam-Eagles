@@ -1,8 +1,8 @@
-- [ ] create `PickupInventoryHandler` which should have a `CharacterPickupController` and an `Inventory`
-- [ ] `CharacterPickupController` should have circle collider trigger
-- [ ] add `ToolFSM` to player character
-- [ ] create tool controller prefabs for all default tools
-	- [ ] assign asset references from tool item to tool controller 
+- [x] create `PickupInventoryHandler` which should have a `CharacterPickupController` and an `Inventory`
+- [x] `CharacterPickupController` should have circle collider trigger
+
+- [x] create tool controller prefabs for all default tools
+	- [x] assign asset references from tool item to tool controller 
 	- [ ] create tool loader to handle loading tool controller prefabs from tool items
 	- [ ] create tool slots which react to item changes in a particular inventory
 	- [ ] item changes messages are pushed to tool controller via tool belt slots

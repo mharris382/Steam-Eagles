@@ -22,6 +22,11 @@ namespace UI.Settings
             _button = GetComponent<Button>();
             panelOpenIcon.enabled = false;
             
+            
+        }
+
+        private void Start()
+        {
             groupPanel.GroupOpened.Subscribe(_ =>
             {
                 _button.interactable = false;

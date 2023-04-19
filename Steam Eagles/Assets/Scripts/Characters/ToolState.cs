@@ -89,6 +89,12 @@ namespace Characters
                 get;
                 set;
             }
+
+            public int SelectTool
+            {
+                get;
+                set;
+            }
         }
     }
 }

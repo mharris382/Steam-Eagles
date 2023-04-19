@@ -203,6 +203,7 @@ GameObject:
   - component: {fileID: 4438283006891795381}
   - component: {fileID: 2148788001170140453}
   - component: {fileID: 841156876500501157}
+  - component: {fileID: 5241981749812522151}
   m_Layer: 10
   m_Name: '[Tool Controllers]'
   m_TagString: Untagged
@@ -386,6 +387,20 @@ MonoBehaviour:
   activeTool:
     value: {fileID: 0}
   tools: []
+  toolItems: []
+--- !u!114 &5241981749812522151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927174135669236134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a729b72a70764e06b551e99cd9bf24d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolSelectionResetTime: 0.125
 --- !u!1 &1988912637585229755
 GameObject:
   m_ObjectHideFlags: 0
@@ -6765,6 +6780,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   targetBuilding: {fileID: 0}
+  isLeftHand: 0
 --- !u!1 &7684571993185598351
 GameObject:
   m_ObjectHideFlags: 0
@@ -12782,6 +12798,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   targetBuilding: {fileID: 0}
+  isLeftHand: 0
 --- !u!1 &8545782247430626977
 GameObject:
   m_ObjectHideFlags: 0

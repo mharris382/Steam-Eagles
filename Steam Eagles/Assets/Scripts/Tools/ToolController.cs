@@ -12,6 +12,7 @@ namespace Tools
         private CharacterState _character;
         private ToolState _toolState;
 
+        public float toolSelectionResetTime = 0.125f;
         public CharacterState CharacterState => _character ? _character : (_character = GetComponentInParent<CharacterState>());
         public ToolState ToolState => _toolState ? _toolState : (_toolState = GetComponentInParent<ToolState>());
 
@@ -28,6 +29,7 @@ namespace Tools
             
         }
 
+        private float _timeLastToolSelected;
         private void Update()
         {
 
@@ -37,6 +39,25 @@ namespace Tools
             {
                 ToolData.CurrentToolIndex = currentIndex;
                 ToolData.UpdateTool();
+            }
+
+            if (Time.realtimeSinceStartup - _timeLastToolSelected > toolSelectionResetTime)
+            {
+                var toolSelectionInput = ToolState.Inputs.SelectTool;
+                if (toolSelectionInput > 0)
+                {
+                    _timeLastToolSelected = Time.realtimeSinceStartup;
+                    ToolData.NextTool();
+                }
+                else if (toolSelectionInput < 0)
+                {
+                    _timeLastToolSelected = Time.realtimeSinceStartup;
+                    ToolData.PrevTool();
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }

@@ -1,3 +1,4 @@
+using CoreLib;
 using Players;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -70,8 +71,10 @@ namespace Characters.MyInput
             _inputState.MoveInput = moveInput;
             _inputState.AimInput = aimInput;
 
-            
-            
+
+            var selectToolInputRaw = inputPlayer.actions["Select Tool"].ReadValue<float>();
+            var selectToolInput = Mathf.Abs(selectToolInputRaw) > 0.1f ?  (int)Mathf.Sign(selectToolInputRaw) : 0;
+            _toolState.Inputs.SelectTool = selectToolInput;
             _toolState.Inputs.AimInputRaw = aimInput;
             _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].WasPressedThisFrame();
             _toolState.Inputs.CancelPressed = inputPlayer.actions["Ability Secondary"].WasPressedThisFrame() || 
@@ -84,6 +87,7 @@ namespace Characters.MyInput
             if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
 
             bool usingMouse = inputPlayer.currentControlScheme.Contains("Keyboard");
+            _toolState.Inputs.CurrentInputMode = usingMouse ? InputMode.KeyboardMouse : InputMode.Gamepad;
             HandleToolAim(Time.deltaTime, false);
         }
 
