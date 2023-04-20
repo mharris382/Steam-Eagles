@@ -28,17 +28,17 @@ namespace Tools.UI
 
         private IEnumerator Start()
         {
-            while (!_guiController.HasAllResources())
+            while (!GUIController.HasAllResources())
             {
                 Debug.Log("HUD Tool Controller waiting for GUI Controller to load resources...", this);
                 yield return null;
             }
 
             _toolControllerSharedData =
-                _guiController.PlayerCharacter.GetComponentInChildren<ToolControllerSharedData>();
-            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {_guiController.PlayerCharacter.name}", this);
-            Debug.Assert(_guiController.PlayerCharacter != null, "GUI Controller is missing Player Character", _guiController);
-            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {_guiController.PlayerCharacter.name}", this);
+                GUIController.PlayerCharacter.GetComponentInChildren<ToolControllerSharedData>();
+            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
+            Debug.Assert(GUIController.PlayerCharacter != null, "GUI Controller is missing Player Character", GUIController);
+            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
             _toolControllerSharedData.ActiveTool.StartWith(_toolControllerSharedData.ActiveToolValue)
                 .Subscribe(t =>
                 {

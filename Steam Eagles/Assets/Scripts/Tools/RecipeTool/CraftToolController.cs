@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoreLib;
 using Items;
 using Tools.BuildTool;
@@ -48,9 +49,12 @@ namespace Tools.RecipeTool
             }
             base.OnUpdate();
         }
-        
-        
-        
+
+
+        private void OnDisable()
+        {
+            _currentPreview?.SetVisible(false);
+        }
 
 
         private void TryUpdatePreview()

@@ -138,7 +138,8 @@ namespace Tools.RecipeTool
 
         public void SetVisible(bool visible)
         {
-            previewSprite.gameObject.SetActive(visible);
+            if(previewSprite != null)
+                previewSprite.gameObject.SetActive(visible);
         }
     }
 }
