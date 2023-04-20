@@ -33,32 +33,32 @@ namespace Tools
         private void Update()
         {
 
-            ToolState.Inputs.AvailableNumberOfTools = ToolData.AvailableTools;
-            int currentIndex = ToolState.Inputs.CurrentToolIndex;
-            if (currentIndex != ToolData.CurrentToolIndex)
-            {
-                ToolData.CurrentToolIndex = currentIndex;
-                ToolData.UpdateTool();
-            }
+            // ToolState.Inputs.AvailableNumberOfTools = ToolData.AvailableTools;
+            // int currentIndex = ToolState.Inputs.CurrentToolIndex;
+            // if (currentIndex != ToolData.CurrentToolIndex)
+            // {
+            //     ToolData.CurrentToolIndex = currentIndex;
+            //     ToolData.UpdateTool();
+            // }
 
-            if (Time.realtimeSinceStartup - _timeLastToolSelected > toolSelectionResetTime)
-            {
-                var toolSelectionInput = ToolState.Inputs.SelectTool;
-                if (toolSelectionInput > 0)
-                {
-                    _timeLastToolSelected = Time.realtimeSinceStartup;
-                    ToolData.NextTool();
-                }
-                else if (toolSelectionInput < 0)
-                {
-                    _timeLastToolSelected = Time.realtimeSinceStartup;
-                    ToolData.PrevTool();
-                }
-                else
-                {
-                    return;
-                }
-            }
+            // if (Time.realtimeSinceStartup - _timeLastToolSelected > toolSelectionResetTime)
+            // {
+            //     var toolSelectionInput = ToolState.Inputs.SelectTool;
+            //     if (toolSelectionInput > 0)
+            //     {
+            //         _timeLastToolSelected = Time.realtimeSinceStartup;
+            //         ToolData.NextTool();
+            //     }
+            //     else if (toolSelectionInput < 0)
+            //     {
+            //         _timeLastToolSelected = Time.realtimeSinceStartup;
+            //         ToolData.PrevTool();
+            //     }
+            //     else
+            //     {
+            //         return;
+            //     }
+            // }
         }
     }
 }

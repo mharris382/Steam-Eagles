@@ -95,6 +95,12 @@ namespace Characters
                 get;
                 set;
             }
+
+            public int SelectRecipe
+            {
+                get;
+                set;
+            }
         }
     }
 }

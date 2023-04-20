@@ -118,7 +118,7 @@ namespace Tools.BuildTool
 
         public void UpdateTool()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

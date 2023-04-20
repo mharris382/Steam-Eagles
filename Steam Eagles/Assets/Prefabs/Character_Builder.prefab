@@ -152,7 +152,7 @@ Transform:
   m_LocalScale: {x: 1, y: 0.57, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4311984172405926615}
+  m_Father: {fileID: 4438283006891795381}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2949237486425057417
@@ -202,8 +202,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4438283006891795381}
-  - component: {fileID: 2148788001170140453}
-  - component: {fileID: 5241981749812522151}
   m_Layer: 10
   m_Name: '[Tool Controllers]'
   m_TagString: Untagged
@@ -227,164 +225,12 @@ Transform:
   - {fileID: 7617886029261731978}
   - {fileID: 7620199131465081339}
   - {fileID: 7872626598578990056}
-  - {fileID: 4311984172405926615}
+  - {fileID: 2520014541693384136}
+  - {fileID: 7272345111498078336}
+  - {fileID: 2980451849449497707}
   m_Father: {fileID: 2023073604413840133}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2148788001170140453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927174135669236134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf9d54e579eb421f879a401c4a9eeecb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 4386875973556452560}
-    - {fileID: 560180144134131042}
-    - {fileID: 5430212390407036866}
-    - {fileID: 1714315696602289248}
-    - {fileID: 8060053576772071180}
-    - {fileID: 1009069799477793778}
-    - {fileID: 7832116479890727786}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: toolControllers
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[CoreLib.ToolStates, SteamEagles.CoreLib],[Tools.BuildTool.ToolControllerBase,
-        SteamEagles.Tools]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[CoreLib.ToolStates,
-        SteamEagles.CoreLib]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 7
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 2
-    - Name: $v
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 3
-    - Name: $v
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 4
-    - Name: $v
-      Entry: 10
-      Data: 2
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 1
-    - Name: $v
-      Entry: 10
-      Data: 3
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 5
-    - Name: $v
-      Entry: 10
-      Data: 4
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 6
-    - Name: $v
-      Entry: 10
-      Data: 5
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 7
-    - Name: $v
-      Entry: 10
-      Data: 6
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-  toolSlots: {fileID: 7567270960152624855}
-  toolBeltInventory: {fileID: 1229341134484648457}
-  toolControllerParent: {fileID: 4438283006891795381}
---- !u!114 &5241981749812522151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927174135669236134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a729b72a70764e06b551e99cd9bf24d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toolSelectionResetTime: 0.125
 --- !u!1 &1988912637585229755
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,6 +320,7 @@ GameObject:
   - component: {fileID: 6001154586176199686}
   - component: {fileID: 4864091075098906407}
   - component: {fileID: 8359083257614345874}
+  - component: {fileID: 8240237011690389665}
   m_Layer: 10
   m_Name: Character_Builder
   m_TagString: Builder
@@ -831,6 +678,20 @@ MonoBehaviour:
     value: {fileID: 1714315696602289248}
   tools: []
   toolItems: []
+--- !u!114 &8240237011690389665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023073604413840154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3059d036180487ab5e56b7421b95c10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolSwitchRate: 0.2
+  toolContainer: {fileID: 4438283006891795381}
 --- !u!1 &2462750353514555147
 GameObject:
   m_ObjectHideFlags: 0
@@ -1360,40 +1221,6 @@ Transform:
   - {fileID: 3032139736637713622}
   - {fileID: 1579813850713203348}
   m_Father: {fileID: 2023073604413840133}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5857221507076774221
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4311984172405926615}
-  m_Layer: 10
-  m_Name: '[Hand Tool Slots]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4311984172405926615
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857221507076774221}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2520014541693384136}
-  - {fileID: 7272345111498078336}
-  - {fileID: 2980451849449497707}
-  m_Father: {fileID: 4438283006891795381}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6425473319852514569
@@ -6803,7 +6630,7 @@ Transform:
   m_LocalScale: {x: 1, y: 0.57, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4311984172405926615}
+  m_Father: {fileID: 4438283006891795381}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7743705797204198390
@@ -6912,11 +6739,13 @@ MonoBehaviour:
         m_Calls: []
   targetBuilding: {fileID: 0}
   tool: {fileID: 11400000, guid: 050c7f000dfc5604e8149dafceb76ec7, type: 2}
+  recipeSwitchRate: 0.2
   config:
     validColor: {r: 0, g: 1, b: 0, a: 0.5}
-    invalidColor: {r: 1, g: 1, b: 0, a: 0.5}
+    invalidColor: {r: 1, g: 0.17272311, b: 0, a: 0.5}
     sortingOrder: 10
     sortingLayer: Default
+  buildRate: 1
 --- !u!1 &7744303518173746951
 GameObject:
   m_ObjectHideFlags: 0
@@ -6966,7 +6795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7872626598578990056
 Transform:
   m_ObjectHideFlags: 0
@@ -7017,7 +6846,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   targetBuilding: {fileID: 0}
-  tool: {fileID: 0}
+  tool: {fileID: 11400000, guid: c525a0e9f4b92774b9ca853abaabf1e5, type: 2}
 --- !u!1 &8419228503435055670
 GameObject:
   m_ObjectHideFlags: 0
@@ -12843,7 +12672,7 @@ Transform:
   m_LocalScale: {x: 1, y: 0.57, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4311984172405926615}
+  m_Father: {fileID: 4438283006891795381}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1387172674786658106
@@ -13947,6 +13776,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 4438283006891795381}
     m_Modifications:
     - target: {fileID: -3799685243841844201, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
+      propertyPath: tool
+      value: 
+      objectReference: {fileID: 11400000, guid: 9ff7e3672c0b5d3419d156180a045f55, type: 2}
+    - target: {fileID: -3799685243841844201, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
       propertyPath: pathTool
       value: 
       objectReference: {fileID: 6028239944776538576}
@@ -14108,7 +13941,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2289754567251433862, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2597735137080609047, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
       propertyPath: maxPathLength
@@ -14119,17 +13952,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
---- !u!114 &4386875973556452560 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -3799685243841844201, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
-  m_PrefabInstance: {fileID: 8621470863746945223}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e99aa01c60504707be14515e4db1e06c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6028239944776538576 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2597735137080609047, guid: b4d1de0dedff4714a962188bfd268bbb, type: 3}
@@ -14215,8 +14037,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326127638692255211, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9152026915330111035, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
+      propertyPath: tool
+      value: 
+      objectReference: {fileID: 11400000, guid: fd5925389fb884c439790c1bea92fb69, type: 2}
     - target: {fileID: 9152026915330111035, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
       propertyPath: config.rate
       value: 0.2

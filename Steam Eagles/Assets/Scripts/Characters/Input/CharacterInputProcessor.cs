@@ -74,6 +74,9 @@ namespace Characters.MyInput
 
             var selectToolInputRaw = inputPlayer.actions["Select Tool"].ReadValue<float>();
             var selectToolInput = Mathf.Abs(selectToolInputRaw) > 0.1f ?  (int)Mathf.Sign(selectToolInputRaw) : 0;
+            var selectTool2InputRaw = inputPlayer.actions["Select Recipe"].ReadValue<float>();
+            var selectTool2Input = Mathf.Abs(selectTool2InputRaw) > 0.1f ?  (int)Mathf.Sign(selectTool2InputRaw) : 0;
+            _toolState.Inputs.SelectRecipe = selectTool2Input;
             _toolState.Inputs.SelectTool = selectToolInput;
             _toolState.Inputs.AimInputRaw = aimInput;
             _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].WasPressedThisFrame();

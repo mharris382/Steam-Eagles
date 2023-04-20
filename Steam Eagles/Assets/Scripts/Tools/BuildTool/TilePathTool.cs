@@ -30,12 +30,15 @@ namespace Tools.BuildTool
 
 
         private List<Vector3Int> _path = new List<Vector3Int>();
-
         private Subject<List<Vector3Int>> _pathSubject = new Subject<List<Vector3Int>>();
         private ReactiveProperty<IEditableTile> _editableTile;
         private ReactiveProperty<Vector3Int> _hoveredPosition = new ReactiveProperty<Vector3Int>();
         private Vector3Int? _pathStart;
 
+
+        private bool _isSetup;
+        
+        
         public Vector3Int HoveredPosition => !HasResources()
             ? Vector3Int.zero
             : Building.Map.WorldToCell(_toolState.AimPositionWorld, Tile.GetLayer());
@@ -51,8 +54,12 @@ namespace Tools.BuildTool
 
         }
 
+        
+        
+        
         IEnumerator Start()
         {
+            _isSetup = false;
             while (!HasResources())
             {
                 yield return null;
@@ -60,12 +67,20 @@ namespace Tools.BuildTool
 
             Previewer.Setup(_hoveredPosition, _editableTile, _pathSubject, _building.Map, _building);
             _hoveredPosition.Subscribe(UpdatePath).AddTo(this);
+            _isSetup = true;
         }
 
-        private void Update()
+        public void Update()
         {
             if (!HasResources())
                 return;
+            
+            if (!_isSetup)
+            {
+                Debug.LogWarning("Build Path tool not setup", this);
+                return;
+            }
+            
             if (_toolState.Inputs.UsePressed) UsePressed();
             if (_toolState.Inputs.CancelPressed) _pathStart = null;
             _hoveredPosition.Value = HoveredPosition;
@@ -142,16 +157,16 @@ namespace Tools.BuildTool
             _path.Clear();
             var start = (Vector2Int) _pathStart.Value;
             var end =(Vector2Int) hoveredPosition;
-            var path = _building.Map.GetPath(start, end, Tile.GetLayer());
-            
+            _path.Add(_pathStart.Value);
+            _path.AddRange(_building.Map.GetPath(start, end, Tile.GetLayer()));
             
             int length = 0;
-            foreach (var position in path)
+            if (_path.Count > maxPathLength)
             {
-                if (length >= maxPathLength)
-                    break;
-                _path.Add(position);
-                length++;
+                for (int i = _path.Count-1; i > maxPathLength; i--)
+                {
+                    _path.RemoveAt(i);
+                }
             }
             _pathSubject.OnNext(_path);
             // Vector3Int direction = Vector3Int.zero;

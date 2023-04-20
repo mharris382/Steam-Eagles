@@ -1,0 +1,3 @@
+- [ ] add `ToolSwapController` (on prefab root~~?~~.)
+- [ ] check build tool has tool assigned
+- [ ] hook up recipe UI to recipe tool generically

@@ -7,6 +7,7 @@ using Buildings.Rooms.Tracking;
 using Characters;
 using CoreLib;
 using Items;
+using Sirenix.OdinInspector;
 using SteamEagles.Characters;
 using Tools.RecipeTool;
 using UniRx;
@@ -17,7 +18,12 @@ namespace Tools.BuildTool
 {
     public abstract class ToolControllerBase : MonoBehaviour
     {
+        
         [SerializeField] private ActivationEvents activationEvents;
+        
+        
+     
+        
         
         public Building targetBuilding;
         private CharacterState _characterState;
@@ -96,10 +102,15 @@ namespace Tools.BuildTool
         }
         
         protected virtual void OnAwake(){}
-        
+
         public bool HasResources()
         {
-            return _inventory != null && _characterState != null && _roomState != null;
+            if (targetBuilding == null)
+            {
+                targetBuilding = GetComponentInParent<Building>();
+                if (targetBuilding == null) targetBuilding = FindObjectOfType<Building>();
+            }
+        return _inventory != null && _characterState != null && _roomState != null;
         }
 
         private RecipeSelector _recipe;
@@ -184,8 +195,4 @@ namespace Tools.BuildTool
             Debug.Log($"{recipeSelector}");
         }
     }
-
-
-
-   
 }

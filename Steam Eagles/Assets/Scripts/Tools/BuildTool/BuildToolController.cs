@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Tools.BuildTool
 {
-    public class BuildToolController : ToolControllerBase
+    public class BuildToolController : RecipeToolBase
     {
         public TilePathTool pathTool;
         public Tool defaultBuildTool;
@@ -28,15 +28,14 @@ namespace Tools.BuildTool
             HasRoom = room.buildLevel == BuildLevel.FULL;
         }
 
-        public override ToolStates GetToolState()
+        public override void SetPreviewVisible(bool visible)
         {
-            return ToolStates.Build;
+            pathTool.enabled = visible;
         }
 
-        public override bool UsesRecipes(out List<Recipe> recipes)
-        {
-            recipes = new List<Recipe>(defaultBuildTool.Recipes);
-            return true;
-        }
+        protected override IEnumerable<Recipe> GetRecipes() => tool.Recipes;
+
+        public override ToolStates GetToolState() => ToolStates.Build;
+        
     }
 }

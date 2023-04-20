@@ -588,7 +588,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
+                    "name": "Up/Down (Arrow Keys)",
                     "id": "d9643962-ed5a-4d7a-a57b-b8e5b17c266f",
                     "path": "1DAxis",
                     "interactions": "",
@@ -621,7 +621,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "1D Axis",
+                    "name": "Up/Down (D-pad)",
                     "id": "fa3814b6-7794-4a45-88bb-3c3742ae4c83",
                     "path": "1DAxis",
                     "interactions": "",
@@ -654,7 +654,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "1D Axis",
+                    "name": "Right/Left (Arrow Keys)",
                     "id": "39c65a1d-f52e-4d19-9df6-1a59e91ecab0",
                     "path": "1DAxis",
                     "interactions": "",
@@ -667,10 +667,10 @@
                 {
                     "name": "negative",
                     "id": "c25f262c-b3df-45f9-b62f-b55574274d5d",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard 2;Keyboard",
                     "action": "Select Tool",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -678,10 +678,43 @@
                 {
                     "name": "positive",
                     "id": "9cc46eeb-2740-458b-9a05-194e22c48bd7",
-                    "path": "<Keyboard>/2",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard 2;Keyboard",
+                    "action": "Select Tool",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Right/Left (D-pad)",
+                    "id": "9640f307-2e94-4398-a000-055a5ca1c2ad",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
+                    "action": "Select Tool",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "7a6f3f7c-ce3a-4545-ad1d-1f3e1acbb0a1",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Select Tool",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "fe1e3916-fb0a-4d27-ac4c-efc53ae59cbe",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
                     "action": "Select Tool",
                     "isComposite": false,
                     "isPartOfComposite": true

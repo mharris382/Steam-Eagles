@@ -1,9 +1,11 @@
 ﻿using System;
 using Buildings;
+using Buildings.Rooms;
 using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Utilities;
 
 namespace Buildables
 {
@@ -14,8 +16,17 @@ namespace Buildables
         [ValidateInput(nameof(ValidateBuildingTarget))]
         [PropertyOrder(-9)]
         public GameObject buildingTarget;
-
         
+        [SerializeField] private FX fx;
+        
+        [Serializable]
+        public class FX
+        {
+            public GameFX buildFX;
+            public GameFX destroyFX;
+        }
+
+        public bool snapsToGround = true;
         /// <summary> how many cells this machine occupies in the grid </summary>
         public abstract Vector2Int MachineGridSize { get; }
 
@@ -203,7 +214,62 @@ namespace Buildables
 
         public bool IsPlacementValid(Building building, Vector3Int cell)
         {
+            var size = this.MachineGridSize;
+            var sPos = building.Map.CellToWorld(cell, BuildingLayers.SOLID);
+            //check that all cells are empty
+            for (int x = 0; x < size.x; x++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    var cellPos = cell + new Vector3Int(x, y, 0);
+                    var tile = building.Map.GetTile(cellPos, BuildingLayers.SOLID);
+                    if (tile == null) building.Map.GetTile(cellPos, BuildingLayers.FOUNDATION);
+                    var wp = building.Map.CellToWorld(cellPos, BuildingLayers.SOLID);
+                    var room = building.Map.GetRoom(cellPos, BuildingLayers.SOLID);
+                    if (room.buildLevel != BuildLevel.FULL)
+                    {
+                        return false;
+                    }
+                    Debug.DrawLine(sPos, wp, tile == null ? Color.blue : Color.yellow, .5f);
+                    if (tile != null)
+                    {
+                        Debug.Log($"Tile {tile.name} already exists at {cellPos}", this);
+                        return false;
+                    }
+                }
+            }
+
+            if (snapsToGround)
+            {
+                var floorCheckStart = cell + Vector3Int.down;
+                var floorCheckEnd = floorCheckStart + new Vector3Int(size.x, 0, 0);
+                var wpS = building.Map.CellToWorld(floorCheckStart, BuildingLayers.SOLID);
+                for (int x =  floorCheckStart.x; x <floorCheckEnd.x; x++)
+                {
+                    var check = new Vector3Int(x, floorCheckStart.y, 0);
+                    var wp = building.Map.CellToWorld(check, BuildingLayers.SOLID);
+                    var tile = building.Map.GetTile(check, BuildingLayers.SOLID);
+                    if (tile == null) tile = building.Map.GetTile(check, BuildingLayers.FOUNDATION);
+                    if (tile == null)
+                    {
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
+
+        public BuildableMachineBase Build(Vector3Int cell, Building building)
+        {
+            var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
+            var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
+            instance.buildingTarget = building.gameObject;
+            fx.buildFX.SpawnEffectFrom(instance.transform);
+            return instance;
+        }
+        
+        
+        
     }
 }
