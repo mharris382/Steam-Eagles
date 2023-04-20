@@ -190,8 +190,8 @@ namespace UI.PlayerGUIs
 
                 if (playerInput == null)
                 {
-                    Debug.Assert((GameManager.Instance.GetPlayerDevice(playerID)
-                        .TryGetComponent<PlayerInput>(out var pinput)));
+                    bool result =(GameManager.Instance.GetPlayerDevice(playerID).TryGetComponent<PlayerInput>(out var pinput));
+                    Debug.Assert(result);
                     playerInput = pinput;
                 }
             }

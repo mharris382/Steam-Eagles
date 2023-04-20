@@ -12,15 +12,21 @@ namespace Tools.BuildTool
     public abstract class RecipeToolBase : ToolControllerBase
     {
         [SerializeField] private float recipeSwitchRate = .2f;
+        [SerializeField] private bool faceDirectionOfCharacter = true;
+        
+        
+        
         private float _selectRecipeTime;
         private List<Recipe> _recipes;
         private RecipeSelector _recipeSelector;
 
         private Dictionary<Recipe, RecipePreviewer> _recipePreviewers = new Dictionary<Recipe, RecipePreviewer>();
         private RecipePreviewer _currentPreview;
+        
+        
+        
 
         public Recipe CurrentRecipe => _recipes == null ? null : _recipeSelector.SelectedRecipe.Value;
-
         protected List<Recipe> Recipes => _recipes;
 
         protected override void OnRoomChanged(Room room) => Debug.LogWarning($"{nameof(RecipeToolBase)} throw new System.NotImplementedException();");
@@ -37,13 +43,19 @@ namespace Tools.BuildTool
                 TryToSelectRecipe();
                 return;
             }
-            if(CheckForRecipeSwitch(this.ToolState))
+
+            if (CheckForRecipeSwitch(this.ToolState))
+            {
                 return;
+            }
             
-            OnUpdate();
+            OnUpdate(GetFlipped());
             
             //do base last because base checks for tool switches so that will disable the next update loop
         }
+
+
+        private bool GetFlipped() => faceDirectionOfCharacter && CharacterState.FacingRight;
 
 
         private bool CheckForRecipeSwitch(ToolState toolState)
@@ -59,7 +71,7 @@ namespace Tools.BuildTool
                 {
                     _recipeSelector.Previous();
                 }
-
+                
                 return true;
             }
             return false;
@@ -86,7 +98,7 @@ namespace Tools.BuildTool
         }
 
 
-        protected virtual void OnUpdate()
+        protected virtual void OnUpdate(bool isFlipped)
         {
             
         }

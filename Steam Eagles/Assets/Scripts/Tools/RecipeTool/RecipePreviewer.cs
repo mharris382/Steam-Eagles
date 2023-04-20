@@ -40,7 +40,7 @@ namespace Tools.RecipeTool
         }
 
         Vector3Int _lastCell;
-        public void UpdatePreview(Building building, Vector3 selectedPositionWorld, out bool positionValid)
+        public void UpdatePreview(Building building, Vector3 selectedPositionWorld, out bool positionValid, bool flipped = false)
         {
             if (!isReady)
             {
@@ -48,6 +48,9 @@ namespace Tools.RecipeTool
                 positionValid = false;
                 return;
             }
+
+            previewMachine.Flipped = flipped;
+            
             //machines should be placed on the same grid as the solid building layer
             var cell = building.Map.WorldToCell(selectedPositionWorld, BuildingLayers.SOLID);
             cell = FindBestCell(building, cell);

@@ -31,14 +31,24 @@ namespace Tools.RecipeTool
             }
         }
 
-        protected override void OnUpdate()
+        protected override void OnRecipeChanged(Recipe recipe)
+        {
+            Debug.Log($"Changed recipe to {recipe}",this);
+            _currentPreview?.SetVisible(false);
+            _currentPreview = null;
+            TryUpdatePreview();
+            Debug.Assert(_currentPreview != null, "_currentPreview == null",this);
+        }
+
+        protected override void OnUpdate(bool isFlipped)
         {
             if (_currentPreview == null)
             {
                 TryUpdatePreview();
             }
+            _currentPreview.SetVisible(true);
             var selectedPositionWS = transform.TransformPoint(this.ToolState.AimPositionLocal);
-            _currentPreview.UpdatePreview(this.targetBuilding, selectedPositionWS, out var isValid);
+            _currentPreview.UpdatePreview(this.targetBuilding, selectedPositionWS, out var isValid, isFlipped);
             if (isValid && ToolState.Inputs.UsePressed)
             {
                 if(Time.realtimeSinceStartup - _timeBuildTime > buildRate)
@@ -47,7 +57,7 @@ namespace Tools.RecipeTool
                     var newMachine = _currentPreview.Build(targetBuilding);
                 }
             }
-            base.OnUpdate();
+            base.OnUpdate(isFlipped);
         }
 
 
@@ -66,6 +76,7 @@ namespace Tools.RecipeTool
             }
             _currentPreview = new RecipePreviewer(this, this.config, CurrentRecipe);
             _recipePreviewers.Add(CurrentRecipe, _currentPreview);
+            _currentPreview.SetVisible(true);
         }
     }
 }
