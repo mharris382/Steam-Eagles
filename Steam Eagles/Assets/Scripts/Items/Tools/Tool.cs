@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Items
 {
     [CreateAssetMenu(fileName = "New Item", menuName = "Steam Eagles/Items/Tool", order = 0)]
-    public class Tool : ItemBase
+    public class Tool : ItemBase, IIconable
     {
         public override int MaxStackSize => 1;
         public override bool IsStackable => false;
@@ -32,6 +32,11 @@ namespace Items
         bool ValidateState(ToolStates state)
         {
             return state != ToolStates.None;
+        }
+
+        public Sprite GetIcon()
+        {
+            return this.icon;
         }
     }
 }

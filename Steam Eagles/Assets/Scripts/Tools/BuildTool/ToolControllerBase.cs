@@ -41,6 +41,8 @@ namespace Tools.BuildTool
         public Tool tool;
 
         
+        public IIconable ToolIcon => tool as IIconable;
+        
         
         [Serializable]
         public class ActivationEvents
