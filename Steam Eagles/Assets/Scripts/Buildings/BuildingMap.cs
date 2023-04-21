@@ -176,7 +176,8 @@ namespace Buildings
                 return new List<Vector3Int> { (Vector3Int)pathStart,(Vector3Int) pathEnd };
             }
 
-            var result = graph.AdjacencyGraph.ShortestPathsDijkstra(e => 1, pathStart);
+            // var result = graph.AdjacencyGraph.ShortestPathsDijkstra(e => 1, pathStart);
+            var result = graph.AdjacencyGraph.ShortestPathsAStar(e => 1, v => Vector2Int.Distance(v, pathEnd), pathStart);
             if (result(pathEnd, out var path))
             {
                 return path.Select(t => (Vector3Int)t.Target);
