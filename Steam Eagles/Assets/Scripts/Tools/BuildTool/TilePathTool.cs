@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Buildings;
 using Buildings.Tiles;
 using Characters;
+using CoreLib;
+using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 
@@ -16,6 +18,7 @@ namespace Tools.BuildTool
         public EditableTile tile;
         private TilePathPreviewerGUI _previewer;
         private ToolState _toolState;
+        private Camera _camera;
         private Building _building;
         public PlacementMode mode = PlacementMode.ShortestPath;
         
@@ -25,6 +28,18 @@ namespace Tools.BuildTool
             Line,
         }
 
+        public Camera Camera
+        {
+            get
+            {
+                if (_toolState != null)
+                {
+                    var characterState = _toolState.GetComponent<CharacterState>();
+                    _camera = characterState.AssignedPlayerCamera;
+                }
+                return _camera;
+            }
+        }
         private Building Building => _building != null ? _building : (_building = GetComponentInParent<Building>());
         private TilePathPreviewerGUI Previewer => _previewer ??= GetComponent<TilePathPreviewerGUI>();
 
@@ -37,13 +52,34 @@ namespace Tools.BuildTool
 
 
         private bool _isSetup;
-        
-        
-        public Vector3Int HoveredPosition => !HasResources()
-            ? Vector3Int.zero
-            : Building.Map.WorldToCell(_toolState.AimPositionWorld, Tile.GetLayer());
+
+
+        public Vector3Int HoveredPosition
+        {
+            get
+            {
+                if (!HasResources())
+                {
+                    return Vector3Int.zero;
+                }
+                if (_toolState.Inputs.CurrentInputMode == InputMode.KeyboardMouse)
+                {
+                    var mp = Input.mousePosition;
+                    var wp = Camera.ScreenToWorldPoint(mp);
+                    wp.z = 0;
+                    return Building.Map.WorldToCell(wp, Tile.GetLayer());
+                }
+                return Building.Map.WorldToCell(_toolState.AimPositionWorld, Tile.GetLayer());
+            }
+        }
 
         public IEditableTile Tile => _editableTile.Value;
+
+        public IBuildPathStrategy PathStrategy
+        {
+            get;
+            set;
+        }
 
         private void Awake()
         {
@@ -115,15 +151,8 @@ namespace Tools.BuildTool
         }
 
 
-        private void OnEnable()
-        {
-            Previewer.enabled = true;
-        }
-
-        private void OnDisable()
-        {
-            Previewer.enabled = false;
-        }
+        private void OnEnable() => Previewer.enabled = true;
+        private void OnDisable() => Previewer.enabled = false;
 
         void UpdatePath(Vector3Int hoveredPosition)
         {
@@ -138,8 +167,17 @@ namespace Tools.BuildTool
             else
             {
                 var current = _pathStart.Value;
-                _path = new List<Vector3Int> { current };
-                BuildPathShortest(hoveredPosition, current);
+                var pathInfo = new BuildPathInfo()
+                {
+                    start = current,
+                    end = hoveredPosition,
+                    layer = Tile.GetLayer(),
+                    building = _building
+                };
+                PathStrategy ??= new DefaultPathStrategy();
+
+                PathStrategy.BuildPath(pathInfo, ref _path);
+                //BuildPathShortest(hoveredPosition, current);
                 _pathSubject.OnNext(_path);
             }
         }
@@ -186,7 +224,30 @@ namespace Tools.BuildTool
         }
 
 
-        private bool HasResources() =>Building != null && Building.Map != null && _toolState != null && Tile != null;
+        public class DefaultPathStrategy : IBuildPathStrategy
+        {
+            public bool BuildPath(BuildPathInfo info, ref List<Vector3Int> path)
+            {
+                if (path == null)
+                {
+                    path = new List<Vector3Int>();
+                }
+                path.Add(info.start);
+                path.AddRange(info.building.Map.GetPath((Vector2Int)info.start ,(Vector2Int)info.end, info.layer));
+                return true;
+            }
+        }
+        
+        private bool HasResources() =>Building != null 
+                                      && Building.Map != null 
+                                      && _toolState != null 
+                                      && Tile != null 
+                                      && (_toolState.Inputs.CurrentInputMode != InputMode.KeyboardMouse || Camera != null);
+
+        public void SetStrategy(IBuildPathStrategy buildToolMode)
+        {
+            PathStrategy = buildToolMode;
+        }
     }
 
 }

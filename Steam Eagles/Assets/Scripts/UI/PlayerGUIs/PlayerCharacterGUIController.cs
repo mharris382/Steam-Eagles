@@ -125,6 +125,7 @@ namespace UI.PlayerGUIs
             
             //react to player character being assigned
             MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>()
+                .Where(t => t.characterState != null)
                 .Subscribe(info =>
                 {
                     Debug.Log("GUI Waiting For Entity Initialization",this);

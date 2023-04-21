@@ -90,6 +90,8 @@ namespace Buildings
             return _layerToTilemap[layers];
         }
 
+        public IEnumerable<BoundsInt> GetAllBoundsForLayer(BuildingLayers layer) => GetMapForLayer(layer).GetAllBounds().Select(kvp => kvp.bounds);
+        public IEnumerable<BoundsInt> GetAllBoundsForLayer(BuildingLayers layer, Predicate<Room> roomFilter) => GetMapForLayer(layer).GetAllBounds().Where(t => roomFilter(t.room)).Select(kvp => kvp.bounds);
 
         public IEnumerable<(BuildingLayers layer, Vector2 cellSize)> GetUniqueLayers() => _layerToCellSize.Select(kvp => (kvp.Key, kvp.Value));
 

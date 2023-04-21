@@ -1,6 +1,7 @@
 using CoreLib;
 using Players;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 
 
@@ -88,6 +89,11 @@ namespace Characters.MyInput
                                               inputPlayer.actions["Characters"].WasPressedThisFrame();
             if (_toolState.Inputs.UsePressed) LogInput("UsePressed");
             if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
+
+            if (inputPlayer.actions["Select Tool Mode"].WasPressedThisFrame())
+            {
+                _toolState.Inputs.OnToolModeChanged.OnNext(Unit.Default);
+            }
 
             bool usingMouse = inputPlayer.currentControlScheme.Contains("Keyboard");
             _toolState.Inputs.CurrentInputMode = usingMouse ? InputMode.KeyboardMouse : InputMode.Gamepad;

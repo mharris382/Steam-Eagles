@@ -5,6 +5,7 @@ using Buildables;
 using Buildings;
 using Cysharp.Threading.Tasks;
 using Items;
+using UniRx;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -23,6 +24,7 @@ namespace Tools.RecipeTool
         public RecipePreviewer(MonoBehaviour caller, PreviewConfig config, Recipe recipe)
         {
             this._config = config;
+            
             Debug.Assert(recipe != null);
             this.isReady = false;
             previewSprite = config.GetPreviewSprite();
@@ -31,6 +33,7 @@ namespace Tools.RecipeTool
                 var machinePrefabLoadOp = recipe.InstanceReference.LoadAssetAsync<GameObject>();
                 await machinePrefabLoadOp.ToUniTask();
                 var machinePrefab = machinePrefabLoadOp.Result;
+                _releasePreview = Disposable.Create(() => recipe.InstanceReference.ReleaseAsset());
                 Debug.Assert(machinePrefabLoadOp.Status == AsyncOperationStatus.Succeeded, $"Failed to load machine for recipe: {recipe.name}", caller);
                 _machinePrefab = machinePrefab.GetComponent<BuildableMachineBase>();
                 _machinePrefab.CopySizeOntoPreviewSprite(previewSprite);
@@ -128,6 +131,7 @@ namespace Tools.RecipeTool
 
         public void Dispose()
         {
+            _releasePreview?.Dispose();
         }
 
         public BuildableMachineBase Build(Building b)

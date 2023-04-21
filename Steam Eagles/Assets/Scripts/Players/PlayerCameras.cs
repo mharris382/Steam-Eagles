@@ -22,6 +22,20 @@ public class PlayerCameras : MonoBehaviour, IPlayerDependencyResolver<Camera>
         }
     }
 
+    public Camera GetAny()
+    {
+        foreach (Camera cam in cameras)
+        {
+            if (cam.gameObject.activeSelf)
+            {
+                return cam;
+            }
+        }
+
+        var first = cameras[0];
+        first.gameObject.SetActive(true);
+        return first;
+    }
     public Camera GetCamera(int playerNumber)
     {
         const string ERROR_MSG = "Player number must be 0 or 1";

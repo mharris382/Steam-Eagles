@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Characters;
 using CoreLib;
@@ -126,6 +127,14 @@ namespace Players
             MessageBroker.Default.Publish(assignmentNotification);
         }
 
+        IEnumerator StopCameraFromBeingDeactivated(Camera target, float duration = 5)
+        {
+            for (float t = 0; t < 1; t+=Time.deltaTime/duration)
+            {
+                target.gameObject.SetActive(true);
+                yield return null;
+            }
+        }
         CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
         {
             var wrapper = players[id];
@@ -139,11 +148,13 @@ namespace Players
             }
                 
             var camera = cameraAssignments.GetDependency(id);
+            StartCoroutine(StopCameraFromBeingDeactivated(camera.Value, 5));
             Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
             Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
 
             
             var character = Instantiate(prefab,parent.transform).GetComponent<CharacterState>();
+            character.AssignedPlayerCamera = camera.Value;
             character.transform.localPosition = localOffset;
             
             Debug.Assert(character.CompareTag(wrapper.player.characterTag), $"Player {wrapper.player} assigned the wrong character {character.name} or Character tag is incorrect", this);

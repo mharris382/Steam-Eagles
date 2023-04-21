@@ -28,6 +28,7 @@ namespace SteamEagles.Characters
     
         #region Public variables
 
+        public Camera AssignedPlayerCamera { get; set; }
         public CapsuleCollider2D Collider => _capsuleCollider;
    
         public bool SprintHeld {get; set; }

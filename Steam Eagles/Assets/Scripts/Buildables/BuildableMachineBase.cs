@@ -166,7 +166,7 @@ namespace Buildables
             var tile = building.Map.GetTile(cellPos, BuildingLayers.SOLID);
             if (tile == null) building.Map.GetTile(cellPos, BuildingLayers.FOUNDATION);
             var room = building.Map.GetRoom(cellPos, BuildingLayers.SOLID);
-            if (room.buildLevel != BuildLevel.FULL)
+            if (room == null || room.buildLevel != BuildLevel.FULL)
                 return false;
             if (tile != null)
                 return false;

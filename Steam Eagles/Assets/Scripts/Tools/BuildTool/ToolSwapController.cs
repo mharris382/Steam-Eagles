@@ -58,10 +58,19 @@ namespace Tools.BuildTool
                         _sharedData.activeTool.Value = x;
                         
                         var prevTool = _activeToolController.Value;
-                        if (prevTool != null) prevTool.gameObject.SetActive(false);
+                        if (prevTool != null)
+                        {
+                            prevTool.gameObject.SetActive(false);
+                            prevTool.OnToolUnEquipped();
+                        }
                         
                         _activeToolController.Value = x;
-                        if(x != null) x.gameObject.SetActive(true);
+                        
+                        if(x != null)
+                        {
+                            x.gameObject.SetActive(true);
+                            x.OnToolEquipped();
+                        }
                         Debug.Log($"Switched tools from {prevTool} to {x}");
                     })
                     .AddTo(cd);
@@ -76,6 +85,7 @@ namespace Tools.BuildTool
                 if(index >= _controllers.Count)
                     index = 0;
                 _activeTool.Value = index;
+                
             }
 
             public void Prev()

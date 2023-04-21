@@ -98,6 +98,16 @@ namespace Characters
         {
             var sharedCamera = playerCameras[playerNumber];
             var cameras = GetPlayerCameras();
+            if (cameraMode == CameraModes.SINGLE_PLAYER)
+            {
+                var value = cameras.GetAny();
+                if (!value)
+                {
+                    sharedCamera.Value = value;
+                    return sharedCamera;
+                }
+                Debug.LogError("Failed to find an active camera to use for single player mode");
+            }
             sharedCamera.Value = cameras.GetCamera(playerNumber);
             return sharedCamera;
         }

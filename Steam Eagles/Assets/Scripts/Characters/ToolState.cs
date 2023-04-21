@@ -42,7 +42,7 @@ namespace Characters
 
         public Vector3 AimPositionWorld
         {
-            get => transform.TransformPoint(AimPositionLocal);
+            get =>  transform.TransformPoint(AimPositionLocal);
             set => AimPositionLocal = transform.InverseTransformPoint(value);
         }
         
@@ -101,6 +101,8 @@ namespace Characters
                 get;
                 set;
             }
+
+            public Subject<Unit> OnToolModeChanged { get; } = new Subject<Unit>();
         }
     }
 }
