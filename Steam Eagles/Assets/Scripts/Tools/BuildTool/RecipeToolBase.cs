@@ -35,6 +35,7 @@ namespace Tools.BuildTool
         protected void Update()
         {
             if (!HasResources()) return;
+            if(!this.targetBuilding.IsFullyLoaded)return;
             if (base.Recipe == null) Debug.Assert(_recipeSelector != null, "_recipeSelector != null", this);
             if (_recipeSelector == null) throw new NullReferenceException();
 

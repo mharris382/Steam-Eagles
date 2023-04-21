@@ -27,7 +27,9 @@ namespace Buildables
         }
 
         public bool snapsToGround = true;
-        private bool _flipped;
+        private bool _isFlipped;
+
+        public string machineAddress;
 
         /// <summary> how many cells this machine occupies in the grid </summary>
         public abstract Vector2Int MachineGridSize { get; }
@@ -48,13 +50,13 @@ namespace Buildables
         }
 
 
-        public bool Flipped
+        public bool IsFlipped
         {
-            get => _flipped;
+            get => _isFlipped;
             set
             {
-                _flipped = value;
-                transform.localScale = new Vector3(_flipped ? -1 : 1, 1, 1);
+                _isFlipped = value;
+                transform.localScale = new Vector3(_isFlipped ? -1 : 1, 1, 1);
                 //partsParent.localScale = new Vector3(_flipped ? -1 : 1, 1, 1);
                 //partsParent.localPosition = new Vector3(_flipped ? -MachineGridSize.x : 0, MachineGridSize.y/2f, 0);
             }
@@ -117,7 +119,7 @@ namespace Buildables
             previewSpriteRenderer.drawMode = SpriteDrawMode.Sliced;
             var size = MachineGridSize;
             previewSpriteRenderer.size = new Vector2(size.x, size.y);
-            previewSpriteRenderer.transform.localScale = new Vector3(Flipped ? -1 : 1, 1, 1);
+            previewSpriteRenderer.transform.localScale = new Vector3(IsFlipped ? -1 : 1, 1, 1);
 
             var sr = GetComponentInChildren<SpriteRenderer>();
             if (sr != null)
@@ -129,7 +131,7 @@ namespace Buildables
         public bool IsPlacementValid(Building building, Vector3Int cell)
         {
             //if flipped, offset position by size x
-            if (this.Flipped)
+            if (this.IsFlipped)
             {
                 cell -= new Vector3Int(MachineGridSize.x, 0, 0);
             }
@@ -207,7 +209,7 @@ namespace Buildables
             // }
             var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
             var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
-            instance.transform.localScale = new Vector3(this.Flipped ? -1 : 1, 1, 1);
+            instance.transform.localScale = new Vector3(this.IsFlipped ? -1 : 1, 1, 1);
             instance.buildingTarget = building.gameObject;
             
             var parts = instance.GetComponentsInChildren<BuildableMachinePart>();
@@ -215,7 +217,8 @@ namespace Buildables
             foreach (var part in parts) 
                 part.OnBuild(building);
             
-            fx.buildFX.SpawnEffectFrom(instance.transform);
+            if(fx.buildFX !=null)
+                fx.buildFX.SpawnEffectFrom(instance.transform);
             return instance;
         }
 

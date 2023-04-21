@@ -29,7 +29,7 @@ namespace Tools.RecipeTool
             caller.StartCoroutine(UniTask.ToCoroutine(async () =>
             {
                 var machinePrefabLoadOp = recipe.InstanceReference.LoadAssetAsync<GameObject>();
-                await machinePrefabLoadOp;
+                await machinePrefabLoadOp.ToUniTask();
                 var machinePrefab = machinePrefabLoadOp.Result;
                 Debug.Assert(machinePrefabLoadOp.Status == AsyncOperationStatus.Succeeded, $"Failed to load machine for recipe: {recipe.name}", caller);
                 _machinePrefab = machinePrefab.GetComponent<BuildableMachineBase>();
@@ -49,7 +49,7 @@ namespace Tools.RecipeTool
                 return;
             }
 
-            previewMachine.Flipped = flipped;
+            previewMachine.IsFlipped = flipped;
             
             //machines should be placed on the same grid as the solid building layer
             var cell = building.Map.WorldToCell(selectedPositionWorld, BuildingLayers.SOLID);

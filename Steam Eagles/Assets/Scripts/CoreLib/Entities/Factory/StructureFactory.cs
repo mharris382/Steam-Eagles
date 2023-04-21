@@ -25,4 +25,9 @@ namespace CoreLib.Entities.Factory
             return EntityType.STRUCTURE;
         }
     }
+    
+    
+    
+    
+    
 }

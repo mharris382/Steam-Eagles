@@ -59,6 +59,11 @@ namespace Buildings
         
         #region [Properties]
 
+        public bool IsFullyLoaded
+        {
+            get;
+            set;
+        }
         public BuildingMap Map => _buildingMap ??= new BuildingMap(this, GetComponentsInChildren<Room>());
         public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;

@@ -189,6 +189,9 @@ namespace Buildings
             var tm = GetTilemap(getLayer);
             tm.SetTile(cell, tile);
         }
+
+
+        public IEnumerable<Vector3Int> GetAllCells(BuildingLayers layers) => _cellToRoomMaps[_layerToCellSize[layers]].GetAllCells().Select(t => t.cell);
     }
 
 

@@ -211,6 +211,12 @@ public class UIMainMenu : MonoBehaviour
        }
     }
 
+    
+    public UIPanelGroup GetPanelGroup()
+    {
+        return panelGroup;
+    }
+    
     private void Awake()
     {
         windows.Init(this);

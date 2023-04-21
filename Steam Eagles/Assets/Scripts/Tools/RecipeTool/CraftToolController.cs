@@ -49,15 +49,30 @@ namespace Tools.RecipeTool
             _currentPreview.SetVisible(true);
             var selectedPositionWS = transform.TransformPoint(this.ToolState.AimPositionLocal);
             _currentPreview.UpdatePreview(this.targetBuilding, selectedPositionWS, out var isValid, isFlipped);
+            TryBuildMachine(isValid);
+            base.OnUpdate(isFlipped);
+        }
+
+        private void TryBuildMachine(bool isValid)
+        {
             if (isValid && ToolState.Inputs.UsePressed)
             {
-                if(Time.realtimeSinceStartup - _timeBuildTime > buildRate)
+                if (Time.realtimeSinceStartup - _timeBuildTime > buildRate)
                 {
-                    _timeBuildTime = Time.realtimeSinceStartup;
-                    var newMachine = _currentPreview.Build(targetBuilding);
+                    BuildMachine();
                 }
             }
-            base.OnUpdate(isFlipped);
+        }
+
+        private void BuildMachine()
+        {
+            _timeBuildTime = Time.realtimeSinceStartup;
+            var newMachine = _currentPreview.Build(targetBuilding);
+            if (newMachine != null)
+            {
+                //newMachine.machineAddress = Recipe.SelectedRecipe.Value.InstanceReference.ToString();
+                Debug.Log($"Built machine: {newMachine} with {newMachine.machineAddress}", this);
+            }
         }
 
 
