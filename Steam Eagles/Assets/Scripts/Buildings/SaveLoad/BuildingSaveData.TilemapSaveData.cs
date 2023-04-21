@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms;
@@ -190,11 +191,38 @@ namespace Buildings.SaveLoad
                                 var index = (x - bounds.xMin) + (y - bounds.yMin) * bounds.size.x;
                                 var tileId = tileIds[index];
                                 var tile = tileId == -1 ? null : tiles[tileId];
+                                if (tileId == -1 && layer == BuildingLayers.WALL)
+                                {
+                                    if (tiles.Count == 0 )
+                                    {
+                                        if (building.Tiles.isReady)
+                                        {
+                                            tile = building.Tiles.WallTile;
+                                            Debug.Assert(tile != null, "tile is null");
+                                        }
+                                        else
+                                        {
+                                            building.StartCoroutine(WaitForTilesAndLoadChunk(building));
+                                            return;
+                                        }
+                                    }
+                                }
                                 building.Map.SetTile(cell, layer, tile as EditableTile);
                             }
                         }
                     }
+
+
+                    public IEnumerator WaitForTilesAndLoadChunk(Building building)
+                    {
+                        while (building.Tiles.isReady == false)
+                        {
+                            yield return null;
+                        }
+                        LoadChunk(building);
+                    }
                 }
+                
             }
 
             public void Load(Building building)
