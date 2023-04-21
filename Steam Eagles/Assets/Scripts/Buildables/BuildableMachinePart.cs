@@ -1,4 +1,5 @@
 ﻿using System;
+using Buildings;
 using UnityEngine;
 
 namespace Buildables
@@ -7,18 +8,25 @@ namespace Buildables
     {
         private BuildableMachineBase _buildableMachine;
         private SpriteRenderer _sr;
+
+        public Color gizmoColor = Color.green;
         
         public SpriteRenderer sr => _sr != null ? _sr : _sr = GetComponent<SpriteRenderer>();
-        
+
         public BuildableMachineBase BuildableMachine => _buildableMachine != null ? _buildableMachine : _buildableMachine = GetComponentInParent<BuildableMachineBase>();
 
         public GridLayout Grid => HasResources()? BuildableMachine.GridLayout : null;
 
         public bool HasResources() => BuildableMachine != null && BuildableMachine.HasResources();
 
-        public Color gizmoColor = Color.green;
-        
 
+        protected Vector3Int GetCell(Building building) => building.Map.WorldToCell(transform.position, Layer);
+        
+        protected abstract BuildingLayers Layer { get; }
+
+        public abstract void OnBuild(Building building);
+
+        
         private void OnDrawGizmos()
         {
             Gizmos.color = gizmoColor;

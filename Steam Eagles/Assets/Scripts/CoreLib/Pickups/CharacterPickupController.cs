@@ -24,6 +24,10 @@ namespace CoreLib.Pickups
         [SerializeField] private ScaleModifier scaleModifier;
         private IPickupInput _input;
 
+        public Subject<Pickup> OnPickup { get; } = new Subject<Pickup>();
+
+        public Predicate<Pickup> PickupFilter { get; set; }
+
         private abstract class SequenceModifer
         {
             public bool enabled = true;
@@ -57,6 +61,7 @@ namespace CoreLib.Pickups
                 return sequence.Insert(delay, instance.transform.DOScale(scale, duration).SetEase(ease));
             }
         }
+
         [Serializable]
         private class FadeModifier : SequenceModifer
         {
@@ -104,12 +109,14 @@ namespace CoreLib.Pickups
                 sequence = scaleModifier.ModifySequence(sequence, pickupInstance, this);
                 sequence.SetEase(ease);
                 sequence.Play();
-                await UniTask.WaitUntil(sequence.IsComplete);
+                //await UniTask.WaitUntil(sequence.IsComplete);
+                await UniTask.Delay(TimeSpan.FromSeconds(sequence.Duration()));
                 OnPickup.OnNext(pickupInstance.Pickup);
                 await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 DestroyInstance(pickupInstance);
             }));
         }
+
 
         void DestroyInstance(PickupInstance instance)
         {
@@ -117,9 +124,5 @@ namespace CoreLib.Pickups
             if(instance != null)
                 Destroy(instance.gameObject);
         }
-        
-        public Subject<Pickup> OnPickup { get; } = new Subject<Pickup>();
-
-        public Predicate<Pickup> PickupFilter { get; set; }  
     }
 }

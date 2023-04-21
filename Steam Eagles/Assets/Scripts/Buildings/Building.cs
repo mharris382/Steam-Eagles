@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Buildings.BuildingTilemaps;
 using Buildings.Rooms;
+using Buildings.Tiles;
 using CoreLib;
 using CoreLib.SaveLoad;
+using Cysharp.Threading.Tasks;
 using PhysicsFun.Buildings;
 using SaveLoad;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Tilemaps;
 using World;
 
@@ -50,12 +53,14 @@ namespace Buildings
         private DecorTilemap _decorTilemap;
 
         private BuildingMap _buildingMap;
+        private BuildingTiles _buildingTiles;
 
         #endregion
         
         #region [Properties]
 
         public BuildingMap Map => _buildingMap ??= new BuildingMap(this, GetComponentsInChildren<Room>());
+        public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
         public StructureState State => _structureState ? _structureState : _structureState = GetComponent<StructureState>();
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
@@ -125,7 +130,8 @@ namespace Buildings
 
         private void Awake()
         {
-            _buildingMap = new BuildingMap(this, GetComponentsInChildren<Room>());
+            _buildingTiles ??= new BuildingTiles(this);
+            _buildingMap ??= new BuildingMap(this, GetComponentsInChildren<Room>());
             _rb = GetComponent<Rigidbody2D>();
             _structureState = GetComponent<StructureState>();
             _box = GetComponent<BoxCollider2D>();
@@ -264,5 +270,49 @@ namespace Buildings
         
         Rooms.Rooms _rooms;
         public Rooms.Rooms Rooms => _rooms ? _rooms : _rooms = GetComponentInChildren<Rooms.Rooms>();
+    }
+
+
+    public class BuildingTiles
+    {
+        private readonly Building _building;
+        
+        public bool isReady { get; private set; }
+        
+        private Dictionary<BuildingLayers, List<TileBase>> _loadedTiles = new Dictionary<BuildingLayers, List<TileBase>>();
+
+
+        public TileBase GetDefaultTile(BuildingLayers layers) => _loadedTiles[layers][0];
+
+        public TileBase DamagedWallTile => _loadedTiles[BuildingLayers.WALL][1];
+        public TileBase WallTile => _loadedTiles[BuildingLayers.WALL][0];
+        public TileBase SolidTile => _loadedTiles[BuildingLayers.SOLID][0];
+        public TileBase PipeTile => _loadedTiles[BuildingLayers.PIPE][0];
+        public TileBase WireTile => _loadedTiles[BuildingLayers.WIRES][0];
+        
+        public BuildingTiles(Building building)
+        {
+            this._building = building;
+            _loadedTiles.Add(BuildingLayers.WALL, new List<TileBase>());
+            _loadedTiles.Add(BuildingLayers.SOLID, new List<TileBase>());
+            _loadedTiles.Add(BuildingLayers.PIPE, new List<TileBase>());
+            _loadedTiles.Add(BuildingLayers.WIRES, new List<TileBase>());
+            isReady = false;
+            building.StartCoroutine(UniTask.ToCoroutine(async () =>
+            {
+                var solidTileLoadOp = Addressables.LoadAssetAsync<SolidTile>("SolidTile");
+                var wireTileLoadOp = Addressables.LoadAssetAsync<WireTile>("WireTile");
+                var wallTileLoadOp = Addressables.LoadAssetAsync<WallTile>("WallTile");
+                var damagedWallTileLoadOp = Addressables.LoadAssetAsync<DamagedWallTile>("DamagedWallTile");
+                var pipeTileLoadOp = Addressables.LoadAssetAsync<PipeTile>("PipeTile");
+                await UniTask.WhenAll(solidTileLoadOp.ToUniTask(), wireTileLoadOp.ToUniTask(), wallTileLoadOp.ToUniTask(), damagedWallTileLoadOp.ToUniTask(), pipeTileLoadOp.ToUniTask());
+                _loadedTiles[BuildingLayers.SOLID].Add(solidTileLoadOp.Result);
+                _loadedTiles[BuildingLayers.WIRES].Add(wireTileLoadOp.Result);
+                _loadedTiles[BuildingLayers.WALL].Add(wallTileLoadOp.Result);
+                _loadedTiles[BuildingLayers.WALL].Add(damagedWallTileLoadOp.Result);
+                _loadedTiles[BuildingLayers.PIPE].Add(pipeTileLoadOp.Result);
+                isReady = true;
+            }));
+        }
     }
 }
