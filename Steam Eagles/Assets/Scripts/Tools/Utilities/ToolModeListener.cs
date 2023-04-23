@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using UniRx;
+
+namespace Tools.BuildTool
+{
+    public class ToolModeListener
+    {
+        private IDisposable _disposable;
+        private int _currentModeIndex;
+        
+        private readonly List<string> _modes;
+        private readonly ToolControllerBase _controllerBase;
+        private readonly IModeNameListener _ui;
+
+        private string CurrentMode => _modes[_currentModeIndex];
+        
+
+        public ToolModeListener(List<string> modes, ToolControllerBase controllerBase)
+        {
+            _modes = modes;
+            _controllerBase = controllerBase;
+            if (controllerBase.modeDisplayUI != null)
+            {
+                _ui = controllerBase.modeDisplayUI.GetComponent<IModeNameListener>();
+            }
+        }
+
+        public void ListenForInput(Subject<Unit> onToolModeChanged)
+        {
+            _disposable = onToolModeChanged.StartWith(Unit.Default).Subscribe(_ => OnModeChanged());
+        }
+
+        void OnModeChanged()
+        {
+            if(_currentModeIndex == _modes.Count - 1)
+                _currentModeIndex = 0;
+            else
+                _currentModeIndex++;
+            _controllerBase.ToolMode = CurrentMode;
+            if (_ui != null)
+                _ui.DisplayModeName(CurrentMode);
+        }
+
+        public void Dispose()
+        {
+            _disposable?.Dispose();
+            _disposable = null;
+        }
+    }
+}

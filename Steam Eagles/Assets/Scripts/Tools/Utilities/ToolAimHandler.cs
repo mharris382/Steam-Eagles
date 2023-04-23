@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace Tools.BuildTool
 {
+    /// <summary>
+    /// internally manages the logic of converting raw aim input into cell selection inside buildings
+    /// <para>NOTE: must at some point call UpdateAimPosition for this to work <see cref="UpdateAimPosition"/></para> 
+    /// </summary>
     public class ToolAimHandler
     {
         private Camera _camera;
@@ -17,6 +21,10 @@ namespace Tools.BuildTool
 
 
         public IReadOnlyReactiveProperty<Vector3Int> HoveredPosition => _hoveredPosition;
+        
+        /// <summary>
+        /// used for mouse input
+        /// </summary>
         public Camera Camera
         {
             get
@@ -41,6 +49,10 @@ namespace Tools.BuildTool
         public bool HasResourcesForGridAim() => _toolState != null && Camera != null && Building != null;
 
 
+        /// <summary>
+        /// must be called to update the aim position
+        /// </summary>
+        /// <param name="targetLayer"></param>
         public void UpdateAimPosition(BuildingLayers targetLayer)
         {
             if (!HasResourcesForGridAim())

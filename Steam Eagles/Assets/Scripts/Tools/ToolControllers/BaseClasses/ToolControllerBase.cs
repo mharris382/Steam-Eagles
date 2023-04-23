@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Buildings;
 using Buildings.Rooms;
@@ -12,7 +11,7 @@ using SteamEagles.Characters;
 using Tools.RecipeTool;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.PlayerLoop;
 
 namespace Tools.BuildTool
 {
@@ -46,10 +45,14 @@ namespace Tools.BuildTool
         private BoolReactiveProperty _hasRoom = new BoolReactiveProperty(false);
         private ToolControllerSharedData _toolData;
         private bool _isActive;
-        private ToolActivator _activator;
-        
+
         public Tool tool;
+
+
+        private ToolActivator _activator;
+        private RecipeSelector _recipe;
         private ToolAimHandler _aimHandler;
+        private ToolModeListener _modeListener;
 
         protected ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
         protected CharacterState CharacterState => _characterState;
@@ -58,7 +61,7 @@ namespace Tools.BuildTool
         protected EntityRoomState RoomState => _roomState;
 
         public ToolActivator Activator => _activator ??= new ToolActivator(this);
-        
+
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
         public virtual string ToolMode
@@ -67,11 +70,8 @@ namespace Tools.BuildTool
             set;
         }
 
-
         public IIconable ToolIcon => tool as IIconable;
 
-
-        private RecipeSelector _recipe;
 
         public RecipeSelector Recipe
         {
@@ -92,21 +92,7 @@ namespace Tools.BuildTool
             protected set => _hasRoom.Value = value;
         }
 
-        [Serializable]
-        public class ActivationEvents
-        {
-            public UnityEvent onActivated;
-            public UnityEvent onDeactivated;
-            public UnityEvent<bool> onActivationStateChanged;
-            public void OnActivationStateChanged(bool active)
-            {
-                onActivationStateChanged.Invoke(active);
-                if (active)
-                    onActivated.Invoke();
-                else
-                    onDeactivated.Invoke();
-            }
-        }
+        
 
         public void SetActive(bool isActive)
         {
@@ -145,8 +131,6 @@ namespace Tools.BuildTool
             OnAwake();
         }
 
-        protected virtual void OnAwake(){}
-
 
         public bool HasResources()
         {
@@ -155,7 +139,7 @@ namespace Tools.BuildTool
                 targetBuilding = GetComponentInParent<Building>();
                 if (targetBuilding == null) targetBuilding = FindObjectOfType<Building>();
             }
-        return _inventory != null && _characterState != null && _roomState != null;
+            return _inventory != null && _characterState != null && _roomState != null;
         }
 
         private IEnumerator Start()
@@ -184,23 +168,6 @@ namespace Tools.BuildTool
             OnRoomChanged(_roomState.CurrentRoom.Value);
             OnStart();
         }
-        
-
-        public virtual void StartLoading()
-        {
-            
-        }
-        public virtual bool IsDoneLoading()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// completely finished loading and ready to go
-        /// </summary>
-        protected virtual void OnStart()
-        {
-        }
 
 
         private void OnDestroy()
@@ -208,147 +175,128 @@ namespace Tools.BuildTool
             _toolData.UnregisterTool(this);
         }
 
-        protected abstract void OnRoomChanged(Room room);
 
         public void Activate(Tool tool)
         {
             this._toolData.AddTool(tool);
-            //throw new NotImplementedException();
         }
 
+
+        public void SetToolEquipped(bool equipped)
+        {
+            void UpdateToolModes(bool equip)
+            {
+                if (equip)
+                {
+                    if (ToolUsesModes(out var modes))
+                    {
+                        if (_modeListener != null) _modeListener.Dispose();
+                        _modeListener = new ToolModeListener(modes, this);
+                        _modeListener.ListenForInput(ToolState.Inputs.OnToolModeChanged);
+                    }
+                }
+                else if (_modeListener != null)
+                {
+                    _modeListener.Dispose();
+                    _modeListener = null;
+                }
+            }
+            Activator.IsEquipped = equipped;
+            UpdateToolModes(equipped);
+            if (equipped)
+            {
+                OnToolEquipped();
+            }
+            else
+            {
+                OnToolUnEquipped();
+            }
+        }
+
+
+        /// <summary>
+        /// specify the tool slot that this tool is assigned to
+        /// </summary>
+        /// <returns></returns>
         public abstract ToolStates GetToolState();
+
+
+        /// <summary>
+        /// called whenever the character enters a new room.
+        /// Use this method to disable tool functionality if the room is not valid for that tool
+        /// </summary>
+        /// <param name="room"></param>
+        protected virtual void OnRoomChanged(Room room) { }
+
+
+        /// <summary>
+        /// use this to begin any async loading operations that need to be done before the tool is ready to go
+        /// be sure to implement <see cref="IsDoneLoading"/> to tell the tool controller when loading is done
+        /// </summary>
+        public virtual void StartLoading() { }
+
+        /// <summary>
+        /// returns true if loading is done.  use this to tell tool controller when the async loading is done.
+        /// load operations should be started in <see cref="StartLoading"/>
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsDoneLoading() => true;
+
+
+        /// <summary>
+        /// called inside awake
+        /// </summary>
+        protected virtual void OnAwake(){}
+
+        /// <summary>
+        /// completely finished loading and ready to go
+        /// </summary>
+        protected virtual void OnStart() { }
         
+        
+        
+
+        /// <summary>
+        /// if the tool uses recipes, return true and set the recipes list. This will enable the recipe selector
+        /// and trigger a call to <see cref="SetRecipeSelector"/>
+        /// </summary>
+        /// <param name="recipes"></param>
+        /// <returns></returns>
         public abstract bool UsesRecipes(out List<Recipe> recipes);
 
-        public virtual void SetRecipeSelector(RecipeSelector recipeSelector)
-        {
-            Debug.Log($"{recipeSelector}");
-        }
+        /// <summary>
+        /// if the tool uses recipes this will be called once, when the recipe selector is created
+        /// </summary>
+        /// <param name="recipeSelector"></param>
+        public virtual void SetRecipeSelector(RecipeSelector recipeSelector) { }
 
+        
+        
+        
 
-        private ToolModeListener _modeListener;
+        /// <summary>
+        /// called each time tool is equipped
+        /// </summary>
+        public virtual void OnToolEquipped() { }
+
+        /// <summary>
+        /// called each time the tool is unequipped
+        /// </summary>
+        public virtual void OnToolUnEquipped() { }
+        
+        
+        
+
+        /// <summary>
+        /// implement this method if the tool has operation modes.
+        /// Do not return true if modes list is empty
+        /// </summary>
+        /// <param name="modes"></param>
+        /// <returns>true if tool has modes, otherwise false</returns>
         protected virtual bool ToolUsesModes(out List<string> modes)
         {
             modes = null;
             return false;
         }
-        
-        /// <summary>
-        /// tool is equipped and ready to be used
-        /// </summary>
-        public virtual void OnToolEquipped()
-        {
-            if (ToolUsesModes(out var modes))
-            {
-                if (_modeListener != null) _modeListener.Dispose();
-                _modeListener = new ToolModeListener(modes, this);
-                _modeListener.ListenForInput(ToolState.Inputs.OnToolModeChanged);
-            }
-        }
-
-        /// <summary>
-        /// tool is unequipped
-        /// </summary>
-        public virtual void OnToolUnEquipped()
-        {
-            if (_modeListener != null)
-            {
-                _modeListener.Dispose();
-                _modeListener = null;
-            }
-        }
-
-        
     }
-
-    public class ToolModeListener
-    {
-        private IDisposable _disposable;
-        private int _currentModeIndex;
-        
-        private readonly List<string> _modes;
-        private readonly ToolControllerBase _controllerBase;
-        private readonly IModeNameListener _ui;
-
-        private string CurrentMode => _modes[_currentModeIndex];
-        
-
-        public ToolModeListener(List<string> modes, ToolControllerBase controllerBase)
-        {
-            _modes = modes;
-            _controllerBase = controllerBase;
-            if (controllerBase.modeDisplayUI != null)
-            {
-                _ui = controllerBase.modeDisplayUI.GetComponent<IModeNameListener>();
-            }
-        }
-
-        public void ListenForInput(Subject<Unit> onToolModeChanged)
-        {
-            _disposable = onToolModeChanged.StartWith(Unit.Default).Subscribe(_ => OnModeChanged());
-        }
-
-        void OnModeChanged()
-        {
-            if(_currentModeIndex == _modes.Count - 1)
-                _currentModeIndex = 0;
-            else
-                _currentModeIndex++;
-            _controllerBase.ToolMode = CurrentMode;
-            if (_ui != null)
-                _ui.DisplayModeName(CurrentMode);
-        }
-
-        public void Dispose()
-        {
-            _disposable?.Dispose();
-            _disposable = null;
-        }
-    }
-    
-    
-    public class ToolActivator
-    {
-        private readonly ToolControllerBase _controllerBase;
-        private IDisposable _disposable;
-        private BoolReactiveProperty _isEquipped = new BoolReactiveProperty();
-        private BoolReactiveProperty _isInUse = new BoolReactiveProperty();
-        private BoolReactiveProperty _isActive = new BoolReactiveProperty();
-
-        public bool IsInUse
-        {
-            set => _isInUse.Value = value;
-        }
-
-        public bool IsEquipped
-        {
-            set => _isEquipped.Value = value;
-        }
-            
-        public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
-
-        public ToolActivator(ToolControllerBase controllerBase)
-        {
-            _controllerBase = controllerBase;
-            _isEquipped = new BoolReactiveProperty();
-            _isInUse = new BoolReactiveProperty();
-            _isActive = new BoolReactiveProperty();
-            var cd = new CompositeDisposable();
-            _isEquipped.Select(t => (t, _isInUse.Value)).Subscribe(t => OnStateChanged(t.t, t.Value)).AddTo(cd);
-            _isInUse.Select(t => (_isEquipped.Value, t)).Subscribe(t => OnStateChanged(t.Item1, t.t)).AddTo(cd);
-            _disposable = cd;
-        }
-
-        void OnStateChanged(bool equipped, bool inUse) => _isActive.Value = equipped && inUse;
-
-        public void Dispose()
-        {
-            if (_disposable != null)
-            {
-                _disposable.Dispose();
-                _disposable = null;
-            }
-        }
-    }
-
 }

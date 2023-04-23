@@ -61,7 +61,7 @@ namespace Tools.BuildTool
                         if (prevTool != null)
                         {
                             prevTool.gameObject.SetActive(false);
-                            prevTool.OnToolUnEquipped();
+                            x.SetToolEquipped(false);
                         }
                         
                         _activeToolController.Value = x;
@@ -69,7 +69,7 @@ namespace Tools.BuildTool
                         if(x != null)
                         {
                             x.gameObject.SetActive(true);
-                            x.OnToolEquipped();
+                            x.SetToolEquipped(true);
                         }
                         Debug.Log($"Switched tools from {prevTool} to {x}");
                     })
