@@ -30,6 +30,7 @@ namespace DefaultNamespace
         
         [SerializeField] private ClimbConfig climbConfig = new ClimbConfig();
 
+        public ClimbConfig ClimbSettings => climbConfig;
         public LayerMask GetGroundLayers()
         {
             return groundMask;
@@ -71,17 +72,21 @@ namespace DefaultNamespace
         
         
         [Serializable]
-        private class ClimbConfig
+        public class ClimbConfig
         {
             [SerializeField] protected internal float climbSpeedBase = 5;
             [SerializeField] protected internal float climbUpSpeedMultiplier = 1;
             [SerializeField] protected internal float climbUpSprintSpeedMultiplier = 1.5f;
             [SerializeField] protected internal float climbDownSpeedMultiplier = 1.5f;
             [SerializeField] protected internal float climbDownSprintSpeedMultiplier = 1.5f;
-            
+            [SerializeField] public float slideDownSpeed = 15;
             [Tooltip("Force multiplier that is applied when player initiates a jump while climbing")]
             [SerializeField] protected internal float climbJumpMultiplier = 0.8f;
-            
+
+            [SerializeField] public float distanceToStartClimbing = 0.5f;
+            public float maxMotorForce = 1000;
+            [Tooltip("Time in seconds that the player has to wait before being able to climb again after climbing")]
+            public float timeBetweenClimbs = 0.2f;
         }
 
         public float GetClimbSpeed(float climbDirection, bool isSprintDown)
@@ -95,4 +100,4 @@ namespace DefaultNamespace
         }
         
     }
-}
+} 

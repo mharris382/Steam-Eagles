@@ -33,7 +33,11 @@ namespace Characters
             /// <summary>
             /// in this mode the joint will be enabled if the character is grounded, and disabled otherwise
             /// </summary>
-            AUTOMATIC
+            AUTOMATIC,
+            /// <summary>
+            /// in this mode the joint is always enabled, regardless of whether the character has a building
+            /// </summary>
+            ALWAYS_ENABLED
         }
         
         private FixedJoint2D _buildingJoint;
@@ -43,6 +47,9 @@ namespace Characters
         private ReactiveProperty<Rigidbody2D> _platformRigidbody = new ReactiveProperty<Rigidbody2D>();
         private BoolReactiveProperty _hasLadder = new BoolReactiveProperty(false);
         private ReactiveProperty<JointMode> _jointMode = new ReactiveProperty<JointMode>();
+        
+        public IReadOnlyReactiveProperty<Rigidbody2D> BuildingRigidbodyProperty => _buildingRigidbody;
+
         private CharacterState _characterState;
         private LayerMask _buildingLayerMask;
         private int _triggerHits = 0;
@@ -144,6 +151,12 @@ namespace Characters
                         
                         DisposeEnableObserver();
                        _autoJointCoroutine = StartCoroutine(AutoJointMode());
+                        break;
+                    case JointMode.ALWAYS_ENABLED:
+                        Debug.Log("always enabled joint mode", this);
+                        CancelJointCoroutine();
+                        DisposeEnableObserver();
+                        _buildingJoint.enabled = true;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);

@@ -34,6 +34,8 @@ namespace Characters
 
         private bool _jumped;
         private float _jumpTime;
+        private CharacterClimbCheck _climbCheck;
+        private CharacterClimbingController _climbingController;
         
         private const string DEFAULT = "Default";
         private const string DROPPING = "Dropping";
@@ -77,7 +79,14 @@ namespace Characters
 
         private void Awake()
         {
+            _controller = GetComponent<CharacterController2>();
+            _state = GetComponent<CharacterState>();
+            _input = GetComponent<CharacterInputState>();
+            _structureState = GetComponent<StructureState>();
             _nullPilot = new NullPilot(gameObject);
+            _climbCheck = new CharacterClimbCheck(_state, new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty));
+            _climbingController = new CharacterClimbingController(_state, _controller.Config, _climbCheck);
+            
             _pilot = GetComponent<IPilot>();
             if (_pilot == null)
                 Debug.LogWarning($"No Pilot implementor found on {name}. Using NullPilot instead.", this);
@@ -112,14 +121,6 @@ namespace Characters
 
         private void Start()
         {
-            _controller = GetComponent<CharacterController2>();
-            _state = GetComponent<CharacterState>();
-            _input = GetComponent<CharacterInputState>();
- 
-            
-            
-
-
             _defaultStateMachine = new FSM.StateMachine();
             var physicsFSM = new FSM.StateMachine();
             var standardPhyiscsFSM = new FSM.StateMachine();
@@ -147,8 +148,8 @@ namespace Characters
             physicsFSM.AddTransition(DEFAULT, DROPPING, _ => CheckDropCondition() );
             physicsFSM.AddTransition(DROPPING, DEFAULT);
             
-            physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => !State.IsClimbing && !State.IsJumping);
-            physicsFSM.AddTransition(CLIMBING, JUMPING, _ => State.IsJumping);
+            physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => CheckClimbStopCondition());
+            physicsFSM.AddTransition(CLIMBING, JUMPING, _ => CheckClimbStopCondition() && State.IsJumping);
             physicsFSM.AddTransitionFromAny(CLIMBING, _ => CheckClimbStartCondition());
 
             physicsFSM.SetStartState(DEFAULT);
@@ -190,7 +191,16 @@ namespace Characters
 
         public bool CheckClimbStartCondition()
         {
+            if (_climbCheck.ShouldCharacterStartClimbing())
+            {
+                return true;
+            }
             return State.IsClimbing;
+        }
+
+        public bool CheckClimbStopCondition()
+        {
+            return _climbingController.ShouldStopClimbing();
         }
 
         public bool CheckJumpCondition() => Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
@@ -254,17 +264,17 @@ namespace Characters
         #region CLIIMB METHODS
         void OnClimbEnter(State<string, string> t)
         {
-            
+            _climbingController.OnClimbStart();
         }
         
         void OnClimbLogic(State<string, string> t)
         {
-            
+            _climbingController.UpdateClimbing(Time.fixedDeltaTime);
         }
 
         void OnClimbExit(State<string, string> t)
         {
-            
+            _climbingController.OnClimbStopped();
         }
 
         #endregion

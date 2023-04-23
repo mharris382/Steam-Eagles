@@ -11,7 +11,7 @@ namespace SteamEagles.Characters
     [RequireComponent(typeof(ToolState))]
     [RequireComponent(typeof(CharacterInputState))]
     [RequireComponent(typeof(Rigidbody2D))]
-    public class CharacterState : MonoBehaviour
+    public class CharacterState : MonoBehaviour, IClimber
     {
 
         public bool IsEntityInitialized { get; set; }
@@ -22,6 +22,9 @@ namespace SteamEagles.Characters
         private Rigidbody2D _rb;
 
         private ToolState _tool;
+        private CharacterClimbState _characterClimb;
+
+        public CharacterClimbState ClimbState => _characterClimb ??= new CharacterClimbState(this);
         public ToolState Tool => _tool ??= (_tool = GetComponent<ToolState>());
 
         public bool UsingTool => Tool.currentToolState != ToolStates.None;

@@ -264,13 +264,9 @@ namespace Characters
         {
             if (IsAttachedToBuilding)
             {
-                if(_newVelocity.magnitude < 0.1f)
-                    return;
-                var connectedAnchor = buildingJoint.connectedAnchor + (_newVelocity * dt);
-                buildingJoint.connectedAnchor = connectedAnchor;
+                buildingJoint.ApplyVelocityViaConnectedAnchor(_newVelocity, dt);
+                return;
             }
-            
-
             rb.velocity = _newVelocity;
         }
 
