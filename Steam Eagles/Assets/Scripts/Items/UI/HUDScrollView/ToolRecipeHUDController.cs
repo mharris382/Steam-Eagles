@@ -9,12 +9,12 @@ namespace Items.UI.HUDScrollView
     {
         [OnValueChanged(nameof(OnToolChange))]public Tool tool;
         [OnValueChanged(nameof(OnInventoryChange))] public Inventory inventory;
-
+        [Required] public CanvasGroup canvasGroup;
         public HUDFancyScrollView scrollView;
 
-        void OnInventoryChange(Inventory i) => Setup(tool, i);
+        protected  void OnInventoryChange(Inventory i) => Setup(tool, i);
 
-        void OnToolChange(Tool t) => Setup(t, inventory);
+        protected void OnToolChange(Tool t) => Setup(t, inventory);
 
         public bool autoSetup = true;
 
@@ -38,5 +38,6 @@ namespace Items.UI.HUDScrollView
             scrollView.SelectCell(0);
         }
 
+        
     }
 }

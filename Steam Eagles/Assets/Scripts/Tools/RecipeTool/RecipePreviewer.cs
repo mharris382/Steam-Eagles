@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Buildables;
 using Buildings;
+using Buildings.Tiles;
 using Cysharp.Threading.Tasks;
 using Items;
 using UniRx;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
 
 namespace Tools.RecipeTool
 {
+    [System.Obsolete("Use LoadedRecipePreviewer instead")]
     public class RecipePreviewer : IDisposable
     {
         public SpriteRenderer previewSprite;
@@ -28,18 +31,38 @@ namespace Tools.RecipeTool
             Debug.Assert(recipe != null);
             this.isReady = false;
             previewSprite = config.GetPreviewSprite();
-            caller.StartCoroutine(UniTask.ToCoroutine(async () =>
+            switch (recipe.GetRecipeType())
             {
-                var machinePrefabLoadOp = recipe.InstanceReference.LoadAssetAsync<GameObject>();
-                await machinePrefabLoadOp.ToUniTask();
-                var machinePrefab = machinePrefabLoadOp.Result;
-                _releasePreview = Disposable.Create(() => recipe.InstanceReference.ReleaseAsset());
-                Debug.Assert(machinePrefabLoadOp.Status == AsyncOperationStatus.Succeeded, $"Failed to load machine for recipe: {recipe.name}", caller);
-                _machinePrefab = machinePrefab.GetComponent<BuildableMachineBase>();
-                _machinePrefab.CopySizeOntoPreviewSprite(previewSprite);
-                previewMachine = machinePrefabLoadOp.Result.GetComponent<BuildableMachineBase>();
-                isReady = true;
-            }));
+                case Recipe.RecipeType.TILE:
+                    caller.StartCoroutine(UniTask.ToCoroutine(async () =>
+                    {
+                        var tileAsset = recipe.InstanceReference.LoadAssetAsync<EditableTile>();
+                        isReady = true;
+                    }));
+                    break;
+                case Recipe.RecipeType.MACHINE:
+                    var loader = recipe.GetPrefabLoader(caller);
+                    if (loader.IsLoaded)
+                    {
+                        isReady = true;
+                    }
+                    caller.StartCoroutine(UniTask.ToCoroutine(async () =>
+                    {
+                        var machinePrefabLoadOp = recipe.InstanceReference.LoadAssetAsync<GameObject>();
+                        await machinePrefabLoadOp.ToUniTask();
+                        var machinePrefab = machinePrefabLoadOp.Result;
+                        _releasePreview = Disposable.Create(() => recipe.InstanceReference.ReleaseAsset());
+                        Debug.Assert(machinePrefabLoadOp.Status == AsyncOperationStatus.Succeeded, $"Failed to load machine for recipe: {recipe.name}", caller);
+                        _machinePrefab = machinePrefab.GetComponent<BuildableMachineBase>();
+                        _machinePrefab.CopyOntoPreviewSprite(previewSprite);
+                        previewMachine = machinePrefabLoadOp.Result.GetComponent<BuildableMachineBase>();
+                        isReady = true;
+                    }));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
         }
 
         Vector3Int _lastCell;
@@ -61,7 +84,7 @@ namespace Tools.RecipeTool
 
             var position = building.Map.CellToWorld(cell, BuildingLayers.SOLID);
             previewSprite.transform.position = position;
-            _machinePrefab.CopySizeOntoPreviewSprite(previewSprite);
+            _machinePrefab.CopyOntoPreviewSprite(previewSprite);
             // ReSharper disable once AssignmentInConditionalExpression
             previewSprite.color = (positionValid = _machinePrefab.IsPlacementValid(building, cell))
                 ? _config.validColor

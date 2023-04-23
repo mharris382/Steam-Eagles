@@ -81,6 +81,8 @@ namespace Characters.MyInput
             _toolState.Inputs.SelectTool = selectToolInput;
             _toolState.Inputs.AimInputRaw = aimInput;
             _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].WasPressedThisFrame();
+            _toolState.Inputs.UseHeld =
+                _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].IsPressed();
             _toolState.Inputs.CancelPressed = inputPlayer.actions["Ability Secondary"].WasPressedThisFrame() || 
                                               inputPlayer.actions["Inventory"].WasPressedThisFrame() || 
                                               inputPlayer.actions["Map"].WasPressedThisFrame() ||

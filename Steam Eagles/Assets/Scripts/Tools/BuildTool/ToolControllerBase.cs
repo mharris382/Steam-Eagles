@@ -46,11 +46,19 @@ namespace Tools.BuildTool
         private BoolReactiveProperty _hasRoom = new BoolReactiveProperty(false);
         private ToolControllerSharedData _toolData;
         private bool _isActive;
+        private ToolActivator _activator;
+        
+        public Tool tool;
+        private ToolAimHandler _aimHandler;
 
+        protected ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
         protected CharacterState CharacterState => _characterState;
         public ToolState ToolState => CharacterState.Tool;
         protected Inventory Inventory => _inventory;
         protected EntityRoomState RoomState => _roomState;
+
+        public ToolActivator Activator => _activator ??= new ToolActivator(this);
+        
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
         public virtual string ToolMode
@@ -59,12 +67,31 @@ namespace Tools.BuildTool
             set;
         }
 
-        public Tool tool;
 
-        
         public IIconable ToolIcon => tool as IIconable;
-        
-        
+
+
+        private RecipeSelector _recipe;
+
+        public RecipeSelector Recipe
+        {
+            get
+            {
+                if (_recipe == null && UsesRecipes(out var recipes))
+                {
+                    _recipe = new RecipeSelector(recipes);
+                    SetRecipeSelector(_recipe);
+                }
+                return _recipe;
+            }
+        }
+
+        public bool HasRoom
+        {
+            get => _hasRoom.Value;
+            protected set => _hasRoom.Value = value;
+        }
+
         [Serializable]
         public class ActivationEvents
         {
@@ -81,12 +108,6 @@ namespace Tools.BuildTool
             }
         }
 
-        public bool HasRoom
-        {
-            get => _hasRoom.Value;
-            protected set => _hasRoom.Value = value;
-        }
-
         public void SetActive(bool isActive)
         {
             if (isActive != _isActive)
@@ -95,7 +116,7 @@ namespace Tools.BuildTool
                 activationEvents.OnActivationStateChanged(isActive);
             }
         }
-        
+
         private void Awake()
         {
             _isActive = false;
@@ -123,8 +144,9 @@ namespace Tools.BuildTool
             _hasRoom = new BoolReactiveProperty(false);
             OnAwake();
         }
-        
+
         protected virtual void OnAwake(){}
+
 
         public bool HasResources()
         {
@@ -136,21 +158,6 @@ namespace Tools.BuildTool
         return _inventory != null && _characterState != null && _roomState != null;
         }
 
-        private RecipeSelector _recipe;
-
-        public RecipeSelector Recipe
-        {
-            get
-            {
-                if (_recipe == null && UsesRecipes(out var recipes))
-                {
-                    _recipe = new RecipeSelector(recipes);
-                    SetRecipeSelector(_recipe);
-                }
-                return _recipe;
-            }
-        }
-        
         private IEnumerator Start()
         {
             
@@ -278,7 +285,7 @@ namespace Tools.BuildTool
 
         public void ListenForInput(Subject<Unit> onToolModeChanged)
         {
-            _disposable = onToolModeChanged.Subscribe(_ => OnModeChanged());
+            _disposable = onToolModeChanged.StartWith(Unit.Default).Subscribe(_ => OnModeChanged());
         }
 
         void OnModeChanged()
@@ -298,4 +305,50 @@ namespace Tools.BuildTool
             _disposable = null;
         }
     }
+    
+    
+    public class ToolActivator
+    {
+        private readonly ToolControllerBase _controllerBase;
+        private IDisposable _disposable;
+        private BoolReactiveProperty _isEquipped = new BoolReactiveProperty();
+        private BoolReactiveProperty _isInUse = new BoolReactiveProperty();
+        private BoolReactiveProperty _isActive = new BoolReactiveProperty();
+
+        public bool IsInUse
+        {
+            set => _isInUse.Value = value;
+        }
+
+        public bool IsEquipped
+        {
+            set => _isEquipped.Value = value;
+        }
+            
+        public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
+
+        public ToolActivator(ToolControllerBase controllerBase)
+        {
+            _controllerBase = controllerBase;
+            _isEquipped = new BoolReactiveProperty();
+            _isInUse = new BoolReactiveProperty();
+            _isActive = new BoolReactiveProperty();
+            var cd = new CompositeDisposable();
+            _isEquipped.Select(t => (t, _isInUse.Value)).Subscribe(t => OnStateChanged(t.t, t.Value)).AddTo(cd);
+            _isInUse.Select(t => (_isEquipped.Value, t)).Subscribe(t => OnStateChanged(t.Item1, t.t)).AddTo(cd);
+            _disposable = cd;
+        }
+
+        void OnStateChanged(bool equipped, bool inUse) => _isActive.Value = equipped && inUse;
+
+        public void Dispose()
+        {
+            if (_disposable != null)
+            {
+                _disposable.Dispose();
+                _disposable = null;
+            }
+        }
+    }
+
 }

@@ -19,6 +19,12 @@ namespace Buildables
         [Required] [SerializeField] private Transform partsParent;
         [SerializeField] private FX fx;
 
+
+        [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
+
+        public BuildingLayers GetTargetLayer() => targetLayer;
+        
+        
         [Serializable]
         public class FX
         {
@@ -114,7 +120,7 @@ namespace Buildables
         }
 
 
-        public void CopySizeOntoPreviewSprite(SpriteRenderer previewSpriteRenderer)
+        public void CopyOntoPreviewSprite(SpriteRenderer previewSpriteRenderer)
         {
             previewSpriteRenderer.drawMode = SpriteDrawMode.Sliced;
             var size = MachineGridSize;

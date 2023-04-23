@@ -5,18 +5,36 @@ using Buildings;
 using Buildings.Messages;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
+using Buildings.Tiles;
 using CoreLib;
 using Items;
+using Tools.RecipeTool;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Tools.BuildTool
 {
-    public class BuildToolController : RecipeToolBase
+    public class BuildToolController : RecipeToolBase<TileBase>
     {
         public TilePathTool pathTool;
         public Tool defaultBuildTool;
+        private StringReactiveProperty _toolMode = new StringReactiveProperty();
         
+        
+        
+        private Dictionary<string, BuildToolMode> _buildModes = new Dictionary<string, BuildToolMode>();
+        private List<BuildToolMode> _modes = new List<BuildToolMode>();
+        private List<string> _modeNames = new List<string>();
+        
+        
+
+
+        public override string ToolMode
+        {
+            get => _toolMode.Value;
+            set => _toolMode.Value = value;
+        }
 
         protected override void OnRoomChanged(Room room)
         {
@@ -28,24 +46,15 @@ namespace Tools.BuildTool
             pathTool.enabled = room.buildLevel == BuildLevel.FULL;
             HasRoom = room.buildLevel == BuildLevel.FULL;
         }
-        public override void SetPreviewVisible(bool visible)
-        {
-            pathTool.enabled = visible;
-        }
+
+
+        public override void SetPreviewVisible(bool visible) => pathTool.enabled = visible;
+
         protected override IEnumerable<Recipe> GetRecipes() => tool.Recipes;
+
         public override ToolStates GetToolState() => ToolStates.Build;
 
-        private StringReactiveProperty _toolMode = new StringReactiveProperty();
-        private Dictionary<string, BuildToolMode> _buildModes = new Dictionary<string, BuildToolMode>();
-        private List<BuildToolMode> _modes = new List<BuildToolMode>();
-        private List<string> _modeNames = new List<string>();
 
-        public override string ToolMode
-        {
-            get => _toolMode.Value;
-            set => _toolMode.Value = value;
-        }
-        
         protected override void OnAwake()
         { 
             _modes.Add(new LineBuildMode());
@@ -63,6 +72,22 @@ namespace Tools.BuildTool
         {
             modes = _modeNames;
             return true;
+        }
+
+        public override void UpdatePreview(Building building, bool isFlipped,
+            TileBase previewResource)
+        {
+            EditableTile tile = previewResource as EditableTile;
+        }
+
+        protected override void OnRecipeChanged(Recipe recipe)
+        {
+            base.OnRecipeChanged(recipe);
+        }
+
+        protected override void OnUpdate(Building building, bool isFlipped)
+        {
+            
         }
     }
 

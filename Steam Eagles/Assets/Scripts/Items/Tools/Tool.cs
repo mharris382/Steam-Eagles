@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CoreLib;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Items
 {
     [CreateAssetMenu(fileName = "New Item", menuName = "Steam Eagles/Items/Tool", order = 0)]
-    public class Tool : ItemBase, IIconable
+    public class Tool : ItemBase, IIconable, ITool
     {
         public override int MaxStackSize => 1;
         public override bool IsStackable => false;
@@ -29,14 +31,22 @@ namespace Items
 
         public ToolControllerReference controllerPrefab;
         
-        bool ValidateState(ToolStates state)
-        {
-            return state != ToolStates.None;
-        }
+        bool ValidateState(ToolStates state) => state != ToolStates.None;
 
-        public Sprite GetIcon()
+        public Sprite GetIcon() => this.icon;
+
+
+        public bool UsesRecipes()
         {
-            return this.icon;
+            if (usesRecipes)
+            {
+                this.recipes.Select(t => new CoreRecipe(t, t.components.Select(g => (g.ItemName, g.Count)).ToList()));
+                return true;
+            }
+
+            return false;
         }
+        
+        
     }
 }

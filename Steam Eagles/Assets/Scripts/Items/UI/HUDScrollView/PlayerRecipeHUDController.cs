@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Characters;
 using CoreLib;
 using CoreLib.Entities;
@@ -14,40 +15,66 @@ namespace Items.UI.HUDScrollView
 {
     public class PlayerRecipeHUDController : ToolRecipeHUDController
     {
-        private PlayerCharacterGUIController _guiController;
-
+        const float UpdateInterval = 0.25f;
 
         [Required]
         public Tool testTool;
 
 
+        private IDisposable _toolListener;
+        private ToolState _toolState;
+        private PlayerCharacterGUIController _guiController;
         private Inventory _backpack;
         private IEnumerator _waitForEntitySetup;
 
         public bool invertSelection;
-        
-        
-        private PlayerCharacterGUIController guiController => _guiController == null
+        private bool _initialized = false;
+        private float _timeLastUpdated;
+
+
+
+        private PlayerCharacterGUIController GUIController => _guiController == null
             ? _guiController = GetComponentInParent<PlayerCharacterGUIController>()
             : _guiController;
 
-        void Awake()
+        private ToolState ToolState
         {
-            guiController.PcEntityProperty.Subscribe(OnPcEntityChange).AddTo(this);
-            guiController.ShowRecipeHUD.Subscribe(gameObject.SetActive).AddTo(this);
-            gameObject.SetActive(guiController.ShowRecipeHUD.Value);
+            get
+            {
+                if (_toolState == null)
+                {
+                    if (GUIController != null && GUIController.PlayerCharacter != null)
+                    {
+                        _toolState = GUIController.PlayerCharacter.GetComponent<ToolState>();
+                    }
+                }
+                //added this bit in case the player character changes at some point
+                else if (_toolState.gameObject != GUIController.PlayerCharacter)
+                {
+                    _toolState = GUIController.PlayerCharacter ? GUIController.PlayerCharacter.GetComponent<ToolState>() : null;
+                }
+                return _toolState;
+            }
+        }
+
+        private void Awake()
+        {
+            GUIController.PcEntityProperty.Subscribe(OnPcEntityChange).AddTo(this);
+            GUIController.ShowRecipeHUD.Subscribe(gameObject.SetActive).AddTo(this);
+            gameObject.SetActive(GUIController.ShowRecipeHUD.Value);
             
         }
 
-        bool HasResources() => guiController != null && guiController.HasAllResources();
+        private bool HasResources() => GUIController != null && GUIController.HasAllResources()  && ToolState != null;
+
 
         public Inventory GetBackpack()
         {
             if (!HasResources())
                 return null;
-            if (guiController.pcEntity.LinkedGameObject == null)
+            if (GUIController.pcEntity.LinkedGameObject == null)
             {
-                Debug.LogError("Supposed to have all resources, but no linked game object", guiController.pcEntity);
+                Debug.LogError("Supposed to have all resources, but no linked game object", GUIController.pcEntity);
                 _backpack = null;
                 return null;
             }
@@ -57,8 +84,8 @@ namespace Items.UI.HUDScrollView
                 return _backpack;
             }
 
-            var allInventories = guiController.pcEntity.LinkedGameObject.GetComponentsInChildren<Inventory>();
-            ToolState toolState = guiController.pcEntity.LinkedGameObject.GetComponent<ToolState>();
+            var allInventories = GUIController.pcEntity.LinkedGameObject.GetComponentsInChildren<Inventory>();
+            ToolState toolState = GUIController.pcEntity.LinkedGameObject.GetComponent<ToolState>();
             Inventory mainInventory = null, toolbeltInventory = null;
             foreach (var i in allInventories)
             {
@@ -70,7 +97,7 @@ namespace Items.UI.HUDScrollView
         }
 
 
-        void OnPcEntityChange(Entity e)
+        private void OnPcEntityChange(Entity e)
         {
             if (_waitForEntitySetup != null)
                 StopCoroutine(_waitForEntitySetup);
@@ -78,7 +105,7 @@ namespace Items.UI.HUDScrollView
             _waitForEntitySetup = WaitForEntitySetup(e);
         }
 
-        IEnumerator WaitForEntitySetup(Entity e)
+        private IEnumerator WaitForEntitySetup(Entity e)
         {
             while (e.LinkedGameObject == null)
             {
@@ -91,33 +118,25 @@ namespace Items.UI.HUDScrollView
                 Debug.Log($"Waiting for character {character.name} to be initialized",this);
                 yield return null;
             }
-
+            yield return null;
+            
             var backpack = GetBackpack();
             Debug.Assert(backpack != null, "Backpack is null");
             Setup(testTool, backpack);
             _waitForEntitySetup = null;
         }
 
-        private bool inited = false;
-        
-        private float _timeLastUpdated;
-        const float UpdateInterval = 0.25f;
         private void Update()
         {
-            if (guiController.HasAllResources() == false)
+            if (GUIController.HasAllResources() == false)
             {
-                inited = false;
+                _initialized = false;
+                canvasGroup.alpha = 0;
                 return;
             }
 
-            if (inited == false)
-            {
-                inited = true;
-                var backpack = GetBackpack();
-                Debug.Assert(backpack != null, "Backpack is null");
-                Setup(testTool, backpack);
-            }
-            var inputPlayer = guiController.playerInput;
+            CheckInitialize();
+            var inputPlayer = GUIController.playerInput;
             
             var recipeSelect = inputPlayer.actions["Select Recipe"].ReadValue<float>();
             if (recipeSelect != 0)
@@ -136,6 +155,71 @@ namespace Items.UI.HUDScrollView
                     if(invertSelection)scrollView.SelectNext();
                     else scrollView.SelectPrev();
                 }
+            }
+        }
+
+        private void CheckInitialize()
+        {
+            if (_initialized == false)
+            {
+                _initialized = true;
+                Initialize();
+            }
+        }
+
+        private void Initialize()
+        {
+            var backpack = GetBackpack();
+            var toolState = ToolState;
+            Debug.Assert(backpack != null && toolState != null, "Backpack or tool state is null",this);
+            _toolListener = new ToolListener(this, toolState, backpack);
+        }
+
+
+        /// <summary>
+        /// lifetime of this object should be until the player switches characters or the game ends
+        /// </summary>
+        public class ToolListener : IDisposable
+        {
+            private readonly ToolRecipeHUDController _toolRecipeHUDController;
+            private readonly IDisposable _toolListener;
+            private BoolReactiveProperty _isHudVisible;
+
+            public bool IsVisible
+            {
+                get => _isHudVisible.Value;
+                private set => _isHudVisible.Value = value;
+            }
+            public ToolListener(ToolRecipeHUDController toolRecipeHUDController, ToolState toolState, Inventory inventory)
+            {
+                _toolRecipeHUDController = toolRecipeHUDController;
+                _isHudVisible = new BoolReactiveProperty(false);
+
+                CompositeDisposable cd = new CompositeDisposable();
+
+                toolState.EquippedToolRP
+                    .StartWith(toolState.EquippedTool)
+                    .Subscribe(tool =>
+                    {
+                        if (tool == null)
+                        {
+                            IsVisible = false;
+                            return;
+                        }
+
+                        IsVisible = tool.UsesRecipes();
+                        if (!IsVisible) return;
+                        _toolRecipeHUDController.Setup(tool as Tool, inventory);
+                        _toolRecipeHUDController.gameObject.SetActive(true);
+                    }).AddTo(cd);
+
+                _isHudVisible.Subscribe(visible => toolRecipeHUDController.canvasGroup.alpha = visible ? 1 : 0).AddTo(cd);
+                _toolListener = cd;
+            }
+
+            public void Dispose()
+            {
+                _toolListener?.Dispose();
             }
         }
     }

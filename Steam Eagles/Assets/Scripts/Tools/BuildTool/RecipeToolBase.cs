@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildings;
 using Buildings.Rooms;
+using Buildings.Tiles;
 using Characters;
 using Items;
 using Tools.RecipeTool;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Tools.BuildTool
 {
-    public abstract class RecipeToolBase : ToolControllerBase
+    public abstract class RecipeToolBase<T> : ToolControllerBase where T:UnityEngine.Object
     {
         [SerializeField] private float recipeSwitchRate = .2f;
         [SerializeField] private bool faceDirectionOfCharacter = true;
@@ -19,9 +22,10 @@ namespace Tools.BuildTool
         private float _selectRecipeTime;
         private List<Recipe> _recipes;
         private RecipeSelector _recipeSelector;
-
-        private Dictionary<Recipe, RecipePreviewer> _recipePreviewers = new Dictionary<Recipe, RecipePreviewer>();
-        private RecipePreviewer _currentPreview;
+        private PreviewResourceHandler<T> _previewResourceHandler;
+        
+        [System.Obsolete("Use PreviewResourceHandler instead")] private Dictionary<Recipe, RecipePreviewer> _recipePreviewers = new Dictionary<Recipe, RecipePreviewer>();
+        [System.Obsolete("Use PreviewResourceHandler instead")] private RecipePreviewer _currentPreview;
         
         
         
@@ -29,16 +33,15 @@ namespace Tools.BuildTool
         public Recipe CurrentRecipe => _recipes == null ? null : _recipeSelector.SelectedRecipe.Value;
         protected List<Recipe> Recipes => _recipes;
 
-        protected override void OnRoomChanged(Room room) => Debug.LogWarning($"{nameof(RecipeToolBase)} throw new System.NotImplementedException();");
-        public abstract void SetPreviewVisible(bool visible);
-        
+        protected override void OnRoomChanged(Room room) => Debug.LogWarning($"{nameof(RecipeToolBase<T>)} throw new System.NotImplementedException();");
+
         protected void Update()
         {
             if (!HasResources()) return;
             if(!this.targetBuilding.IsFullyLoaded)return;
             if (base.Recipe == null) Debug.Assert(_recipeSelector != null, "_recipeSelector != null", this);
             if (_recipeSelector == null) throw new NullReferenceException();
-
+            if(_previewResourceHandler ==null)throw new NullReferenceException();
             if (CurrentRecipe == null)
             {
                 TryToSelectRecipe();
@@ -49,15 +52,20 @@ namespace Tools.BuildTool
             {
                 return;
             }
-            
-            OnUpdate(GetFlipped());
-            
+
+            if (!_previewResourceHandler.IsPreviewReady)
+            {
+                SetPreviewVisible(false);
+                return;
+            }
+            SetPreviewVisible(true);
+            UpdatePreview(targetBuilding,  GetFlipped(), _previewResourceHandler.Preview);
+            OnUpdate(targetBuilding, GetFlipped());
             //do base last because base checks for tool switches so that will disable the next update loop
         }
 
 
         private bool GetFlipped() => faceDirectionOfCharacter && CharacterState.FacingRight;
-
 
         private bool CheckForRecipeSwitch(ToolState toolState)
         {
@@ -79,15 +87,17 @@ namespace Tools.BuildTool
         }
 
 
-        public override void SetRecipeSelector(RecipeSelector recipeSelector)
+        public sealed override void SetRecipeSelector(RecipeSelector recipeSelector)
         {
             if (_recipeSelector != null)
             {
                 Debug.LogWarning("Called SetRecipeSelector twice", this);
             }
             _recipeSelector = recipeSelector;
+            _previewResourceHandler = new PreviewResourceHandler<T>(this, recipeSelector);
             _recipeSelector.SelectedRecipe.Subscribe(OnRecipeChanged).AddTo(this);;
         }
+
 
         protected virtual void OnRecipeChanged(Recipe recipe) => Debug.Log("TODO: Update previewer");
 
@@ -99,20 +109,35 @@ namespace Tools.BuildTool
         }
 
 
-        protected virtual void OnUpdate(bool isFlipped)
+        protected virtual void OnUpdate(Building building, bool isFlipped) { }
+
+        public override void OnToolEquipped()
         {
-            
+            SetPreviewVisible(true);
+            base.OnToolEquipped();
         }
 
-        protected abstract IEnumerable<Recipe> GetRecipes();
+        public override void OnToolUnEquipped()
+        {
+            SetPreviewVisible(false);
+            base.OnToolUnEquipped();
+        }
 
 
-        public override bool UsesRecipes(out List<Recipe> recipes)
+        public sealed override bool UsesRecipes(out List<Recipe> recipes)
         {
             Debug.Assert(tool != null, $"{tool.name} == null", this);
             Debug.Assert(tool.Recipes != null, $"{tool}.Recipes == null", tool);
             _recipes = recipes = new List<Recipe>(GetRecipes());
             return true;
         }
+
+        
+        
+        
+        public abstract void UpdatePreview(Building building, bool isFlipped, T previewResource);
+
+        protected abstract IEnumerable<Recipe> GetRecipes();
+        public abstract void SetPreviewVisible(bool visible);
     }
 }

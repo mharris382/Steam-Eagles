@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Buildings.Rooms;
 using CoreLib;
 using CoreLib.Interfaces;
 using Items;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 using ToolControllerBase = Tools.BuildTool.ToolControllerBase;
@@ -13,7 +15,6 @@ namespace Tools.DestructTool
     public partial class DestructToolController : ToolControllerBase
     {
         [Min(0)] [SerializeField, HideInInspector] private float minDistance = 0.5f;
-
         [Min(0)] [SerializeField, HideInInspector] private float maxDistance = 3f;
 
         [FoldoutGroup("Aiming Settings"),SerializeField] private Vector2 originOffset = new Vector2(0, 1);
@@ -59,7 +60,18 @@ namespace Tools.DestructTool
         public float CastDistance => maxDistance - minDistance;
 
         #endregion
-        
+
+        public override void OnToolEquipped()
+        {
+            Activator.IsEquipped = true;
+            base.OnToolEquipped();
+        }
+
+        public override void OnToolUnEquipped()
+        {
+            Activator.IsEquipped = false;
+            base.OnToolUnEquipped();
+        }
 
         protected override void OnStart()
         {
@@ -93,7 +105,11 @@ namespace Tools.DestructTool
             }
 
             UpdateAim(Time.deltaTime);
-            CheckForDestructables(Time.deltaTime);
+            
+            Activator.IsInUse = ToolState.Inputs.UseHeld;
+            
+            if(Activator.IsActive.Value)
+                CheckForDestructables(Time.deltaTime);
         }
 
 
@@ -160,6 +176,7 @@ namespace Tools.DestructTool
 
             destructor.OnHit(dt, destructParams);
         }
+
 
         #region [Editor Gizmos]
 

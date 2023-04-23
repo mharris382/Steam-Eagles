@@ -75,6 +75,12 @@ namespace Tools.BuildTool
                     })
                     .AddTo(cd);
 
+                var toolState = controller.GetComponent<ToolState>();
+                Debug.Assert(toolState != null, "toolState != null");
+                _activeTool.Select(t => _controllers[t % _controllers.Count].tool)
+                    .Subscribe(x => toolState.EquippedTool = x)
+                    .AddTo(cd);
+
                 _activeTool.AddTo(cd);
             }
 

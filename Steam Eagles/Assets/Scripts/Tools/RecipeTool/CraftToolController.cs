@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildables;
+using Buildings;
 using CoreLib;
 using Items;
 using Tools.BuildTool;
@@ -7,91 +9,99 @@ using UnityEngine;
 
 namespace Tools.RecipeTool
 {
-    public class CraftToolController : RecipeToolBase
+    public class CraftToolController : RecipeToolBase<GameObject>
     {
         
         [SerializeField] private PreviewConfig config;
         [SerializeField] private float buildRate = 1;
         private float _timeBuildTime;
-        
-        private Dictionary<Recipe, RecipePreviewer> _recipePreviewers = new Dictionary<Recipe, RecipePreviewer>();
-        private RecipePreviewer _currentPreview;
-        
-        
+
+        private BuildableMachineBase _selectedMachine;
+        private bool _isValid;
+
+        [Obsolete("Use _previewers instead")] private Dictionary<Recipe, RecipePreviewer> _recipePreviewers = new Dictionary<Recipe, RecipePreviewer>();
+        [Obsolete("Use _previewers instead")] private RecipePreviewer _currentPreview;
+
+        private Dictionary<GameObject, LoadedRecipePreviewer> _previewers =
+            new Dictionary<GameObject, LoadedRecipePreviewer>();
+
+        private GameObject _lastUsedPrefab;
+        private LoadedRecipePreviewer CurrentPreviewer => _lastUsedPrefab == null ? null : GetPreviewer(_lastUsedPrefab);
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+        }
 
         public override ToolStates GetToolState() => ToolStates.Recipe;
 
         protected override IEnumerable<Recipe> GetRecipes() => tool.Recipes;
 
-        public override void SetPreviewVisible(bool visible)
+        public override void SetPreviewVisible(bool visible) => CurrentPreviewer?.SetVisible(visible);
+
+
+        public override void UpdatePreview(Building building, bool isFlipped,
+            GameObject prefab)
         {
-            if (_currentPreview != null)
+            if (prefab == null)
             {
-                _currentPreview.SetVisible(visible);
+                _isValid = false;
+                _lastUsedPrefab = null;
+                _selectedMachine = null;
+                return;
             }
+
+            if (_lastUsedPrefab != prefab && _lastUsedPrefab != null) GetPreviewer(_lastUsedPrefab).SetVisible(false);
+
+            _lastUsedPrefab = prefab;
+            
+            var previewer = GetPreviewer(prefab);
+            AimHandler.UpdateAimPosition(previewer.TargetLayer);
+            previewer.SetVisible(true);
+            previewer.UpdatePreview(building, AimHandler.HoveredPosition.Value, out _isValid, isFlipped);
+            _selectedMachine = previewer.machine;
         }
 
-        protected override void OnRecipeChanged(Recipe recipe)
+        private LoadedRecipePreviewer GetPreviewer(GameObject prefab)
         {
-            Debug.Log($"Changed recipe to {recipe}",this);
-            _currentPreview?.SetVisible(false);
-            _currentPreview = null;
-            TryUpdatePreview();
-            Debug.Assert(_currentPreview != null, "_currentPreview == null",this);
-        }
-
-        protected override void OnUpdate(bool isFlipped)
-        {
-            if (_currentPreview == null)
+            if (prefab == null) return null;
+            if(!_previewers.TryGetValue(prefab, out var previewer))
             {
-                TryUpdatePreview();
+                _previewers.Add(prefab, previewer = new LoadedRecipePreviewer(config, prefab));
             }
-            _currentPreview.SetVisible(true);
-            var selectedPositionWS = transform.TransformPoint(this.ToolState.AimPositionLocal);
-            _currentPreview.UpdatePreview(this.targetBuilding, selectedPositionWS, out var isValid, isFlipped);
-            TryBuildMachine(isValid);
-            base.OnUpdate(isFlipped);
+            return previewer;
         }
 
-        private void TryBuildMachine(bool isValid)
+        
+
+        protected override void OnUpdate(Building building, bool isFlipped)
         {
-            if (isValid && ToolState.Inputs.UsePressed)
+            if(_isValid)
+                TryBuildMachine(building);
+        }
+
+        private void TryBuildMachine(Building building)
+        {
+            if (ToolState.Inputs.UsePressed)
             {
                 if (Time.realtimeSinceStartup - _timeBuildTime > buildRate)
                 {
-                    BuildMachine();
+                    if (BuildMachine(building))
+                    {
+                        _timeBuildTime = Time.realtimeSinceStartup;
+                    }
                 }
             }
         }
 
-        private void BuildMachine()
+        private bool BuildMachine(Building building)
         {
-            _timeBuildTime = Time.realtimeSinceStartup;
-            var newMachine = _currentPreview.Build(targetBuilding);
-            if (newMachine != null)
-            {
-                //newMachine.machineAddress = Recipe.SelectedRecipe.Value.InstanceReference.ToString();
-                Debug.Log($"Built machine: {newMachine} with {newMachine.machineAddress}", this);
-            }
-        }
-
-
-        private void OnDisable()
-        {
-            _currentPreview?.SetVisible(false);
-        }
-
-
-        private void TryUpdatePreview()
-        {
-            if(_recipePreviewers.TryGetValue(CurrentRecipe, out var previewer))
-            {
-                _currentPreview = previewer;
-                return;
-            }
-            _currentPreview = new RecipePreviewer(this, this.config, CurrentRecipe);
-            _recipePreviewers.Add(CurrentRecipe, _currentPreview);
-            _currentPreview.SetVisible(true);
+            if(_selectedMachine == null)
+                return false;
+            
+            var buildCell = AimHandler.HoveredPosition.Value;
+            var instance = _selectedMachine.Build(buildCell, building);
+            return instance != null;
         }
     }
 }

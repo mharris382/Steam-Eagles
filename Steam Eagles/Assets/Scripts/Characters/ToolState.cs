@@ -16,24 +16,27 @@ namespace Characters
     {
         public float maxToolRange = 5f;
 
+        public ToolStateReactiveProperty toolState = new();
+        private ToolInputs _inputs = new();
+        private ReactiveProperty<ITool> _equippedTool = new();
+
         public ToolStates currentToolState
         {
             get => toolState.Value;
             set => toolState.Value = value;
         }
 
-        public void SetToolState(ToolStates toolState)
+        public ITool EquippedTool
         {
-            currentToolState = toolState;
+            get => _equippedTool.Value;
+            set => _equippedTool.Value = value;
         }
+        public IReadOnlyReactiveProperty<ITool> EquippedToolRP => _equippedTool;
 
-        public ToolStateReactiveProperty toolState = new ToolStateReactiveProperty();
-        
-
-
-        private ToolInputs _inputs = new ToolInputs();
-        public ToolInputs Inputs => _inputs;
         public float SqrMaxToolRange => maxToolRange * maxToolRange;
+
+        public ToolInputs Inputs => _inputs;
+
         public Vector3 AimPositionLocal
         {
             get;
@@ -70,7 +73,12 @@ namespace Characters
                 get;
                 set;
             }
-            
+
+            public bool UseHeld
+            {
+                get;
+                set;
+            }
             public bool CancelPressed
             {
                 get;

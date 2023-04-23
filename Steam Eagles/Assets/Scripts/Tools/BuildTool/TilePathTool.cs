@@ -106,6 +106,7 @@ namespace Tools.BuildTool
             _isSetup = true;
         }
 
+        
         public void Update()
         {
             if (!HasResources())
