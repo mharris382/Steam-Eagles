@@ -8,7 +8,30 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
+public class RuleTileInspector : OdinEditorWindow
+{
+    public RuleTile tile;
+    
+    
+    
+    [MenuItem("Tools/Rule Tile RuleTileInspector")]
+    public static void ShowWindow()
+    {
+        var window = GetWindow<RuleTileInspector>("Rule Tile Inspector");
+        
+    }
+
+    protected override IEnumerable<object> GetTargets()
+    {
+        if (tile != null)
+        {
+            
+        }
+        return base.GetTargets();
+    }
+}
 public class RuleTileCopier : OdinEditorWindow
 {
     
@@ -177,7 +200,7 @@ public class RuleTileCopier : OdinEditorWindow
         {
             return;
         }
-
+        
         sprites = new Sprite[original.m_TilingRules.Count];
 
         for (int i = 0; i < sprites.Length; i++)
@@ -264,6 +287,11 @@ public class RuleTileCopier : OdinEditorWindow
         
     }
 
+    protected override IEnumerable<object> GetTargets()
+    {
+        return base.GetTargets();
+    }
+
     bool CanCreateTile()
     {
         if (!CanCopy()) 
@@ -315,21 +343,108 @@ public class RuleTileCopier : OdinEditorWindow
         tile.m_DefaultColliderType = ruleTile.m_DefaultColliderType;
         tile.m_DefaultGameObject = overrideDefaultGameobject == null ? ruleTile.m_DefaultGameObject : overrideDefaultGameobject;
         RuleTile.TilingRule[] ruleTiles = new RuleTile.TilingRule[ruleTile.m_TilingRules.Count];
-        for (int i = 0; i < ruleTile.m_TilingRules.Count; i++)
+        Debug.Assert(originalSprites.Length == sprites.Length);
+        for (int i = 0; i < sprites.Length; i++)
         {
-            var originalRule = ruleTile.m_TilingRules[i];
-            var rule = new RuleTile.TilingRule();
+            var newSprite = sprites[i];
+            var originalSprite = originalSprites[i];
+            var rule = ruleTile.m_TilingRules.First(t => t.m_Sprites[0] == originalSprite);
+            var index = ruleTile.m_TilingRules.IndexOf(rule);
+            var newRule = new RuleTile.TilingRule();
+            newRule.m_Neighbors = rule.m_Neighbors.ToList();
+            newRule.m_ColliderType = Tile.ColliderType.Sprite;
+            newRule.m_Sprites = new[] { newSprite };
+            ruleTiles[index] = newRule;
+        }
+        tile.m_TilingRules = ruleTiles.ToList();
+        //for (int i = 0; i < ruleTile.m_TilingRules.Count; i++)
+        //{
+        //    var originalRule = ruleTile.m_TilingRules[i];
+        //    var rule = new RuleTile.TilingRule();
+//
+        //    rule.m_Sprites[0] = sprites[i];
+        //    rule.m_Neighbors = originalRule.m_Neighbors;
+        //    rule.m_GameObject = overrideDefaultGameobject == null
+        //        ? originalRule.m_GameObject
+        //        : overrideDefaultGameobject;
+        //    rule.m_ColliderType = originalRule.m_ColliderType;
+        //    tile.m_TilingRules.Add(rule);
+        //}
+        return tile;
+    }
 
-            rule.m_Sprites[0] = sprites[i];
-            rule.m_Neighbors = originalRule.m_Neighbors;
-            rule.m_GameObject = overrideDefaultGameobject == null
-                ? originalRule.m_GameObject
-                : overrideDefaultGameobject;
-            rule.m_ColliderType = originalRule.m_ColliderType;
-            tile.m_TilingRules.Add(rule);
+    [ValidateInput(nameof(Validate))]
+    public Sprite[] originalSprites;
+
+    bool Validate(Sprite[] ogSprites, ref string errorMessage)
+    {
+        if (original == null)
+        {
+            errorMessage = "Assign Original rule first";
+            return false;
+        }
+        if (ogSprites.Length != original.m_TilingRules.Count)
+        {
+            errorMessage = $"Expected number of sprites {original.m_TilingRules.Count} does not match number of sprites {ogSprites.Length}";
+            return false;
+        }
+        foreach (var ogSprite in ogSprites)
+        {
+            var tile = original.m_TilingRules.FirstOrDefault(t => t.m_Sprites.Contains(ogSprite));
+            if (tile == null)
+            {
+                errorMessage = $"No rule for sprite {ogSprite.name}";
+                return false;
+            }
         }
 
-        return tile;
+        return true;
+    }
+    
+    public class RuleTileSetWrapper
+    {
+        private const int ROWS = 4;
+        private readonly RuleTile _original;
+        private readonly Sprite[] _replacements;
+
+
+        public int[,] matrix;
+
+        private static Color GREEN_COLOR = new Color(0.1f, 0.8f, 0.1f, 0.2f);
+        private static Color RED_COLOR = new Color(0.8f, 0.1f, 0.1f, 0.2f);
+        
+        private  int DrawCell(Rect rect, int value)
+        {
+            var gridW = rect.width / 3f;
+            var gridH = rect.height / 3f;
+            var rule = _original.m_TilingRules[value];
+            var sprite = _replacements[value];
+            //var upBox = rect.SplitGrid(rect.width/3f, rect.height/3f, )
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    if(x == 1 && y == 1)
+                        continue;
+                    int index = x + y * 3;
+                    var box = rect.SplitGrid(gridW, gridH, index);
+                    
+                } 
+            }
+            
+            return value;
+        }
+        
+        public bool IsValid => _replacements.Length == _original.m_TilingRules.Count;
+        
+        
+        
+        public RuleTileSetWrapper(RuleTile original, Sprite[] replacements)
+        {
+            _original = original;
+            _replacements = replacements;
+            int columns = Mathf.CeilToInt((float) _replacements.Length / ROWS);
+        }
     }
 }
 #endif
