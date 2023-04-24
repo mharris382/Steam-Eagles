@@ -13,7 +13,7 @@ namespace Tools.BuildTool
         private readonly ToolControllerBase _controllerBase;
         private readonly IModeNameListener _ui;
 
-        private string CurrentMode => _modes[_currentModeIndex];
+        public string CurrentMode => _modes[_currentModeIndex];
         
 
         public ToolModeListener(List<string> modes, ToolControllerBase controllerBase)
@@ -46,6 +46,17 @@ namespace Tools.BuildTool
         {
             _disposable?.Dispose();
             _disposable = null;
+        }
+
+        public void SetMode(string lastMode)
+        {
+            var index = _modes.IndexOf(lastMode);
+            if (index == -1)
+                return;
+            _currentModeIndex = index;
+            _controllerBase.ToolMode = CurrentMode;
+            if (_ui != null)
+                _ui.DisplayModeName(CurrentMode);
         }
     }
 }

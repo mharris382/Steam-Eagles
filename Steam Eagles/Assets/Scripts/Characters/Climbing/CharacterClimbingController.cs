@@ -90,6 +90,7 @@ namespace Characters
             float speed = input * maxSpeed * (climbUp ? 1 : -1);
            
             _climbHandle.ClimbingJoint.useMotor = true;
+            _climbHandle.ClimbingJoint.angle = 90;
             _climbHandle.ClimbingJoint.motor = new JointMotor2D()
             {
                 motorSpeed = speed,

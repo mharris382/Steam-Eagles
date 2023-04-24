@@ -36,6 +36,12 @@ namespace Tools.BuildTool
             CreateHoverSprite();
         }
 
+        private void OnEnable()
+        {
+            if(_hoveredSprite != null)
+                _hoveredSprite.gameObject.SetActive(true);
+        }
+
         private void OnDisable()
         {
             if(_hoveredSprite != null)

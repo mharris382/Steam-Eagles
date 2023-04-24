@@ -183,6 +183,7 @@ namespace Tools.BuildTool
             this._toolData.AddTool(tool);
         }
 
+        private string _lastMode;
 
         public void SetToolEquipped(bool equipped)
         {
@@ -195,10 +196,15 @@ namespace Tools.BuildTool
                         if (_modeListener != null) _modeListener.Dispose();
                         _modeListener = new ToolModeListener(modes, this);
                         _modeListener.ListenForInput(ToolState.Inputs.OnToolModeChanged);
+                        if (_lastMode != null)
+                        {
+                            _modeListener.SetMode(_lastMode);
+                        }
                     }
                 }
                 else if (_modeListener != null)
                 {
+                    _lastMode = _modeListener.CurrentMode;
                     _modeListener.Dispose();
                     _modeListener = null;
                 }
