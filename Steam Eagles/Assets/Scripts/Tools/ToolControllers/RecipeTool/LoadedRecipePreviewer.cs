@@ -31,13 +31,15 @@ namespace Tools.RecipeTool
             }
         }
 
-        public void UpdatePreview(Building building, Vector3Int hoveredPositionValue, out bool isValid, bool isFlipped)
+        public void UpdatePreview(Building building, ref Vector3Int hoveredPositionValue, out bool isValid,
+            ref string errorMessage, bool isFlipped)
         {
             machine.IsFlipped = isFlipped;
             var cell = FindBestCell(building, hoveredPositionValue);
             var position = building.Map.CellToWorld(cell, TargetLayer);
             previewSprite.transform.position = position;
-            isValid = machine.IsPlacementValid(building, cell);
+            isValid = machine.IsPlacementValid(building, ref cell, ref errorMessage);
+            hoveredPositionValue = cell;
             previewSprite.color = isValid ? _config.validColor : _config.invalidColor;
         }
         

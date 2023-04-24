@@ -106,10 +106,56 @@ namespace Tools.BuildTool
                 sprite.size = _buildingMap.GetCellSize(_selectedTile.Value.GetLayer());
             }
         }
+        public IDisposable Setup(
+            IReadOnlyReactiveProperty<Vector3Int> hoveredTile,
+            IReadOnlyReactiveProperty<IEditableTile> selectedTile,
+            IObservable<List<Vector3Int>> selectedTilePath,
+            IReadOnlyReactiveProperty<Building> building)
+        {
+            _building = building.Value;
+            
+            CreateHoverSprite();
+            _selectedTile = selectedTile;
+            _selectedTilePath = selectedTilePath;
+            if(_building) _buildingMap = _building.Map;
+            var cd = new CompositeDisposable();
+            
+            building.Subscribe(b => {
+                if (b != null) {
+                    _building = b;
+                    _buildingMap = b.Map;
+                }
+            }).AddTo(cd);
+            building.Select(t => t != null).Subscribe(SetVisible).AddTo(cd);
+
+
+
+            var d = hoveredTile.Where(_ => _selectedTile.Value != null)
+                .Subscribe(cell =>
+                {
+                    var wsPos = _buildingMap.CellToWorld(cell, selectedTile.Value.GetLayer());
+                    _hoveredSprite.transform.position = wsPos;
+                    bool isValid = selectedTile.Value.IsPlacementValid(cell, _buildingMap);
+                    _hoveredSprite.color = (isValid ? validColor : invalidColor).Lighten(0.25f);
+                }).AddTo(cd);
+            
+            
+            var hasPath = _selectedTilePath.Select(t => t.Count > 1);
+            hasPath.Subscribe(t => _hoveredSprite.gameObject.SetActive(t)).AddTo(cd);
+            
+            selectedTile.Select(t => t != null).Subscribe(hasTile => _hoveredSprite.gameObject.SetActive(hasTile)).AddTo(cd);
+            _selectedTilePath.Where(_ => _selectedTile.Value != null)
+                .Subscribe(ShowPath).AddTo(cd).AddTo(this);
+            return cd;
+        }
+
+        public void SetVisible(bool visible)
+        {
+            _hoveredSprite.gameObject.SetActive(visible);
+        }
         
         
-        
-        public void Setup(
+        public IDisposable Setup(
             IReadOnlyReactiveProperty<Vector3Int> hoveredTile,
             IReadOnlyReactiveProperty<IEditableTile> selectedTile,
             IObservable<List<Vector3Int>> selectedTilePath,
@@ -121,18 +167,20 @@ namespace Tools.BuildTool
             _selectedTile = selectedTile;
             _selectedTilePath = selectedTilePath;
             _buildingMap = buildingMap;
-            
-            hoveredTile.Where(_ => _selectedTile.Value != null)
+
+            var cd = new CompositeDisposable();
+            var d =  hoveredTile.Where(_ => _selectedTile.Value != null)
                 .Subscribe(cell =>
                 {
                     var wsPos = buildingMap.CellToWorld(cell, selectedTile.Value.GetLayer());
                     _hoveredSprite.transform.position = wsPos;
                     bool isValid = selectedTile.Value.IsPlacementValid(cell, buildingMap);
                     _hoveredSprite.color = (isValid ? validColor : invalidColor).Lighten(0.25f);
-                }).AddTo(this);
-            
+                });
+            d.AddTo(cd);
+            d.AddTo(this);
             var hasPath = _selectedTilePath.Select(t => t.Count > 1);
-            hasPath.Subscribe(t => _hoveredSprite.gameObject.SetActive(t));
+            hasPath.Subscribe(t => _hoveredSprite.gameObject.SetActive(t)).AddTo(cd);
             //var pathEnd = _selectedTilePath
             //    .Where(t => t is { Count: > 0 })
             //    .Select(t => t[^1]);
@@ -143,11 +191,13 @@ namespace Tools.BuildTool
             selectedTile.Select(t => t != null).Subscribe(hasTile =>
             {
                 _hoveredSprite.gameObject.SetActive(hasTile);
-            });
+            }).AddTo(cd);
             
-            _selectedTilePath.Where(_ => _selectedTile.Value != null)
-                .Subscribe(ShowPath)
-                .AddTo(this);
+            d = _selectedTilePath.Where(_ => _selectedTile.Value != null)
+                .Subscribe(ShowPath);
+                d.AddTo(this);
+                d.AddTo(cd);
+                return cd;
         }
 
         void SetEndPosition(Vector3Int cell)
@@ -157,5 +207,10 @@ namespace Tools.BuildTool
         }
         
         Vector3 GetWorldPosition(Vector3Int cell) => _buildingMap.CellToWorld(cell, _selectedTile.Value.GetLayer());
+
+        public void MoveSpriteTo(Vector3 cellToWorld)
+        {
+            _hoveredSprite.transform.position = cellToWorld;
+        }
     }
 }

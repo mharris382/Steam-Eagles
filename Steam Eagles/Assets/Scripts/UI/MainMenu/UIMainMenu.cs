@@ -320,7 +320,7 @@ public class UIMainMenu : MonoBehaviour
         var lastPath = PlayerPrefs.GetString("Last Save Path");
         if (lastPath != null)
         {
-            MessageBroker.Default.Publish(new LoadGameRequestedInfo(lastPath));
+            PersistenceManager.Instance.LoadGameRequest(new LoadGameRequestedInfo(lastPath));
         }
     }
 }

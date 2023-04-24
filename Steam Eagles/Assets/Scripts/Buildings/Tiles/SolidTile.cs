@@ -10,6 +10,11 @@ namespace Buildings.Tiles
         public bool allowPlacementOnDamagedWall = false;
         public bool allowPlacementOnPipe = false;
 
+        public override bool CanTileBePlacedInRoom(Room room)
+        {
+            return room.buildLevel != BuildLevel.NONE;
+        }
+
         public override bool CanTileBeDisconnected()
         {
             return true;

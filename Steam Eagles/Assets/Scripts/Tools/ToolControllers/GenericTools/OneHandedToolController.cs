@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildings;
 using Buildings.Rooms;
 using CoreLib;
 using Items;
@@ -20,6 +21,8 @@ namespace Tools.GenericTools
         {
             return isLeftHand ? ToolStates.HAND_LEFT : ToolStates.HAND_RIGHT;
         }
+
+        public override BuildingLayers GetTargetLayer() => BuildingLayers.SOLID;
 
         public override bool UsesRecipes(out List<Recipe> recipes)
         {

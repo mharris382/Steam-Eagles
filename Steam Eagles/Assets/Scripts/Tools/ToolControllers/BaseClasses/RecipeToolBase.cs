@@ -59,8 +59,17 @@ namespace Tools.BuildTool
                 return;
             }
             SetPreviewVisible(true);
+            AimHandler.UpdateAimPosition(GetTargetLayer());
             UpdatePreview(targetBuilding,  GetFlipped(), _previewResourceHandler.Preview);
             OnUpdate(targetBuilding, GetFlipped());
+            string errorMessage = "";
+            if(IsPlacementInvalid(ref errorMessage))
+            {
+                SharedData.ErrorMessage.Value = errorMessage;
+                return;
+            }
+            SharedData.ErrorMessage.Value = "";
+            
             //do base last because base checks for tool switches so that will disable the next update loop
         }
 
@@ -139,5 +148,8 @@ namespace Tools.BuildTool
 
         protected abstract IEnumerable<Recipe> GetRecipes();
         public abstract void SetPreviewVisible(bool visible);
+        
+        
+        public abstract bool IsPlacementInvalid( ref string errorMessage);
     }
 }

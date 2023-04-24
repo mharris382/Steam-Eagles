@@ -185,7 +185,7 @@ namespace SaveLoad
         private Coroutine _loadRoutine;
         private SaveHistoryLoader saveHistory { get; set; } 
 
-        void LoadGameRequest(LoadGameRequestedInfo info)
+        public void LoadGameRequest(LoadGameRequestedInfo info)
         {
             Debug.Log($"Received Load Game Request: {info.loadPath}");
             LoadGameAtPath(info.loadPath);

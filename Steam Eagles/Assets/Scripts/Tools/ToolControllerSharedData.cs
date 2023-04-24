@@ -25,7 +25,10 @@ namespace Tools.BuildTool
         
         public int AvailableTools => tools.Count;
         private IntReactiveProperty _currentToolIndex = new IntReactiveProperty(0);
-
+        private StringReactiveProperty _errorMessage = new StringReactiveProperty();
+        
+        public StringReactiveProperty ErrorMessage => _errorMessage;
+        
         public int CurrentToolIndex
         {
             get => _currentToolIndex.Value;

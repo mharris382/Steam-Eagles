@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildings;
 using Buildings.Rooms;
 using CoreLib;
 using CoreLib.Interfaces;
@@ -79,6 +80,8 @@ namespace Tools.DestructTool
             _direction = Vector2.right;
             _actualAimPositionLs = (Vector2)transform.localPosition + originOffset;
         }
+
+        public override BuildingLayers GetTargetLayer() => BuildingLayers.SOLID;
 
         protected override void OnRoomChanged(Room room)
         {

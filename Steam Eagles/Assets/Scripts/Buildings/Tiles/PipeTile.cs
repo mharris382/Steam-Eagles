@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Buildings.Rooms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,6 +10,11 @@ namespace Buildings.Tiles
         public Vector4 scale = new Vector4(1, 1, 1, 1);
         public bool allowPlacementOnFoundations = false;
         public bool allowPlacementOnSolid = true;
+        
+        public override bool CanTileBePlacedInRoom(Room room)
+        {
+            return room.buildLevel != BuildLevel.NONE;
+        }
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
             base.GetTileData(position, tilemap, ref tileData);

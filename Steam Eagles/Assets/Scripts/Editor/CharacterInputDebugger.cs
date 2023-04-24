@@ -2,6 +2,7 @@
 using Characters;
 using CoreLib;
 using CoreLib.Entities;
+using DefaultNamespace;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using SteamEagles.Characters;
@@ -28,9 +29,21 @@ namespace Editor
             foreach (var characterState in characterStates)
             {
                 yield return new CharacterWrapper(characterState);
+                yield return new CharacterConfigWrapper(characterState.config);
             }
         }
 
+        public class CharacterConfigWrapper
+        {
+            [Title("Character Movement Settings", "Character Config")]
+            [InlineEditor(inlineEditorMode: InlineEditorModes.GUIAndHeader, Expanded = true)]
+            public CharacterConfig config;
+            
+            public CharacterConfigWrapper(CharacterConfig config)
+            {
+                this.config = config;
+            }
+        }
 
         public class CharacterWrapper
         {

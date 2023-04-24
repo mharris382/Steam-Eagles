@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Buildings.Rooms;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Buildings.Tiles
@@ -6,6 +7,12 @@ namespace Buildings.Tiles
     [CreateAssetMenu(menuName="SteamEagles/Tiles/WallTile")]
     public class WallTile : DamageableTile
     {
+        
+        public override bool CanTileBePlacedInRoom(Room room)
+        {
+            return room.buildLevel != BuildLevel.NONE;
+        }
+        
         [Required]
         public RepairableTile damagedVersion;
         public override RepairableTile GetDamagedTileVersion()

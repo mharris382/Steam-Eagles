@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Buildings.Rooms;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Buildings.Tiles
@@ -11,6 +12,11 @@ namespace Buildings.Tiles
         public override DamageableTile GetRepairedTileVersion()
         {
             return repairedVersion;
+        }
+
+        public override bool CanTileBePlacedInRoom(Room room)
+        {
+            return room.buildLevel != BuildLevel.NONE;
         }
 
         public override BuildingLayers GetLayer() => BuildingLayers.WALL;

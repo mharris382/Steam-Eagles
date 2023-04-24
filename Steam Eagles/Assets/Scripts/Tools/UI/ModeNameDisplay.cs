@@ -7,6 +7,12 @@ using UnityEngine;
 
 namespace UI.Tool
 {
+    /// <summary>
+    /// NOTE: this GUI element class is unique in that it does not exist on a Canvas and therefore does not need to
+    /// use the HUDToolControllerBase to synchronize with the player.  Because it exist on the character prefab
+    /// it can be referenced as an GameObject reference by the tool system.  This is a special case and should not
+    /// be the default for UI elements.
+    /// </summary>
     public class ModeNameDisplay : MonoBehaviour, IModeNameListener
     {
         public TextMeshPro modeNameText;

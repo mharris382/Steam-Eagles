@@ -55,17 +55,17 @@ namespace Tools.BuildTool
                 _activeTool.Select(t => _controllers[t % _controllers.Count])
                     .Subscribe(x =>
                     {
-                        _sharedData.activeTool.Value = x;
+                        
                         
                         var prevTool = _activeToolController.Value;
                         if (prevTool != null)
                         {
                             prevTool.gameObject.SetActive(false);
-                            x.SetToolEquipped(false);
+                            prevTool.SetToolEquipped(false);
                         }
                         
                         _activeToolController.Value = x;
-                        
+                        _sharedData.activeTool.Value = x;
                         if(x != null)
                         {
                             x.gameObject.SetActive(true);

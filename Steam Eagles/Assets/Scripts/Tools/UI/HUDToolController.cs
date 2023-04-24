@@ -1,47 +1,16 @@
 ﻿using System;
-using System.Collections;
-using Tools.BuildTool;
-using UI.PlayerGUIs;
-using UnityEngine;
-using UnityEngine.UI;
 using UniRx;
+using UnityEngine.UI;
 
 namespace Tools.UI
 {
-    public class HUDToolController : MonoBehaviour
+    public class HUDToolController : HUDToolControllerBase
     {
-        private PlayerCharacterGUIController _guiController;
-        private ToolControllerSharedData _toolControllerSharedData;
         public Image image;
-        
-        public PlayerCharacterGUIController GUIController
-        {
-            get
-            {
-                if (_guiController == null)
-                {
-                    _guiController = GetComponentInParent<PlayerCharacterGUIController>();
-                }
-                return _guiController;
-            }
-        }
 
-        private IEnumerator Start()
+        public override void OnFullyInitialized()
         {
-            while (!GUIController.HasAllResources())
-            {
-                Debug.Log("HUD Tool Controller waiting for GUI Controller to load resources...", this);
-                yield return null;
-            }
-
-            _toolControllerSharedData =
-                GUIController.PlayerCharacter.GetComponentInChildren<ToolControllerSharedData>();
-            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
-            Debug.Assert(GUIController.PlayerCharacter != null, "GUI Controller is missing Player Character", GUIController);
-            Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
-            _toolControllerSharedData.ActiveTool.StartWith(_toolControllerSharedData.ActiveToolValue)
-                .Subscribe(t =>
-                {
+            SharedToolData.ActiveTool.StartWith(SharedToolData.ActiveToolValue).Subscribe(t => {
                     var toolItemSprite = t.ToolIcon?.GetIcon();
                     if (toolItemSprite != null)
                     {

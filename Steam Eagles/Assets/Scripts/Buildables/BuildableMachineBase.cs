@@ -9,10 +9,13 @@ using Utilities;
 
 namespace Buildables
 {
-    public abstract class BuildableMachineBase : MonoBehaviour
+    public abstract class BuildableMachineBase : MonoBehaviour, IIconable
     {
         private GridLayout _gridLayout;
 
+        [SerializeField] private Sprite previewIcon;
+        
+        
         [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)]
         public GameObject buildingTarget;
 
@@ -22,6 +25,9 @@ namespace Buildables
 
         [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
 
+        private SpriteRenderer _sr;
+        public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
+        
         public BuildingLayers GetTargetLayer() => targetLayer;
         
         
@@ -36,6 +42,7 @@ namespace Buildables
         private bool _isFlipped;
 
         public string machineAddress;
+        private Vector3Int? _spawnedPosition;
 
         /// <summary> how many cells this machine occupies in the grid </summary>
         public abstract Vector2Int MachineGridSize { get; }
@@ -49,6 +56,11 @@ namespace Buildables
                     var position = transform.position;
                     return new Vector2Int(Mathf.RoundToInt(position.x),
                         Mathf.RoundToInt(position.y));
+                }
+
+                if (_spawnedPosition != null)
+                {
+                    return (Vector2Int)_spawnedPosition.Value;
                 }
 
                 return (Vector2Int)GridLayout.WorldToCell(transform.position);
@@ -130,10 +142,29 @@ namespace Buildables
             var sr = GetComponentInChildren<SpriteRenderer>();
             if (sr != null)
             {
-                previewSpriteRenderer.sprite = sr.sprite;
+                previewSpriteRenderer.sprite = GetIcon();
             }
         }
 
+        public bool IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)
+        {//if flipped, offset position by size x
+            //if (IsFlipped) cell -= new Vector3Int(MachineGridSize.x, 0, 0);
+            if (!CheckCells(building, cell, MachineGridSize))
+            {
+                errorMessage = "Cannot place machine here";
+                return false;
+            }
+
+            if (snapsToGround)
+            {
+                if (!IsPlacementOnGround(building, cell, MachineGridSize))
+                {
+                    errorMessage = "Machine must be placed on ground";
+                    return false;
+                }
+            }
+            return true;
+        }
         public bool IsPlacementValid(Building building, Vector3Int cell)
         {
             //if flipped, offset position by size x
@@ -144,6 +175,18 @@ namespace Buildables
 
             var size = this.MachineGridSize;
             
+            if (!CheckCells(building, cell, size)) return false;
+
+            if (snapsToGround)
+            {
+                if (!IsPlacementOnGround(building, cell, size)) return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckCells(Building building, Vector3Int cell, Vector2Int size)
+        {
             //check that all cells are empty
             for (int x = 0; x < size.x; x++)
             {
@@ -157,11 +200,6 @@ namespace Buildables
                         return false;
                     }
                 }
-            }
-
-            if (snapsToGround)
-            {
-                if (!IsPlacementOnGround(building, cell, size)) return false;
             }
 
             return true;
@@ -208,13 +246,12 @@ namespace Buildables
 
         public BuildableMachineBase Build(Vector3Int cell, Building building)
         {
-            //if flipped, offset position by size x
-            // if (this.Flipped)
-            // {
-            //     cell -= new Vector3Int(MachineGridSize.x, 0, 0);
-            // }
             var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
+            var offset = new Vector3(0.01f, 0.01f, 0);
+            pos += offset;
             var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
+            instance._spawnedPosition = cell;
+            instance._isFlipped = this.IsFlipped;
             instance.transform.localScale = new Vector3(this.IsFlipped ? -1 : 1, 1, 1);
             instance.buildingTarget = building.gameObject;
             
@@ -290,8 +327,8 @@ namespace Buildables
                 var corners = new Vector3[]
                 {
                     new Vector3(worldPosition.x, worldPosition.y, 0),
-                    new Vector3(worldPosition.x + gridCellSize.x, worldPosition.y, 0),
-                    new Vector3(worldPosition.x + gridCellSize.x, worldPosition.y + gridCellSize.y, 0),
+                    new Vector3(worldPosition.x + (!IsFlipped ? gridCellSize.x : -gridCellSize.x), worldPosition.y, 0),
+                    new Vector3(worldPosition.x + (!IsFlipped ? gridCellSize.x : -gridCellSize.x), worldPosition.y + gridCellSize.y, 0),
                     new Vector3(worldPosition.x, worldPosition.y + gridCellSize.y, 0),
                     new Vector3(worldPosition.x, worldPosition.y, 0),
                 };
@@ -334,5 +371,7 @@ namespace Buildables
         }
 
         #endregion
+
+        public Sprite GetIcon() => previewIcon != null ? previewIcon : ( sr != null ? sr.sprite : null );
     }
 }

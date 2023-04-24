@@ -60,6 +60,8 @@ namespace Tools.BuildTool
         protected Inventory Inventory => _inventory;
         protected EntityRoomState RoomState => _roomState;
 
+        public ToolControllerSharedData SharedData => _toolData;
+
         public ToolActivator Activator => _activator ??= new ToolActivator(this);
 
 
@@ -252,8 +254,8 @@ namespace Tools.BuildTool
         /// completely finished loading and ready to go
         /// </summary>
         protected virtual void OnStart() { }
-        
-        
+
+        public abstract BuildingLayers GetTargetLayer();
         
 
         /// <summary>

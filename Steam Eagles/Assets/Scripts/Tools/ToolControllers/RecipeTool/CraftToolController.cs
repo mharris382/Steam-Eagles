@@ -12,7 +12,7 @@ namespace Tools.RecipeTool
     public class CraftToolController : RecipeToolBase<GameObject>
     {
         
-        [SerializeField] private PreviewConfig config;
+        [SerializeField] private PreviewConfig previewConfig;
         [SerializeField] private float buildRate = 1;
         private float _timeBuildTime;
 
@@ -25,12 +25,29 @@ namespace Tools.RecipeTool
         private Dictionary<GameObject, LoadedRecipePreviewer> _previewers =
             new Dictionary<GameObject, LoadedRecipePreviewer>();
 
+        private BuildableMachineBase _machine;
         private GameObject _lastUsedPrefab;
+        private string _errorMessage = "";
+        private Vector3Int _selectedCell;
         private LoadedRecipePreviewer CurrentPreviewer => _lastUsedPrefab == null ? null : GetPreviewer(_lastUsedPrefab);
+
 
         protected override void OnAwake()
         {
             base.OnAwake();
+        }
+
+        public override BuildingLayers GetTargetLayer()
+        {
+            if (_lastUsedPrefab == null)
+            {
+                return BuildingLayers.SOLID;
+            }
+            if (_machine == null)
+            {
+                _machine = _lastUsedPrefab.GetComponent<BuildableMachineBase>();
+            }
+            return _machine.GetTargetLayer();
         }
 
         public override ToolStates GetToolState() => ToolStates.Recipe;
@@ -39,6 +56,12 @@ namespace Tools.RecipeTool
 
         public override void SetPreviewVisible(bool visible) => CurrentPreviewer?.SetVisible(visible);
 
+        public override bool IsPlacementInvalid(ref string errorMessage)
+        {
+            if (!_isValid) 
+                errorMessage = _errorMessage;
+            return false;
+        }
 
         public override void UpdatePreview(Building building, bool isFlipped,
             GameObject prefab)
@@ -58,7 +81,8 @@ namespace Tools.RecipeTool
             var previewer = GetPreviewer(prefab);
             AimHandler.UpdateAimPosition(previewer.TargetLayer);
             previewer.SetVisible(true);
-            previewer.UpdatePreview(building, AimHandler.HoveredPosition.Value, out _isValid, isFlipped);
+            _selectedCell = AimHandler.HoveredPosition.Value;
+            previewer.UpdatePreview(building, ref _selectedCell , out _isValid, ref _errorMessage, isFlipped);
             _selectedMachine = previewer.machine;
         }
 
@@ -67,7 +91,7 @@ namespace Tools.RecipeTool
             if (prefab == null) return null;
             if(!_previewers.TryGetValue(prefab, out var previewer))
             {
-                _previewers.Add(prefab, previewer = new LoadedRecipePreviewer(config, prefab));
+                _previewers.Add(prefab, previewer = new LoadedRecipePreviewer(previewConfig, prefab));
             }
             return previewer;
         }
@@ -99,9 +123,20 @@ namespace Tools.RecipeTool
             if(_selectedMachine == null)
                 return false;
             
-            var buildCell = AimHandler.HoveredPosition.Value;
-            var instance = _selectedMachine.Build(buildCell, building);
+            var instance = _selectedMachine.Build(_selectedCell, building);
             return instance != null;
+        }
+
+        public override void OnToolUnEquipped()
+        {
+            previewConfig.GetPreviewSprite().enabled = false;
+            base.OnToolUnEquipped();
+        }
+
+        public override void OnToolEquipped()
+        {
+            previewConfig.GetPreviewSprite().enabled = true;
+            base.OnToolEquipped();
         }
     }
 }

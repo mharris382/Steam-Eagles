@@ -1,6 +1,7 @@
 ﻿//using PhysicsFun.DynamicBlocks;
 
 using System.Linq;
+using Buildings.Rooms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -8,13 +9,17 @@ namespace Buildings.Tiles
 {
     public interface IEditableTile
     {
+        // ReSharper disable once InconsistentNaming
+        string name { get; }
+        bool CanTileBePlacedInRoom(Room room);
         bool IsPlacementValid(Vector3Int cell, BuildingMap buildingMap);
         BuildingLayers GetLayer();
     }
     public abstract class EditableTile : PuzzleTile, IEditableTile
     {
         public string recipeName;
-        
+
+        public abstract bool CanTileBePlacedInRoom(Room room);
         public override bool CanTileBeDisconnected()
         {
             //Debug.Assert(dynamicBlock!=null, $"Tile {name} is missing a DynamicBlock!", this);

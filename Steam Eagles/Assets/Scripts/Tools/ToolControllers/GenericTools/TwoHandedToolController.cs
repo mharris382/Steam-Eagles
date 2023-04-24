@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildings;
 using Buildings.Rooms;
 using CoreLib;
 using Items;
@@ -34,6 +35,11 @@ namespace Tools.GenericTools
         public override ToolStates GetToolState()
         {
             return ToolStates.HAND_BOTH;
+        }
+
+        public override BuildingLayers GetTargetLayer()
+        {
+            return BuildingLayers.SOLID;
         }
 
         public override bool UsesRecipes(out List<Recipe> recipes)
