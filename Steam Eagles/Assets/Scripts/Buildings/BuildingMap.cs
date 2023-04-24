@@ -193,6 +193,16 @@ namespace Buildings
             tm.SetTile(cell, tile);
         }
 
+        public void SetTile(Vector3Int cell, EditableTile tile)
+        {
+            if (tile == null)
+            {
+                throw new NullReferenceException("Cannot clear cell by setting tile to null. If this was the intent use overload \'SetTile(cell, layer, null)\' instead");
+            }
+            var layer = tile.GetLayer();
+            SetTile(cell, layer, tile);
+        }
+
 
         public IEnumerable<Vector3Int> GetAllCells(BuildingLayers layers) => _cellToRoomMaps[_layerToCellSize[layers]].GetAllCells().Select(t => t.cell);
     }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Buildings.Rooms
 {
-    [Obsolete]
+    [Obsolete("Use EntityRoomState instead")]
     public class RoomTrackerManager : Singleton<RoomTrackerManager>
     {
         public override bool DestroyOnLoad => false;

@@ -135,6 +135,12 @@ namespace Players
                 yield return null;
             }
         }
+
+        CharacterState ChangePlayerCharacter(int id, GameObject parent)
+        {
+            throw new NotImplementedException();
+        }
+        
         CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
         {
             var wrapper = players[id];

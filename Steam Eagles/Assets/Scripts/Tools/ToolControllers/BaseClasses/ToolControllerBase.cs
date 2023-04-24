@@ -66,11 +66,7 @@ namespace Tools.BuildTool
 
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
-        public virtual string ToolMode
-        {
-            get;
-            set;
-        }
+        public virtual string ToolMode { get; set; }
 
         public IIconable ToolIcon => tool as IIconable;
 
@@ -187,37 +183,41 @@ namespace Tools.BuildTool
 
         public void SetToolEquipped(bool equipped)
         {
-            void UpdateToolModes(bool equip)
-            {
-                if (equip)
-                {
-                    if (ToolUsesModes(out var modes))
-                    {
-                        if (_modeListener != null) _modeListener.Dispose();
-                        _modeListener = new ToolModeListener(modes, this);
-                        _modeListener.ListenForInput(ToolState.Inputs.OnToolModeChanged);
-                        if (_lastMode != null)
-                        {
-                            _modeListener.SetMode(_lastMode);
-                        }
-                    }
-                }
-                else if (_modeListener != null)
-                {
-                    _lastMode = _modeListener.CurrentMode;
-                    _modeListener.Dispose();
-                    _modeListener = null;
-                }
-            }
             Activator.IsEquipped = equipped;
-            UpdateToolModes(equipped);
             if (equipped)
             {
+                InitializeToolModes();
                 OnToolEquipped();
             }
             else
             {
+                CleanupToolModes();
                 OnToolUnEquipped();
+            }
+        }
+
+        private void CleanupToolModes()
+        {
+            if (_modeListener != null)
+            {
+                _lastMode = _modeListener.CurrentMode;
+                _modeListener.Dispose();
+                _modeListener = null;
+            }
+        }
+
+        private void InitializeToolModes()
+        { 
+            if(_modeListener != null) CleanupToolModes();
+            if (ToolUsesModes(out var modes))
+            {
+                if (_modeListener != null) _modeListener.Dispose();
+                _modeListener = new ToolModeListener(modes, this);
+                _modeListener.ListenForInput(ToolState.Inputs.OnToolModeChanged);
+                if (_lastMode != null)
+                {
+                    _modeListener.SetMode(_lastMode);
+                }
             }
         }
 

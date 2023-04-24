@@ -194,6 +194,16 @@ namespace Game
             return cnt;
         }
 
+
+        public void SinglePlayerSwitchCharacter()
+        {
+            if (!PlayerHasJoined(0))
+                return;
+            if(!PlayerHasCharacterAssigned(0))
+                return;
+            
+        }
+
         #endregion
 
         private void Update()

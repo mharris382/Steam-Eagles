@@ -31,4 +31,20 @@ namespace CoreLib
             this.spawnPositionLocal = spawnPositionLocal;
         }
     }
+
+    public struct RequestSwitchPlayerCharacter
+    {
+        public readonly int playerCharacterIndex;
+        public readonly string characterName;
+        public readonly GameObject characterPrefab;
+        public readonly Vector2 spawnPositionLocal;
+
+        public RequestSwitchPlayerCharacter(int playerCharacterIndex, string characterName, GameObject characterPrefab, Vector2 spawnPositionLocal)
+        {
+            this.playerCharacterIndex = playerCharacterIndex;
+            this.characterName = characterName;
+            this.characterPrefab = characterPrefab;
+            this.spawnPositionLocal = spawnPositionLocal;
+        }
+    }
 }
