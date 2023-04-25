@@ -22,7 +22,15 @@ namespace Buildings.Rooms
         {
             room1.RemoveConnectedRoom(room2);
             room2.RemoveConnectedRoom(room1);
-            Graph.RemoveEdge(new Edge<Room>(room1, room2));
+            if(Graph.TryGetEdge(room1, room2, out var e1))
+            {
+                Graph.RemoveEdge(e1);
+            }
+
+            if (Graph.TryGetEdge(room2, room1, out var e2))
+            {
+                Graph.RemoveEdge(e2);
+            }
         }
     }
 }

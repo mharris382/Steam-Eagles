@@ -11,6 +11,7 @@ namespace Game
     public class GameManager : Singleton<GameManager>
     {
         public override bool DestroyOnLoad => false;
+        private PCInstance[] _playerCharacters;
         private Dictionary<int, GameObject> _playerDevices = new Dictionary<int, GameObject>();
         private Dictionary<int, string> _playerCharacterNames = new Dictionary<int, string>();
         private GameInputBase _gameInput;
@@ -27,6 +28,8 @@ namespace Game
         protected override void Init()
         {
             _gameInput = GetComponent<GameInputBase>();
+            _playerCharacters = new PCInstance[2];
+            
             Debug.Assert(_gameInput != null, "Game Manager requires a GameInputBase component!");
             MessageBroker.Default.Receive<PlayerDeviceJoined>().Subscribe(OnPlayerDeviceJoined).AddTo(this);
             MessageBroker.Default.Receive<PlayerDeviceLost>().Subscribe(OnPlayerDeviceLost).AddTo(this);
@@ -230,6 +233,23 @@ namespace Game
         public bool CanStartGameInMultiplayer()
         {
             throw new NotImplementedException();
+        }
+
+        public bool HasPC(int player)
+        {
+            return _playerCharacters[player] != null;
+        }
+        public PCInstance GetPC(int player)
+        {
+            return _playerCharacters[player];
+        }
+        public void SetPC(int player, PCInstance pc)
+        {
+            var p = (int)Mathf.Clamp01(player);
+            if (p != player)
+                throw new IndexOutOfRangeException();
+            _playerCharacters[p] = pc;
+            MessageBroker.Default.Publish(new PCInstanceChangedInfo(player, pc));
         }
     }
 }

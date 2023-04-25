@@ -141,7 +141,8 @@ namespace Tools.BuildTool
                 {
                     var wsPos = _buildingMap.CellToWorld(cell, selectedTile.Value.GetLayer());
                     _hoveredSprite.transform.position = wsPos;
-                    bool isValid = selectedTile.Value.IsPlacementValid(cell, _buildingMap);
+                    string error = "";
+                    bool isValid = selectedTile.Value.CheckIsPlacementValid(cell, _buildingMap, ref error);
                     _hoveredSprite.color = (isValid ? validColor : invalidColor).Lighten(0.25f);
                 }).AddTo(cd);
             
@@ -180,7 +181,8 @@ namespace Tools.BuildTool
                 {
                     var wsPos = buildingMap.CellToWorld(cell, selectedTile.Value.GetLayer());
                     _hoveredSprite.transform.position = wsPos;
-                    bool isValid = selectedTile.Value.IsPlacementValid(cell, buildingMap);
+                    string error = "";
+                    bool isValid = selectedTile.Value.CheckIsPlacementValid(cell, buildingMap, ref error);
                     _hoveredSprite.color = (isValid ? validColor : invalidColor).Lighten(0.25f);
                 });
             d.AddTo(cd);

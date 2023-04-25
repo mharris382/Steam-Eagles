@@ -12,12 +12,14 @@ namespace Buildings.Tiles
         // ReSharper disable once InconsistentNaming
         string name { get; }
         bool CanTileBePlacedInRoom(Room room);
-        bool IsPlacementValid(Vector3Int cell, BuildingMap buildingMap);
+
+        bool CheckIsPlacementValid(Vector3Int cell, BuildingMap buildingMap, ref string error);
         BuildingLayers GetLayer();
     }
     public abstract class EditableTile : PuzzleTile, IEditableTile
     {
         public string recipeName;
+        public bool useTileRulesAsPlacementRules = true;
 
         public abstract bool CanTileBePlacedInRoom(Room room);
         public override bool CanTileBeDisconnected()
@@ -28,6 +30,41 @@ namespace Buildings.Tiles
         
         
         public abstract BuildingLayers GetLayer();
+
+        public bool CheckIsPlacementValid(Vector3Int cell, BuildingMap buildingMap, ref string error)
+        {
+            
+            var tilemap = buildingMap.GetTilemap(GetLayer());
+            if (tilemap == null)
+            {
+                error = "Tilemap is null";
+                return false;
+            }
+
+            if (useTileRulesAsPlacementRules && !RuleMatches(cell, tilemap))
+            {
+                error = "That is not a valid shape for this tile";
+                return false;
+            }
+            if (!IsPlacementValid(cell, buildingMap))
+            {
+                error = "Invalid Tile placement";
+                return false;
+            }
+            return true;
+        }
+
+        bool RuleMatches(Vector3Int cell, Tilemap tm)
+        {
+            Matrix4x4 transform = Matrix4x4.identity;
+            foreach (var mTilingRule in m_TilingRules)
+            {
+                if (RuleMatches(mTilingRule, cell, tm, ref transform))
+                    return true;
+            }
+            return false;
+        }
+        
         public abstract bool IsPlacementValid(Vector3Int cell, BuildingMap buildingMap);
         
         protected bool CheckIfOtherCellExistsOnMap(Vector3Int cell, BuildingMap buildingMap,

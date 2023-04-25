@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 1166986546705494694}
   - component: {fileID: 1166986546705494713}
   - component: {fileID: 1166986546705494714}
+  - component: {fileID: 522308915198612155}
   - component: {fileID: 6119433024762794462}
   m_Layer: 5
   m_Name: PLAYER GUI
@@ -137,6 +138,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -196,6 +198,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerID: 0
   rootWindow: {fileID: 5383939984764319436}
+  showRecipeHUD:
+    value: 1
 --- !u!114 &1166986546705494714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +228,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &522308915198612155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166986546705494692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271944e44d024b6e8ba6911bf49d1426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNumber: 0
 --- !u!114 &6119433024762794462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +318,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce6aec4a07344ea7ab1a8cdf04d753d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activationEvents:
+    onWindowOpened:
+      m_PersistentCalls:
+        m_Calls: []
+    onWindowClosed:
+      m_PersistentCalls:
+        m_Calls: []
+    onWindowStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
   closeButton: {fileID: 0}
 --- !u!1 &5272898401129085013
 GameObject:
@@ -442,7 +469,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 1166986546705494693}
     m_Modifications:
     - target: {fileID: 54211844, guid: ef7b68cce49a7cd4fa7116bda83fa3e7, type: 3}
@@ -1742,7 +1769,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef7b68cce49a7cd4fa7116bda83fa3e7, type: 3}
 --- !u!224 &1166986547029484539 stripped
 RectTransform:

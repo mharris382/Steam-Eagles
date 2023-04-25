@@ -191,6 +191,7 @@ namespace Buildings.Rooms
                 if (Handles.Button(midPosWs, Quaternion.identity, handleSize, handleSize, Handles.DotHandleCap))
                 {
                     RemoveRoomEdge(edge.Source, edge.Target);
+                    Event.current.Use();
                     return;
                 }
                 

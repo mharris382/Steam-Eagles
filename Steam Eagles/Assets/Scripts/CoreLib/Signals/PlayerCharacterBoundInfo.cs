@@ -19,6 +19,7 @@ namespace CoreLib
         public int playerNumber;
         public GameObject inputGo;
         public Component characterState;
+        public GameObject camera;
     }
     
     public struct CharacterUnassignedPlayerInputInfo

@@ -117,13 +117,18 @@ namespace Players
             var building = GameObject.FindGameObjectWithTag("Building");
             Debug.Assert(building != null, "No building found in scene", this);
 
-           var characterInstance = SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal);
+           var characterInstance = SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal, out var camera);
+           var inputGO = GameManager.Instance.GetPlayerDevice(request.playerCharacterIndex);
+           var cameraGO = camera.gameObject;
            var assignmentNotification = new CharacterAssignedPlayerInputInfo() {
                 characterName = request.characterName,
                 characterState = characterInstance,
-                inputGo = GameManager.Instance.GetPlayerDevice(request.playerCharacterIndex),
-                playerNumber = request.playerCharacterIndex
+                inputGo = inputGO,
+                playerNumber = request.playerCharacterIndex,
+                camera = cameraGO
            };
+           var pcInstance = new PCInstance(characterInstance.gameObject, cameraGO, inputGO);
+           GameManager.Instance.SetPC(request.playerCharacterIndex, pcInstance);
             MessageBroker.Default.Publish(assignmentNotification);
         }
 
@@ -141,7 +146,7 @@ namespace Players
             throw new NotImplementedException();
         }
         
-        CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset)
+        CharacterState SetupPlayer(GameObject prefab, int id, GameObject parent, Vector2 localOffset, out Camera cameraInstance)
         {
             var wrapper = players[id];
             var obj = GameManager.Instance.GetPlayerDevice(id);
@@ -157,8 +162,8 @@ namespace Players
             StartCoroutine(StopCameraFromBeingDeactivated(camera.Value, 5));
             Debug.Assert(camera.Value != null, "Camera Assignment was returned with null camera!", this);
             Debug.Assert(wrapper.player.playerCamera == camera, "wrapper.player.playerCamera != camera", this);
+            cameraInstance = camera.Value;
 
-            
             var character = Instantiate(prefab,parent.transform).GetComponent<CharacterState>();
             character.AssignedPlayerCamera = camera.Value;
             character.transform.localPosition = localOffset;

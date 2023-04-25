@@ -145,7 +145,8 @@ namespace Tools.BuildTool
             bool anyValid = false;
             foreach (var pos in path)
             {
-                if (!Tile.IsPlacementValid(pos, Building.Map))
+                string error = "";
+                if (!Tile.CheckIsPlacementValid(pos, Building.Map, ref error))
                 {
                     allValid = false;
                 }
