@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Buildings.Tiles
@@ -7,7 +9,8 @@ namespace Buildings.Tiles
     {
         public bool debug;
         public bool alwaysMatchNeighbors = true;
-        
+        [ShowIf(nameof(alwaysMatchNeighbors))]
+        public List<PuzzleTile> matchNeighbors;
         public abstract bool CanTileBeDisconnected();
 
 
@@ -31,17 +34,39 @@ namespace Buildings.Tiles
 
         public override bool RuleMatch(int neighbor, TileBase other)
         {
-            if (alwaysMatchNeighbors)
+            if (!(other is PuzzleTile tile))
             {
-                switch (neighbor)
+                return base.RuleMatch(neighbor, other);
+            }
+
+            if (!alwaysMatchNeighbors) return base.RuleMatch(neighbor, tile);
+            switch (neighbor)
+            {
+                case TilingRuleOutput.Neighbor.This:
                 {
-                    case RuleTile.TilingRuleOutput.Neighbor.This:
-                        return  other != null;
-                    case RuleTile.TilingRuleOutput.Neighbor.NotThis:
-                        return other != this;
+                    return TileIsMatch(other);
+                }
+                case TilingRuleOutput.Neighbor.NotThis:
+                {
+                    return !TileIsMatch(other);
                 }
             }
-            return base.RuleMatch(neighbor, other);
+            return base.RuleMatch(neighbor, tile);
+        }
+
+        private bool TileIsMatch(TileBase other)
+        {
+            if (other == null)
+                return false;
+            if (other == this)
+                return true;
+            foreach (var matchNeighbor in matchNeighbors)
+            {
+                if (matchNeighbor == other)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
