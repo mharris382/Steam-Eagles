@@ -33,8 +33,6 @@ namespace Tools.BuildTool
         public Recipe CurrentRecipe => _recipes == null ? null : _recipeSelector.SelectedRecipe.Value;
         protected List<Recipe> Recipes => _recipes;
 
-        protected override void OnRoomChanged(Room room) => Debug.LogWarning($"{nameof(RecipeToolBase<T>)} throw new System.NotImplementedException();");
-
         protected void Update()
         {
             if (!HasResources()) return;
@@ -53,17 +51,28 @@ namespace Tools.BuildTool
                 return;
             }
 
-            if (!_previewResourceHandler.IsPreviewReady)
+            
+            if (!_previewResourceHandler.IsPreviewReady)//wait for recipe preview to finish loading resources
             {
                 SetPreviewVisible(false);
                 return;
             }
             SetPreviewVisible(true);
-            AimHandler.UpdateAimPosition(GetTargetLayer());
-            UpdatePreview(targetBuilding,  GetFlipped(), _previewResourceHandler.Preview);
-            OnUpdate(targetBuilding, GetFlipped());
+            
+            bool isFlipped = GetFlipped();
+            var layer = GetTargetLayer();
             string errorMessage = "";
-            if(IsPlacementInvalid(ref errorMessage))
+
+            AimHandler.UpdateAimPosition(layer);
+            
+            
+            
+            //NOTE: update preview before checking if action is valid (because preview is used to check if action is valid)
+            UpdatePreview(targetBuilding,  isFlipped, _previewResourceHandler.Preview);
+            
+            OnUpdate(targetBuilding, isFlipped);
+
+            if (!CheckIfActionIsValid(ref errorMessage))
             {
                 SharedData.ErrorMessage.Value = errorMessage;
                 return;
@@ -73,8 +82,22 @@ namespace Tools.BuildTool
             //do base last because base checks for tool switches so that will disable the next update loop
         }
 
+        bool CheckIfActionIsValid(ref string errorMessage)
+        {
+            if (!CurrentRecipe.IsAffordable(Inventory))
+            {
+                errorMessage = "Cannot afford recipe";
+                return false;
+            }
+            if(IsPlacementInvalid(ref errorMessage))
+            {
+                return false;
+            }
+            return true;
+        }
 
         private bool GetFlipped() => faceDirectionOfCharacter && CharacterState.FacingRight;
+        protected override void OnRoomChanged(Room room) => Debug.LogWarning($"{nameof(RecipeToolBase<T>)} throw new System.NotImplementedException();");
 
         private bool CheckForRecipeSwitch(ToolState toolState)
         {

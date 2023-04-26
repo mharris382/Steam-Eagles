@@ -66,6 +66,18 @@ namespace Items
         public Sprite GetIcon() => icon;
         
         public RecipeType GetRecipeType() => recipeType;
+
+        public bool IsAffordable(Inventory inventory)
+        {
+            foreach (var component in components)
+            {
+                if (!inventory.ContainsItem(component.Item, component.Count))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         
         public Loader<GameObject> GetPrefabLoader(MonoBehaviour caller) => _prefabLoader ??= new PrefabLoader(caller, this);
         public Loader<TileBase> GetTileLoader(MonoBehaviour caller) => _tileLoader ??= new TileLoader(caller, this);

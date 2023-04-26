@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Buildings;
 using Buildings.Rooms;
 using CoreLib;
@@ -11,26 +12,6 @@ namespace Buildables
 {
     public abstract class BuildableMachineBase : MonoBehaviour, IIconable
     {
-        private GridLayout _gridLayout;
-
-        [SerializeField] private Sprite previewIcon;
-        
-        
-        [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)]
-        public GameObject buildingTarget;
-
-        [Required] [SerializeField] private Transform partsParent;
-        [SerializeField] private FX fx;
-
-
-        [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
-
-        private SpriteRenderer _sr;
-        public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
-        
-        public BuildingLayers GetTargetLayer() => targetLayer;
-        
-        
         [Serializable]
         public class FX
         {
@@ -38,11 +19,25 @@ namespace Buildables
             public GameFX destroyFX;
         }
 
-        public bool snapsToGround = true;
-        private bool _isFlipped;
 
+
+        [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)] public GameObject buildingTarget;
+        [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
+
+        [SerializeField] [Required] private Transform partsParent;
+        [SerializeField] private Sprite previewIcon;
+        [SerializeField] private FX fx;
+        public bool snapsToGround = true;
+
+        private GridLayout _gridLayout;
+        private SpriteRenderer _sr;
+        private Building _building;
+
+        private bool _isFlipped;
         public string machineAddress;
         private Vector3Int? _spawnedPosition;
+
+        #region [Properties]
 
         /// <summary> how many cells this machine occupies in the grid </summary>
         public abstract Vector2Int MachineGridSize { get; }
@@ -96,6 +91,21 @@ namespace Buildables
             }
         }
 
+        public Building Building
+        {
+            get
+            {
+                if (_building == null) _building = GetComponentInParent<Building>();
+                return _building;
+            }
+        }
+
+
+        public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
+        bool HasBuilding => buildingTarget != null;
+
+        #endregion
+
         public bool HasResources()
         {
             if (_gridLayout != null)
@@ -108,29 +118,23 @@ namespace Buildables
             return _gridLayout != null;
         }
 
-        private GridLayout FindGridOnTarget()
+        public BuildingLayers GetTargetLayer() => targetLayer;
+
+        public Sprite GetIcon() => previewIcon != null ? previewIcon : ( sr != null ? sr.sprite : null );
+
+        public IEnumerable<Vector3Int> GetCells()
         {
-            var grid = buildingTarget.GetComponent<Grid>();
-            if (grid == null)
+            var cell = (Vector3Int) CellPosition;
+            var size = this.MachineGridSize;
+            for (int x = 0; x < size.x; x++)
             {
-                var tm = buildingTarget.GetComponent<Tilemap>();
-                if (tm == null)
+                for (int y = 0; y < size.y; y++)
                 {
-                    Debug.LogError($"No grid or tilemap found on building target {buildingTarget.name}",
-                        buildingTarget);
-                    return null;
+                    var cellPos = cell + new Vector3Int(x, y, 0);
+                    yield return cellPos;
                 }
-
-                _gridLayout = tm.layoutGrid;
             }
-            else
-            {
-                _gridLayout = grid;
-            }
-
-            return grid;
         }
-
 
         public void CopyOntoPreviewSprite(SpriteRenderer previewSpriteRenderer)
         {
@@ -148,8 +152,13 @@ namespace Buildables
 
         public bool IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)
         {//if flipped, offset position by size x
+            if (building.IsCellOverlappingMachine(cell))
+            {
+                errorMessage= "This space is already occupied by another machine";
+                return false;
+            }
             //if (IsFlipped) cell -= new Vector3Int(MachineGridSize.x, 0, 0);
-            if (!CheckCells(building, cell, MachineGridSize))
+            if (!CheckCells(building))
             {
                 errorMessage = "Cannot place machine here";
                 return false;
@@ -165,6 +174,8 @@ namespace Buildables
             }
             return true;
         }
+
+        [System.Obsolete("use IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)")]
         public bool IsPlacementValid(Building building, Vector3Int cell)
         {
             //if flipped, offset position by size x
@@ -175,7 +186,7 @@ namespace Buildables
 
             var size = this.MachineGridSize;
             
-            if (!CheckCells(building, cell, size)) return false;
+            if (!CheckCells(building)) return false;
 
             if (snapsToGround)
             {
@@ -185,24 +196,25 @@ namespace Buildables
             return true;
         }
 
-        private bool CheckCells(Building building, Vector3Int cell, Vector2Int size)
+        public BuildableMachineBase Build(Vector3Int cell, Building building)
         {
-            //check that all cells are empty
-            for (int x = 0; x < size.x; x++)
-            {
-                for (int y = 0; y < size.y; y++)
-                {
-                    var cellPos = cell + new Vector3Int(x, y, 0);
-                    var valid = IsCellValid(building, cellPos);
-                    //Debug.DrawLine(sPos, building.Map.CellToWorld(cellPos, BuildingLayers.SOLID), valid ? Color.blue : Color.yellow, .5f);
-                    if (!valid)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
+            var offset = new Vector3(0.01f, 0.01f, 0);
+            pos += offset;
+            var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
+            instance._spawnedPosition = cell;
+            instance._isFlipped = this.IsFlipped;
+            instance.transform.localScale = new Vector3(this.IsFlipped ? -1 : 1, 1, 1);
+            instance.buildingTarget = building.gameObject;
+            
+            var parts = instance.GetComponentsInChildren<BuildableMachinePart>();
+            
+            foreach (var part in parts) 
+                part.OnBuild(building);
+            
+            if(fx.buildFX !=null)
+                fx.buildFX.SpawnEffectFrom(instance.transform);
+            return instance;
         }
 
         protected virtual bool IsCellValid(Building building, Vector3Int cellPos)
@@ -214,6 +226,18 @@ namespace Buildables
                 return false;
             if (tile != null)
                 return false;
+            return true;
+        }
+
+
+        private bool CheckCells(Building building)
+        {
+            foreach (var ce in GetCells())
+            {
+                var valid = IsCellValid(building, ce);
+                if (!valid)
+                    return false;
+            }
             return true;
         }
 
@@ -244,33 +268,32 @@ namespace Buildables
             return true;
         }
 
-        public BuildableMachineBase Build(Vector3Int cell, Building building)
+        private GridLayout FindGridOnTarget()
         {
-            var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
-            var offset = new Vector3(0.01f, 0.01f, 0);
-            pos += offset;
-            var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
-            instance._spawnedPosition = cell;
-            instance._isFlipped = this.IsFlipped;
-            instance.transform.localScale = new Vector3(this.IsFlipped ? -1 : 1, 1, 1);
-            instance.buildingTarget = building.gameObject;
-            
-            var parts = instance.GetComponentsInChildren<BuildableMachinePart>();
-            
-            foreach (var part in parts) 
-                part.OnBuild(building);
-            
-            if(fx.buildFX !=null)
-                fx.buildFX.SpawnEffectFrom(instance.transform);
-            return instance;
+            var grid = buildingTarget.GetComponent<Grid>();
+            if (grid == null)
+            {
+                var tm = buildingTarget.GetComponent<Tilemap>();
+                if (tm == null)
+                {
+                    Debug.LogError($"No grid or tilemap found on building target {buildingTarget.name}",
+                        buildingTarget);
+                    return null;
+                }
+
+                _gridLayout = tm.layoutGrid;
+            }
+            else
+            {
+                _gridLayout = grid;
+            }
+
+            return grid;
         }
 
         #region [Editor]
 
-        bool HasBuilding => buildingTarget != null;
-
-        [PropertyOrder(-10)]
-        [Button, HideIf(nameof(HasBuilding))]
+        [PropertyOrder(-10)] [Button, HideIf(nameof(HasBuilding))]
         private void FindBuildingTarget()
         {
             var b = GetComponentInParent<Building>();
@@ -371,7 +394,5 @@ namespace Buildables
         }
 
         #endregion
-
-        public Sprite GetIcon() => previewIcon != null ? previewIcon : ( sr != null ? sr.sprite : null );
     }
 }

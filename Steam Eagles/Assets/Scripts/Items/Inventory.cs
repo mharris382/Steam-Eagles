@@ -178,7 +178,12 @@ namespace Items
             int stackableSpace = info.GetStackableSpace(itemBase);
             return stackableSpace > spaceNeededRemainingAfterEmptySlotsAreFilled;
         }
-        
+
+        public bool ContainsItem(ItemBase item, int count)
+        {
+            var cnt = GetItemCount(item);
+            return cnt >= count;
+        }
         
         /// <summary>
         /// tries to minimize the number of slots used, by combining stacks of the same item
