@@ -11,6 +11,8 @@ namespace Buildings.Rooms.MyEditor
     [CustomEditor(typeof(Room))]
     public class RoomEditor : OdinEditor
     {
+        public const bool ALWAYS_SNAP = true;
+        public const float MAX_ROOM_ALPHA = 0.5f;
         private BoxBoundsHandle m_BoundsHandle = new BoxBoundsHandle();
         private static Room m_selectedRoomCamera;
         private bool m_isCameraSelected;
@@ -130,97 +132,117 @@ namespace Buildings.Rooms.MyEditor
 
         public void OnSceneGUI()
         {
-            Room room = (Room) target;
-            if (room == null) return;
-            global::Buildings.Rooms.Rooms rooms = room.GetComponentInParent<global::Buildings.Rooms.Rooms>();
-            if (rooms == null) return;
-            if (!rooms.HasBuilding) return;
-            var transform = rooms.Building.transform;
-            if (room.isDynamic)
+                Room room = (Room) target;
+            using (new HandlesScope(room.roomColor.SetAlpha(Mathf.Max(room.roomColor.a, MAX_ROOM_ALPHA))))
             {
-                if (room.dynamicBody == null) return;
-                transform = room.dynamicBody.transform;
-            }
+                if (room == null) return;
+                Rooms rooms = room.GetComponentInParent<Rooms>();
+                if (rooms == null) return;
+                if (!rooms.HasBuilding) return;
+                var transform = rooms.Building.transform;
+                if (room.isDynamic)
+                {
+                    if (room.dynamicBody == null) return;
+                    transform = room.dynamicBody.transform;
+                }
 
-            bool snappingToGrid = Event.current.control;
+                bool snappingToGrid = Event.current.control;
 
-            var bounds = room.Bounds;
-            var center = transform.TransformPoint(room.RoomBounds.center);
+                var bounds = room.Bounds;
+                var center = transform.TransformPoint(room.RoomBounds.center);
             
-            DrawRoomArea(center, bounds, room, rooms.faceOpacity, rooms.outlineOpacity);
-            DrawRoomBounds(rooms, center, room, transform, snappingToGrid);
+                DrawRoomArea(center, bounds, room, rooms.faceOpacity, rooms.outlineOpacity);
+                DrawRoomBounds(rooms, center, room, transform, snappingToGrid);
+            }
         }
 
         private void DrawRoomBounds(global::Buildings.Rooms.Rooms rooms, Vector3 center, Room room, Transform transform, bool snapping =false)
         {
-            m_BoundsHandle.center = center;
-            m_BoundsHandle.size = room.RoomBounds.size;
-
-            m_BoundsHandle.midpointHandleSizeFunction = MidpointHandleSizeFunction;
-            m_BoundsHandle.handleColor = room.roomColor.SetAlpha(Mathf.Min(1,rooms.outlineOpacity+ 0.1f));
-            m_BoundsHandle.wireframeColor = room.roomColor.SetAlpha(rooms.outlineOpacity);
-            Bounds newBounds = new Bounds();
-            EditorGUI.BeginChangeCheck();
-            m_BoundsHandle.DrawHandle();
-            if (EditorGUI.EndChangeCheck())
+            using (new HandlesScope(room.roomColor.SetAlpha(Mathf.Max(room.roomColor.a, MAX_ROOM_ALPHA))))
             {
-                Undo.RecordObject(room, "Changed Room Size");
-                newBounds.center = transform.InverseTransformPoint(m_BoundsHandle.center);
-                
-                newBounds.size = (m_BoundsHandle.size);
-                if (snapping)
+                m_BoundsHandle.center = center;
+                m_BoundsHandle.size = room.RoomBounds.size;
+
+                m_BoundsHandle.midpointHandleSizeFunction = MidpointHandleSizeFunction;
+                m_BoundsHandle.handleColor = room.roomColor.SetAlpha(Mathf.Min(1,rooms.outlineOpacity+ 0.1f));
+                m_BoundsHandle.wireframeColor = room.roomColor.SetAlpha(rooms.outlineOpacity);
+                Bounds newBounds = new Bounds();
+                EditorGUI.BeginChangeCheck();
+                m_BoundsHandle.DrawHandle();
+                m_BoundsHandle.handleColor = room.roomColor.SetAlpha(0.9f);
+                m_BoundsHandle.wireframeColor = room.roomColor.SetAlpha((1 + room.roomColor.a)/2f);
+                if (EditorGUI.EndChangeCheck())
                 {
-                    var bounds = newBounds;
-                    var min = bounds.min;
-                    var max = bounds.max;
-                    var grid = transform.GetComponent<Grid>();
-                    Debug.Assert(grid != null, "Building is missing grid!", transform);
-                    if (grid == null)
+                    Undo.RecordObject(room, "Changed Room Size");
+                    newBounds.center = transform.InverseTransformPoint(m_BoundsHandle.center);
+                
+                    newBounds.size = (m_BoundsHandle.size);
+                    if (snapping || ALWAYS_SNAP)
                     {
-                        return;
+                        var bounds = newBounds;
+                        var min = bounds.min;
+                        var max = bounds.max;
+                        var grid = transform.GetComponent<Grid>();
+                        var gl = (GridLayout)grid;
+                        var wallGrid = transform.GetComponentInChildren<WallTilemap>();
+                        if (wallGrid != null)
+                        {
+                            gl = wallGrid.Tilemap.layoutGrid;
+                        }
+                        Debug.Assert(gl != null, "Building is missing grid!", transform);
+                        if (gl == null)
+                        {
+                            return;
+                        }
+                        min =  gl.CellToLocal(gl.LocalToCell(min));
+                        max = gl.CellToLocal(gl.LocalToCell(max));
+                        bounds.SetMinMax(min, max);
+                        newBounds = bounds;
                     }
-                    min =  grid.CellToLocal(grid.LocalToCell(min));
-                    max = grid.CellToLocal(grid.LocalToCell(max));
-                    bounds.SetMinMax(min, max);
-                    newBounds = bounds;
+                    room.RoomBounds = newBounds;
                 }
-                room.RoomBounds = newBounds;
             }
         }
 
         public static void DrawRoomArea(Vector3 center, Bounds bounds, Room room, float faceOpacity = 1f, float outlineOpacity = 1)
         {
-            var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
-                center.y + bounds.extents.y);
-            var color = room.roomColor;
-            color.a = 0.25f * faceOpacity;
-            var faceColor = color;
-            faceColor.a = faceOpacity;
-            var outlineColor = color;
-            outlineColor.a = outlineOpacity;
-            Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
+            using (new HandlesScope(room.roomColor.SetAlpha(Mathf.Max(room.roomColor.a, MAX_ROOM_ALPHA))))
+            {
+                var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
+                    center.y + bounds.extents.y);
+                var color = room.roomColor;
+                color.a = 0.25f * faceOpacity;
+                var faceColor = color;
+                faceColor.a = faceOpacity;
+                var outlineColor = color;
+                outlineColor.a = outlineOpacity;
+                Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
+            }
         }
         public static void DrawRoomArea(global::Buildings.Rooms.Rooms rooms, Room room)
         {
-            float faceOpacity = rooms.faceOpacity;
-            float outlineOpacity = rooms.outlineOpacity;
-            var transform = rooms.Building.transform;
-            if (room.isDynamic)
+            using (new HandlesScope(room.roomColor))
             {
-                if (room.dynamicBody == null) return;
-                transform = room.dynamicBody.transform;
+                float faceOpacity = rooms.faceOpacity;
+                float outlineOpacity = rooms.outlineOpacity;
+                var transform = rooms.Building.transform;
+                if (room.isDynamic)
+                {
+                    if (room.dynamicBody == null) return;
+                    transform = room.dynamicBody.transform;
+                }
+                var center = transform.TransformPoint(room.RoomBounds.center);
+                var bounds = room.Bounds;
+                var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
+                    center.y + bounds.extents.y);
+                var color = room.roomColor;
+                color.a = 0.25f;
+                var faceColor = color;
+                faceColor.a = faceOpacity;
+                var outlineColor = color;
+                outlineColor.a = outlineOpacity;
+                Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
             }
-            var center = transform.TransformPoint(room.RoomBounds.center);
-            var bounds = room.Bounds;
-            var rect = Rect.MinMaxRect(center.x - bounds.extents.x, center.y - bounds.extents.y, center.x + bounds.extents.x,
-                center.y + bounds.extents.y);
-            var color = room.roomColor;
-            color.a = 0.25f;
-            var faceColor = color;
-            faceColor.a = faceOpacity;
-            var outlineColor = color;
-            outlineColor.a = outlineOpacity;
-            Handles.DrawSolidRectangleWithOutline(rect, faceColor, outlineColor);
         }
         static float MidpointHandleSizeFunction(Vector3 position)
         {

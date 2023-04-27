@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using QuikGraph.Algorithms;
 
 namespace Power.Steam
 {
@@ -18,11 +20,13 @@ namespace Power.Steam
             }
         }
 
-
+        Stack<SteamNode> _stack = new Stack<SteamNode>();
         void TraverseAndTransferSteam(INetworkSupplier supplier, SteamNode startNode)
         {
             var graph = Network.Network;
             float transferAmount = supplier.TryGetSupply(PowerNetworkConfigs.Instance.steamNetworkConfig.maxPressure);
+            _stack.Clear();
+            //var bfs = graph.TreeBreadthFirstSearch(startNode);
             RecursivelyFindSteamPath(startNode, ref transferAmount);
         }
         
@@ -30,7 +34,21 @@ namespace Power.Steam
         {
             if (_visitedNodes.Contains(node)) return;
             _visitedNodes.Add(node);
+            
+            if (node.AvailableSpace > 0)
+            {
+                if (node.AvailableSpace > remainingAmount)
+                {
+                    node.Pressure += remainingAmount;
+                    remainingAmount = 0;
+                    return;
+                }
+                node.Pressure = node.Capacity;
+                remainingAmount -= node.AvailableSpace;
+            }
+            
             var graph = Network.Network;
+            
             if (graph.TryGetOutEdges(node, out var edges))
             {
                 foreach (var e in edges)
@@ -46,8 +64,13 @@ namespace Power.Steam
                     }
                     target.Pressure = target.Capacity;
                     remainingAmount -= space;
-                    RecursivelyFindSteamPath(target, ref remainingAmount);
+                    _stack.Push(target);
                 }
+            }
+
+            while (_stack.Count > 0)
+            {
+                RecursivelyFindSteamPath(_stack.Pop(), ref remainingAmount);
             }
         }
         

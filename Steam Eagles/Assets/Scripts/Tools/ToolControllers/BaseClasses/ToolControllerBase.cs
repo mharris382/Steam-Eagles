@@ -15,12 +15,13 @@ using UnityEngine.PlayerLoop;
 
 namespace Tools.BuildTool
 {
-    public abstract class ToolControllerBase : MonoBehaviour
+    public abstract class ToolControllerBase : MonoBehaviour, IIconable
     {
         
         [SerializeField] private ActivationEvents activationEvents;
         [SerializeField,ValidateInput(nameof(ValidateUI))] public GameObject modeDisplayUI;
-
+        [Required]
+        [SerializeField] private Sprite emptyIcon;
         bool ValidateUI(GameObject mode, ref string error)
         {
             if (mode == null)
@@ -305,6 +306,16 @@ namespace Tools.BuildTool
         {
             modes = null;
             return false;
+        }
+
+        public Sprite GetIcon()
+        {
+            if (tool != null)
+            {
+                return tool.GetIcon();
+            }
+
+            return emptyIcon;
         }
     }
 }
