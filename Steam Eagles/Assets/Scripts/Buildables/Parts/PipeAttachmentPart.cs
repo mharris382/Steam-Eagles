@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Buildings;
 using Buildings.Tiles;
+using Power.Steam;
 using UnityEngine;
 
 namespace Buildables.Parts
@@ -18,9 +19,15 @@ namespace Buildables.Parts
                 StartCoroutine(WaitForTiles(building));
                 return;
             }
+            
+            ConnectToNetwork(building.GetSteamNetwork(), cell);
+            //var pipeTile = building.Tiles.PipeTile as EditableTile;
+            //building.Map.SetTile(cell, pipeTile);
+        }
 
-            var pipeTile = building.Tiles.PipeTile as EditableTile;
-            building.Map.SetTile(cell, pipeTile);
+        public virtual void ConnectToNetwork(SteamNetworks.SteamNetwork network, Vector3Int vector3Int)
+        {
+            
         }
 
         IEnumerator WaitForTiles(Building building)

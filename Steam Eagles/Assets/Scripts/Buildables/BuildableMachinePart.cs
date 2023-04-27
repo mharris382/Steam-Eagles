@@ -29,6 +29,7 @@ namespace Buildables
         
         private void OnDrawGizmos()
         {
+            if (Grid == null) return;
             Gizmos.color = gizmoColor;
             var position = transform.position;
             var cellPos = Grid.WorldToCell(position);

@@ -46,6 +46,10 @@ namespace Buildables
         {
             get
             {
+                if (_spawnedPosition != null)
+                {
+                    return (Vector2Int)_spawnedPosition.Value;
+                }
                 if (GridLayout == null)
                 {
                     var position = transform.position;
@@ -53,10 +57,7 @@ namespace Buildables
                         Mathf.RoundToInt(position.y));
                 }
 
-                if (_spawnedPosition != null)
-                {
-                    return (Vector2Int)_spawnedPosition.Value;
-                }
+              
 
                 return (Vector2Int)GridLayout.WorldToCell(transform.position);
             }
@@ -80,13 +81,13 @@ namespace Buildables
             get
             {
                 if (_gridLayout != null) return _gridLayout;
+                _gridLayout = FindGridOnTarget();
                 if (!HasResources())
                 {
                     Debug.LogError("No grid found on building target or building not set", this);
                     return null;
                 }
 
-                _gridLayout = FindGridOnTarget();
                 return _gridLayout;
             }
         }
@@ -152,6 +153,7 @@ namespace Buildables
 
         public bool IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)
         {//if flipped, offset position by size x
+            _spawnedPosition = cell;
             if (building.IsCellOverlappingMachine(cell))
             {
                 errorMessage= "This space is already occupied by another machine";
@@ -178,6 +180,7 @@ namespace Buildables
         [System.Obsolete("use IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)")]
         public bool IsPlacementValid(Building building, Vector3Int cell)
         {
+            _spawnedPosition = cell;
             //if flipped, offset position by size x
             if (this.IsFlipped)
             {
@@ -198,7 +201,7 @@ namespace Buildables
 
         public BuildableMachineBase Build(Vector3Int cell, Building building)
         {
-            var pos = building.Map.CellToLocal(cell, BuildingLayers.SOLID);
+            var pos = building.Map.CellToWorld(cell, BuildingLayers.SOLID);
             var offset = new Vector3(0.01f, 0.01f, 0);
             pos += offset;
             var instance = Instantiate(this, pos, Quaternion.identity, building.transform);
@@ -214,11 +217,18 @@ namespace Buildables
             
             if(fx.buildFX !=null)
                 fx.buildFX.SpawnEffectFrom(instance.transform);
+            instance.OnMachineBuilt(cell, building);
             return instance;
+        }
+
+        protected virtual void OnMachineBuilt(Vector3Int cell, Building building)
+        {
+            
         }
 
         protected virtual bool IsCellValid(Building building, Vector3Int cellPos)
         {
+            _spawnedPosition = cellPos;
             var tile = building.Map.GetTile(cellPos, BuildingLayers.SOLID);
             if (tile == null) building.Map.GetTile(cellPos, BuildingLayers.FOUNDATION);
             var room = building.Map.GetRoom(cellPos, BuildingLayers.SOLID);
@@ -270,6 +280,11 @@ namespace Buildables
 
         private GridLayout FindGridOnTarget()
         {
+            if (buildingTarget == null)
+            {
+                var b = GetComponentInParent<Building>();
+                buildingTarget = b.gameObject;
+            }
             var grid = buildingTarget.GetComponent<Grid>();
             if (grid == null)
             {

@@ -14,7 +14,7 @@ namespace CoreLib.Entities.Buildings
 
         public override void OnEntityInitialized(Entity entity)
         {
-            //throw new System.NotImplementedException();
+            Building.IsFullyLoaded = true;
         }
     }
 }

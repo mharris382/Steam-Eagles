@@ -59,13 +59,35 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7212019500065755629}
   m_SourcePrefab: {fileID: 100100000, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
 --- !u!4 &1215413622584819286 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1158989908035668164, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
   m_PrefabInstance: {fileID: 57292726108698258}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1215413622584819304 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+  m_PrefabInstance: {fileID: 57292726108698258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7212019500065755629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215413622584819304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 348012994de34ea6bca2d1fe24a3cc05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gizmoColor: {r: 0, g: 1, b: 0, a: 1}
+  amount: 10
 --- !u!1001 &1215413623118639638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125,13 +147,35 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5383666639793203735}
   m_SourcePrefab: {fileID: 100100000, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
 --- !u!4 &57292726639704786 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1158989908035668164, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
   m_PrefabInstance: {fileID: 1215413623118639638}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &57292726639704812 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+  m_PrefabInstance: {fileID: 1215413623118639638}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5383666639793203735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57292726639704812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 348012994de34ea6bca2d1fe24a3cc05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gizmoColor: {r: 0, g: 1, b: 0, a: 1}
+  amount: 10
 --- !u!1001 &1215413623975594993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147,6 +191,14 @@ PrefabInstance:
     - target: {fileID: 1564507143092256200, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       propertyPath: machineAddress
       value: Hypergas_Generator
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564507143092256200, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
+      propertyPath: machineCells.Array.data[1].cellType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564507143092256200, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
+      propertyPath: machineCells.Array.data[2].cellType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1564507143092256201, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       propertyPath: m_RootOrder

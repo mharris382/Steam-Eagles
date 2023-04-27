@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using PhysicsFun.Buildings;
 using SaveLoad;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Tilemaps;
@@ -54,6 +55,8 @@ namespace Buildings
 
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
+        
+        internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
         #endregion
         
@@ -71,8 +74,8 @@ namespace Buildings
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
 
-        
-        
+        public IObservable<BuildingTilemapChangedInfo> TilemapChanged => tilemapChangedSubject;
+
         public FoundationTilemap FoundationTilemap => _foundationTilemap ? _foundationTilemap : _foundationTilemap = GetComponentInChildren<FoundationTilemap>();
         public SolidTilemap SolidTilemap => _solidTilemap ? _solidTilemap : _solidTilemap = GetComponentInChildren<SolidTilemap>();
         public PipeTilemap PipeTilemap => _pipeTilemap ? _pipeTilemap : _pipeTilemap = GetComponentInChildren<PipeTilemap>();
@@ -276,7 +279,6 @@ namespace Buildings
         Rooms.Rooms _rooms;
         public Rooms.Rooms Rooms => _rooms ? _rooms : _rooms = GetComponentInChildren<Rooms.Rooms>();
     }
-
 
     public class BuildingTiles
     {

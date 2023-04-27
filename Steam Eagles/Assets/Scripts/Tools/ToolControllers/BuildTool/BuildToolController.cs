@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Buildables;
 using Buildings;
 using Buildings.Messages;
 using Buildings.Rooms;
@@ -68,6 +69,11 @@ namespace Tools.BuildTool
 
         public override bool IsPlacementInvalid(ref string errorMessage)
         {
+            if (this.targetBuilding.IsCellOverlappingMachine(AimHandler.HoveredPosition.Value))
+            {
+                errorMessage = "Cannot build on top of a machine";
+                return true;
+            }
             if (!_isValid)
             {
                 errorMessage = _errorMessage;
@@ -154,21 +160,27 @@ namespace Tools.BuildTool
 
             if (ToolState.Inputs.UsePressed && !_isStillBuilding)
             {
-                if (PathBuilder.HasFirstPoint && PathBuilder.HasValidPath)
+                if (_isValid)
                 {
-                    var buildAction = PathBuilder.GetBuildPathAction(out var buildSubject);
-                    var buildTile = _editableTile.Value;
-                    _currentBuildAction = buildSubject.Subscribe(
-                        cell => building.Map.SetTile(cell, buildTile.GetLayer(), buildTile as EditableTile),
-                        er => _isStillBuilding = false,
-                        () => _isStillBuilding = false);
-                    buildAction.StartAction();
-                    _isStillBuilding = true;
+                    var tile = _tile;
+                    var cell = AimHandler.HoveredPosition.Value;
+                    building.Map.SetTile(cell, tile);
                 }
-                else
-                {
-                    PathBuilder.SetFirstPoint(AimHandler.HoveredPosition.Value);
-                }
+                //if (PathBuilder.HasFirstPoint && PathBuilder.HasValidPath)
+                //{
+                //    var buildAction = PathBuilder.GetBuildPathAction(out var buildSubject);
+                //    var buildTile = _editableTile.Value;
+                //    _currentBuildAction = buildSubject.Subscribe(
+                //        cell => building.Map.SetTile(cell, buildTile.GetLayer(), buildTile as EditableTile),
+                //        er => _isStillBuilding = false,
+                //        () => _isStillBuilding = false);
+                //    buildAction.StartAction();
+                //    _isStillBuilding = true;
+                //}
+                //else
+                //{
+                //    PathBuilder.SetFirstPoint(AimHandler.HoveredPosition.Value);
+                //}
             }
         }
 

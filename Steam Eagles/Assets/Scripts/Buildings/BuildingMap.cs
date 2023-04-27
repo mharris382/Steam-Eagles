@@ -11,6 +11,8 @@ namespace Buildings
 {
     public class BuildingMap : IBuildingRoomLookup
     {
+        private readonly Building _building;
+
         private class CellToRoomLookup
         {
             public readonly Vector2 cellSize;
@@ -59,6 +61,7 @@ namespace Buildings
 
         public BuildingMap(Building building, Room[] rooms)
         {
+            _building = building;
             _cellToRoomMaps = new Dictionary<Vector2, CellToRoomLookup>();
             _layerToCellSize = new Dictionary<BuildingLayers, Vector2>();
             _layerToTilemap = new Dictionary<BuildingLayers, Tilemap>();
@@ -113,7 +116,7 @@ namespace Buildings
 
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
         public Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
-        public Vector3 CellToLocal(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
+        public Vector3 CellToLocal(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToLocal(cell);
         public IEnumerable<Vector3Int> ConvertBetweenLayers(BuildingLayers fromLayer, BuildingLayers toLayer,
             Vector3Int fromCell)
         {
@@ -187,10 +190,11 @@ namespace Buildings
             return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
 
-        public void SetTile(Vector3Int cell, BuildingLayers getLayer, EditableTile tile)
+        public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile)
         {
-            var tm = GetTilemap(getLayer);
+            var tm = GetTilemap(layer);
             tm.SetTile(cell, tile);
+            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell, layer));
         }
 
         public void SetTile(Vector3Int cell, EditableTile tile)
@@ -201,8 +205,10 @@ namespace Buildings
             }
             var layer = tile.GetLayer();
             SetTile(cell, layer, tile);
+            
         }
 
+        public IEnumerable<Vector3Int> GetAllNonEmptyCells(BuildingLayers layer) => GetAllCells(layer).Where(t => GetTile(t, layer) != null);
 
         public IEnumerable<Vector3Int> GetAllCells(BuildingLayers layers) => _cellToRoomMaps[_layerToCellSize[layers]].GetAllCells().Select(t => t.cell);
     }
