@@ -34,19 +34,6 @@ namespace Power.Steam
         {
             if (_visitedNodes.Contains(node)) return;
             _visitedNodes.Add(node);
-            
-            if (node.AvailableSpace > 0)
-            {
-                if (node.AvailableSpace > remainingAmount)
-                {
-                    node.Pressure += remainingAmount;
-                    remainingAmount = 0;
-                    return;
-                }
-                node.Pressure = node.Capacity;
-                remainingAmount -= node.AvailableSpace;
-            }
-            
             var graph = Network.Network;
             
             if (graph.TryGetOutEdges(node, out var edges))

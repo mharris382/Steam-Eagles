@@ -73,6 +73,17 @@ namespace Power.Steam
             public SupplierNode AddSupplierAt(Vector3Int cell)
             {
                 var supplier = new SupplierNode(cell);
+                if (_supplierNodes.ContainsKey(cell))
+                {
+                    if (_supplierNodes[cell] == null)
+                    {
+                        _supplierNodes.Remove(cell);
+                    }
+                    else
+                    {
+                        return _supplierNodes[cell];
+                    }
+                }
                 _supplierNodes.Add(cell, supplier);
                 BuildNetworkFrom(supplier);
                 return supplier;
@@ -137,6 +148,17 @@ namespace Power.Steam
             public ConsumerNode AddConsumerAt(Vector3Int cell)
             {
                 var consumer = new ConsumerNode(cell);
+                if (_steamConsumers.ContainsKey(cell))
+                {
+                    if (_steamConsumers[cell] == null)
+                    {
+                        _steamConsumers.Remove(cell);
+                    }
+                    else
+                    {
+                        return _steamConsumers[cell];
+                    }
+                }
                 _steamConsumers.Add(cell, consumer);
                 foreach (var neighbor in consumer.GetNeighbors())
                 {

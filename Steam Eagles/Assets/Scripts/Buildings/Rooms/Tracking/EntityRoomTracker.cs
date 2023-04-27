@@ -79,6 +79,11 @@ namespace Buildings.Rooms.Tracking
 
         private void CheckForDynamicEntityChangedRooms(Entity trackedEntity)
         {
+            if (!_entityRoomMap.ContainsKey(trackedEntity))
+            {
+                
+                return;
+            }
             var lastSeenRoom = _entityRoomMap[trackedEntity];
             var currentPositionWs = trackedEntity.LinkedGameObject.transform.position;
             var currentPositionRs = Building.transform.InverseTransformPoint(currentPositionWs);

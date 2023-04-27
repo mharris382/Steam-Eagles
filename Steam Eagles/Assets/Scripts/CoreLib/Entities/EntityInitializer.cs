@@ -25,26 +25,61 @@ namespace CoreLib.Entities
         /// </summary>
         /// <param name="entity"></param>
         public abstract void OnEntityInitialized(Entity entity);
-        
-        private IEnumerator Start()
+
+        private void Awake()
         {
             isDoneInitializing = false;
-            while(EntityManager.Instance == null)
-                yield return null;
-            
-            var entityGUID = GetEntityGUID();
-            var entityType = GetEntityType();
-            
+        }
+
+        private void OnEnable()
+        {
+            if (!isDoneInitializing)
+            {
+                Initialize();
+            }
+        }
+
+        public void Initialize()
+        {
+            Debug.Log($"Initializing Entity {GetEntityGUID()} ({GetEntityType()})",this);
+            EntityManager.Instance.StartCoroutine(WaitForEntityToLoad(GetEntityGUID(), GetEntityType()));
+        }
+
+        // private IEnumerator Start()
+        // {
+        //     isDoneInitializing = false;
+        //     while(EntityManager.Instance == null)
+        //         yield return null;
+        //     
+        //     var entityGUID = GetEntityGUID();
+        //     var entityType = GetEntityType();
+        //     
+        //     //yield return UniTask.ToCoroutine(async () =>
+        //     //{
+        //     //    if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})");
+        //     //    var result = await EntityManager.Instance.GetEntityAsync(this);
+        //     //    if (EntityManager.Instance.debug) Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
+        //     //    _entity.Value = result;
+        //     //    OnEntityInitialized(result);
+        //     //    isDoneInitializing = true;
+        //     //});
+        //    
+        //     //OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
+        // }
+        //
+
+        IEnumerator WaitForEntityToLoad(string entityGUID, EntityType entityType)
+        {
+            if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})",this);
             yield return UniTask.ToCoroutine(async () =>
             {
-                if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})");
                 var result = await EntityManager.Instance.GetEntityAsync(this);
-                if (EntityManager.Instance.debug) Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
+                if (EntityManager.Instance.debug)
+                    Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
                 _entity.Value = result;
                 OnEntityInitialized(result);
                 isDoneInitializing = true;
             });
-            //OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
         }
         
         private void OnDestroy()

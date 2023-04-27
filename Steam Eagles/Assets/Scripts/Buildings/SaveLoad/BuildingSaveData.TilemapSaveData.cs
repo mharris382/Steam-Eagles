@@ -134,10 +134,12 @@ namespace Buildings.SaveLoad
             public class TilemapLayerSaveData
             {
                 [SerializeField] private List<Chunk> chunks;
-                
+                [SerializeField] private string layerName;
                 public TilemapLayerSaveData(Building building, BuildingLayers layers)
                 {
-                   chunks = building.Map.GetAllBoundsForLayer(layers, room => room.buildLevel == BuildLevel.FULL).Select(t => new Chunk(building, layers, t)).ToList();
+                    layerName = layers.ToString();
+                   chunks = building.Map.GetAllBoundsForLayer(layers, room => room.buildLevel == BuildLevel.FULL)
+                       .Select(t => new Chunk(building, layers, t.Item1, t.Item2.name)).ToList();
                 }
 
                 public void Load(Building building)
@@ -149,14 +151,17 @@ namespace Buildings.SaveLoad
                 }
                 [Serializable] public class Chunk
                 {
-                    
+                    [SerializeField] private string roomName;
+                    [SerializeField] private string layerName;
                     [SerializeField] private  BuildingLayers layer;
                     [SerializeField] private BoundsInt bounds;
                     [SerializeField] private List<TileBase> tiles;
                     [SerializeField] private int[] tileIds; 
-                    public Chunk(Building building, BuildingLayers layer, BoundsInt bounds)
+                    public Chunk(Building building, BuildingLayers layer, BoundsInt bounds, string roomName)
                     {
                         this.layer = layer;
+                        this.layerName = this.layer.ToString();
+                        this.roomName = roomName;
                         this.bounds = bounds;
                         tiles = new List<TileBase>();
                         tileIds = new int[bounds.size.x * bounds.size.y];
