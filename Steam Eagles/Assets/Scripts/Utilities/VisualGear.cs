@@ -15,6 +15,7 @@ namespace Utilities
         {
             transform.rotation = Quaternion.Euler(0, 0, transform.eulerAngles.z + deltaRotation);
             deltaRotation *= -1;
+            if (childGears == null) return;
             foreach (var child in childGears)
             {
                 if (child == null) continue;

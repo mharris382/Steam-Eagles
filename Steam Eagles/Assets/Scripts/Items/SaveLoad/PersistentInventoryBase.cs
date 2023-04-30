@@ -56,7 +56,8 @@ namespace Items.SaveLoad
 
         private void OnDestroy()
         {
-            PersistentInventoryManager.Instance.UnregisterPersistentInventory(this);
+            if(PersistentInventoryManager.SafeInstance)
+                PersistentInventoryManager.Instance.UnregisterPersistentInventory(this);
         }
 
         public abstract void InitSlots();

@@ -103,10 +103,13 @@ namespace Characters
                 var value = cameras.GetAny();
                 if (!value)
                 {
+                    Debug.LogError("Failed to find an active camera to use for single player mode");
+                }
+                else
+                {
                     sharedCamera.Value = value;
                     return sharedCamera;
                 }
-                Debug.LogError("Failed to find an active camera to use for single player mode");
             }
             sharedCamera.Value = cameras.GetCamera(playerNumber);
             return sharedCamera;

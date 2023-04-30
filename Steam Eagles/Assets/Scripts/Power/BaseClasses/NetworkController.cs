@@ -30,45 +30,71 @@ namespace Power.Steam
     {
         
         
-        public INetwork<TVertex, TEdge> Network { get; private set; }
+        public INetwork<TVertex, TEdge> SteamNetwork { get; private set; }
+        private Subject<Unit> onNetworkUpdated = new Subject<Unit>();
+        private Coroutine _networkUpdateCoroutine;
+        
+        
+        public IObservable<Unit> OnNetworkUpdated => onNetworkUpdated;
+
         public void AssignNetwork(INetwork<TVertex, TEdge> network)
         {
-            Network = network;
-            StartCoroutine(DoNetworkUpdates());
+            SteamNetwork = network;
+            OnNetworkInitialized();
+            if(_networkUpdateCoroutine != null)
+                StopCoroutine(_networkUpdateCoroutine);
+            _networkUpdateCoroutine = StartCoroutine(DoNetworkUpdates());
         }
 
-        private Subject<Unit> onNetworkUpdated = new Subject<Unit>();
-        public IObservable<Unit> OnNetworkUpdated => onNetworkUpdated;
-        IEnumerator DoNetworkUpdates()
+        private IEnumerator DoNetworkUpdates()
         {
             while (true)
             {
-                yield return new WaitForSeconds(GetUpdateInterval());
-                foreach (var node in Network.GetConsumerNodes())
+                float timeLoopStarted = Time.time;
+                var targetTime = timeLoopStarted + GetUpdateInterval();
+                
+                foreach (var graphVertex in SteamNetwork.Graph.Vertices)
                 {
-                    var consumer = node as INetworkConsumer;
-                    consumer.UpdateNetwork();
+                    if(graphVertex is INetworkUpdatable updatable)
+                        updatable.UpdateNetwork();
                 }
-                foreach (var supplierNode in Network.GetSupplierNodes())
-                {
-                    var supplier = supplierNode as INetworkSupplier;
-                    supplier.UpdateNetwork();
-                }
-                UpdateNetwork();
-                onNetworkUpdated.OnNext(Unit.Default);
+
+                yield return UpdateNetwork();
+                NetworkUpdated();
+                
+                yield return new WaitForSeconds(Mathf.Max(0, targetTime - Time.time));
             }
+        }
+
+        protected virtual void OnNetworkInitialized() { }
+
+        protected virtual void NetworkUpdated()
+        {
+            onNetworkUpdated.OnNext(Unit.Default);
+            SteamNetwork.NetworkUpdated();
         }
 
         public abstract float GetUpdateInterval();
         
-        public abstract void UpdateNetwork();
+        public abstract IEnumerator UpdateNetwork();
     }
 
     public interface INetwork<TVertex, TEdge> where TVertex : NetworkNode where TEdge : IEdge<TVertex>
     {
-        public AdjacencyGraph<TVertex, TEdge> Network { get; }
+        public AdjacencyGraph<TVertex, TEdge> Graph { get; }
         public IEnumerable<TVertex> GetSupplierNodes();
         public IEnumerable<TVertex> GetConsumerNodes();
+
+        void NetworkUpdated();
     }
-    
+    public interface INetwork<TVertex, TEdge, out TConsumer, out TSupplier>
+        where TVertex : NetworkNode 
+        where TEdge : IEdge<TVertex>
+        where TConsumer : NetworkNode, INetworkConsumer
+        where TSupplier : NetworkNode, INetworkSupplier
+    {
+        public AdjacencyGraph<TVertex, TEdge> Graph { get; }
+        public IEnumerable<TSupplier> GetSupplierNodes();
+        public IEnumerable<TConsumer> GetConsumerNodes();
+    }
 }

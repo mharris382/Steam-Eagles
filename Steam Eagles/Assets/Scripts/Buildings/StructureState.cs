@@ -39,7 +39,8 @@ namespace Buildings
             }
             else
             {
-                StructureManager.Instance.NotifyPlayerExitedStructure(playerNumber, this);
+                if(Application.isPlaying)
+                    StructureManager.Instance.NotifyPlayerExitedStructure(playerNumber, this);
             }
             playersInBuilding[playerNumber] = playerInBuilding;
             _playerCountChanged.OnNext(GetPlayerCount());

@@ -18,11 +18,11 @@ namespace UI
             OnGameTimeChanged(TimeManager.Instance.CurrentGameTime);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            TimeManager.Instance.GameTimeIncremented -= OnGameTimeChanged;
+            if(TimeManager.SafeInstance != null)
+                TimeManager.SafeInstance.GameTimeIncremented -= OnGameTimeChanged;
         }
-
 
         void OnGameTimeChanged(GameTime gameTime)
         {

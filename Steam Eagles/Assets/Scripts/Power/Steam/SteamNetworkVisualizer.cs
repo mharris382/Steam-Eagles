@@ -48,7 +48,7 @@ namespace Power.Steam
             const int COUNT_PER_FRAME = 25;
             int cnt = 0;
             HashSet<Vector3Int> _found = new HashSet<Vector3Int>();
-            foreach (var steamNode in _controller.Network.Network.Vertices)
+            foreach (var steamNode in _controller.SteamNetwork.Graph.Vertices)
             {
                 if (cnt > COUNT_PER_FRAME)
                 {

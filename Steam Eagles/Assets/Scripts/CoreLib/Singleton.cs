@@ -25,6 +25,8 @@ namespace CoreLib
                 return _instance;
             }
         }
+
+        public static T SafeInstance => _instance;
         
         public abstract bool DestroyOnLoad { get; }
         

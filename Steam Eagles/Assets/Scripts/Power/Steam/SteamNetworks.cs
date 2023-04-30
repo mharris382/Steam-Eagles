@@ -24,20 +24,29 @@ namespace Power.Steam
 
 
 
-        public class SteamNetwork : IDisposable, INetwork<SteamNode, SteamFlow>
+        public class SteamNetwork : IDisposable,
+            INetwork<SteamNode, SteamFlow>,
+            INetwork<SteamNode, SteamFlow, ConsumerNode, SupplierNode>
         {
             private readonly Building _building;
             private SteamNetworkController _controller;
             private readonly IDisposable _disposable;
-            private readonly Dictionary<Vector3Int, SupplierNode> _supplierNodes;
+            private readonly Dictionary<Vector3Int, SupplierNode> _steamSuppliers;
             private readonly Dictionary<Vector3Int, ConsumerNode> _steamConsumers;
             private readonly Dictionary<Vector3Int, PipeNode> _steamNodes;
 
             private readonly AdjacencyGraph<SteamNode, SteamFlow> _steamNetwork;
+            private readonly Queue<Vector3Int> _removeConsumerQueue;
+            private readonly Queue<Vector3Int> _removeSupplierQueue;
+            private readonly Queue<Vector3Int> _removePipeQueue;
 
-            public AdjacencyGraph<SteamNode, SteamFlow> Network => _steamNetwork;
+            public AdjacencyGraph<SteamNode, SteamFlow> Graph => _steamNetwork;
             
-            public IEnumerable<SteamNode> GetSupplierNodes() => _supplierNodes.Values;
+            public IEnumerable<SteamNode> GetSupplierNodes() => _steamSuppliers.Values;
+            IEnumerable<ConsumerNode> INetwork<SteamNode, SteamFlow, ConsumerNode, SupplierNode>.GetConsumerNodes() => _steamConsumers.Values;
+
+            IEnumerable<SupplierNode> INetwork<SteamNode, SteamFlow, ConsumerNode, SupplierNode>.GetSupplierNodes() => _steamSuppliers.Values;
+
             public IEnumerable<SteamNode> GetConsumerNodes() => _steamConsumers.Values;
 
             public SteamNetwork(Building building)
@@ -45,49 +54,81 @@ namespace Power.Steam
                 _building = building;
                 _controller = SteamNetworkController.CreateControllerForBuilding(building);
                 _steamNetwork = new AdjacencyGraph<SteamNode, SteamFlow>();
-                _supplierNodes = new Dictionary<Vector3Int, SupplierNode>();
+                _steamSuppliers = new Dictionary<Vector3Int, SupplierNode>();
                 _steamConsumers = new Dictionary<Vector3Int, ConsumerNode>();
-                _steamNodes = new Dictionary<Vector3Int, PipeNode>(building.Map
-                    .GetAllNonEmptyCells(BuildingLayers.PIPE).Select(t => new PipeNode(t))
-                    .Select(t => new KeyValuePair<Vector3Int, PipeNode>(t.Cell, t)));
+                _removeConsumerQueue = new Queue<Vector3Int>();
+                _removeSupplierQueue = new Queue<Vector3Int>();
+                _removePipeQueue = new Queue<Vector3Int>();
+                
+                _steamNodes = new Dictionary<Vector3Int, PipeNode>(building.Map.GetAllNonEmptyCells(BuildingLayers.PIPE)
+                    .Select(t => new KeyValuePair<Vector3Int, PipeNode>(t, new PipeNode(t))));
+                
+                
                 Debug.Log($"Found {_steamNodes.Count} pipe nodes initially in {building.name}");
 
             
                 var cd = new CompositeDisposable();
-                building.TilemapChanged.Where(t => t.layer == BuildingLayers.PIPE).Subscribe(info =>
+                
+                var pipeTilemapChanged = building.TilemapChanged.OnLayer(BuildingLayers.PIPE);
+                pipeTilemapChanged.WhereTileWasRemoved().Subscribe(OnPipeTileRemoved).AddTo(cd);
+                pipeTilemapChanged.WhereTileWasAdded().Subscribe(OnPipeTileAdded).AddTo(cd);
+                
+                _disposable = cd;
+                _controller.AssignNetwork(this);
+                
+                
+                
+                void OnPipeTileRemoved(BuildingTilemapChangedInfo info)
                 {
-                    if (info.Tile == null && _steamNodes.ContainsKey(info.Cell)) //pipe was removed
+                    if (TryGetSteamNode(info.Cell, out var node))
                     {
-                        RemovePipeNode(_steamNodes[info.Cell]);
+                        RemoveNode(node);
                     }
-                    else if (info.Tile != null && !_steamNodes.ContainsKey(info.Cell))
+                }
+                
+                void OnPipeTileAdded(BuildingTilemapChangedInfo info)
+                {
+                    if (!TryGetSteamNode(info.Cell, out var _))
                     {
                         AddPipeNodeAt(info.Cell);
                     }
-                }).AddTo(cd);
-                _disposable = cd;
-                _controller.AssignNetwork(this);
+                }
             }
 
-
-            public SupplierNode AddSupplierAt(Vector3Int cell)
+          
+            
+            public void NetworkUpdated()
             {
-                var supplier = new SupplierNode(cell);
-                if (_supplierNodes.ContainsKey(cell))
+                RemoveConsumers();
+                RemoveSuppliers();
+                RemovePipes();
+                
+                void RemoveSuppliers()
                 {
-                    if (_supplierNodes[cell] == null)
+                    while (_removeSupplierQueue.Count > 0)
                     {
-                        _supplierNodes.Remove(cell);
-                    }
-                    else
-                    {
-                        return _supplierNodes[cell];
+                        var supplier = _steamSuppliers[_removeSupplierQueue.Dequeue()];
+                        _steamSuppliers.Remove(supplier.Cell);
                     }
                 }
-                _supplierNodes.Add(cell, supplier);
-                BuildNetworkFrom(supplier);
-                return supplier;
+                void RemoveConsumers()
+                {
+                    while (_removeConsumerQueue.Count > 0)
+                    {
+                        var consumer = _steamConsumers[_removeConsumerQueue.Dequeue()];
+                        _steamConsumers.Remove(consumer.Cell);
+                    }
+                }
+                void RemovePipes()
+                {
+                    while (_removePipeQueue.Count > 0)
+                    {
+                        var pipe = _steamNodes[_removePipeQueue.Dequeue()];
+                        _steamNodes.Remove(pipe.Cell);
+                    }
+                }
             }
+
 
             private void BuildNetworkFrom(SupplierNode root)
             {
@@ -123,7 +164,6 @@ namespace Power.Steam
             }
 
 
-           
             private bool TryGetSteamNode(Vector3Int cell, out SteamNode node)
             {
                 if (_steamNodes.TryGetValue(cell, out var pipeNode))
@@ -136,13 +176,32 @@ namespace Power.Steam
                     node = consumerNode;
                     return true;
                 }
-                if (_supplierNodes.TryGetValue(cell, out var supplierNode))
+                if (_steamSuppliers.TryGetValue(cell, out var supplierNode))
                 {
                     node = supplierNode;
                     return true;
                 }
                 node = null;
                 return false;
+            }
+
+            public SupplierNode AddSupplierAt(Vector3Int cell)
+            {
+                var supplier = new SupplierNode(cell);
+                if (_steamSuppliers.ContainsKey(cell))
+                {
+                    if (_steamSuppliers[cell] == null)
+                    {
+                        _steamSuppliers.Remove(cell);
+                    }
+                    else
+                    {
+                        return _steamSuppliers[cell];
+                    }
+                }
+                _steamSuppliers.Add(cell, supplier);
+                BuildNetworkFrom(supplier);
+                return supplier;
             }
 
             public ConsumerNode AddConsumerAt(Vector3Int cell)
@@ -167,7 +226,7 @@ namespace Power.Steam
                         if (neighborNode is PipeNode)
                         {
                             var edge = new SteamFlow(neighborNode, consumer);
-                            _steamNetwork.AddEdge(edge);
+                            _steamNetwork.AddVerticesAndEdge(edge);
                         }
                     }
                 }
@@ -191,24 +250,22 @@ namespace Power.Steam
                 }
             }
 
-            
-            
             private bool IsCellPartOfNetwork(Vector3Int neighbor)
             {
                 //TODO: check if cell is a vertex in the pipe graph
                 if (TryGetSteamNode(neighbor, out var node))
                 {
-                    return Network.ContainsVertex(node);
+                    return Graph.ContainsVertex(node);
                 }
                 return false;
             }
 
-            private void RemovePipeNode(SteamNode steamNode)
+            private void RemoveNode(SteamNode steamNode)
             {
                 //TODO: CHECK IF WE NEED TO UPDATE NETWORK TOPOLOGY
-                if (Network.ContainsVertex(steamNode))
+                if (Graph.ContainsVertex(steamNode))
                 {
-                    Network.RemoveVertex(steamNode);
+                    Graph.RemoveVertex(steamNode);
                 }
             }
 
@@ -217,10 +274,39 @@ namespace Power.Steam
                 //TODO: save network state?
                 _disposable.Dispose();
             }
+
+            public void RemoveSupplierAt(Vector3Int cell)
+            {
+                if (_steamSuppliers.TryGetValue(cell, out var supplier))
+                {
+                    _removeSupplierQueue.Enqueue(cell);
+                }
+            }
+            
+            public void RemoveConsumerAt(Vector3Int cell)
+            {
+                if (_steamConsumers.TryGetValue(cell, out var consumer))
+                {
+                    _removeConsumerQueue.Enqueue(cell);
+                }
+            }
+            
+            public void RemovePipeAt(Vector3Int cell)
+            {
+                if (_steamNodes.TryGetValue(cell, out var pipeNode))
+                {
+                    _removePipeQueue.Enqueue(cell);
+                }
+            }
         }
     }
-    
-    
+
+    public static class TilemapStreamExtensions
+    {
+        public static IObservable<BuildingTilemapChangedInfo> WhereTileWasRemoved(this IObservable<BuildingTilemapChangedInfo> stream) => stream.Where(t => t.Tile == null);
+        public static IObservable<BuildingTilemapChangedInfo> WhereTileWasAdded(this IObservable<BuildingTilemapChangedInfo> stream) => stream.Where(t => t.Tile != null);
+        public static IObservable<BuildingTilemapChangedInfo> OnLayer(this IObservable<BuildingTilemapChangedInfo> stream, BuildingLayers layer) => stream.Where(t => t.layer == layer);
+    }
 
 
     

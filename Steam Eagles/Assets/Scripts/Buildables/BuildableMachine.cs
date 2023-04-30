@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Buildings;
+using CoreLib;
 using Power.Steam;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -14,12 +15,15 @@ namespace Buildables
        
         [SerializeField]
         private Vector2Int cellSize = Vector2Int.one * new Vector2Int(3, 2);
-        
+
+        #region [obsolete]
+
         [SerializeField,TableList]
-        private List<MachineCell> machineCells = new List<MachineCell>();
+        private List<DepMachineCell> machineCells = new List<DepMachineCell>();
         
-        [System.Serializable]
-        public class MachineCell
+        [Obsolete("Use MachineCell instead")]
+        [Serializable]
+        public class DepMachineCell
         {
             [SerializeField]
             [Required] public TileBase tile;
@@ -34,7 +38,7 @@ namespace Buildables
                 get => cellPosition;
                 set
                 {
-                    #if UNITY_EDITOR
+#if UNITY_EDITOR
                     var machine = Selection.activeGameObject != null ? Selection.activeGameObject.GetComponent<BuildableMachine>() : null;
                     if (machine == null)
                         return;
@@ -112,14 +116,16 @@ namespace Buildables
             }
         }
 
-
+        
+        [Obsolete("Use MachineCell subclass instead")]
         public enum MachineCellType
         {
             SteamInput,
             SteamOutput,
         }
 
-        public Vector2Int CellSize => cellSize;
+        #endregion
+
 
         public override Vector2Int MachineGridSize => cellSize;
         
@@ -139,34 +145,53 @@ namespace Buildables
 
         private void OnDrawGizmos()
         {
-            var building = GetComponentInParent<Building>();
-            if (building == null) return;
-            try
-            {
-                var position = this.CellPosition;
-            }
-            catch (Exception e)
-            {
-              return;
-            }
-            var size = this.MachineGridSize;
-            foreach (var machineCell in machineCells)
+            // var building = GetComponentInParent<Building>();
+            // if (building == null) return;
+            // try
+            // {
+            //     var position = this.CellPosition;
+            // }
+            // catch (Exception e)
+            // {
+            //   return;
+            // }
+            // var size = this.MachineGridSize;
+            /*foreach (var machineCell in machineCells)
             {
                 var cellPos = machineCell.cellPosition + CellPosition;
                 var worldPos = building.Map.CellToWorld((Vector3Int)cellPos, machineCell.targetLayer);
                 var offset = building.Map.GetCellSize(machineCell.targetLayer);
                 Gizmos.color = machineCell.gizmoColor;
                 Gizmos.DrawCube(worldPos + (Vector3)offset / 2, offset);
+            }*/
+            Vector3 offset = Vector3.one / 2f;
+            foreach (var cell in GetCells())
+            {
+                Vector3 wp = transform.position + new Vector3(cell.x, cell.y, 0);
+                wp += offset;
+                Gizmos.color = Color.black.SetAlpha(0.25f);
+                Gizmos.DrawWireCube(wp, Vector3.one);
+            }
+            foreach (var mc in GetComponentsInChildren<MachineCell>())
+            {
+                Gizmos.color = mc.GizmoColor;
+                var cp = mc.CellPosition + CellPosition;
+                var wp = transform.position + new Vector3(cp.x, cp.y) + offset;
+                Gizmos.DrawCube(wp, Vector3.one);
             }
         }
 
 
         protected override void OnMachineBuilt(Vector3Int cell, Building building)
         {
-            foreach (var machineCell in machineCells)
+            foreach (var mc in GetComponentsInChildren<MachineCell>())            
+            {
+                mc.OnMachineBuilt((Vector2Int)cell, building);
+            }
+            /*foreach (var machineCell in machineCells)
             {
                 machineCell.OnMachineBuilt(cell, building);
-            }
+            }*/
         }
     }
 }

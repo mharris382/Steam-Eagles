@@ -28,7 +28,7 @@ namespace Buildables
         [SerializeField] private Sprite previewIcon;
         [SerializeField] private FX fx;
         public bool snapsToGround = true;
-
+        public bool debug = true;
         private GridLayout _gridLayout;
         private SpriteRenderer _sr;
         private Building _building;

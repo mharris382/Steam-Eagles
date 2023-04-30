@@ -26,19 +26,4 @@ namespace Power.Steam
             yield return _cell + Vector3Int.right;
         }
     }
-
-    public interface INetworkUpdatable
-    {
-        void UpdateNetwork();
-    }
-
-    public interface INetworkSupplier : INetworkUpdatable
-    {
-        float TryGetSupply(float amount);
-    }
-    
-    public interface INetworkConsumer : INetworkUpdatable
-    {
-        float TryConsume(float amount);
-    }
 }

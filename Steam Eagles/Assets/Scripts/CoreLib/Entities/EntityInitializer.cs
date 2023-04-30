@@ -82,10 +82,13 @@ namespace CoreLib.Entities
             });
         }
         
-        private void OnDestroy()
+        private void OnDisable()
         {
-            EntityManager.Instance.SaveEntity(GetEntityGUID());
-            EntityManager.Instance.UnloadEntity(GetEntityGUID());
+            if(EntityManager.SafeInstance != null)
+            {
+                EntityManager.SafeInstance.SaveEntity(GetEntityGUID());
+                EntityManager.SafeInstance.UnloadEntity(GetEntityGUID());
+            }
             _entity.Dispose();
         }
     }

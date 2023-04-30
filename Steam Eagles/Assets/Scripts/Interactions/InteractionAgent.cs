@@ -45,9 +45,10 @@ namespace Interactions
             _isInteracting.Subscribe(isInteracting => Debug.Log($"{name} has {(isInteracting ? "started" : "finished")} interacting with {(SelectedInteractable.Value != null ? SelectedInteractable.Value.name : null)}")).AddTo(this);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            InteractionManager.Instance.UnregisterInteractionAgent(this);
+            if(InteractionManager.SafeInstance!=null)
+                InteractionManager.Instance.UnregisterInteractionAgent(this);
         }
 
         Coroutine _interactionStartCoroutine;
