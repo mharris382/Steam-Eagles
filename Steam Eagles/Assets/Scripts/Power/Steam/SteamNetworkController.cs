@@ -30,7 +30,7 @@ namespace Power.Steam
         {
             var graph = SteamNetwork.Graph;
             var concreteNetwork = (INetwork<SteamNode, SteamFlow, ConsumerNode, SupplierNode>) SteamNetwork;
-            
+            yield break;
             //TODO: improve this to also consider which parts of the graph have changed so that we only need to update certain components
             if (IsNetworkDirty())
             {
@@ -44,14 +44,14 @@ namespace Power.Steam
                 //find flows within components
                 foreach (var consumer in concreteNetwork.GetConsumerNodes())
                 {
-                    var component = components[consumer];
-                    flows[component].AddSink(consumer);
+                    // var component = components[consumer];
+                    // flows[component].AddSink(consumer);
                     _bfsTrees.Add(consumer, graph.TreeBreadthFirstSearch(consumer));
                 }
                 foreach (var supplier in concreteNetwork.GetSupplierNodes())
                 {
-                    var component = components[supplier];
-                    flows[component].AddSource(supplier);
+                    // var component = components[supplier];
+                    // flows[component].AddSource(supplier);
                     _bfsTrees.Add(supplier, graph.TreeBreadthFirstSearch(supplier));
                 }
             }

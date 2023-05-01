@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 884.2266, y: -303.5}
+  m_AnchoredPosition: {x: 884.22656, y: -303.5}
   m_SizeDelta: {x: 391.54666, y: 607}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &14769916
@@ -4210,7 +4210,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1600267924}
   m_HandleRect: {fileID: 1600267923}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -18757,7 +18757,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 12.61
+  orthographic size: 134.91
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -22417,7 +22417,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.085592665, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.30999756, y: 0.00006350503}
+  m_AnchoredPosition: {x: 0.30999756, y: -0.00022125244}
   m_SizeDelta: {x: -0.30999756, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1735775558
@@ -29164,7 +29164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847354662721, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0002416577
+      value: 0.0004462527
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847738329113, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchorMax.x
@@ -29184,7 +29184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7041872847952379971, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00076567824
+      value: -0.00013325865
       objectReference: {fileID: 0}
     - target: {fileID: 7041872848122646998, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
       propertyPath: m_Size
@@ -30228,6 +30228,8 @@ GameObject:
   - component: {fileID: 7264329576729738496}
   - component: {fileID: 7264329576729738495}
   - component: {fileID: 7264329576729738498}
+  - component: {fileID: 7264329576729738500}
+  - component: {fileID: 7264329576729738499}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -35028,7 +35030,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5225263883224164372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -198, y: 188.7, z: -104.25365}
+  m_LocalPosition: {x: -645.0138, y: 147.43379, z: -373.49237}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -35148,10 +35150,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 10000
   field of view: 60
   orthographic: 1
-  orthographic size: 12.61
+  orthographic size: 134.91
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -36700,6 +36702,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11c4ce4805174eb6bd100221d3eb59b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7264329576729738499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007201905370250530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d945671a8caf47a99a79873b4c741811, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultVCam: {fileID: 604922987}
+--- !u!114 &7264329576729738500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007201905370250530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 7264329576729738499}
+  _installerPrefabs: []
+  _autoRun: 1
+  OnPreInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPreResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  _parentNewObjectsUnderSceneContext: 0
+  _contractNames: []
+  _parentContractNames: []
 --- !u!114 &7480055367078660996
 MonoBehaviour:
   m_ObjectHideFlags: 0

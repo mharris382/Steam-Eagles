@@ -79,6 +79,7 @@ namespace CoreLib.Entities
                 _entity.Value = result;
                 OnEntityInitialized(result);
                 isDoneInitializing = true;
+                MessageBroker.Default.Publish(new EntityInitializedInfo(this));
             });
         }
         
@@ -90,6 +91,28 @@ namespace CoreLib.Entities
                 EntityManager.SafeInstance.UnloadEntity(GetEntityGUID());
             }
             _entity.Dispose();
+        }
+    }
+    
+    
+    public struct EntityInitializedInfo
+    {
+        public readonly string entityGUID;
+        public readonly Entity entity;
+        public readonly GameObject linkedGameObject;
+
+        public EntityInitializedInfo(string entityGUID, Entity entity)
+        {
+            this.entityGUID = entityGUID;
+            this.entity = entity;
+            linkedGameObject = null;
+        }
+
+        internal EntityInitializedInfo(EntityInitializer initializer)
+        {
+            entityGUID = initializer.GetEntityGUID();
+            entity = initializer.Entity;
+            linkedGameObject = initializer.gameObject;
         }
     }
 }
