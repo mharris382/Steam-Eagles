@@ -18,10 +18,13 @@ namespace Tools.BuildTool
         private ToolState _toolState;
         private Building _building;
         private ReactiveProperty<Vector3Int> _hoveredPosition = new ReactiveProperty<Vector3Int>();
-
+        private Vector2 _mousePosition;
 
         public IReadOnlyReactiveProperty<Vector3Int> HoveredPosition => _hoveredPosition;
+        public Vector2 AimDirection { get; private set; }
         
+        public float AimAngle => Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
+
         /// <summary>
         /// used for mouse input
         /// </summary>
@@ -39,6 +42,7 @@ namespace Tools.BuildTool
         }
         
         private Building Building => _building != null ? _building : (_building = _owner.GetComponentInParent<Building>());
+        private bool UseMousePosition => _toolState.Inputs.CurrentInputMode == InputMode.KeyboardMouse;
         public ToolAimHandler(MonoBehaviour owner, ToolState toolState)
         {
             _owner = owner;
@@ -46,14 +50,39 @@ namespace Tools.BuildTool
             _camera = toolState.GetComponent<CharacterState>().AssignedPlayerCamera;
         }
 
-        public bool HasResourcesForGridAim() => _toolState != null && Camera != null && Building != null;
+        public bool HasResourcesForGridAim() => HasPlayerResources() && Building != null;
 
+        public bool HasPlayerResources() => _toolState != null && Camera != null;
 
         /// <summary>
         /// must be called to update the aim position
         /// </summary>
         /// <param name="targetLayer"></param>
         public void UpdateAimPosition(BuildingLayers targetLayer)
+        {
+            HandleMousePosition();
+            HandleGridAiming(targetLayer);
+            HandleDirectionAiming();
+        }
+        
+        
+
+        private void HandleDirectionAiming()
+        {
+            if (UseMousePosition)
+            {
+                Cursor.visible = true;
+                var aimOrigin = (Vector2)_toolState.transform.position + _toolState.aimOriginOffset;
+                var aim = (_mousePosition - aimOrigin);
+                if (aim.sqrMagnitude > 0) AimDirection = aim.normalized;
+            }
+            else
+            {
+                AimDirection = _toolState.Inputs.AimInputRaw;
+            }
+        }
+
+        private void HandleGridAiming(BuildingLayers targetLayer)
         {
             if (!HasResourcesForGridAim())
             {
@@ -71,11 +100,11 @@ namespace Tools.BuildTool
             }
         }
 
-        private void UpdateAimForMousePosition(BuildingLayers targetLayer)
+        private void UpdateAimForMousePosition(BuildingLayers targetLayer) => _hoveredPosition.Value = Building.Map.WorldToCell(_mousePosition, targetLayer);
+
+        private void HandleMousePosition()
         {
-            var wp = Camera.ScreenToWorldPoint(Input.mousePosition);
-            wp.z = 0;
-            _hoveredPosition.Value = Building.Map.WorldToCell(wp, targetLayer);
+            _mousePosition = Camera.ScreenToWorldPoint(Input.mousePosition);
         }
 
         private void UpdateAimForController(BuildingLayers targetLayer) => _hoveredPosition.Value = Building.Map.WorldToCell(_toolState.AimPositionWorld, targetLayer);

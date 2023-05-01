@@ -15,7 +15,8 @@ namespace Characters
     public class ToolState : MonoBehaviour
     {
         public float maxToolRange = 5f;
-
+        public Vector2 aimOriginOffset = new Vector2(0, 1);
+        
         public ToolStateReactiveProperty toolState = new();
         private ToolInputs _inputs = new();
         private ReactiveProperty<ITool> _equippedTool = new();

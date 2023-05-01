@@ -73,11 +73,6 @@ namespace Characters
             var input = _characterState.MoveY;
             if (input == 0)
             {
-                _climbHandle.ClimbingJoint.motor = new JointMotor2D()
-                {
-                    motorSpeed = 0,
-                    maxMotorTorque = _config.maxMotorForce
-                };
                 return;
             }
             bool climbUp = input > 0;
@@ -88,14 +83,7 @@ namespace Characters
             }
             
             float speed = input * maxSpeed * (climbUp ? 1 : -1);
-           
-            _climbHandle.ClimbingJoint.useMotor = true;
-            _climbHandle.ClimbingJoint.angle = 90;
-            _climbHandle.ClimbingJoint.motor = new JointMotor2D()
-            {
-                motorSpeed = speed,
-                maxMotorTorque = _config.maxMotorForce
-            };
+           _climbHandle.MoveClimber(speed * deltaTime);
         }
     }
 }

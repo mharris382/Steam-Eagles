@@ -18,10 +18,10 @@ namespace Tools.DestructTool
         [Min(0)] [SerializeField, HideInInspector] private float minDistance = 0.5f;
         [Min(0)] [SerializeField, HideInInspector] private float maxDistance = 3f;
 
-        [FoldoutGroup("Aiming Settings"),SerializeField] private Vector2 originOffset = new Vector2(0, 1);
-        [FormerlySerializedAs("aimSpeed")] [FoldoutGroup("Aiming Settings"),SerializeField] private float maxAngleDelta = 3f;
-        [FoldoutGroup("Aiming Settings"),SerializeField] private float aimSmoothing = 0.1f;
-        [FoldoutGroup("Aiming Settings"), Range(-1, 1)] [SerializeField] private float aimSnapThreshold = 0.1f;
+      //  [FoldoutGroup("Aiming Settings"),SerializeField] private Vector2 originOffset = new Vector2(0, 1);
+      //  [FormerlySerializedAs("aimSpeed")] [FoldoutGroup("Aiming Settings"),SerializeField] private float maxAngleDelta = 3f;
+      //  [FoldoutGroup("Aiming Settings"),SerializeField] private float aimSmoothing = 0.1f;
+      //  [FoldoutGroup("Aiming Settings"), Range(-1, 1)] [SerializeField] private float aimSnapThreshold = 0.1f;
         
         [SerializeField] private DestructionConfig config;
         [SerializeField] private DestructionToolFeedbacks feedbacks;
@@ -53,10 +53,7 @@ namespace Tools.DestructTool
             }
         }
 
-        public Vector2 AimDirection => _direction;
-        public Vector2 AimOriginLocal => (Vector2)transform.localPosition + originOffset;
-        public Vector2 CastStart => (Vector2)transform.position + (AimOriginLocal + AimDirection * minDistance);
-        public Vector2 CastEnd => AimOriginLocal + AimDirection * maxDistance;
+        public Vector2 AimDirection => AimHandler.AimDirection;
 
         public float CastDistance => maxDistance - minDistance;
 
@@ -77,8 +74,7 @@ namespace Tools.DestructTool
         protected override void OnStart()
         {
             aimPoint.parent = transform;
-            _direction = Vector2.right;
-            _actualAimPositionLs = (Vector2)transform.localPosition + originOffset;
+            
         }
 
         public override BuildingLayers GetTargetLayer() => BuildingLayers.SOLID;
@@ -118,17 +114,7 @@ namespace Tools.DestructTool
 
         private void UpdateAim(float dt)
         {
-            var aimInput = CharacterState.Tool.Inputs.AimInputRaw;
-            if (aimInput.sqrMagnitude < 0.1f)
-                return;
-
-            var direction = aimInput.normalized;
-            var difference = Vector2.SignedAngle(_direction, direction);
-            var sign = Mathf.Sign(difference);
-            var angle = Mathf.Abs(difference);
-            var angleDelta = Mathf.Min(angle, maxAngleDelta) * sign;
-            _direction = Quaternion.Euler(0, 0, angleDelta) * _direction;
-            aimPoint.localPosition = originOffset + (_direction * minDistance);
+            AimHandler.UpdateAimPosition(BuildingLayers.SOLID);
         }
 
 
@@ -136,11 +122,12 @@ namespace Tools.DestructTool
         {
             using (new Physics2DQueryScope(hitTriggers: true, startInColliders: true))
             {
+                var castStart = ToolState.aimOriginOffset + (Vector2)ToolState.transform.position;
                 //int hits = Physics2D.OverlapCircleNonAlloc(position, config.radius, _cache, config.destructibleLayers);
-                int hits = Physics2D.CircleCastNonAlloc(CastStart, config.radius, AimDirection, _cache,
+                int hits = Physics2D.CircleCastNonAlloc(castStart, config.radius, AimDirection, _cache,
                     CastDistance, config.destructibleLayers);
                 
-                Debug.DrawRay(CastStart, AimDirection.normalized * CastDistance, hits > 0 ? Color.red : Color.red.Lighten(0.5f), 0.1f);
+                Debug.DrawRay(castStart, AimDirection.normalized * CastDistance, hits > 0 ? Color.red : Color.red.Lighten(0.5f), 0.1f);
                
                 for (int i = 0; i < hits; i++)
                 {
@@ -183,16 +170,7 @@ namespace Tools.DestructTool
 
         #region [Editor Gizmos]
 
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            var position = transform.position + (Vector3)originOffset;
-            Gizmos.color = Color.red.SetAlpha(0.5f);
-            Gizmos.DrawSphere(position, minDistance);
-            Gizmos.color = Color.red.SetAlpha(0.1f);
-            Gizmos.DrawSphere(position, maxDistance);
-        }
-#endif
+
 
         #endregion
     }
