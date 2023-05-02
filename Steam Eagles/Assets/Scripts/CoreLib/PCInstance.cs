@@ -1,12 +1,15 @@
 ﻿using System;
+using UniRx;
 using UnityEngine;
 
 namespace CoreLib
 {
     public class PCInstance : IDisposable
     {
+        public CompositeDisposable Disposable { get; private set; }
         public PCInstance(GameObject character, GameObject camera, GameObject input)
         {
+            Disposable = new CompositeDisposable();
             this.character = character;
             this.camera = camera;
             this.input = input;
@@ -18,7 +21,8 @@ namespace CoreLib
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Disposable?.Dispose();
+            Disposable = null;
         }
 
         public bool IsValid() => character != null && camera != null && input != null;

@@ -14,131 +14,82 @@ namespace Buildings.Rooms.Tracking
     public class RoomCinematicsController : MonoBehaviour
     {
         private CompositeDisposable _cd;
-        private PCInstanceWrapper[] _instances;
-        private RoomCameraLookup _cameraLookup;
+        
+      [ShowInInspector,HideInEditorMode]  private RoomCameraLookup _cameraLookup;
+      [ShowInInspector,HideInEditorMode]  private PCRoomTracker _pcRoomTracker;
+      [ShowInInspector,HideInEditorMode]  private PCCamera[] _pcCameras;
 
-        private class PCInstanceWrapper
+        public class PCCamera : IDisposable
         {
-            public readonly PCInstance Instance;
-            private readonly RoomCameraLookup _roomCameraLookup;
-            public readonly int PlayerNumber;
-            public Room LastRoom { get; set; }
-            private GameObject _lastVCam;
-            
-            public PCInstanceWrapper(RoomCameraLookup roomCameraLookup, PCInstance instance, int num)
+            private readonly int _playerNumber;
+            private readonly RoomCameraLookup _cameraLookup;
+            private readonly PCRoomTracker.PC _pcRoomTracker;
+            private CompositeDisposable _cd;
+
+            public PCCamera(MonoBehaviour owner, int playerNumber,
+                RoomCameraLookup cameraLookup, PCRoomTracker.PC pcRoomTracker)
             {
-                Instance = instance;
-                _roomCameraLookup = roomCameraLookup;
-                PlayerNumber = num;
+                _cd = new CompositeDisposable();
+                _playerNumber = playerNumber;
+                _cameraLookup = cameraLookup;
+                _pcRoomTracker = pcRoomTracker;
+                owner.StartCoroutine(DelaySubscription());
             }
 
-            private GameObject GetVCam(Room room) => _roomCameraLookup.GetPlayerVCam(room, PlayerNumber);
-
-            public void EnableDefaultCamera() => SetupVCam(_roomCameraLookup.GetDefaultCamera(PlayerNumber));
-
-            public void DisableCamerasFor(Room room) => CleanupLastVCam();
-
-            public void EnableCamerasForRoom(Room newRoom) => SetupVCam(_roomCameraLookup.GetPlayerVCam(newRoom, PlayerNumber));
-
-            private void SetupVCam(GameObject vCam)
+            private IEnumerator DelaySubscription()
             {
-                CleanupLastVCam();
-                vCam.SetActive(true);
-                _lastVCam = vCam;
-            }
-
-            private void CleanupLastVCam()
-            {
-                if (_lastVCam != null)
+                while(_cameraLookup.inited == false)
                 {
-                    _lastVCam.SetActive(false);
-                    _lastVCam = null;
+                    Debug.Log($"P{_playerNumber} Camera Controller, Waiting on Camera Lookup");
+                    yield return null;
                 }
+                _pcRoomTracker.OnRoomChanged.StartWith((null, _pcRoomTracker.PCRoom.Value)).Subscribe(t => OnPcRoomChanged(t.prevRoom, t.newRoom)).AddTo(_cd);
+            }
+
+            public void OnPcRoomChanged(Room prevRoom, Room newRoom)
+            {
+                SetRoomCameraEnabled(prevRoom, false);
+                SetRoomCameraEnabled(newRoom, true);
+            }
+
+            public void SetRoomCameraEnabled(Room room, bool enabled)
+            {
+                var camera = _cameraLookup.GetPlayerVCam(room, _playerNumber);
+                camera.SetActive(enabled);
+            }
+
+            public void Dispose()
+            {
+                _cd?.Dispose();
             }
         }
         
         [Inject]
-        public void Install(RoomCameraLookup cameraLookup)
+        public void Install(RoomCameraLookup cameraLookup, PCRoomTracker pcRoomTracker)
         {
             _cameraLookup = cameraLookup;
+            _pcRoomTracker = pcRoomTracker;
+            Debug.Log("Installing RoomCinematicsController", this);
+            SetupCameraTracker();
         }
-        
-        
-        private void OnEnable()
+        private void SetupCameraTracker()
         {
-            MessageBroker.Default.Receive<PCInstanceChangedInfo>().Subscribe(t => SetPCInstance(t.pcInstance, t.playerNumber)).AddTo(_cd);
-            MessageBroker.Default.Receive<EntityChangedRoomMessage>().Select(t => (t, GetPc(t.Entity)))
-                .Where(t => t.Item2 != null).Subscribe(t => OnPcChangedRooms(t.t.Room, t.Item2));
-        }
-
-        private void OnPcChangedRooms(Room tRoom, PCInstanceWrapper pcInstance)
-        {
-            var prevRoom = pcInstance.LastRoom;
-            if (prevRoom != null) CleanupRoomCinematics(prevRoom, pcInstance);
-            var newRoom = tRoom;
-            if (newRoom != null) SetupRoomCinematics(newRoom, pcInstance);
-            else SetupDefaultCinematics(pcInstance);
-            pcInstance.LastRoom = newRoom;
-        }
-
-        private void SetupDefaultCinematics(PCInstanceWrapper pcInstance) => pcInstance.EnableDefaultCamera();
-
-        private static void SetupRoomCinematics(Room newRoom, PCInstanceWrapper pcInstance) => pcInstance.EnableCamerasForRoom(newRoom);
-
-        private void CleanupRoomCinematics(Room prevRoom, PCInstanceWrapper pcInstance) => pcInstance.DisableCamerasFor(prevRoom);
-
-        private PCInstanceWrapper GetPc(Entity entity)
-        {
-            if (entity == null)
-                return null;
-            if (entity.LinkedGameObject != null)
-                return null;
-            foreach (var pc in GetPcsWrappers())  
+            _pcRoomTracker.onPCInstanceChanged.Subscribe(pc =>
             {
-                if(entity.LinkedGameObject == pc.Instance.character)
-                    return pc;
-            }
-            return null;
+                if(_pcCameras[pc.PlayerNumber] != null) _pcCameras[pc.PlayerNumber].Dispose();
+                _pcCameras[pc.PlayerNumber] = new PCCamera(this, pc.PlayerNumber, _cameraLookup, pc);
+            }).AddTo(this);
         }
-
-        private void SetPCInstance(PCInstance instance, int num)
-        {
-            if (HasResources())
-            {
-                _instances[num] = new PCInstanceWrapper(_cameraLookup, instance, num);
-            }
-            else
-            {
-                StartCoroutine(WaitForResources(instance, num));
-            }
-        }
-
-        private IEnumerator WaitForResources(PCInstance instance, int num)
-        {
-            while (!HasResources())
-            {
-                yield return null;
-            }
-            SetPCInstance(instance, num);
-        }
-
-        private void OnDisable() => _cd?.Dispose();
 
         private void Awake()
         {
-            _instances = new PCInstanceWrapper[2] { null, null };
             _cd = new CompositeDisposable();
+            _pcCameras = new PCCamera[2];
         }
+      
+        
+        private void OnDisable() => _cd?.Dispose();
 
-
-        private IEnumerable<PCInstanceWrapper> GetPcsWrappers()
-        {
-            foreach (var pcInstance in _instances)
-            {
-                if (pcInstance != null)
-                    yield return pcInstance;
-            }
-        }
         public bool HasResources() => _cameraLookup != null;
         
         

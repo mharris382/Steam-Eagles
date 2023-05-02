@@ -24,9 +24,22 @@ namespace Buildings.Rooms.Tracking
             _building = GetComponent<Building>();
             
             MessageBroker.Default.Receive<Entity>()
-                .Where(t => t != null && !_trackedEntities.Contains(t))
+                .Where(t => t != null && !_trackedEntities.Contains(t) && t.entityType != EntityType.STRUCTURE || t.entityType != EntityType.BUILDING)
                 .Subscribe(_trackedEntities.Add)
                 .AddTo(this);
+
+            void TrackEntity(Entity e)
+            {
+                if (_trackedEntities.Contains(e) == false)
+                {
+                    Debug.Log($"Now Tracking Entity {e.name.Bolded()} in building {Building.name.Bolded()}");
+                    _trackedEntities.Add(e);
+                }
+            }
+            MessageBroker.Default.Receive<EntityInitializedInfo>()
+                .Where(t => t.entity.entityType == EntityType.CHARACTER || t.entity.entityType == EntityType.ENEMY ||
+                            t.entity.entityType == EntityType.NPC)
+                .Subscribe(t => TrackEntity(t.entity)).AddTo(this);
 
             foreach (var entity in EntityManager.Instance.GetAllEntities())
             {
@@ -62,6 +75,7 @@ namespace Buildings.Rooms.Tracking
                         Debug.LogWarning($"Couldn't Find Entity {trackedEntity.name.Bolded()} in building {Building.name.Bolded()}");
                         continue;
                     }
+                    UpdateEntityRoom(trackedEntity, room);
                 }
 
                 if (trackedEntity.LinkedGameObject == null)

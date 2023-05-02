@@ -13,6 +13,7 @@ namespace Buildings.Rooms.Tracking
         {
             Container.Bind<GameObject>().FromInstance(defaultVCam).AsSingle().WhenInjectedInto<RoomCameraLookup>().NonLazy();
             Container.Bind<RoomCameraLookup>().FromNew().AsSingle().NonLazy();
+            Container.Bind<PCRoomTracker>().FromNew().AsSingle().NonLazy();
         }
     }
 }

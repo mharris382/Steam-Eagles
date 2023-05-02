@@ -8,29 +8,45 @@ namespace Buildings.Rooms.Tracking
     {
         public const string V_CAM_INJECT_ID = "Default VCam";
         private readonly Dictionary<Room, RoomCamera> _lookup;
+        private GameObject prefabVCam;
         private readonly GameObject[] _defaultCameras;
-        
-        public GameObject GetPlayerVCam(Room room, int playerNumber) => GetRoomCamera(room).GetPlayerVCam(playerNumber);
+        public bool inited { get; private set; }
+        public GameObject GetPlayerVCam(Room room, int playerNumber) => room != null ? GetRoomCamera(room).GetPlayerVCam(playerNumber) : GetDefaultCamera(playerNumber);
 
 
-        public RoomCameraLookup([Inject(Id = V_CAM_INJECT_ID)] GameObject defaultVCamera)
+        [Inject]
+        public void InjectDefaultCamera(GameObject defaultVCamera)
         {
-            _defaultCameras = new GameObject[2];
+            this.prefabVCam  = defaultVCamera;
+            inited = true;
             for (int i = 0; i < _defaultCameras.Length; i++)
             {
                 _defaultCameras[i] = CreateVCamForPlayerFromTemplate(defaultVCamera, i);
             }
         }
+        
+        public RoomCameraLookup()
+        {
+            Debug.Log("Creating RoomCameraLookup");
+            _defaultCameras = new GameObject[2];
+            _lookup = new Dictionary<Room, RoomCamera>();
+        }
+
         private RoomCamera GetRoomCamera(Room room)
         {
-            if (_lookup.TryGetValue(room, out var roomCamera))
+            if (!_lookup.TryGetValue(room, out var roomCamera))
             {
                 roomCamera = new RoomCamera(room, this);
                 _lookup.Add(room, roomCamera);
             }
-            return roomCamera;
+
+            if (roomCamera == null)
+            {
+                _lookup.Remove(room);
+                _lookup.Add(room, roomCamera = new RoomCamera(room, this));
+            }
+        return roomCamera;
         }
-        public RoomCameraLookup() => _lookup = new Dictionary<Room, RoomCamera>();
 
         private class RoomCamera
         {
@@ -59,11 +75,16 @@ namespace Buildings.Rooms.Tracking
             {
                 this.room = room;
                 _playerVCams = new GameObject[2];
+                
                 _roomCameraLookup = roomCameraLookup;
             }
         }
 
-        public GameObject GetDefaultCamera(int playerNumber) => _defaultCameras[playerNumber];
+        public GameObject GetDefaultCamera(int playerNumber)
+        {
+            Debug.Assert(_defaultCameras != null && _defaultCameras.Length > playerNumber, $"Default Cameras not initialized for player {playerNumber}");
+            return _defaultCameras[playerNumber];
+        }
 
         public static GameObject CreateVCamForPlayerFromTemplate(GameObject vCamTemplate, int playerNumber)
         {
