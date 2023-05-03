@@ -1,37 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Buildings.Messages;
 using CoreLib;
 using UniRx;
-using UnityEngine;
 
 namespace Buildings.Rooms.Tracking
 {
-    public class PCRoomTracker
+    /// <summary>
+    /// tracks all PCs in the game and which room they are in
+    /// </summary>
+    public class PCTracker : IDisposable
     {
         private readonly PC[] _instances;
         private IDisposable _disposable;
+        private Subject<(int playerNumber, PC pc)> onPCChanged = new();
         
-        private PC GetWrapper(int player) => _instances[player];
-        public readonly Subject<PC> onPCInstanceChanged = new();
-        public PCRoomTracker()
+        public PCTracker()
         {
-            _instances = new PC[2] { null, null };
             var cd = new CompositeDisposable();
-            Debug.Log("Created PC Room Tracker");
+
+            _instances = new PC[2] { null, null };
             MessageBroker.Default.Receive<PCInstanceChangedInfo>().Subscribe(info => SetPCInstance(info.pcInstance, info.playerNumber)).AddTo(cd);
+
             _disposable = cd;
         }
+
         private void SetPCInstance(PCInstance infoPCInstance, int infoPlayerNumber)
         {
             if(_instances[infoPlayerNumber] != null)
                 _instances[infoPlayerNumber].Dispose();
             _instances[infoPlayerNumber] = new PC(infoPCInstance, infoPlayerNumber);
-            onPCInstanceChanged.OnNext(_instances[infoPlayerNumber]);
+            onPCChanged.OnNext((infoPlayerNumber, _instances[infoPlayerNumber]));
         }
 
-        public void Dispose() => _disposable?.Dispose();
-
+        public IObservable<PC> GetPC(int playerNumber)
+        {
+            var stream = onPCChanged.Where(t => t.Item1 == playerNumber).Select(t => t.Item2);
+            if(_instances[playerNumber] != null)
+                return stream.StartWith(_instances[playerNumber]);
+            return stream;
+        }
+        public IObservable<PC> GetPCs()
+        {
+            return onPCChanged.Select(t => t.Item2).StartWith(from instance in _instances where instance != null select instance);
+        }
+        
         public class PC : IDisposable
         {
             public readonly PCInstance Instance;
@@ -77,6 +91,12 @@ namespace Buildings.Rooms.Tracking
                 if(pcWrapper != null)
                     yield return pcWrapper;
             }
+        }
+
+        public void Dispose()
+        {
+            _disposable?.Dispose();
+            onPCChanged?.Dispose();
         }
     }
 }
