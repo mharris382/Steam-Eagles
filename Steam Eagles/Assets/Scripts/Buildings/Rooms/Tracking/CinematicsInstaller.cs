@@ -12,8 +12,9 @@ namespace Buildings.Rooms.Tracking
         public override void InstallBindings()
         {
             Container.Bind<GameObject>().FromInstance(defaultVCam).AsSingle().WhenInjectedInto<RoomCameraLookup>().NonLazy();
-            Container.Bind<RoomCameraLookup>().FromNew().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<RoomCameraLookup>().FromNew().AsSingle().NonLazy();
             Container.Bind<PCRoomTracker>().FromNew().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PCTracker>().FromNew().AsSingle().NonLazy();
         }
     }
 }
