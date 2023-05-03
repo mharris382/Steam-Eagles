@@ -21,7 +21,7 @@ using Sirenix.OdinInspector;
     public class Room : MonoBehaviour
     {
         public GameObject roomCamera;
-
+        public bool isRoomCameraDynamic;
         
         [EnumToggleButtons]
         public AccessLevel accessLevel = AccessLevel.EVERYONE;

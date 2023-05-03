@@ -59,6 +59,14 @@ namespace Buildings.MyEditor
             }
 
             private CinemachineVirtualCamera _vCam;
+
+            [ShowInInspector]
+            public bool IsCameraDynamic
+            {
+                get => _room.isRoomCameraDynamic;
+                set => _room.isRoomCameraDynamic = value;
+            }
+            
             [ShowInInspector]
             private CinemachineVirtualCamera RoomVirtualCamera
             {

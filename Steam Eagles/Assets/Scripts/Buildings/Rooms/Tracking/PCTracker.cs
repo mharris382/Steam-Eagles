@@ -15,7 +15,7 @@ namespace Buildings.Rooms.Tracking
         private readonly PC[] _instances;
         private IDisposable _disposable;
         private Subject<(int playerNumber, PC pc)> onPCChanged = new();
-        
+        public IObservable<(int, PC)> OnPCChanged => onPCChanged;//.Select(t => (t.playerNumber, t.pc.Instance));
         public PCTracker()
         {
             var cd = new CompositeDisposable();
@@ -84,7 +84,7 @@ namespace Buildings.Rooms.Tracking
             public void Dispose() => _disposable?.Dispose();
         }
 
-        private IEnumerable<PC> AllPCs()
+        public IEnumerable<PC> AllPCs()
         {
             foreach (var pcWrapper in _instances)
             {
@@ -93,6 +93,16 @@ namespace Buildings.Rooms.Tracking
             }
         }
 
+        public IEnumerable<(int, PC)> AllPCsAndPlayerNumbers()
+        {
+            int cnt = 0;
+            foreach (var pcWrapper in _instances)
+            {
+                if(pcWrapper != null)
+                    yield return (cnt, pcWrapper);
+                cnt++;
+            }
+        }
         public void Dispose()
         {
             _disposable?.Dispose();
