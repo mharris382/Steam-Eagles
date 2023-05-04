@@ -1,2 +1,2 @@
-- [ ] [[Refactoring Player Manager|Player Character Spawning Bug]]
+- [x] [[Refactoring Player Manager|Player Character Spawning Bug]]
 - [ ] 

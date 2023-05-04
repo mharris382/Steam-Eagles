@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UniRx;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace Players.PCController.ParallaxSystems
+{
+    public class ParallaxSprites
+    {
+
+
+        private readonly List<ParallaxSprite> _sprites = new List<ParallaxSprite>();
+        /// <summary>
+        /// this dictionary stores a list of copies of each sprite for each player. each copy is only rendered for the player it belongs to,
+        /// while the original is not rendered for any player
+        /// </summary>
+        private readonly Dictionary<ParallaxSprite, ParallaxSprite>[] _playerSpriteCopies;
+        private readonly Subject<Unit> _onSpriteAdded = new Subject<Unit>();
+        private readonly Subject<Unit> _onSpriteRemoved = new Subject<Unit>();
+        private readonly int[] _layers;
+        
+        public IObservable<Unit> OnSpriteAdded => _onSpriteAdded;
+        public IObservable<Unit> OnSpriteRemoved => _onSpriteRemoved;
+        public IObservable<Unit> OnSpriteChanged => _onSpriteAdded.Merge(_onSpriteRemoved);
+
+
+        public ParallaxSprites()
+        {
+            _sprites = new List<ParallaxSprite>();
+            _playerSpriteCopies = new Dictionary<ParallaxSprite, ParallaxSprite>[2]
+            {
+                new Dictionary<ParallaxSprite, ParallaxSprite>(),
+                new Dictionary<ParallaxSprite, ParallaxSprite>()
+            };
+            _layers = new int[2]
+            {
+                LayerMask.NameToLayer("P1"),
+                LayerMask.NameToLayer("P2"),
+            };
+        }
+
+        public void AddSprite(ParallaxSprite sprite)
+        {
+            int cnt = 0;
+            foreach (var playerSpriteCopy in _playerSpriteCopies)
+            {
+                if(!playerSpriteCopy.TryGetValue(sprite, out var copy))
+                {
+                    copy = Object.Instantiate(sprite, sprite.transform.parent);
+                    playerSpriteCopy.Add(sprite, copy);
+                }
+                SetSpriteVisibleToPlayer(copy, cnt);
+                cnt++;
+            }
+            //set sprite visible to no player
+            SetSpriteVisibleToPlayer(sprite, -1);
+            _onSpriteAdded.OnNext(Unit.Default);
+        }
+
+        private void SetSpriteVisibleToPlayer(ParallaxSprite sprite, int player)
+        {
+            switch (player)
+            {
+                case 0:
+                case 1:
+                    sprite.gameObject.layer = _layers[player];
+                    break;
+                default:
+                    sprite.gameObject.layer = LayerMask.NameToLayer("TransparentFX");
+                    break;
+            }
+        }
+
+        public void RemoveSprite(ParallaxSprite sprite)
+        {
+            foreach (var playerSpriteCopy in _playerSpriteCopies)
+            {
+                if(!playerSpriteCopy.ContainsKey(sprite)) continue;
+                playerSpriteCopy[sprite].gameObject.SetActive(false);
+            }
+            _sprites.Remove(sprite);
+        }
+        public IEnumerable<ParallaxSprite> GetSpritesForPlayer(int playerNumber)
+        {
+            var lookup = _playerSpriteCopies[playerNumber];
+            foreach (var parallaxSprite in _sprites)
+            {
+                yield return lookup[parallaxSprite];
+            }
+        }
+        public IEnumerable<SpriteRenderer> GetSpriteRendererForPlayer(int playerNumber) => GetSpritesForPlayer(playerNumber).SelectMany(t => t.GetSpriteRenderers());
+        
+        
+        public Dictionary<ParallaxSprite, ParallaxSprite> GetPlayerCopies(int playerNumber) => _playerSpriteCopies[playerNumber];
+    }
+}

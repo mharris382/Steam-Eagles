@@ -58,6 +58,8 @@ namespace Players.PCController
         public readonly CompositeDisposable DisposeWithPC;
         private readonly TrackedPC _pcTracker;
 
+        public int PlayerNumber => _playerNumber;
+        public PCInstance PCInstance => _pc;
         internal PC(int playerNumber, TrackedPC pc)
         {
             _playerNumber = playerNumber;
