@@ -12,6 +12,7 @@ namespace Buildings
             return new BoundsInt(min, max - min);
         }
 
+        
 
         public static IEnumerable<Vector3Int> GetAllCells3D(this BoundsInt bounds)
         {
