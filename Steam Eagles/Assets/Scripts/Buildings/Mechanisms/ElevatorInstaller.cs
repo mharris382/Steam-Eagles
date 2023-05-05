@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CoreLib;
 using UnityEngine;
 using Zenject;
@@ -16,93 +16,53 @@ namespace Buildings.Mechanisms
                 .NonLazy();
             Container.BindInterfacesAndSelfTo<ElevatorStopEvaluator>().FromNew().AsSingle().NonLazy();
             Container.Bind<IElevatorMechanism>().To<ElevatorMover>().AsSingle().NonLazy();
+            Container.BindFactory<int, ElevatorOption, ElevatorOption.Factory>();
+            Container.Bind<IActionOptionsProvider>().To<ElevatorOptionsProvider>().AsSingle();
         }
     }
 
-
-     
-    public class ElevatorMover : IElevatorMechanism
+    public class ElevatorOptionsProvider : IActionOptionsProvider
     {
-        private readonly ElevatorStopEvaluator _elevatorStopEvaluator;
-        private readonly ElevatorMechanism _elevatorMechanism;
-        private readonly CoroutineCaller _coroutineCaller;
-
-        public ElevatorMover(CoroutineCaller coroutineCaller, ElevatorStopEvaluator elevatorStopEvaluator, ElevatorMechanism elevatorMechanism)
+        private ElevatorOption[] _elevatorOptions;
+        
+        public ElevatorOptionsProvider(ElevatorMechanism elevatorMechanism, ElevatorOption.Factory factory)
         {
-            _coroutineCaller = coroutineCaller;
-            _elevatorStopEvaluator = elevatorStopEvaluator;
-            _elevatorMechanism = elevatorMechanism;
-        }
-        public bool MoveToFloor(int floor)
-        {
-            if(IsMoving)
-            {
-                return false;
-            }
-            _coroutineCaller.StartCoroutine(MoveElevatorToFloor(floor));
-            return true;
-            throw new System.NotImplementedException();
+            var stops = elevatorMechanism.GetStops().ToArray();
+            _elevatorOptions = new ElevatorOption[stops.Length];
+            for (int i = 0; i < stops.Length; i++) _elevatorOptions[i] = factory.Create(i);
         }
 
-        IEnumerator SlowElevatorToStop(int floor)
+        public IEnumerable<IActionOption> GetOptions()
         {
-            var endPosition = _elevatorStopEvaluator.GetElevatorLocalPositionForStop(floor);
-            var startPosition = _elevatorMechanism.transform.localPosition;
-            for (float t = 0; t < 1; t += Time.deltaTime / _elevatorMechanism.stopTime)
+            foreach (var option in _elevatorOptions)
             {
-                yield return null;
-                _elevatorMechanism.transform.localPosition = Vector3.Lerp(startPosition, endPosition, t);
+                yield return option;
             }
-            _elevatorMechanism.transform.localPosition = endPosition;
         }
-        IEnumerator MoveElevatorToFloor(int floor)
-        {
-            IsMoving = true;
-            var stop = _elevatorStopEvaluator.GetElevatorLocalPositionForStop(floor);
-            var stopY = stop.y;
-            var currentY = _elevatorMechanism.transform.localPosition.y;
-            var direction = Mathf.Sign(currentY-stopY);
-            var currentSpeed = 0.0f;
-            var targetSpeed = _elevatorMechanism.elevatorSpeed * direction;
-            float CurrentDistance() => Mathf.Abs(stopY - _elevatorMechanism.transform.localPosition.y);
-            const float STOPPING_DISTANCE = 0.05f;
-            
-            while (CurrentDistance() > STOPPING_DISTANCE)
-            {
-                if(direction < 0 && _elevatorMechanism.transform.localPosition.y > stopY)
-                    break;
-                if(direction > 0 && _elevatorMechanism.transform.localPosition.y < stopY)
-                    break;
-                if (CurrentDistance() > _elevatorMechanism.slowDistance)
-                {
-                    yield return SlowElevatorToStop(floor);
-                    break;
-                }
-                else
-                {
-                    currentSpeed += _elevatorMechanism.acceleration * Time.deltaTime * direction;
-                    currentSpeed = Mathf.Clamp(currentSpeed, -_elevatorMechanism.elevatorSpeed, _elevatorMechanism.elevatorSpeed);
-                    _elevatorMechanism.SliderJoint2D.motor = new JointMotor2D()
-                    {
-                        motorSpeed = currentSpeed * (_elevatorMechanism.speedMultiplier),
-                        maxMotorTorque = 100000
-                    };
-                    _elevatorMechanism.SliderJoint2D.useMotor = true;
-                    yield return null;
-                }
-            }
-            _elevatorMechanism.transform.localPosition = stop;
-            _elevatorMechanism.SliderJoint2D.useMotor = true;
-            _elevatorMechanism.SliderJoint2D.motor = new JointMotor2D()
-            {
-                motorSpeed = 0,
-                maxMotorTorque = 100000
-            };
-            IsMoving = false;
-        }
-
-        public bool IsMoving { get; private set; }
-        public IEnumerable<string> GetFloorNames() => _elevatorMechanism.GetFloorNames();
     }
 
+    public class ElevatorOption : IActionOption
+    {
+        private readonly int _floor;
+        private readonly IElevatorMechanism _movementMechanism;
+        private readonly string _label;
+        private readonly ElevatorMechanism _elevator;
+
+        public ElevatorOption(int floor, IElevatorMechanism movementMechanism, ElevatorMechanism elevator)
+        {
+            _floor = floor;
+            _movementMechanism = movementMechanism;
+            _elevator = elevator;
+            var stop = _elevator.GetStop(floor);
+            _label = stop.name;
+        }
+        public class Factory : PlaceholderFactory<int, ElevatorOption>{}
+
+        public string OptionName => _label;
+        public bool IsAvailable { get; }
+        public void Execute()
+        {
+            _movementMechanism.MoveToFloor(_floor);
+        }
+    }
 }

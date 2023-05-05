@@ -24,7 +24,9 @@ namespace Buildings.Mechanisms
         public AnimationCurve stopCurve = AnimationCurve.Linear(0, 0, 1, 1);
         private Rigidbody2D _rigidbody2D;
         public Rigidbody2D Rigidbody2D => _rigidbody2D != null ? _rigidbody2D : _rigidbody2D = GetComponent<Rigidbody2D>();
-        
+
+        public ElevatorStop GetStop(int floor) => stops[floor];
+
         public override float[] GetSaveState()
         {
             throw new System.NotImplementedException();
