@@ -3,7 +3,9 @@ using Players.PCController;
 
 public abstract class PCSystem : IDisposable
 {
-    private readonly PC _pc;
+    protected readonly PC _pc;
+    
+    public PC Pc => _pc;
 
     public PCSystem(PC pc) => _pc = pc;
 

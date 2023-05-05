@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Buildings.Rooms;
 using Cinemachine;
@@ -14,10 +15,75 @@ namespace Buildings.MyEditor
         private readonly Building _building;
         private readonly StructureState _structure;
         private Rooms.Rooms _rooms;
+        
+        [ValidateInput(nameof(ValidateCameras), messageType: InfoMessageType.Warning)]
         [TableList(AlwaysExpanded = true, NumberOfItemsPerPage = 10)]
         [ShowInInspector]
         private List<RoomCameraWrapper> _roomList;
-        
+
+        [BoxGroup("Clip Planes")]
+        [ShowInInspector]
+        public float standardNearClipPlane = 0.3f;
+        [BoxGroup("Clip Planes")]
+        [ShowInInspector]
+        public float standardFarClipPlane = 1000f;
+
+        [BoxGroup("Clip Planes")]
+        [Button]
+        public void StandardizeClipPlanes()
+        {
+            foreach (var roomCamera in _roomList)
+            {
+                if (roomCamera.HasCamera)
+                {
+                    var vcam = roomCamera.VCam;
+                    vcam.m_Lens.NearClipPlane = standardNearClipPlane;
+                    vcam.m_Lens.FarClipPlane = standardFarClipPlane;
+                }
+            }
+        }
+
+        private bool ValidateCameras(List<RoomCameraWrapper> wrappers, ref string error)
+        {
+            Dictionary<float, List<CinemachineVirtualCamera>> nearClipPlanes = new Dictionary<float, List<CinemachineVirtualCamera>>();
+            Dictionary<float, List<CinemachineVirtualCamera>> farClipPlanes = new Dictionary<float, List<CinemachineVirtualCamera>>();
+            
+            foreach (var roomCameraWrapper in wrappers)
+            {
+                if(roomCameraWrapper.HasCamera==false)
+                {
+                    var vCam = roomCameraWrapper.VCam;
+                    var nearClipPlane = vCam.m_Lens.NearClipPlane;
+                    var farClipPlane = vCam.m_Lens.FarClipPlane;
+                    if (!nearClipPlanes.TryGetValue(nearClipPlane, out var list))
+                    {
+                        list = new List<CinemachineVirtualCamera>();
+                        nearClipPlanes.Add(nearClipPlane, list);
+                    }
+                    list.Add(roomCameraWrapper.VCam);
+                    if (!farClipPlanes.TryGetValue(farClipPlane, out var list2))
+                    {
+                        list2 = new List<CinemachineVirtualCamera>();
+                        farClipPlanes.Add(farClipPlane, list2);
+                    }
+                    list2.Add(roomCameraWrapper.VCam);
+                    continue;
+                }
+            }
+
+            if (nearClipPlanes.Count > 1)
+            {
+                error = "Non-standard near clip planes detected: " + string.Join(", ", nearClipPlanes.Keys.Select(t => t.ToString(CultureInfo.InvariantCulture)).ToArray());
+                return false;
+            }
+
+            if (farClipPlanes.Count > 1)
+            {
+                error = "Non-standard far clip planes detected: " + string.Join(", ", farClipPlanes.Keys.Select(t => t.ToString(CultureInfo.InvariantCulture)).ToArray());
+                return false;
+            }
+            return true;
+        }
         
 
         public RoomCamerasTable(Building building)
@@ -60,6 +126,7 @@ namespace Buildings.MyEditor
 
             private CinemachineVirtualCamera _vCam;
 
+            public CinemachineVirtualCamera VCam => RoomVirtualCamera;
             [ShowInInspector]
             public bool IsCameraDynamic
             {

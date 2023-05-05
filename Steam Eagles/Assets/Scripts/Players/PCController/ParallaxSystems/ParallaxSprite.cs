@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +15,7 @@ namespace Players.PCController.ParallaxSystems
 
         public SpriteRenderer SpriteRenderer => _spriteRenderer ??= GetComponent<SpriteRenderer>();
 
+        private SpriteRenderer[] _spriteRenderers;
         
         [Inject] public void InjectMe(ParallaxSprites parallaxSprites)
         {
@@ -24,6 +26,10 @@ namespace Players.PCController.ParallaxSystems
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            _spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+            var l = _spriteRenderers.ToList();
+            l.Remove(_spriteRenderer);
+            _spriteRenderers = l.ToArray();
         }
 
         private void OnEnable()
@@ -47,8 +53,17 @@ namespace Players.PCController.ParallaxSystems
         public IEnumerable<SpriteRenderer> GetSpriteRenderers()
         {
             if (includeChildren)
-                foreach (var spriteRenderer in GetComponentsInChildren<SpriteRenderer>())
-                    yield return spriteRenderer;
+            {
+                if (_spriteRenderers == null)
+                {
+                    _spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+                }
+
+                foreach (var sr in _spriteRenderers)
+                {
+                    yield return sr;
+                }
+            }
             else
                 yield return SpriteRenderer;
         }

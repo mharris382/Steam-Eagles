@@ -196,6 +196,8 @@ namespace UI.PlayerGUIs
                     playerInput = pinput;
                 }
             }
+
+            enabled = false;
         }
 
         private void OnDestroy()
