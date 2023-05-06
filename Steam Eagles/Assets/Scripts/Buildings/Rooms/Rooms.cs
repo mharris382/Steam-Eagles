@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using PhysicsFun.Buildings;
 using PhysicsFun.Buildings.Rooms;
@@ -9,19 +10,16 @@ namespace Buildings.Rooms
 {
     public class Rooms : MonoBehaviour
     {
-        [OnValueChanged(nameof(OnBuildingAssigned))]
-        [SerializeField, Required]
+        [OnValueChanged(nameof(OnBuildingAssigned))] [SerializeField, Required]
         private StructureState building;
 
-        [Range(0, 1)]
-        public float faceOpacity = 0.2f;
-        [Range(0, 1)]
-        public float outlineOpacity = 1;
-        
+        [Range(0, 1)] public float faceOpacity = 0.2f;
+        [Range(0, 1)] public float outlineOpacity = 1;
+
         [SerializeField] private List<Room> rooms;
 
 
-        public bool  HasBuilding => building != null;
+        public bool HasBuilding => building != null;
 
         public StructureState Building
         {
@@ -36,19 +34,17 @@ namespace Buildings.Rooms
                 }
             }
         }
-        
+
         public IEnumerable<Room> AllRooms
         {
-            get
-            {
-                return GetComponentsInChildren<Room>();
-            }
+            get { return GetComponentsInChildren<Room>(); }
         }
 
         public void UpdateRoomsList()
         {
             rooms = new List<Room>(GetComponentsInChildren<Room>());
         }
+
         void OnBuildingAssigned(StructureState structureState)
         {
             if (structureState == null) return;
@@ -58,6 +54,7 @@ namespace Buildings.Rooms
                 Debug.LogWarning("StructureState does not have a Building component", structureState);
                 return;
             }
+
             name = building.buildingName + " Rooms";
         }
 
@@ -72,6 +69,7 @@ namespace Buildings.Rooms
                     return room;
                 }
             }
+
             return null;
         }
 
@@ -85,15 +83,14 @@ namespace Buildings.Rooms
                 var bounds = room.RoomBounds;
                 var min = bounds.min;
                 var max = bounds.max;
-                min =  grid.CellToLocal(grid.LocalToCell(min));
+                min = grid.CellToLocal(grid.LocalToCell(min));
                 max = grid.CellToLocal(grid.LocalToCell(max));
                 bounds.SetMinMax(min, max);
                 room.RoomBounds = bounds;
             }
         }
-        
-        [TableList]
-        [SerializeField] private List<RoomGroupings> roomGroupings;
+
+        [TableList] [SerializeField] private List<RoomGroupings> roomGroupings;
 
         public IEnumerable<RoomGroupings> GetGroups(bool rebuildGroups = false)
         {
@@ -110,27 +107,47 @@ namespace Buildings.Rooms
                             roomGrouping.roomsInGroup.Remove(room);
                         }
                     }
+
                     groups.Add(roomGrouping.groupColor, roomGrouping.roomsInGroup);
                 }
+
                 foreach (var room in AllRooms)
                 {
                     if (groups.ContainsKey(room.roomColor))
                     {
-                        if(groups[room.roomColor].Contains(room) == false)
+                        if (groups[room.roomColor].Contains(room) == false)
                             groups[room.roomColor].Add(room);
                     }
                     else
                         groups.Add(room.roomColor, new List<Room> { room });
                 }
+
                 roomGroupings = new List<RoomGroupings>();
-               
+
             }
+
             foreach (var roomGrouping in roomGroupings)
             {
                 yield return roomGrouping;
             }
         }
 
+
+        IEnumerator ForceCameraOff()
+        {
+            const float wait_time = 5f;
+            for (float t = 0; t < 1; t+=Time.deltaTime/wait_time)
+            {
+                foreach (var room in AllRooms)
+                {
+                    if (room.roomCamera != null)
+                    {
+                        room.roomCamera.SetActive(false);
+                    }
+                }
+                yield return null;
+            }
+        }
 
         void RebuildGroups()
         {
@@ -153,5 +170,7 @@ namespace Buildings.Rooms
                 }
             }
         }
+
+        private void Start() => StartCoroutine(ForceCameraOff());
     }
 }

@@ -3,6 +3,7 @@ using Players;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 //TODO: this should be refactored so that character input processor is not attached to a character as a component and is instead passed a player instance and a character instance
@@ -24,12 +25,15 @@ namespace Characters.MyInput
         
         
         private CharacterInputState _inputState;
+        private CharacterInteractionState _interactionState;
         private ToolState _toolState;
         private float moveY;
 
         private void Awake()
         {
             _inputState = GetComponent<CharacterInputState>();
+            if (!gameObject.TryGetComponent(out _interactionState))
+                _interactionState = gameObject.AddComponent<CharacterInteractionState>();
             _toolState = GetComponent<ToolState>();
         }
 
@@ -43,48 +47,55 @@ namespace Characters.MyInput
             {
                 return;
             }
+            var inputPlayer = HandleBasicInputs(out var aimInput);
+            HandleToolInput(inputPlayer, aimInput);
+            HandleInteractInput(inputPlayer, aimInput, _interactionState);
+        }
+
+        private PlayerInput HandleBasicInputs(out Vector2 aimInput)
+        {
             var inputPlayer = player.InputWrapper.PlayerInput;
             var moveInput = inputPlayer.actions["Move"].ReadValue<Vector2>();
-        
-        
-        
-            var aimInput = inputPlayer.actions["Aim"].ReadValue<Vector2>();
+
+
+            aimInput = inputPlayer.actions["Aim"].ReadValue<Vector2>();
             var jumpAction = inputPlayer.actions["Jump"];
             _inputState.IsPickupHeld = inputPlayer.actions["Pickup"].IsPressed();
             var moveX = moveInput.x;
             this.moveY = moveInput.y;
             bool jumpPressed = jumpAction.WasPressedThisFrame();
             bool jumpHeld = jumpAction.IsPressed();
-        
+
             if (moveY < -0.5f)
             {
                 _inputState.DropPressed = jumpHeld;
             }
             else
             {
-           
                 _inputState.JumpPressed = jumpPressed;
                 _inputState.JumpHeld = jumpHeld;
             }
-        
-        
+
 
             _inputState.MoveInput = moveInput;
             _inputState.AimInput = aimInput;
+            return inputPlayer;
+        }
 
-
+        private void HandleToolInput(PlayerInput inputPlayer, Vector2 aimInput)
+        {
             var selectToolInputRaw = inputPlayer.actions["Select Tool"].ReadValue<float>();
-            var selectToolInput = Mathf.Abs(selectToolInputRaw) > 0.1f ?  (int)Mathf.Sign(selectToolInputRaw) : 0;
+            var selectToolInput = Mathf.Abs(selectToolInputRaw) > 0.1f ? (int)Mathf.Sign(selectToolInputRaw) : 0;
             var selectTool2InputRaw = inputPlayer.actions["Select Recipe"].ReadValue<float>();
-            var selectTool2Input = Mathf.Abs(selectTool2InputRaw) > 0.1f ?  (int)Mathf.Sign(selectTool2InputRaw) : 0;
+            var selectTool2Input = Mathf.Abs(selectTool2InputRaw) > 0.1f ? (int)Mathf.Sign(selectTool2InputRaw) : 0;
             _toolState.Inputs.SelectRecipe = selectTool2Input;
             _toolState.Inputs.SelectTool = selectToolInput;
             _toolState.Inputs.AimInputRaw = aimInput;
             _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].WasPressedThisFrame();
             _toolState.Inputs.UseHeld =
                 _toolState.Inputs.UsePressed = inputPlayer.actions["Ability Primary"].IsPressed();
-            _toolState.Inputs.CancelPressed = inputPlayer.actions["Ability Secondary"].WasPressedThisFrame() || 
-                                              inputPlayer.actions["Inventory"].WasPressedThisFrame() || 
+            _toolState.Inputs.CancelPressed = inputPlayer.actions["Ability Secondary"].WasPressedThisFrame() ||
+                                              inputPlayer.actions["Inventory"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Map"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Pause"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Codex"].WasPressedThisFrame() ||
@@ -92,6 +103,7 @@ namespace Characters.MyInput
             if (_toolState.Inputs.UsePressed) LogInput("UsePressed");
             if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
 
+            
             if (inputPlayer.actions["Select Tool Mode"].WasPressedThisFrame())
             {
                 _toolState.Inputs.OnToolModeChanged.OnNext(Unit.Default);
@@ -100,6 +112,23 @@ namespace Characters.MyInput
             bool usingMouse = inputPlayer.currentControlScheme.Contains("Keyboard");
             _toolState.Inputs.CurrentInputMode = usingMouse ? InputMode.KeyboardMouse : InputMode.Gamepad;
             HandleToolAim(Time.deltaTime, false);
+        }
+        private void HandleInteractInput(PlayerInput inputPlayer, Vector2 aimInput, CharacterInteractionState interactionState)
+        {
+            interactionState.Input.InteractPressed = inputPlayer.actions["Interact"].WasPressedThisFrame();
+            if (interactionState.IsInteracting == false)
+            {
+                interactionState.Input.CancelPressed = true;
+                interactionState.Input.InteractAimDirection = Vector2.zero;
+                interactionState.Input.InteractDirectionY = 0;
+                return;
+            }
+            interactionState.Input.CancelPressed = inputPlayer.actions["Cancel"].WasPressedThisFrame();
+            if (aimInput.sqrMagnitude > 0.01f && Mathf.Abs(aimInput.y) > 0.1f)
+                interactionState.Input.InteractDirectionY = (int)Mathf.Sign(aimInput.y);
+            else
+                interactionState.Input.InteractDirectionY = 0;
+            
         }
 
         private Vector2 _aimVelocity;

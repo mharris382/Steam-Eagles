@@ -68,7 +68,7 @@ namespace Interactions
             {
                 _interactableInRange[agent].Add(interactable);
                 Debug.Log($"Added Interaction {interactable.name} to {agent.name}");
-                agent.InteractablesInRange.AddTo(interactable);
+                agent.InteractablesInRange.Add(interactable);
             }
             else if(!inRange && _interactableInRange[agent].Contains(interactable))
             { 

@@ -6,9 +6,10 @@ using Zenject;
 
 public class PCParallaxSystems : PCSystems<PCParallaxSystem>, IInitializable, ITickable, ILateTickable
 {
+    private readonly ISystemFactory<PCParallaxSystem> _factory;
     private readonly ParallaxSprites _parallaxSprites;
 
-    protected override PCParallaxSystem CreateSystemFor(PC pc) => new PCParallaxSystem(pc, _parallaxSprites);
+    protected override PCParallaxSystem CreateSystemFor(PC pc) => _factory.Create(pc);
     
     
     public void Tick()
@@ -30,6 +31,7 @@ public class PCParallaxSystems : PCSystems<PCParallaxSystem>, IInitializable, IT
 
     public PCParallaxSystems(PCTracker pcTracker, PC.Factory pcFactory, ISystemFactory<PCParallaxSystem> factory, ParallaxSprites parallaxSprites) : base(pcTracker, pcFactory, factory)
     {
+        _factory = factory;
         _parallaxSprites = parallaxSprites;
         Debug.Log("Created PCParallaxSystems");
     }
