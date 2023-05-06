@@ -43,7 +43,7 @@ public class GlobalInstaller : MonoInstaller
                 Debug.Log("Waiting For Pause Menu Canvas");
                 yield return null;
             }
-            _pauseMenuCanvas.gameObject.SetActive(false);
+            //_pauseMenuCanvas.gameObject.SetActive(false);
         }
     }
 }

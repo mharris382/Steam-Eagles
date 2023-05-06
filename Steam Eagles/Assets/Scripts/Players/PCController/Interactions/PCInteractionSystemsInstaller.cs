@@ -12,6 +12,10 @@ namespace Players.PCController.Interactions
                     ISystemFactory<PCInteractionSystem>>();
             Container.BindInterfacesAndSelfTo<PCInteractionSystems>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<InteractionCameras>().AsSingle().NonLazy();
+            
+            Container.Bind<IPCInteractionStateListener>().To<TestPCInteractionStateListener>().AsTransient().NonLazy();
+            Container.Bind<IPCInteractionStateListener>().To<TestPCInteractionStateListener2>().AsTransient().NonLazy();
+            Container.Bind<IPCInteractionStateListener>().To<DisableToolsDuringInteraction>().AsTransient().NonLazy();
         }
     }
 

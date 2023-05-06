@@ -16,7 +16,7 @@ namespace Interactions
             _currentInteractionHandle ??= _interactionFactory.Create(agent);
             await UniTask.WaitUntil(() => _currentInteractionHandle.WasInteractionCompleted);
             _currentInteractionHandle.Dispose();
-            var result = _currentInteractionHandle.WasInteractionCancelled;
+            var result = !_currentInteractionHandle.WasInteractionCancelled;
             _currentInteractionHandle = null;
             return result;
         }
@@ -53,6 +53,7 @@ namespace Interactions
                 _characterInteractionAgent = agent.GetComponent<CharacterInteractionState>();
                 WasInteractionCancelled = false;
                 WasInteractionCompleted = false;
+                _characterInteractionAgent.Input.InteractPressed = false;
             }
 
 

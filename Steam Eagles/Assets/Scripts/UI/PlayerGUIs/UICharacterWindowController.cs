@@ -1,4 +1,5 @@
 ﻿using System;
+using Characters;
 using CoreLib.Entities;
 using UnityEngine;
 using FSM;
@@ -69,10 +70,15 @@ namespace UI.PlayerGUIs.CharacterWindows
             return stateMachine;
         }
 
+        CharacterInteractionState _characterInteractionState;
+
+        public CharacterInteractionState characterInteractionState => _characterInteractionState ??=
+            _characterGameObject.GetComponent<CharacterInteractionState>();
 
         bool HasRequirements() => _playerInput != null && 
                                   _entity != null &&
-                                  _characterGameObject != null;
+                                  _characterGameObject != null && 
+                                  _characterInteractionState != null;
 
         public void SetCharacter(PlayerInput playerInput, Entity entity, GameObject characterGameObject)
         {
@@ -87,6 +93,11 @@ namespace UI.PlayerGUIs.CharacterWindows
         {
             if(!HasRequirements())
                 return;
+            if(characterInteractionState.IsInteracting)
+            {
+                //TODO: make sure that all windows are closed
+                return;
+            }
             foreach (var windowPanel in windowPanels)
             {
                 var state = windowPanel.window.GetWindowState();

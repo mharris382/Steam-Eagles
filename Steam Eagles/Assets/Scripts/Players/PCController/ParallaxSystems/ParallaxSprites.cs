@@ -94,7 +94,7 @@ namespace Players.PCController.ParallaxSystems
 
         public void RemoveSprite(ParallaxSprite sprite)
         {
-
+            if (sprite == null) return;
             foreach (var playerSpriteCopy in _playerSpriteCopies)
             {
                 if (!playerSpriteCopy.ContainsKey(sprite)) continue;

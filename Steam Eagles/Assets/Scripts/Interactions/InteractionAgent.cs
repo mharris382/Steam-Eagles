@@ -17,12 +17,17 @@ namespace Interactions
         
                 
         public bool InteractPressed { get; set; }
+        public bool CancelPressed { get; set; }
+        public int SelectInputY { get; set; }
         public bool InteractHeld { get; set; }
 
+        private ReactiveProperty<Interactable> _activeInteractable = new ReactiveProperty<Interactable>();
         private ReactiveProperty<Interactable> _selectedInteractable = new ReactiveProperty<Interactable>();
         private ReactiveCollection<Interactable> _interactablesInRange = new ReactiveCollection<Interactable>();
         private BoolReactiveProperty _isInteracting = new BoolReactiveProperty(false);
         
+        
+        public IReadOnlyReactiveProperty<Interactable> ActiveInteractable => _activeInteractable ??= new ReactiveProperty<Interactable>();
         public IReadOnlyReactiveProperty<Interactable> SelectedInteractable => _selectedInteractable ??= new ReactiveProperty<Interactable>();
         public IReadOnlyReactiveProperty<bool> IsInteracting => _isInteracting ??= new BoolReactiveProperty(false);
         public bool HasInteractableInRange => _interactablesInRange.Count > 0;
@@ -78,8 +83,10 @@ namespace Interactions
             yield return UniTask.ToCoroutine(async () =>
             {
                 _isInteracting.Value = true;
+                _activeInteractable.Value = interactable;
                 var result = await interactable.Interact(this);
                 if (!result) NotifyFailure(interactable);
+                _activeInteractable.Value = null;
                 _isInteracting.Value = false;
             });
              _interactionStartCoroutine = null;
@@ -93,7 +100,7 @@ namespace Interactions
        private void NotifyFailure(Interactable interactable)
        {
            Debug.Log($"{name} Failed to interact with {interactable}");
-           throw new NotImplementedException();
+           //throw new NotImplementedException();
        }
     }
 }

@@ -6,6 +6,8 @@ using CoreLib;
 using Items;
 using Tools.BuildTool;
 using UnityEngine;
+using UniRx;
+using ToolControllerBase = Tools.BuildTool.ToolControllerBase;
 
 namespace Tools.RecipeTool
 {
@@ -29,13 +31,18 @@ namespace Tools.RecipeTool
         private GameObject _lastUsedPrefab;
         private string _errorMessage = "";
         private Vector3Int _selectedCell;
+        private ToolControllerBase _lastTool;
         private LoadedRecipePreviewer CurrentPreviewer => _lastUsedPrefab == null ? null : GetPreviewer(_lastUsedPrefab);
 
 
+        
         protected override void OnAwake()
         {
+            SharedData.ActiveTool.Subscribe(lastTool => _lastTool = lastTool).AddTo(this);
+            SharedData.ToolsEquippedProperty.Where(t => _lastTool == this).Subscribe(SetPreviewVisible).AddTo(this);
             base.OnAwake();
         }
+        
 
         public override BuildingLayers GetTargetLayer()
         {

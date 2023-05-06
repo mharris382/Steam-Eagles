@@ -10,8 +10,6 @@ using Zenject;
 
 namespace Players.PCController.Interactions
 {
-    
-    
     public class PCInteractionSystem : PCSystem, ITickable, ILateTickable
     {
         private IDisposable _disposable;
@@ -26,7 +24,7 @@ namespace Players.PCController.Interactions
         private readonly CharacterInteractionState _characterInteractionState;
         private readonly IAvailableInteractionLabel _interactionLabel;
 
-        public PCInteractionSystem(PC pc, InteractionCameras cameras) : base(pc)
+        public PCInteractionSystem(PC pc, InteractionCameras cameras, List<IPCInteractionStateListener> interactionStateListeners) : base(pc)
         {
             _cameras = cameras;
             Debug.Log($"Created PCInteractionSystem for Player {pc.PlayerNumber}");
@@ -42,10 +40,16 @@ namespace Players.PCController.Interactions
             _interactionLabel.SetText("");
             
             var cd = new CompositeDisposable();
+            _agent.SelectedInteractable.Select(t => _currentInteractable.Value == null ? t : null).Subscribe(UpdateInteractionLabel);
+            _agent.IsInteracting.Select(t => t ? _agent.SelectedInteractable.Value : null).Subscribe(interactable => _currentInteractable.Value = interactable).AddTo(cd);
             _currentInteractable.Subscribe(ChangeCurrentInteractable).AddTo(cd);
             _currentInteractable.Subscribe(UpdateInteractionCamera).AddTo(cd);
-            _agent.SelectedInteractable.Select(t => _currentInteractable.Value == null ? t : null)
-                .Subscribe(UpdateInteractionLabel);
+            foreach (var pcInteractionStateListener in interactionStateListeners)
+            {
+                pcInteractionStateListener.PC = pc;
+                _currentInteractable.Select(t => t !=null).Subscribe(pcInteractionStateListener.OnPCInteractionStateChanged).AddTo(cd);
+                _currentInteractable.Subscribe(pcInteractionStateListener.OnPCInteractionStateChanged).AddTo(cd);
+            }
             _disposable = cd;
         }
 
@@ -111,6 +115,8 @@ namespace Players.PCController.Interactions
                         vcam = nextInteractable.PCVirtualCamera.AddComponent<VCam>();
                     }
                     vcam = _cameras.GetCopyForPlayer(vcam, Pc.PlayerNumber);
+                    vcam.gameObject.SetActive(true);
+                    vcam.SetPriority(10000000);
                     vcam.enabled = true;
                     Debug.Log($"Enabled VCam {vcam.name} for player {Pc.PlayerNumber}", vcam);
                 }
@@ -150,6 +156,8 @@ namespace Players.PCController.Interactions
         private void UpdateAgentInputs()
         {
             _agent.InteractPressed = _characterInteractionState.Input.InteractPressed;
+            _agent.CancelPressed = _characterInteractionState.Input.CancelPressed;
+            _agent.SelectInputY = _characterInteractionState.Input.InteractDirectionY;
         }
 
         private void HandleInteractions()
@@ -162,34 +170,17 @@ namespace Players.PCController.Interactions
                 HandleActiveInteraction(_currentInteractable.Value);
             }
             //character is not interacting with anything
-            else
-            {
-                CheckForInteractionStart();
-            }
         }
 
-        private void CheckForInteractionStart()
-        {
-            _characterInteractionState.IsInteracting = false;
-            if (_agent.HasInteractableInRange)
-            {
-                var selected = _agent.SelectedInteractable.Value;
-                if (selected != null && _characterInteractionState.Input.InteractPressed)
-                {
-                    _currentInteractable.Value = selected;
-                    Debug.Log($"Interacting with {selected.name}");
-                }
-            }
-        }
+
 
         private void HandleActiveInteraction(IInteractable currentInteractableValue)
         {
             if (_characterInteractionState.Input.CancelPressed)
             {
                 Debug.Log($"Stopped interacting with {currentInteractableValue.name}");
-                _currentInteractable.Value = null;
+                
             }
-            
         }
 
         public void LateTick()

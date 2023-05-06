@@ -56,7 +56,7 @@ namespace Characters.MyInput
         {
             var inputPlayer = player.InputWrapper.PlayerInput;
             var moveInput = inputPlayer.actions["Move"].ReadValue<Vector2>();
-
+            
 
             aimInput = inputPlayer.actions["Aim"].ReadValue<Vector2>();
             var jumpAction = inputPlayer.actions["Jump"];
@@ -116,13 +116,6 @@ namespace Characters.MyInput
         private void HandleInteractInput(PlayerInput inputPlayer, Vector2 aimInput, CharacterInteractionState interactionState)
         {
             interactionState.Input.InteractPressed = inputPlayer.actions["Interact"].WasPressedThisFrame();
-            if (interactionState.IsInteracting == false)
-            {
-                interactionState.Input.CancelPressed = true;
-                interactionState.Input.InteractAimDirection = Vector2.zero;
-                interactionState.Input.InteractDirectionY = 0;
-                return;
-            }
             interactionState.Input.CancelPressed = inputPlayer.actions["Cancel"].WasPressedThisFrame();
             if (aimInput.sqrMagnitude > 0.01f && Mathf.Abs(aimInput.y) > 0.1f)
                 interactionState.Input.InteractDirectionY = (int)Mathf.Sign(aimInput.y);

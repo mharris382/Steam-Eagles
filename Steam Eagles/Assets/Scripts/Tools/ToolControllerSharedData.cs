@@ -34,9 +34,14 @@ namespace Tools.BuildTool
             get => _currentToolIndex.Value;
             set => _currentToolIndex.Value = value;
         }
-        
 
-        
+        public bool ToolsEquipped
+        {
+            get=> _toolsEquipped.Value;
+            set => _toolsEquipped.Value = value;
+        }
+
+
         public void NextTool()
         {
             if (tools.Count == 0)
@@ -59,6 +64,9 @@ namespace Tools.BuildTool
         
         public List<ToolControllerBase> tools = new List<ToolControllerBase>();
         public List<Tool> toolItems = new List<Tool>();
+
+        private ReactiveProperty<bool> _toolsEquipped = new ReactiveProperty<bool>(true);
+        public IReadOnlyReactiveProperty<bool> ToolsEquippedProperty => _toolsEquipped;
         private void Awake()
         {
             if(activeTool == null)
@@ -83,6 +91,7 @@ namespace Tools.BuildTool
                 var tool = tools[index];
                 activeTool.Value = tool;
             }).AddTo(this);
+            ToolsEquipped = true;
         }
         
         public void RegisterTool(ToolControllerBase tool)

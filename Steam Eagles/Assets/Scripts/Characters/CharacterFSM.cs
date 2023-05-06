@@ -24,7 +24,10 @@ namespace Characters
         private FSM.StateMachine _toolStateMachine;
         private CharacterState _state;
         private StructureState _structureState;
+        private CharacterInteractionState _interactionState;
+        
         private IPilot _pilot;
+        public CharacterInteractionState InteractionState => _interactionState;
         public CharacterInputState Input => _input;
         public CharacterController2 Controller => _controller;
         public CharacterState State => _state;
@@ -83,6 +86,7 @@ namespace Characters
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
             _structureState = GetComponent<StructureState>();
+            _interactionState = GetComponent<CharacterInteractionState>();
             _nullPilot = new NullPilot(gameObject);
             _climbCheck = new CharacterClimbCheck(_state, new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty));
             _climbingController = new CharacterClimbingController(_state, _controller.Config, _climbCheck);
@@ -158,10 +162,15 @@ namespace Characters
             #endregion
             
             _defaultStateMachine.AddState("Default", physicsFSM);
+            _defaultStateMachine.AddState("Interacting", OnInteractEnter, OnInteractLogic, OnInteractExit);
             _defaultStateMachine.AddState("Pilot", OnPilotEnter, OnPilotLogic, OnPilotExit);
             
             _defaultStateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
             _defaultStateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
+            
+            _defaultStateMachine.AddTransition("Interacting", "Default", _ => !InteractionState.IsInteracting);
+            _defaultStateMachine.AddTransition("Default", "Interacting", _ => InteractionState.IsInteracting);
+            
             _defaultStateMachine.SetStartState("Default");
             _defaultStateMachine.Init();
         }
@@ -343,8 +352,28 @@ namespace Characters
 
         #endregion
 
+        #region INTERACT METHODS
+
+        void OnInteractEnter(State<string, string> t)
+        {
+            StructureState.Mode = StructureState.JointMode.ENABLED;    
+        }
+        
+        void OnInteractLogic(State<string, string> t)
+        {
+            
+        }
+        
+        void OnInteractExit(State<string, string> t)
+        {
+            
+        }
+        
+
+        #endregion
         #region PILOT METHODS
 
+        
         void OnPilotEnter(State<string, string> t)
         {
             StructureState.Mode = StructureState.JointMode.ENABLED;//strap in
