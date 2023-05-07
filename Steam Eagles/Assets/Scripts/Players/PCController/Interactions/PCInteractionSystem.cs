@@ -42,6 +42,7 @@ namespace Players.PCController.Interactions
             var cd = new CompositeDisposable();
             _agent.SelectedInteractable.Select(t => _currentInteractable.Value == null ? t : null).Subscribe(UpdateInteractionLabel);
             _agent.IsInteracting.Select(t => t ? _agent.SelectedInteractable.Value : null).Subscribe(interactable => _currentInteractable.Value = interactable).AddTo(cd);
+            _agent.IsInteracting.Subscribe(t => _characterInteractionState.IsInteracting = t).AddTo(cd);
             _currentInteractable.Subscribe(ChangeCurrentInteractable).AddTo(cd);
             _currentInteractable.Subscribe(UpdateInteractionCamera).AddTo(cd);
             foreach (var pcInteractionStateListener in interactionStateListeners)

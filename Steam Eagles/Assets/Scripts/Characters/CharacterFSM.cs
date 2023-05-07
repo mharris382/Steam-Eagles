@@ -214,7 +214,15 @@ namespace Characters
 
         public bool CheckJumpCondition() => Controller.AbleToJump() && (State.JumpPressed || _state.JumpHeld);
 
-        public bool CheckDropCondition() => (Controller.AbleToDrop() && State.DropPressed);
+        public bool CheckDropCondition()
+        {
+            if (State.DropPressed)
+            {
+                State.DropPressed = false;
+                return Controller.AbleToDrop();
+            }
+            return false;
+        }
 
         #endregion
 
@@ -366,7 +374,7 @@ namespace Characters
         
         void OnInteractExit(State<string, string> t)
         {
-            
+            StructureState.Mode = StructureState.JointMode.DISABLED;
         }
         
 

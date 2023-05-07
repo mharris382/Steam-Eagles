@@ -13,4 +13,18 @@ namespace CoreLib
     {
         IEnumerable<IActionOption> GetOptions();
     }
+    
+    public interface ISelectableOption : IActionOption
+    {
+        OptionState OptionState { get; set; }
+        System.IObservable<OptionState> OnOptionStateChanged { get; }
+    }
+
+    public enum OptionState
+    {
+        SELECTED,
+        CONFIRMED,
+        DEFAULT,
+        UNAVAILABLE
+    }
 }

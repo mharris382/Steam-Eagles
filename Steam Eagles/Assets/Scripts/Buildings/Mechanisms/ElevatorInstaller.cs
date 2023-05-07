@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
 namespace Buildings.Mechanisms
 {
-    [RequireComponent(typeof(ElevatorMechanism))]
+    
     public class ElevatorInstaller : MonoInstaller
     {
+        public GameObject mechansim;
         public override void InstallBindings()
         {
-            Container.Bind(typeof(ElevatorMechanism)).FromComponentOn(gameObject).AsSingle()
+            Container.Bind(typeof(ElevatorMechanism)).FromComponentOn(mechansim).AsSingle()
                 .NonLazy();
             Container.BindInterfacesAndSelfTo<ElevatorStopEvaluator>().FromNew().AsSingle().NonLazy();
             Container.Bind<IElevatorMechanism>().To<ElevatorMover>().AsSingle().NonLazy();
@@ -41,13 +43,15 @@ namespace Buildings.Mechanisms
         }
     }
 
-    public class ElevatorOption : IActionOption
+    public class ElevatorOption : ISelectableOption
     {
         private readonly int _floor;
         private readonly IElevatorMechanism _movementMechanism;
         private readonly string _label;
         private readonly ElevatorMechanism _elevator;
 
+        OptionState _currentOptionState = OptionState.DEFAULT;
+        private Subject<OptionState> _onOptionStateChanged = new Subject<OptionState>();
         public ElevatorOption(int floor, IElevatorMechanism movementMechanism, ElevatorMechanism elevator)
         {
             _floor = floor;
@@ -64,5 +68,17 @@ namespace Buildings.Mechanisms
         {
             _movementMechanism.MoveToFloor(_floor);
         }
+
+        public OptionState OptionState
+        {
+            get => _currentOptionState;
+            set
+            {
+                _currentOptionState = value;
+                _onOptionStateChanged.OnNext(value);
+            }
+        }
+
+        public IObservable<OptionState> OnOptionStateChanged => _onOptionStateChanged;
     }
 }

@@ -13,8 +13,8 @@ namespace Interactions
     [RequireComponent(typeof(Rigidbody2D))]
     public class ElevatorController : MonoBehaviour
     {
-        
-
+        public bool flipInput = true;
+        public BoxCollider2D floorCollider;
         private SliderJoint2D _sliderJoint2D;
         private BoxCollider2D _boxCollider2D;
         private Rigidbody2D _rigidbody2D;
@@ -23,8 +23,9 @@ namespace Interactions
         public SliderJoint2D SliderJoint2D => _sliderJoint2D ??= GetComponent<SliderJoint2D>();
         public BoxCollider2D BoxCollider2D => _boxCollider2D ??= GetComponent<BoxCollider2D>();
         public Rigidbody2D Rigidbody2D => _rigidbody2D ??= GetComponent<Rigidbody2D>();
-        
-        
+        public bool IsMoving => _elevatorMechanism.IsMoving;
+
+
         [Inject]
         public void InjectMe(IElevatorMechanism elevatorMechanism)
         {
@@ -63,5 +64,8 @@ namespace Interactions
                 elevatorMechanism.MoveToFloor(button);
             }
         }
+        
+        
+        
     }
 }

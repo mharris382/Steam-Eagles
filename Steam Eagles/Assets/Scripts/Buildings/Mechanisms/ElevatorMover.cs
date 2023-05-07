@@ -57,7 +57,7 @@ namespace Buildings.Mechanisms
                     break;
                 if(direction > 0 && _elevatorMechanism.transform.localPosition.y < stopY)
                     break;
-                if (CurrentDistance() > _elevatorMechanism.slowDistance)
+                if (CurrentDistance() < _elevatorMechanism.slowDistance)
                 {
                     yield return SlowElevatorToStop(floor);
                     break;

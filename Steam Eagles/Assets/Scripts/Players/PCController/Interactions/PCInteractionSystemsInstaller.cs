@@ -16,6 +16,7 @@ namespace Players.PCController.Interactions
             Container.Bind<IPCInteractionStateListener>().To<TestPCInteractionStateListener>().AsTransient().NonLazy();
             Container.Bind<IPCInteractionStateListener>().To<TestPCInteractionStateListener2>().AsTransient().NonLazy();
             Container.Bind<IPCInteractionStateListener>().To<DisableToolsDuringInteraction>().AsTransient().NonLazy();
+            Container.Bind<IPCInteractionStateListener>().To<DisableLabelDuringInteraction>().AsTransient().NonLazy();
         }
     }
 

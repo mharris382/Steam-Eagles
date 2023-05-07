@@ -1,4 +1,5 @@
 ﻿using CoreLib;
+using Interactions;
 using Tools.BuildTool;
 using UnityEngine;
 
@@ -21,5 +22,31 @@ namespace Players.PCController.Interactions
         }
 
         public void OnPCInteractionStateChanged(IInteractable interactable) { }
+    }
+
+
+    public class DisableLabelDuringInteraction : IPCInteractionStateListener
+    {
+        private IAvailableInteractionLabel _availableInteractionLabel;
+        private Component _labelComponent;
+        public PC PC
+        {
+            set
+            {
+                _availableInteractionLabel =
+                    value.PCInstance.character.GetComponentInChildren<IAvailableInteractionLabel>();
+                Debug.Assert(_availableInteractionLabel != null, "InteractionLabel is null", value.PCInstance.character);
+                _labelComponent = _availableInteractionLabel as Component;
+            }
+        }
+        public void OnPCInteractionStateChanged(bool isInteracting)
+        {
+            _labelComponent.gameObject.SetActive(!isInteracting);   
+        }
+
+        public void OnPCInteractionStateChanged(IInteractable interactable)
+        {
+            
+        }
     }
 }

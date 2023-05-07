@@ -49,7 +49,7 @@ namespace Characters.MyInput
             }
             var inputPlayer = HandleBasicInputs(out var aimInput);
             HandleToolInput(inputPlayer, aimInput);
-            HandleInteractInput(inputPlayer, aimInput, _interactionState);
+            HandleInteractInput(inputPlayer, _inputState.MoveInput, _interactionState);
         }
 
         private PlayerInput HandleBasicInputs(out Vector2 aimInput)
