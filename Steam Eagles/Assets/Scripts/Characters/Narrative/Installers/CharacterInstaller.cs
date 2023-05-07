@@ -7,7 +7,8 @@ namespace Characters.Narrative.Installers
         public CharacterStaminaConfig characterStaminaConfig;
         public override void InstallBindings()
         {
-            CharacterSprintInstaller.Install(Container, characterStaminaConfig);
+            Container.Bind<CharacterStaminaConfig>().FromInstance(characterStaminaConfig).AsSingle();
+            CharacterSprintInstaller.Install(Container);
         }
     }
 }

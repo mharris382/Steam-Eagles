@@ -2,7 +2,7 @@
 
 namespace Characters.Narrative.Installers
 {
-    public class CharacterSprintInstaller : Installer<CharacterStaminaConfig, CharacterSprintInstaller>
+    public class CharacterSprintInstaller : Installer<CharacterSprintInstaller>
     {
         public override void InstallBindings()
         {
