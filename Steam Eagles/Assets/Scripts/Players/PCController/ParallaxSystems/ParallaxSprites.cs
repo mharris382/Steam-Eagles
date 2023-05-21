@@ -98,10 +98,18 @@ namespace Players.PCController.ParallaxSystems
             foreach (var playerSpriteCopy in _playerSpriteCopies)
             {
                 if (!playerSpriteCopy.ContainsKey(sprite)) continue;
-                if (playerSpriteCopy[sprite].gameObject != null)
-                    playerSpriteCopy[sprite].gameObject.SetActive(false);
-                else
+                try
+                {
+                    if (playerSpriteCopy[sprite].gameObject != null)
+                        playerSpriteCopy[sprite].gameObject.SetActive(false);
+                    else
+                        playerSpriteCopy.Remove(sprite);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
                     playerSpriteCopy.Remove(sprite);
+                }
             }
 
             if (!_sprites.Contains(sprite)) return;
