@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 748361227904985579}
   - component: {fileID: -4638653384416121935}
   - component: {fileID: 4319719934869472319}
+  - component: {fileID: -3447698543339511176}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -48,9 +49,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
+  - {fileID: -3447698543339511176}
   - {fileID: -4638653384416121935}
   - {fileID: 4319719934869472319}
-  _installerPrefabs: []
+  _installerPrefabs:
+  - {fileID: 790002091832353363, guid: 32f2b5f1344c06441bb6a3b8baccf142, type: 3}
   _parentNewObjectsUnderContext: 1
   _editorReflectionBakingCoverageMode: 0
   _buildsReflectionBakingCoverageMode: 0
@@ -96,3 +99,16 @@ MonoBehaviour:
     maxStamina: 100
     staminaRecoveryRate: 10
     staminaDepletionRate: 10
+--- !u!114 &-3447698543339511176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083542159830508101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e457fb75b3164e30a415ce9fd58a5916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerHUDPrefab: {fileID: 1166986546705494692, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
