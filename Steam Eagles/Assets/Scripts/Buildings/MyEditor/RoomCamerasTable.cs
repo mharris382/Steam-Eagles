@@ -106,8 +106,12 @@ namespace Buildings.MyEditor
             [ShowInInspector, TableColumnWidth(120), InlineButton(nameof(SelectRoom), "Select")]
             public string RoomName
             {
-                get => _room.name;
-                set => _room.name = value;
+                get => _room == null ? "NULL" : _room.name;
+                set
+                {
+                    if(_room != null)
+                        _room.name = value;
+                }
             }
 
             private Color guiColor => _room.roomColor;
