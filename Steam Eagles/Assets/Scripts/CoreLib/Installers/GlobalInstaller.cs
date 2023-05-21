@@ -1,6 +1,8 @@
 
 using System.Collections;
+using System.Collections.Generic;
 using CoreLib;
+using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
@@ -9,13 +11,15 @@ public class GlobalInstaller : MonoInstaller
 {
     [Required, AssetsOnly] public GameObject pauseMenuPrefab;
     [Required, AssetsOnly] public GameObject playerGUIPrefab;
-    
+    public SharedTransform p1Character;
+    public SharedTransform p2Character;
     
     public override void InstallBindings()
     {
         Container.Bind<Canvas>().FromComponentInNewPrefab(pauseMenuPrefab).AsSingle().NonLazy();
         Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PauseMenuSetInactiveOnStart>().FromNew().AsSingle().NonLazy();
+        Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
     }
     
     

@@ -322,4 +322,18 @@ namespace Buildings
             }));
         }
     }
+
+
+
+    public struct BuildingCell
+    {
+        public Vector3Int cell;
+        public BuildingLayers layers;
+        
+        public BuildingCell(Vector3Int cell, BuildingLayers layers)
+        {
+            this.cell = cell;
+            this.layers = layers;
+        }
+    }
 }

@@ -13,8 +13,19 @@ namespace Tools.BuildTool
         private readonly ToolControllerBase _controllerBase;
         private readonly IModeNameListener _ui;
 
-        public string CurrentMode => _modes[_currentModeIndex];
-        
+        public string CurrentMode
+        {
+            get => _modes[_currentModeIndex];
+            set
+            {
+                var index = _modes.IndexOf(value);
+                if(index == -1)
+                    return;
+                _currentModeIndex = index;
+                OnModeChanged();
+            }
+        }
+
 
         public ToolModeListener(List<string> modes, ToolControllerBase controllerBase)
         {

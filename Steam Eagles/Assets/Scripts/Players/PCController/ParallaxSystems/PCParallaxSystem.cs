@@ -108,13 +108,14 @@ public class PCParallaxSystem : PCSystem, IInitializable, ITickable, ILateTickab
     private void UpdateNumberOfSprites(int numberOfTransforms)
     {
         Debug.Log($"Number of parallax sprites changed to {numberOfTransforms} for player {_playerNumber}", _pc.PCInstance.character);
-        _currentCount = numberOfTransforms;
+        
+        
         _nonParallaxOriginals = _parallaxSprites.GetOriginals().ToArray();
         _parallaxCopies  = _parallaxSprites.GetCopies(_playerNumber).ToArray();
-            
-        Debug.Assert(_parallaxCopies.Length == numberOfTransforms);
-        Debug.Assert(_nonParallaxOriginals.Length == numberOfTransforms);
-            
+
+        Debug.Assert (_parallaxCopies.Length == _nonParallaxOriginals.Length) ;
+        numberOfTransforms = _parallaxCopies.Length;
+        _currentCount = numberOfTransforms;
         
         if(_originalPositions.IsCreated)
             _originalPositions.Dispose();

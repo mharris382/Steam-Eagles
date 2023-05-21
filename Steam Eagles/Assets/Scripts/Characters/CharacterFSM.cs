@@ -88,7 +88,7 @@ namespace Characters
             _structureState = GetComponent<StructureState>();
             _interactionState = GetComponent<CharacterInteractionState>();
             _nullPilot = new NullPilot(gameObject);
-            _climbCheck = new CharacterClimbCheck(_state, new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty));
+            _climbCheck = new CharacterClimbCheck(_state, new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty), new ColliderClimbableFactory());
             _climbingController = new CharacterClimbingController(_state, _controller.Config, _climbCheck);
             
             _pilot = GetComponent<IPilot>();
@@ -152,7 +152,7 @@ namespace Characters
             physicsFSM.AddTransition(DEFAULT, DROPPING, _ => CheckDropCondition() );
             physicsFSM.AddTransition(DROPPING, DEFAULT);
             
-            physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => CheckClimbStopCondition());
+            physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => CheckClimbStopCondition() && !State.IsJumping);
             physicsFSM.AddTransition(CLIMBING, JUMPING, _ => CheckClimbStopCondition() && State.IsJumping);
             physicsFSM.AddTransitionFromAny(CLIMBING, _ => CheckClimbStartCondition());
 

@@ -19,6 +19,8 @@ namespace Tools.DestructTool
             private Subject<DestructParams> _onDestruct = new Subject<DestructParams>();
             private readonly bool _isTilemap;
             private readonly BuildingTilemap _destructableTilemap;
+            
+            public IObservable<DestructParams> OnDestruct => _onDestruct;
 
             public Destructor(IDestruct destructable, DestructToolController tool)
             {
@@ -54,25 +56,7 @@ namespace Tools.DestructTool
             {
                 if (_isTilemap)
                 {
-                    var layer = _destructableTilemap.Layer;
-                    var map = _destructableTilemap.Building.Map;
-                    var cell = map.WorldToCell(dparams.position, layer);
-                    var hits = neighbors.Select(t => t + cell).Select(t => (t, map.GetTile(t, layer)))
-                        .Where(t => t.Item2 != null)
-                        .OrderBy(t => Vector3Int.Distance(t.t, cell));
-                    foreach (var value in hits)
-                    {
-                        _onDestruct.OnNext(new DestructParams(value.t));
-                    }
-                    //foreach (var neighborDir in neighbors)
-                    //{
-                    //    var neighborCell = cell + neighborDir;
-                    //    var tile = map.GetTile(neighborCell, layer);
-                    //    if (tile != null)
-                    //    {
-                    //        _onDestruct.OnNext(new DestructParams(neighborCell));
-                    //    }
-                    //}
+                    _onDestruct.OnNext(dparams);
                 }
                 else
                 {

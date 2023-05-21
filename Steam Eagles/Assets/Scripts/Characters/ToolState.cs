@@ -112,6 +112,7 @@ namespace Characters
             }
 
             public Subject<Unit> OnToolModeChanged { get; } = new Subject<Unit>();
+            public bool SamplePressed { get; set; }
         }
     }
 }

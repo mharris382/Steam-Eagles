@@ -116,7 +116,11 @@ namespace Buildings
 
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
         public Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
+        public Vector3 CellToWorld(BuildingCell cell) => CellToWorld(cell.cell, cell.layers);
+        public Vector3 CellToLocal(BuildingCell cell) => CellToLocal(cell.cell, cell.layers);
+        
         public Vector3 CellToLocal(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToLocal(cell);
+        public IEnumerable<BuildingCell> ConvertBetweenLayers(BuildingCell fromCell, BuildingLayers toLayer) => ConvertBetweenLayers(fromCell.layers, toLayer, fromCell.cell).Select(c => new BuildingCell(c, toLayer));
         public IEnumerable<Vector3Int> ConvertBetweenLayers(BuildingLayers fromLayer, BuildingLayers toLayer,
             Vector3Int fromCell)
         {
@@ -156,6 +160,8 @@ namespace Buildings
                 return null;
             return _layerToTilemap[layers].GetTile(cell);
         }
+
+        public TileBase GetTile(BuildingCell cell) => GetTile(cell.cell, cell.layers);
 
         public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
         {

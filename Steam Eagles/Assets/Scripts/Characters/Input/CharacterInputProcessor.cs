@@ -100,6 +100,7 @@ namespace Characters.MyInput
                                               inputPlayer.actions["Pause"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Codex"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Characters"].WasPressedThisFrame();
+            _toolState.Inputs.SamplePressed = inputPlayer.actions["Tool Sample"].WasPressedThisFrame();
             if (_toolState.Inputs.UsePressed) LogInput("UsePressed");
             if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
 

@@ -55,7 +55,7 @@ namespace Tools.BuildTool
         private ToolAimHandler _aimHandler;
         private ToolModeListener _modeListener;
 
-        protected ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
+        public ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
         protected CharacterState CharacterState => _characterState;
         public ToolState ToolState => CharacterState.Tool;
         protected Inventory Inventory => _inventory;
@@ -65,6 +65,7 @@ namespace Tools.BuildTool
 
         public ToolActivator Activator => _activator ??= new ToolActivator(this);
 
+        public Building Building => targetBuilding;
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
         public virtual string ToolMode { get; set; }

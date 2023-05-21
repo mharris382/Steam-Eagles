@@ -1,4 +1,5 @@
-﻿using Buildings;
+﻿using System;
+using Buildings;
 using Characters;
 using CoreLib;
 using SteamEagles.Characters;
@@ -7,6 +8,39 @@ using UnityEngine;
 
 namespace Tools.BuildTool
 {
+    public class AimDistanceLimiter : IToolAimDecorator
+    {
+        private readonly Transform _aimOrigin;
+        private readonly Func<float> _distanceLimit;
+
+        public AimDistanceLimiter(Transform aimOrigin, float distanceLimit) : this(aimOrigin, () => distanceLimit)
+        {
+            Debug.Assert(distanceLimit > 0);
+        }
+
+        public AimDistanceLimiter(Transform aimOrigin, Func<float> distanceLimit)
+        {
+            _aimOrigin = aimOrigin;
+            _distanceLimit = distanceLimit;
+        }
+
+        public Vector3 GetAimPosition(Vector3 aimPosition)
+        {
+            var limit = _distanceLimit();
+            var diff = _aimOrigin.position - aimPosition;
+            if (diff.sqrMagnitude > limit * limit)
+            {
+                diff = diff.normalized * limit;
+                return _aimOrigin.position - diff;
+            }
+            return aimPosition;
+        }
+    }
+    class NullAimDecorator : IToolAimDecorator
+    {
+        public Vector3 GetAimPosition(Vector3 aimPosition) => aimPosition;
+    }
+    
     /// <summary>
     /// internally manages the logic of converting raw aim input into cell selection inside buildings
     /// <para>NOTE: must at some point call UpdateAimPosition for this to work <see cref="UpdateAimPosition"/></para> 
@@ -18,7 +52,17 @@ namespace Tools.BuildTool
         private ToolState _toolState;
         private Building _building;
         private ReactiveProperty<Vector3Int> _hoveredPosition = new ReactiveProperty<Vector3Int>();
+        private Subject<BuildingToolAimInfo> _toolAimInfoSubject = new Subject<BuildingToolAimInfo>();
         private Vector2 _mousePosition;
+        
+        private IToolAimDecorator _aimDecorator;
+        private IToolAimDecorator _nullAimDecorator = new NullAimDecorator();
+        
+        public IToolAimDecorator AimDecorator
+        {
+            get => _aimDecorator ?? _nullAimDecorator;
+            set => _aimDecorator = value;
+        }
 
         public IReadOnlyReactiveProperty<Vector3Int> HoveredPosition => _hoveredPosition;
         public Vector2 AimDirection { get; private set; }
@@ -43,6 +87,9 @@ namespace Tools.BuildTool
         
         private Building Building => _building != null ? _building : (_building = _owner.GetComponentInParent<Building>());
         private bool UseMousePosition => _toolState.Inputs.CurrentInputMode == InputMode.KeyboardMouse;
+        
+        public IObservable<BuildingToolAimInfo> ToolAimInfo => _toolAimInfoSubject;
+        
         public ToolAimHandler(MonoBehaviour owner, ToolState toolState)
         {
             _owner = owner;
@@ -98,15 +145,54 @@ namespace Tools.BuildTool
             {
                 UpdateAimForController(targetLayer);
             }
-        }
 
-        private void UpdateAimForMousePosition(BuildingLayers targetLayer) => _hoveredPosition.Value = Building.Map.WorldToCell(_mousePosition, targetLayer);
+            UpdateAimVisual(_hoveredPosition.Value, targetLayer, _building);
+        }
 
         private void HandleMousePosition()
         {
             _mousePosition = Camera.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        private void UpdateAimForController(BuildingLayers targetLayer) => _hoveredPosition.Value = Building.Map.WorldToCell(_toolState.AimPositionWorld, targetLayer);
+
+        private void UpdateAimForMousePosition(BuildingLayers targetLayer) => 
+            UpdateAim(_mousePosition, targetLayer);
+
+        private void UpdateAimForController(BuildingLayers targetLayer) =>
+            UpdateAim(_toolState.AimPositionWorld, targetLayer);
+        
+        
+        private void UpdateAim(Vector3 aimPosition, BuildingLayers targetLayer)
+        {
+            aimPosition = AimDecorator.GetAimPosition(aimPosition);
+            var cell = Building.Map.WorldToCell(aimPosition, targetLayer);
+            _hoveredPosition.Value = cell;
+        }
+
+        private void UpdateAimVisual(Vector3Int hoveredPositionValue, BuildingLayers targetLayer, Building building)
+        {
+            var cell = new BuildingCell(hoveredPositionValue, targetLayer);
+            _toolAimInfoSubject.OnNext(new BuildingToolAimInfo(cell, building.Map.CellToWorld(cell), building));
+        }
+    }
+
+    public struct BuildingToolAimInfo
+    {
+        public BuildingCell Cell { get; private set; }
+        public Vector3 AimPositionWs { get; }
+        public Building Building { get; }
+
+        public BuildingLayers Layer
+        {
+            get => Cell.layers;
+            set => Cell = new BuildingCell(Cell.cell, value);
+        }
+
+        public BuildingToolAimInfo(BuildingCell cell, Vector3 aimPositionWs, Building building)
+        {
+            Cell = cell;
+            AimPositionWs = aimPositionWs;
+            Building = building;
+        }
     }
 }

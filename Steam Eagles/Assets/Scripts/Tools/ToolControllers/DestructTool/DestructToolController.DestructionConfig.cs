@@ -1,4 +1,5 @@
 ﻿using System;
+using Tools.BuildTool;
 using UnityEngine;
 
 namespace Tools.DestructTool
@@ -15,6 +16,15 @@ namespace Tools.DestructTool
             [Tooltip(
                 "If the destuctor does not receive a hit for this amount of time, it will reset the time until next destruction")]
             public float destructionResetTimer = 0.5f;
+
+            
+            private AimDistanceLimiter _aimDistanceLimiter;
+
+            public IToolAimDecorator AimDecorator => _aimDistanceLimiter;
+            public void OnEnable(DestructToolController destructToolController)
+            {
+                _aimDistanceLimiter ??= new AimDistanceLimiter(destructToolController.transform, () => radius);
+            }
         }
     }
 }

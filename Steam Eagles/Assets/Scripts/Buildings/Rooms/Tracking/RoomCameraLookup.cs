@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using CoreLib.SharedVariables;
 using UniRx;
 using UnityEngine;
 using Zenject;
+using Object = UnityEngine.Object;
 
 namespace Buildings.Rooms.Tracking
 {
@@ -14,18 +17,20 @@ namespace Buildings.Rooms.Tracking
         private readonly GameObject[] _defaultCameras;
         private PlayerRoomCameras[] _playerRoomCameras;
         private PCTracker _pcRoomTracker;
+        internal List<SharedTransform> sharedTransforms;
         public bool inited { get; private set; }
         public GameObject GetPlayerVCam(Room room, int playerNumber) => room != null ? GetRoomCamera(room).GetPlayerVCam(playerNumber) : GetDefaultCamera(playerNumber);
 
 
         [Inject]
-        public void InjectDefaultCamera(GameObject defaultVCamera, PCTracker pcRoomTracker)
+        public void InjectDefaultCamera(GameObject defaultVCamera, PCTracker pcRoomTracker, List<SharedTransform> sharedTransforms)
         {
+            this.sharedTransforms = sharedTransforms;
             this.prefabVCam  = defaultVCamera;
             inited = true;
             for (int i = 0; i < _defaultCameras.Length; i++)
             {
-                _defaultCameras[i] = CreateVCamForPlayerFromTemplate(defaultVCamera, i);
+                _defaultCameras[i] = CreateVCamForPlayerFromTemplate(defaultVCamera, i, sharedTransforms[i].Value);
             }
             _playerRoomCameras = new PlayerRoomCameras[2];
             _pcRoomTracker = pcRoomTracker;
@@ -75,7 +80,7 @@ namespace Buildings.Rooms.Tracking
             private GameObject CreatePlayerVCam(int playerNumber)
             {
                 if (room.roomCamera != null)
-                    return CreateVCamForPlayerFromTemplate(room.roomCamera, playerNumber);
+                    return CreateVCamForPlayerFromTemplate(room.roomCamera, playerNumber, _roomCameraLookup.sharedTransforms[playerNumber].Value);
                 return _roomCameraLookup.GetDefaultCamera(playerNumber);
             }
             public RoomCamera(Room room, RoomCameraLookup roomCameraLookup)
@@ -93,11 +98,28 @@ namespace Buildings.Rooms.Tracking
             return _defaultCameras[playerNumber];
         }
 
-        public static GameObject CreateVCamForPlayerFromTemplate(GameObject vCamTemplate, int playerNumber)
+        public static GameObject CreateVCamForPlayerFromTemplate(GameObject vCamTemplate, int playerNumber,
+            Transform transform)
         {
             var vCam = Object.Instantiate(vCamTemplate, vCamTemplate.transform.parent);
             vCam.name = $"{vCamTemplate.name} P#{playerNumber}";
             vCam.layer = LayerMask.NameToLayer($"P{playerNumber + 1}");
+            if (vCamTemplate.CompareTag("Follow Cam"))
+            {
+                var cinemachineType = Type.GetType("Cinemachine.CinemachineVirtualCameraBase, Cinemachine");
+                if (cinemachineType == null)
+                {
+                    Debug.LogError("Cinemachine type not found");
+                    return vCam;
+                }
+                var component = vCam.GetComponent(cinemachineType);
+                if (component == null)
+                {
+                    Debug.LogError("Component not found", vCamTemplate);
+                    return vCam;
+                }
+                cinemachineType.GetField("m_Follow").SetValue(component, transform);
+            }
             return vCam;
         }
 
@@ -160,7 +182,7 @@ namespace Buildings.Rooms.Tracking
                     _player = player;
                     if (room.roomCamera != null)
                     {
-                        vCam = CreateVCamForPlayerFromTemplate(room.roomCamera, player);
+                        vCam = CreateVCamForPlayerFromTemplate(room.roomCamera, player, lookup.sharedTransforms[player].Value);
                         vCam.SetActive(false);
                     }
                     else
