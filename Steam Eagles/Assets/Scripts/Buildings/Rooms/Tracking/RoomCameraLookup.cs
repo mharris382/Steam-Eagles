@@ -128,7 +128,7 @@ namespace Buildings.Rooms.Tracking
             Transform transform)
         {
             var vCam = Object.Instantiate(vCamTemplate, vCamTemplate.transform.parent);
-            vCam.name = $"{vCamTemplate.name} P#{playerNumber}";
+            vCam.name = $"{vCamTemplate.name}";
             vCam.layer = LayerMask.NameToLayer($"P{playerNumber + 1}");
             if (vCamTemplate.CompareTag("Follow Cam"))
             {
