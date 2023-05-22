@@ -17,12 +17,13 @@ using Sirenix.OdinInspector;
         FULL,
         NONE
     }
+
     [Serializable]
     public class Room : MonoBehaviour
     {
         public GameObject roomCamera;
         public bool isRoomCameraDynamic;
-        
+        public  RoomCameraConfig roomCameraConfig;
         [EnumToggleButtons]
         public AccessLevel accessLevel = AccessLevel.EVERYONE;
         [EnumPaging]

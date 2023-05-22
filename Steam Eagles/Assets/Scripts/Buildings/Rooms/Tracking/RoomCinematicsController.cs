@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Buildings.Messages;
 using CoreLib;
 using CoreLib.Entities;
@@ -11,6 +12,7 @@ using Zenject;
 
 namespace Buildings.Rooms.Tracking
 {
+    
     public class RoomCinematicsController : MonoBehaviour
     {
         private CompositeDisposable _cd;
@@ -25,6 +27,11 @@ namespace Buildings.Rooms.Tracking
             private readonly RoomCameraLookup _cameraLookup;
             private readonly PCRoomTracker.PC _pcRoomTracker;
             private CompositeDisposable _cd;
+            private Room _room;
+            private Transform _subjectProxy;
+            
+            private GameObject _camera;
+            
 
             public PCCamera(MonoBehaviour owner, int playerNumber,
                 RoomCameraLookup cameraLookup, PCRoomTracker.PC pcRoomTracker)
@@ -54,13 +61,36 @@ namespace Buildings.Rooms.Tracking
 
             public void SetRoomCameraEnabled(Room room, bool enabled)
             {
-                var camera = _cameraLookup.GetPlayerVCam(room, _playerNumber);
-                camera.SetActive(enabled);
+                if (room == null)
+                {
+                    _camera = null;
+                }
+                _camera = _cameraLookup.GetPlayerVCam(room, _playerNumber);
+                _camera.SetActive(enabled);
+                _room = room;
+                if (room == null) return;
+                _subjectProxy ??= new GameObject(_pcRoomTracker.Instance.character.name + " Camera Subject Proxy").transform;
+                _subjectProxy.position = _pcRoomTracker.Instance.character.transform.position;
+                var vCam = _camera.GetComponent<CinemachineVirtualCamera>();
+                if(room.roomCameraConfig.followPlayerX || room.roomCameraConfig.followPlayerY)
+                    vCam.Follow = _subjectProxy;
+                //Debug.Log($"Set Follow Target to Proxy {_subjectProxy.name}", vCam);
             }
 
             public void Dispose()
             {
                 _cd?.Dispose();
+            }
+
+            public void Tick()
+            {
+                if(_camera == null)return;
+                if (_room == null) return;
+                var subject = _pcRoomTracker.Instance.character.transform;
+                if (subject == null) return;
+                _subjectProxy.position = _room.roomCameraConfig.GetCameraPosition(_room, subject.position,_room.WorldSpaceBounds.center);
+               // Debug.Log($"Updated Proxy Position to {_subjectProxy.position}", _subjectProxy);
+                
             }
         }
         
@@ -86,8 +116,15 @@ namespace Buildings.Rooms.Tracking
             _cd = new CompositeDisposable();
             _pcCameras = new PCCamera[2];
         }
-      
-        
+
+        private void Update()
+        {
+            foreach (var pcCamera in _pcCameras)
+            {
+                pcCamera?.Tick();
+            }
+        }
+
         private void OnDisable() => _cd?.Dispose();
 
         public bool HasResources() => _cameraLookup != null;

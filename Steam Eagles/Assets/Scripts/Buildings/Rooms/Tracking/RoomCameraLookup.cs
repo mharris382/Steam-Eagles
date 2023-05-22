@@ -270,30 +270,30 @@ namespace Buildings.Rooms.Tracking
         
         public void Tick()
         {
-            foreach (var roomCameraSystem in _cameraSystems)
-            {
-                foreach ((int playerNumber, PCTracker.TrackedPC pc) p in _pcRoomTracker.AllPCsAndPlayerNumbers())
-                {
-                    var subject = p.pc.Instance.character;
-                    var room = _playerRoomCameras[p.playerNumber].PlayerRoom.Value;
-                    var camera = GetRoomCamera(room);
-                    var cameraGameObject = camera.GetPlayerVCam(p.pc.PlayerNumber);
-                    
-                    roomCameraSystem.UpdateCamera(cameraGameObject, subject);
-                    
-                    if (cameraGameObject != _lastCamera[p.playerNumber])
-                    {
-                        roomCameraSystem.OnCameraChanged(_lastCamera[p.playerNumber], cameraGameObject);
-                        _lastCamera[p.playerNumber] = cameraGameObject;
-                    }
-
-                    if (room != _lastRooms[p.playerNumber])
-                    {
-                        roomCameraSystem.OnRoomChanged(_lastRooms[p.playerNumber], room);
-                        _lastRooms[p.playerNumber] = room;
-                    }
-                }
-            }
+            // foreach (var roomCameraSystem in _cameraSystems)
+            // {
+            //     foreach ((int playerNumber, PCTracker.TrackedPC pc) p in _pcRoomTracker.AllPCsAndPlayerNumbers())
+            //     {
+            //         var subject = p.pc.Instance.character;
+            //         var room = _playerRoomCameras[p.playerNumber].PlayerRoom.Value;
+            //         var camera = GetRoomCamera(room);
+            //         var cameraGameObject = camera.GetPlayerVCam(p.pc.PlayerNumber);
+            //         
+            //         roomCameraSystem.UpdateCamera(cameraGameObject, subject);
+            //         
+            //         if (cameraGameObject != _lastCamera[p.playerNumber])
+            //         {
+            //             roomCameraSystem.OnCameraChanged(_lastCamera[p.playerNumber], cameraGameObject);
+            //             _lastCamera[p.playerNumber] = cameraGameObject;
+            //         }
+            //
+            //         if (room != _lastRooms[p.playerNumber])
+            //         {
+            //             roomCameraSystem.OnRoomChanged(_lastRooms[p.playerNumber], room);
+            //             _lastRooms[p.playerNumber] = room;
+            //         }
+            //     }
+            // }
         }
     }
 
