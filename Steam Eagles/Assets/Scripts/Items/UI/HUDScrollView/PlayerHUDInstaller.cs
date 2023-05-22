@@ -28,9 +28,9 @@ namespace Items.UI.HUDScrollView
         }
         public override void InstallBindings()
         {
-            Container.BindFactoryCustomInterface<PC, PlayerHUDSystem, PlayerHUDSystem.Factory,
-                    ISystemFactory<PlayerHUDSystem>>();
-            Container.BindInterfacesAndSelfTo<PlayerHUDSystems>().AsSingle().NonLazy();
+          // Container.BindFactoryCustomInterface<PC, PlayerHUDSystem, PlayerHUDSystem.Factory,
+          //         ISystemFactory<PlayerHUDSystem>>();
+          // Container.BindInterfacesAndSelfTo<PlayerHUDSystems>().AsSingle().NonLazy();
             
         }
     }

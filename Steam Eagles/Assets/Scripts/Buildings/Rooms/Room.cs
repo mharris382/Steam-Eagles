@@ -43,6 +43,9 @@ using Sirenix.OdinInspector;
 
         public List<Room> connectedRooms = new List<Room>();
 
+        private Building _building;
+        public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
+
         public Bounds RoomBounds
         {
             get => roomBounds;

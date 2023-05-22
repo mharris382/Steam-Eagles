@@ -28,18 +28,18 @@ public abstract class PCSystemsBase<T> : IDisposable  where T : PCSystem
             .Subscribe(t => OnPCInstanceChanged(t.Item1, t.Item2));
     }
 
-    void OnPCInstanceChanged(int playerNumber, PCTracker.PC pc)
+    void OnPCInstanceChanged(int playerNumber, PCTracker.TrackedPC trackedPC)
     {
         if (_systems[playerNumber] != null) _systems[playerNumber].Dispose();
-        _pcs[playerNumber] = _pcFactory.Create(playerNumber, pc);
+        _pcs[playerNumber] = _pcFactory.Create(playerNumber, trackedPC);
         _systems[playerNumber] = CreateSystemFor(_pcs[playerNumber]);
     }
-    
-    protected abstract T CreateSystemFor(PC pc);
+
+    public abstract T CreateSystemFor(PC pc);
 
     public T GetSystemFor(int player) => _systems[player];
     public T GetSystemFor(PC player) => GetSystemFor(player.PlayerNumber);
-    public T GetSystemFor(PCTracker.PC player) => GetSystemFor(player.PlayerNumber);
+    public T GetSystemFor(PCTracker.TrackedPC player) => GetSystemFor(player.PlayerNumber);
     
     public PC GetPC(int player) => _pcs[player];
 

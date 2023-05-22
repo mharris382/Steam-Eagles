@@ -15,7 +15,7 @@ namespace Players.PCController.Interactions
             _factory = factory;
         }
 
-        protected override PCInteractionSystem CreateSystemFor(PC pc) => _factory.Create(pc);
+        public override PCInteractionSystem CreateSystemFor(PC pc) => _factory.Create(pc);
 
         public void Initialize()
         {

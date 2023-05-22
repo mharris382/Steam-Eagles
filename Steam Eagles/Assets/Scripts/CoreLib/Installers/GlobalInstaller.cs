@@ -1,10 +1,13 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
 using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 public class GlobalInstaller : MonoInstaller
@@ -20,8 +23,33 @@ public class GlobalInstaller : MonoInstaller
         Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PauseMenuSetInactiveOnStart>().FromNew().AsSingle().NonLazy();
         Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
+        Container.Bind<GlobalGameState>().FromNew().AsSingle();
+
     }
     
+    
+    public class GlobalGameState
+    {
+        public bool inMainMenu
+        {
+            get;
+            set;
+        }
+
+        public event Action<int> onSceneLoad;
+
+        public GlobalGameState()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            inMainMenu = true;
+        }
+
+        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            inMainMenu = arg0.name == "Main Menu";
+            onSceneLoad(arg0.buildIndex);
+        }
+    }
     
     internal class PauseMenuSetInactiveOnStart : IInitializable
     {

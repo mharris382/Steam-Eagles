@@ -5,9 +5,10 @@ using CoreLib;
 using UniRx;
 using UnityEngine;
 using Zenject;
-using TrackedPC = Buildings.Rooms.Tracking.PCTracker.PC;
+
 namespace Players.PCController
 {
+
     public class PCManager : IFixedTickable
     {
         private readonly PCTracker _tracker;
@@ -27,10 +28,10 @@ namespace Players.PCController
                 .AddTo(_disposable);
         }
 
-        private void OnPlayerCharacterJoined(int playerNumber, TrackedPC pcInstance)
+        private void OnPlayerCharacterJoined(int playerNumber, PCTracker.TrackedPC trackedPCInstance)
         {
             if (_pcs[playerNumber] != null) _pcs[playerNumber].Dispose();
-            _pcs[playerNumber] = _factory.Create(playerNumber, pcInstance);
+            _pcs[playerNumber] = _factory.Create(playerNumber, trackedPCInstance);
         }
 
         public void FixedTick()
@@ -56,19 +57,21 @@ namespace Players.PCController
         private readonly int _playerNumber;
         private readonly PCInstance _pc;
         public readonly CompositeDisposable DisposeWithPC;
-        private readonly TrackedPC _pcTracker;
+        private readonly PCTracker.TrackedPC _trackedPCTracker;
 
         public int PlayerNumber => _playerNumber;
         public PCInstance PCInstance => _pc;
-        internal PC(int playerNumber, TrackedPC pc)
+        
+        internal PC(int playerNumber, PCTracker.TrackedPC trackedPC)
         {
             _playerNumber = playerNumber;
-            _pc = pc.Instance;
-            _pcTracker = pc;
+            _pc = trackedPC.Instance;
+            _trackedPCTracker = trackedPC;
             DisposeWithPC = new CompositeDisposable();
+            
         }
 
-        public class Factory : PlaceholderFactory<int, TrackedPC, PC> { }
+        public class Factory : PlaceholderFactory<int, PCTracker.TrackedPC, PC> { }
 
         public void Dispose()
         {

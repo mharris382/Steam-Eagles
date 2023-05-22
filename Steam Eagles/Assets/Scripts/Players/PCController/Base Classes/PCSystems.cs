@@ -1,4 +1,5 @@
 ﻿using Buildings.Rooms.Tracking;
+using JetBrains.Annotations;
 using Players.PCController;
 
 /// <summary>
@@ -9,6 +10,7 @@ using Players.PCController;
 public abstract class PCSystems<T> : PCSystemsBase<T> where T : PCSystem
 {
     private readonly ISystemFactory<T> _factory;
+     public ISystemFactory<T> Factory => _factory;
     protected PCSystems(PCTracker pcTracker, PC.Factory pcFactory, ISystemFactory<T> factory) : base(pcTracker, pcFactory)
     {
         _factory = factory;

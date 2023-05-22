@@ -9,7 +9,7 @@ public class PCParallaxSystems : PCSystems<PCParallaxSystem>, IInitializable, IT
     private readonly ISystemFactory<PCParallaxSystem> _factory;
     private readonly ParallaxSprites _parallaxSprites;
 
-    protected override PCParallaxSystem CreateSystemFor(PC pc) => _factory.Create(pc);
+    public override PCParallaxSystem CreateSystemFor(PC pc) => _factory.Create(pc);
     
     
     public void Tick()

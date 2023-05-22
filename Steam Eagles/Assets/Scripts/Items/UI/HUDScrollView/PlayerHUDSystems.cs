@@ -15,7 +15,7 @@ namespace Items.UI.HUDScrollView
             _factory = factory;
         }
 
-        protected override PlayerHUDSystem CreateSystemFor(PC pc)
+        public override PlayerHUDSystem CreateSystemFor(PC pc)
         {
             return _factory.Create(pc);
         }
