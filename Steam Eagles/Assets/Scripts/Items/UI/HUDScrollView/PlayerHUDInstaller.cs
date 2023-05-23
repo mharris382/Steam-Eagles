@@ -6,32 +6,18 @@ using Zenject;
 
 namespace Items.UI.HUDScrollView
 {
+    [InfoBox("Should be bound at the SceneContext level")]
     public class PlayerHUDInstaller : MonoInstaller
     {
-        [ValidateInput(nameof(ValidatePrefab))]
-        public GameObject playerHUDPrefab;
-
-        bool ValidatePrefab(GameObject prefab, ref string error)
-        {
-            if (prefab == null)
-            {
-                error = "Missing playerHUDPrefab reference";
-                return false;
-            }
-
-            if (prefab.GetComponent<PlayerHUD>() == null)
-            {
-                error = "Missing PlayerHUD component on playerHUDPrefab";
-                return false;
-            }
-            return true;
-        }
+        [Required, AssetsOnly]
+        public PlayerHUD playerHUDPrefab;
+       
         public override void InstallBindings()
-        {
-          // Container.BindFactoryCustomInterface<PC, PlayerHUDSystem, PlayerHUDSystem.Factory,
-          //         ISystemFactory<PlayerHUDSystem>>();
-          // Container.BindInterfacesAndSelfTo<PlayerHUDSystems>().AsSingle().NonLazy();
-            
+        { 
+            Container.BindFactoryCustomInterface<PC, PlayerHUDSystem, PlayerHUDSystem.Factory, ISystemFactory<PlayerHUDSystem>>();
+            Container.BindInterfacesAndSelfTo<PlayerHUDSystems>().AsSingle().NonLazy();
+            Container.Bind<PlayerHUDPrefab>().FromInstance(new PlayerHUDPrefab(playerHUDPrefab)).AsSingle().NonLazy();
+            Container.BindFactory<PlayerHUD, PlayerHUDInstance, PlayerHUDInstance.Factory>().FromFactory<PrefabFactory<PlayerHUDInstance>>();
         }
     }
 }
