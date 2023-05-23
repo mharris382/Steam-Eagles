@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CoreLib
 {
+    public delegate GameObject GetRoomResourceForPlayer(GameObject roomGo);
+    public delegate IEnumerable<GameObject> GetRoomResourcesForPlayer(GameObject roomGo);
+    
     public class PCInstance : IDisposable
     {
         public CompositeDisposable Disposable { get; private set; }
@@ -21,6 +24,7 @@ namespace CoreLib
         public GameObject camera {get; private set;}
         public GameObject input {get; private set;}
 
+        public Proxies SystemProxies { get; private set; } = new Proxies();
         public void Dispose()
         {
             Disposable?.Dispose();
@@ -28,6 +32,22 @@ namespace CoreLib
         }
 
         public bool IsValid() => character != null && camera != null && input != null;
+        
+        
+        
+        public class Proxies
+        {
+            public GetRoomResourceForPlayer roomMusicAudioResolver { private get; set; }
+            public GetRoomResourceForPlayer roomCameraResolver { private get; set; }
+            
+            
+
+            public bool CanResolveCamera() => roomCameraResolver != null;
+            public bool CanResolveMusicAudio() => roomMusicAudioResolver != null;
+
+            public GameObject GetRoomAudio(GameObject room) => CanResolveMusicAudio() ? roomMusicAudioResolver(room) : null;
+            public GameObject GetRoomCamera(GameObject room) => CanResolveCamera() ? roomCameraResolver(room) : null;
+        }
     }
 
     public struct PCInstanceChangedInfo

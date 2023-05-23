@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Buildings.Messages;
 using CoreLib;
+using CoreLib.Signals;
 using UniRx;
+using UnityEngine;
 
 namespace Buildings.Rooms.Tracking
 {
@@ -16,6 +18,44 @@ namespace Buildings.Rooms.Tracking
         private IDisposable _disposable;
         private Subject<(int playerNumber, TrackedPC pc)> onPCChanged = new();
         public IObservable<(int, TrackedPC)> OnPCChanged => onPCChanged;//.Select(t => (t.playerNumber, t.pc.Instance));
+
+        public IObservable<(int, TrackedPC)> OnPCChangedOrExists
+        {
+            get
+            {
+                bool foundp1 = false;
+                bool foundP2 = false;
+                foreach (var trackedPC in _instances)
+                {
+                    if (trackedPC != null)
+                    {
+                        if (trackedPC.PlayerNumber == 0)
+                        {
+                            foundp1 = true;
+                        }
+                        else
+                        {
+                            foundP2 = true;
+                        }
+                    }
+                }
+
+                int cnt = 0;
+                cnt += foundp1 ? 1 : 0;
+                cnt += foundP2 ? 1 : 0;
+                switch (cnt)
+                {
+                    case 0:
+                        return OnPCChanged;
+                    case 1:
+                        return OnPCChanged.StartWith(foundp1 ? (0, _instances[0]) : (1, _instances[1]));
+                    case 2:
+                        return OnPCChanged.StartWith((0, _instances[0])).StartWith((1, _instances[1]));
+                    default:
+                        throw new Exception("Invalid count");
+                }
+            }
+        }
         public PCTracker()
         {
             var cd = new CompositeDisposable();
@@ -49,7 +89,7 @@ namespace Buildings.Rooms.Tracking
         /// <summary>
         /// tracks room that a PC is in
         /// </summary>
-        public class TrackedPC : IDisposable
+        public class TrackedPC : IDisposable, IPCTracker
         {
             public readonly PCInstance Instance;
             public readonly int PlayerNumber;
@@ -57,7 +97,30 @@ namespace Buildings.Rooms.Tracking
             private IDisposable _disposable;
             
             public Room LastRoom { get; set; }
-            
+
+            public GameObject GetCurrentRoom() => pcRoom.HasValue ? pcRoom.Value.gameObject : null;
+            public GameObject GetCurrentBuilding() => pcRoom.HasValue ? pcRoom.Value.Building.gameObject : null;
+            public IObservable<GameObject> OnPcRoomChanged(bool includeCurrent = false)
+            {
+                var res = pcRoom.Select(r => r == null ? null : r.gameObject);
+                if (includeCurrent)
+                {
+                    res.StartWith(pcRoom.Value.gameObject);
+                }
+                return res;
+            }
+
+            public IObservable<GameObject> OnPcBuildingChanged(bool includeCurrent = false)
+            {
+                var res = pcRoom.Select(t => t == null ? null : t.Building.gameObject);
+
+                if (includeCurrent)
+                {
+                    res.StartWith(pcRoom.Value.Building.gameObject);
+                }
+                return res;
+            }
+
             private Subject<(Room prevRoom, Room newRoom)> onRoomChanged = new();
             private ReactiveProperty<Room> pcRoom = new ReactiveProperty<Room>();
             private ReadOnlyReactiveProperty<Building> pcBuilding;

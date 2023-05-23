@@ -40,6 +40,7 @@ namespace Buildings.Rooms.Tracking
                 _playerNumber = playerNumber;
                 _cameraLookup = cameraLookup;
                 _pcRoomTracker = pcRoomTracker;
+                
                 owner.StartCoroutine(DelaySubscription());
             }
 

@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
  using UnityEditor;
  #endif
  using UnityEngine;
+ using UnityEngine.Events;
  using UnityEngine.Tilemaps;
 
  namespace Buildings.Rooms
@@ -21,6 +22,24 @@ using Sirenix.OdinInspector;
     [Serializable]
     public class Room : MonoBehaviour
     {
+        [Serializable]
+        public class Events
+        {
+            public CharacterEvents characterEvents = new CharacterEvents();
+            public PlayerEvents playerEvents = new PlayerEvents();
+            [Serializable] public class CharacterEvents
+            {
+                public UnityEvent<GameObject> onCharacterEntered = new UnityEvent<GameObject>();
+                public UnityEvent<GameObject> onCharacterExited = new UnityEvent<GameObject>();
+            }
+            [Serializable] public class PlayerEvents
+            {
+                public UnityEvent<int> onPlayerEntered = new UnityEvent<int>();
+                public UnityEvent<int> onPlayerExited = new UnityEvent<int>();
+            }
+        }
+        
+        [SerializeField] private Events events = new Events();
         public GameObject roomCamera;
         public bool isRoomCameraDynamic;
         public  RoomCameraConfig roomCameraConfig;
@@ -248,6 +267,18 @@ using Sirenix.OdinInspector;
                 }
             }
            
+        }
+
+
+
+        public void NotifyPlayerCharacterEnteredRoom(PCInstance pcInstance)
+        {
+            
+        }
+        
+        public void NotifyPlayerCharacterExitedRoom(PCInstance pcInstance)
+        {
+            
         }
     }
 
