@@ -244,7 +244,7 @@ namespace Buildables
 
         protected virtual void OnMachineBuilt(Vector3Int cell, Building building)
         {
-            
+            Debug.Log($"{name} built at {cell} on {building.buildingName}",this);
         }
 
         protected virtual bool IsCellValid(Building building, Vector3Int cellPos)
