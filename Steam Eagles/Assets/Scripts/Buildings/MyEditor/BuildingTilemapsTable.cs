@@ -7,10 +7,11 @@ using UnityEngine;
 
 namespace Buildings.MyEditor
 {
-    public class BuildingTilemapsTable
+    public class BuildingTilemapsTable : IBuildingTable
     {
         private readonly Building _building;
         
+        public bool IsValid => _building != null;
         [ShowInInspector, InlineButton(nameof(Select))]
         public string BuildingName
         {

@@ -10,12 +10,14 @@ using UnityEngine;
 
 namespace Buildings.MyEditor
 {
-    public class RoomCamerasTable
+    public class RoomCamerasTable : IBuildingTable
     {
         private readonly Building _building;
         private readonly StructureState _structure;
-        private Rooms.Rooms _rooms;
         
+        
+        private Rooms.Rooms _rooms;
+        public bool IsValid => _building != null && _rooms != null;
         [ValidateInput(nameof(ValidateCameras), messageType: InfoMessageType.Warning)]
         [TableList(AlwaysExpanded = true, NumberOfItemsPerPage = 10)]
         [ShowInInspector]

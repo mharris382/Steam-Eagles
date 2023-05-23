@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Buildings.MyEditor
 {
-    public abstract class SubSystemTable<TSubsystem, TEntity> 
+    public abstract class SubSystemTable<TSubsystem, TEntity> : IBuildingTable
         where TSubsystem : BuildingSubsystem<TEntity>
-        where TEntity : Component, IEntityID 
+        where TEntity : Component, IEntityID
     {
         protected readonly Building _building;
-
+        public bool IsValid => _building != null;
        
         
         [ShowInInspector]

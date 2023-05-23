@@ -14,7 +14,7 @@ namespace Buildings.MyEditor
         
     }
 
-    public class BuildingRoomsTable
+    public class BuildingRoomsTable : IBuildingTable
     {
         [ShowInInspector]
         public string BuildingName
@@ -22,7 +22,7 @@ namespace Buildings.MyEditor
             get => _building.buildingName;
             set => _building.buildingName = value;
         }
-        
+        public bool IsValid => _building != null;
         private readonly Building _building;
         private readonly StructureState _structure;
 

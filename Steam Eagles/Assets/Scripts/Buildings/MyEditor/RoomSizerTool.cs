@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Buildings.MyEditor
 {
-    public class RoomSizerTool
+    public class RoomSizerTool : IBuildingTable
     {
         public List<Room> Rooms = new List<Room>();
         private Color SelectionColor => Color.Lerp(Color.green, Color.white, 0.5f);
@@ -221,6 +221,20 @@ namespace Buildings.MyEditor
                     }
                 }
                 Debug.Log($"Output Path:\n{path.Bolded().InItalics()}");
+            }
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                foreach (var room in Rooms)
+                {
+                    if (room == null)
+                        return false;
+                }
+
+                return true;
             }
         }
     }
