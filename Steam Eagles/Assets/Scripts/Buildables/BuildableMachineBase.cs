@@ -43,6 +43,7 @@ namespace Buildables
         /// <summary> how many cells this machine occupies in the grid </summary>
         public abstract Vector2Int MachineGridSize { get; }
 
+        Vector3Int IMachineTileProvider.CellPosition => (Vector3Int)this.CellPosition; 
         public Vector2Int CellPosition
         {
             get
