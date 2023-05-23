@@ -10,7 +10,7 @@ using Utilities;
 
 namespace Buildables
 {
-    public abstract class BuildableMachineBase : MonoBehaviour, IIconable
+    public abstract class BuildableMachineBase : MonoBehaviour, IIconable, IMachineTileProvider
     {
         [Serializable]
         public class FX
@@ -35,6 +35,7 @@ namespace Buildables
 
         private bool _isFlipped;
         public string machineAddress;
+        private int _machineID;
         private Vector3Int? _spawnedPosition;
 
         #region [Properties]
@@ -105,6 +106,24 @@ namespace Buildables
         public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
         bool HasBuilding => buildingTarget != null;
 
+        
+        public int MachineID
+        {
+            get => _machineID;
+            set
+            {
+                _machineID = value;
+                Debug.Log($"Machine: {name} assigned ID {value}",this);
+            }
+        }
+
+        public Vector2Int MachineSize => this.MachineGridSize;
+        public virtual IEnumerable<MachineGridArea> GetMachineGridAreas()
+        {
+            yield return new MachineGridArea(MachineID, MachineSize, MachineLayers.PIPE);
+            yield return new MachineGridArea(MachineID, MachineSize, MachineLayers.SOLID);
+        }
+
         #endregion
 
         public bool HasResources()
@@ -122,6 +141,7 @@ namespace Buildables
         public BuildingLayers GetTargetLayer() => targetLayer;
 
         public Sprite GetIcon() => previewIcon != null ? previewIcon : ( sr != null ? sr.sprite : null );
+
 
         public IEnumerable<Vector3Int> GetCells()
         {
