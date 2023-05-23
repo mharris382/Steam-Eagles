@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: af1a1eac6f31db049af15ad741bafb7c
+guid: 9e71b69b652710a4786e2e18fb4ad1d0
 importerOverride:
   nativeImporterType: 2089858483
   scriptedImporterType:
@@ -99,49 +99,7 @@ ScriptedImporter:
     spritePosition: {x: 0, y: 0}
   mosaicSpriteImportData: []
   rigSpriteImportData:
-  - name: Layer 3
-    originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
-    border: {x: 0, y: 0, z: 0, w: 0}
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 2629
-      width: 965
-      height: 948
-    spriteID: 0c3aab558b7cb4045a73dc0bf55181a3
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 2629}
-    spritePosition: {x: 303, y: 50}
-  - name: Layer 2
-    originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
-    border: {x: 0, y: 0, z: 0, w: 0}
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 1551
-      width: 1490
-      height: 1070
-    spriteID: 0f8897edcf1960b41959e28096196297
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 1551}
-    spritePosition: {x: 80, y: 403}
-  - name: Paper
+  - name: window exterior (no collision)
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -150,9 +108,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 1641
-      height: 1539
-    spriteID: 975487bd66e505b4e970e7ac11044bf2
+      width: 670
+      height: 320
+    spriteID: f344fa69f3100ae42b076b0008fb15c4
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -161,7 +119,95 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
-    spritePosition: {x: 0, y: 0}
+    spritePosition: {x: 15, y: 12}
+  - name: window exterior (collision)
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 332
+      width: 666
+      height: 322
+    spriteID: bef6f6b7b92ebce4caa091423f7f59b3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: -225, y: 60}
+      - {x: -94, y: 122}
+      - {x: -39, y: 139}
+      - {x: 37, y: 145}
+      - {x: 113, y: 147}
+      - {x: 333, y: 147}
+      - {x: 333, y: 155}
+      - {x: 113, y: 154}
+      - {x: 36, y: 152}
+      - {x: -40, y: 145}
+      - {x: -98, y: 130}
+      - {x: -230, y: 67}
+      - {x: -269, y: 31}
+      - {x: -307, y: -20}
+      - {x: -323, y: -58}
+      - {x: -331, y: -102}
+      - {x: -333, y: -132}
+      - {x: -333, y: -161}
+      - {x: -325, y: -161}
+      - {x: -326, y: -132}
+      - {x: -325, y: -102}
+      - {x: -315, y: -62}
+      - {x: -298, y: -23}
+      - {x: -261, y: 26}
+    indices: 
+    edges: []
+    tessellationDetail: 0.12
+    uvTransform: {x: 4, y: 332}
+    spritePosition: {x: 16, y: 13}
+  - name: window supports (bg)
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 655
+      width: 663
+      height: 310
+    spriteID: 78322ca2c4ce3ad469fed490cbebf1a0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: -15, y: 641}
+    spritePosition: {x: 19, y: 14}
+  - name: window glass layer (opaque)
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 973
+      width: 665
+      height: 308
+    spriteID: 62dcf08e5fe801b44af0c56be9ebfcdc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: -13, y: 973}
+    spritePosition: {x: 17, y: 8}
   characterData:
     bones: []
     parts: []
@@ -177,7 +223,40 @@ ScriptedImporter:
     characterGroups: []
     pivot: {x: 0, y: 0}
     boneReadOnly: 0
-  platformSettings: []
+  platformSettings:
+  - name: DefaultTexturePlatform
+    overridden: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Server
+    overridden: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   mosaicLayers: 1
   characterMode: 1
   documentPivot: {x: 0, y: 0}
@@ -196,36 +275,76 @@ ScriptedImporter:
   resliceFromLayer: 0
   mosaicPSDLayers: []
   rigPSDLayers:
-  - name: Layer 3
-    spriteName: Layer 3
+  - name: window exterior (no collision)
+    spriteName: window exterior (no collision)
     isGroup: 0
     parentIndex: -1
-    spriteID: 0c3aab558b7cb4045a73dc0bf55181a3
-    layerID: 0
-    mosaicPosition: {x: 4, y: 2629}
-    flatten: 0
-    isImported: 1
-    isVisible: 1
-  - name: Layer 2
-    spriteName: Layer 2
-    isGroup: 0
-    parentIndex: -1
-    spriteID: 0f8897edcf1960b41959e28096196297
-    layerID: -7500619
-    mosaicPosition: {x: 4, y: 1551}
-    flatten: 0
-    isImported: 1
-    isVisible: 1
-  - name: Paper
-    spriteName: Paper
-    isGroup: 0
-    parentIndex: -1
-    spriteID: 975487bd66e505b4e970e7ac11044bf2
-    layerID: -1779142660
+    spriteID: f344fa69f3100ae42b076b0008fb15c4
+    layerID: 8
     mosaicPosition: {x: 4, y: 4}
     flatten: 0
     isImported: 1
     isVisible: 1
+  - name: window exterior (collision)
+    spriteName: window exterior (collision)
+    isGroup: 0
+    parentIndex: -1
+    spriteID: bef6f6b7b92ebce4caa091423f7f59b3
+    layerID: 9
+    mosaicPosition: {x: 4, y: 332}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: window supports (bg)
+    spriteName: window supports (bg)
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 78322ca2c4ce3ad469fed490cbebf1a0
+    layerID: 2
+    mosaicPosition: {x: 4, y: 655}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: window frame layer copy
+    spriteName: 
+    isGroup: 0
+    parentIndex: -1
+    spriteID: c01fabed00215c748b035ae94d60a4cc
+    layerID: 11
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 0
+  - name: window frame layer
+    spriteName: 
+    isGroup: 0
+    parentIndex: -1
+    spriteID: be27719aa329ed54ba1b1ca3e112763f
+    layerID: 7
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 0
+  - name: window glass layer (opaque)
+    spriteName: window glass layer (opaque)
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 62dcf08e5fe801b44af0c56be9ebfcdc
+    layerID: 5
+    mosaicPosition: {x: 4, y: 973}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: window glass layer
+    spriteName: 
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 4d3d05c9f54f97a49bcdd013b4cd8756
+    layerID: 4
+    mosaicPosition: {x: 0, y: 0}
+    flatten: 0
+    isImported: 0
+    isVisible: 0
   sharedRigPSDLayers: []
   pSDLayerImportSetting: []
   importFileNodeState: 1
