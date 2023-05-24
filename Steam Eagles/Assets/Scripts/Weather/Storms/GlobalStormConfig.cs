@@ -69,7 +69,7 @@ namespace Weather.Storms
         public bool IsValid(Bounds bounds)
         {
             var copy = bounds;
-            ConstrainStormBounds(ref copy);
+            ConstrainStormBounds(ref bounds);
             ConstrainStormPosition(ref bounds);
             return copy == bounds;
         }

@@ -80,12 +80,15 @@ namespace Weather.WeatherTests
             var size= stormBounds.size;
             var prevSize = size;
             size.x = STORM_MIN_X - 1;
+            Assert.AreEqual(_stormConfig.minStormWidth, STORM_MIN_X);
+            stormBounds.size = size;
             Assert.IsFalse(_stormConfig.IsValid(stormBounds));
             _stormConfig.ConstrainStormBounds(ref stormBounds);
             Assert.IsTrue(_stormConfig.IsValid(stormBounds));
 
             size = prevSize;
             size.y = STORM_MIN_Y - 1;
+            stormBounds.size = size;
             Assert.IsFalse(_stormConfig.IsValid(stormBounds));
             _stormConfig.ConstrainStormBounds(ref stormBounds);
             Assert.IsTrue(_stormConfig.IsValid(stormBounds));

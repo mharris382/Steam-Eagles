@@ -1,4 +1,5 @@
 using System.Linq;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Weather.Storms;
@@ -17,6 +18,7 @@ public class WeatherSystemsInstaller : MonoInstaller
         Container.Bind<TestStorm>().FromInstance(testStorm).AsSingle().NonLazy();
         Container.Bind<GlobalStormConfig>().FromInstance(stormConfig).AsSingle();
         StormSystemsInstaller.Install(Container);
+        Container.BindInterfacesTo<SlowTickUpdater>().AsSingle().NonLazy();
     }
     
 }
