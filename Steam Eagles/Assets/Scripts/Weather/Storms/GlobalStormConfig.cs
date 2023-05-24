@@ -38,6 +38,7 @@ namespace Weather.Storms
     {
         public float minStormWidth = 200;
         public float minStormHeight = 100;
+        public float minStormDepth = 10;
         public float stormHeightFloor = 0;
         
         
@@ -53,6 +54,7 @@ namespace Weather.Storms
         {
             size.x = Mathf.Max(minStormWidth, size.x);
             size.y = Mathf.Max(minStormHeight, size.y);
+            size.z = Mathf.Max(minStormDepth, size.z);
         }
         private void ConstrainStormPosition(ref Bounds bounds)
         {

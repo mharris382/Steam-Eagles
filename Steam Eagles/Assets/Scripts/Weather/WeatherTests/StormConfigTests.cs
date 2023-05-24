@@ -9,6 +9,7 @@ namespace Weather.WeatherTests
         private const float STORM_FLOOR = 0.0f;
         private const float STORM_MIN_X = 100;
         private const float STORM_MIN_Y = 100;
+        private const float STORM_MIN_Z = 10;
         private GlobalStormConfig _stormConfig;
 
         [SetUp]
@@ -94,6 +95,6 @@ namespace Weather.WeatherTests
             Assert.IsTrue(_stormConfig.IsValid(stormBounds));
         }
         
-        private Bounds GetDefaultTestingBounds() =>  new Bounds(new Vector3(0, STORM_FLOOR + (STORM_MIN_Y / 2f), 0), new Vector3(STORM_MIN_X, STORM_MIN_Y, 0));
+        private Bounds GetDefaultTestingBounds() =>  new Bounds(new Vector3(0, STORM_FLOOR + (STORM_MIN_Y / 2f), 0), new Vector3(STORM_MIN_X, STORM_MIN_Y, STORM_MIN_Z));
     }
 }
