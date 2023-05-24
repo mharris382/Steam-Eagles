@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using CoreLib.Signals;
 using UniRx;
 /// <summary>
@@ -24,6 +25,11 @@ public class GlobalPCInfo
         MessageBroker.Default.Receive<PCCreatedInfo>().Subscribe(RegisterNewPC).AddTo(_cd);
     }
 
+    public PCInstance GetInstance(int player) => _hasPcs[player] ? _pcs[player].PC : null;
+    public IPCTracker GetTracker(int player) => _hasPcs[player] ? _pcs[player].PCTracker : null;
+
+    
+    public bool HasPc(int player) => _hasPcs[player];
     void RegisterNewPC(PCCreatedInfo pcCreatedInfo)
     {
         if (_hasPcs[pcCreatedInfo.PlayerNumber])
