@@ -12,6 +12,7 @@ namespace CoreLib.Entities
         BUILDING,
         MACHINE,
         INVENTORY,
+        STORM,
         PLAYER,
         PICKUP,
         PROJECTILE,

@@ -64195,6 +64195,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config:
     updateRate: 1
+    stormConfig:
+      logLevel: 2
+      minStormWidth: 200
+      minStormHeight: 100
+      stormHeightFloor: 0
+  stormConfig:
+    logLevel: 2
+    minStormWidth: 200
+    minStormHeight: 100
+    stormHeightFloor: 0
+  testStorm:
+    enableStormTest: 1
+    testStormTag: TestStorm
+    testStormKey: 91
+    testStormBounds:
+      m_Center: {x: 0, y: 100, z: 0}
+      m_Extent: {x: 1000, y: 200, z: 0}
+    testStormVelocity: {x: 25, y: 0}
+    testStormFalloff: {x: 100, y: 20}
 --- !u!1 &1087375116
 GameObject:
   m_ObjectHideFlags: 0

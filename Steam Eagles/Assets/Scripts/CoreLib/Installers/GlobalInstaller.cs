@@ -5,28 +5,68 @@ using System.Collections.Generic;
 using CoreLib;
 using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
-using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
+
+
+
 public class GlobalInstaller : MonoInstaller
 {
+    
     [Required, AssetsOnly] public GameObject pauseMenuPrefab;
     [Required, AssetsOnly] public GameObject playerGUIPrefab;
     public SharedTransform p1Character;
     public SharedTransform p2Character;
+    public SlowTickConfig slowTickConfig;
     
     public override void InstallBindings()
     {
+        Container.Bind<SlowTickConfig>().FromInstance(slowTickConfig).AsSingle();
+        Container.BindInterfacesAndSelfTo<SlowTickUpdater>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<TestSlowTickables>().AsSingle().NonLazy();
+        
+        
         Container.Bind<Canvas>().FromComponentInNewPrefab(pauseMenuPrefab).AsSingle().NonLazy();
         Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PauseMenuSetInactiveOnStart>().FromNew().AsSingle().NonLazy();
         Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
         Container.Bind<GlobalGameState>().FromNew().AsSingle();
-
     }
     
+    private class TestSlowTickables : ISlowTickable, IExtraSlowTickable
+    {
+        private readonly SlowTickConfig _config;
+
+        public TestSlowTickables(SlowTickConfig config)
+        {
+            _config = config;
+        }
+        public void SlowTick(float deltaTime)
+        {
+            if (_config.logLevel == SlowTickConfig.LogLevel.VERBOSE_WITH_TESTS)
+            {
+                _config.Log($"SlowTick: {deltaTime}");
+            }
+            else
+            {
+                _config.Log("SlowTicking");
+            }
+        }
+
+        public void ExtraSlowTick(float deltaTime)
+        {
+            if (_config.logLevel == SlowTickConfig.LogLevel.VERBOSE_WITH_TESTS)
+            {
+                _config.Log($"ExtraSlowTick: {deltaTime}");
+            }
+            else
+            {
+                _config.Log("ExtraSlowTicking");
+            }
+        }
+    }
     
     public class GlobalGameState
     {
