@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Items;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.TestTools;
 
 namespace Tests.ItemTests
@@ -32,9 +33,22 @@ namespace Tests.ItemTests
         public IEnumerator HyperglassPickupIsSpawnedCorrectly()
         {
             var key = AssumedItemNames.ITEM_HYPERGLASS;
+            yield return UniTask.ToCoroutine(async () => {
+                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_Pickup");
+                await loadOp;
+                pickup = loadOp.Result;
+            });
             yield return AssertAssumePickupLoadsAndSpawns(key);
         }
-
+        IEnumerable Start()
+        {
+            yield return UniTask.ToCoroutine(async () =>
+            {
+                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_Pickup");
+                await loadOp;
+                pickup = loadOp.Result;
+            });
+        }
         
         IEnumerator AssertAssumePickupLoadsAndSpawns(string key)
         {

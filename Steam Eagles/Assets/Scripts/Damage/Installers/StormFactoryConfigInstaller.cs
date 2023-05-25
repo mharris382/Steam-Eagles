@@ -23,11 +23,11 @@ public class StormFactoryConfigInstaller : ScriptableObjectInstaller
     
     public override void InstallBindings()
     {
-        Container.Bind<IStormFactory>().To<StormFactoryConfig>().FromInstance(factoryConfig).AsSingle();
-        Container.QueueForInject(factoryConfig);
-        Container.BindFactory<StormView, StormView.Factory>()
-            .FromSubContainerResolve()
-            .ByNewContextPrefab(stormViewPrefab);
+       // Container.Bind<IStormFactory>().To<StormFactoryConfig>().FromInstance(factoryConfig).AsSingle();
+       //Container.QueueForInject(factoryConfig);
+       // Container.BindFactory<StormView, StormView.Factory>()
+       //     .FromSubContainerResolve()
+       //     .ByNewContextPrefab(stormViewPrefab);
     }
     
     bool ValidateViewPrefab(StormView stormView, ref string errorMessage)

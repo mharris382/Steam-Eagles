@@ -10,7 +10,7 @@ namespace Weather.Storms.Views
         
         public override void InstallBindings()
         {
-            
+            Container.Bind<StormView>().FromComponentOn(this.gameObject).AsSingle().NonLazy();
         }
     }
 }

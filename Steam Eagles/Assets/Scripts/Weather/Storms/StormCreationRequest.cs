@@ -11,7 +11,7 @@ namespace Weather.Storms
         public Bounds StormBounds { get; }
         
         public Vector2 StormVelocity { get; }
-        
+        public Vector2 StormFalloff => _stormFalloff;
         public string StormTag { get; }
         
         public Subject<Storm> StormCreatedSubject { get; }

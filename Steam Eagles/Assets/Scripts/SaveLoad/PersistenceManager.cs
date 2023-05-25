@@ -284,10 +284,10 @@ namespace SaveLoad
                     path = "New Save";
                 }
                 // Generate new path using current time
-                string newDirectory = $"{path}-{DateTime.Now:MM_dd_yyyy HH mm}";
-
+                string newDirectory = $"{DateTime.Now:MM_dd_yyyy HH mm}";
+                return newDirectory;
                 // Recursively call the function with the new path
-                return GenerateUniquePath(newDirectory);
+
             }
 
             return path;
