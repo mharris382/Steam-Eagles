@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
+[Obsolete("Use Weather.Storms.StormView instead")]
 [RequireComponent(typeof(ParticleSystem))]
 public class StormParticleSystem : MonoBehaviour, IStormViewLayer
 {

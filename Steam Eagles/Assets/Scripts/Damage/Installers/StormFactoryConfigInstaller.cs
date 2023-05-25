@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Damage.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,6 +9,9 @@ using Zenject;
          "weather is being refactored so now this is dependent on the weather systems, so this needs to be bound below the weather systems container.  " +
          "Currently i see no reason it cannot still be bound at the project context level")]
 [CreateAssetMenu(menuName = "Steam Eagles/Storms/Storm Config Installer", fileName = "new Storm Config", order = 0)]
+
+
+[Obsolete("Use Weather.WeatherResourceInstaller instead")]
 public class StormFactoryConfigInstaller : ScriptableObjectInstaller
 {
     [SerializeField,Required, ValidateInput(nameof(ValidateViewPrefab))]

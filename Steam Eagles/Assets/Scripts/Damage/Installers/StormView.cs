@@ -2,6 +2,7 @@
 using UnityEngine;
 using Zenject;
 
+[Obsolete("Use Weather.Storms.StormView instead")]
 public class StormView : MonoBehaviour
 {
     private IStormViewLayer[] _viewLayers;
