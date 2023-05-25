@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Threading;
 using UniRx;
-using Unity.VisualScripting;
 using UnityEngine;
-
+using Zenject;
 
 
 // /// <summary>

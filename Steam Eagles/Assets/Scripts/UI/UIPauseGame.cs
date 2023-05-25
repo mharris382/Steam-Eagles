@@ -101,6 +101,7 @@ namespace UI
                         Application.Quit();
                    })))
             {
+                
                 MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
             }
         }

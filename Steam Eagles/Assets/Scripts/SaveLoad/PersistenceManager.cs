@@ -19,6 +19,8 @@ namespace SaveLoad
         public bool usePreset = false;
 
 
+        private DirectoryPathGenerator _pathGenerator;
+        private DirectoryPathGenerator PathGenerator => _pathGenerator ??= new DirectoryPathGenerator();
         private bool _isLoading;
         public bool IsLoading => _isLoading;
         
@@ -104,6 +106,9 @@ namespace SaveLoad
             }
             Debug.Log($"Saving Game at path: {savePath}");
             savePath = GetPathSafe(savePath);
+            var prevPath = savePath;
+            savePath = PathGenerator.GenerateUniquePath(savePath);
+            Debug.Log($"Original Path: {prevPath}\nUnique Path:{savePath.Bolded()}");
             if (!Directory.Exists(savePath))
             {
                 Debug.Log($"Save Directory does not exist, creating one now at {savePath}");
@@ -112,6 +117,12 @@ namespace SaveLoad
 
             PlayerPrefs.SetString("Last Save Path", savePath);
             OnGameSaved(savePath);
+        }
+
+        void SaveGameAtAutoPath(string lastSavePath)
+        {
+            string newPath = GetPathSafe(lastSavePath);
+            DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         }
 
         private string GetLastSavePath()
@@ -257,6 +268,55 @@ namespace SaveLoad
             {
                 yield return subfolder;
             }
+        }
+    }
+    
+    public class DirectoryPathGenerator
+    {
+        public string GenerateUniquePath(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                // Extract the original timestamp from the path (if it exists)
+                path = GetCleanPath(path);
+                if (string.IsNullOrEmpty(path))
+                {
+                    path = "New Save";
+                }
+                // Generate new path using current time
+                string newDirectory = $"{path}-{DateTime.Now:MM_dd_yyyy HH mm}";
+
+                // Recursively call the function with the new path
+                return GenerateUniquePath(newDirectory);
+            }
+
+            return path;
+        }
+
+        private string GetCleanPath(string path)
+        {
+            string[] pathSegments = path.Split('-');
+            if (pathSegments.Length == 1)
+            {
+                return path;
+            }
+            return path.Replace(pathSegments[^1], "");
+        }
+        private string GetTimestampFromPath(string path)
+        {
+            string[] pathSegments = path.Split('-');
+            
+            if (pathSegments.Length > 1)
+            {
+                string lastSegment = pathSegments[pathSegments.Length - 1];
+                DateTime timestamp;
+                if (DateTime.TryParseExact(lastSegment, "yyyyMMdd_HHmmss", null, System.Globalization.DateTimeStyles.None, out timestamp))
+                {
+                    return lastSegment;
+                }
+            }
+
+            return string.Empty;
         }
     }
 }
