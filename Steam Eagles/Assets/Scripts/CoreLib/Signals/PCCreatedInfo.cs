@@ -5,15 +5,27 @@ namespace CoreLib.Signals
 {
     public class PCCreatedInfo
     {
-        public int PlayerNumber { get; }
-        public PCInstance PC { get; }
-        public IPCTracker PCTracker { get; }
+        public int PlayerNumber { get; private set; }
+        public PCInstance PC { get; private set; }
+        public IPCTracker PCTracker { get; private set; }
 
         public PCCreatedInfo(int playerNumber, PCInstance pc, IPCTracker pcTracker)
         {
             PlayerNumber = playerNumber;
             PC = pc;
             PCTracker = pcTracker;
+        }
+
+        public void Reset(int playerNumber, PCInstance pc, IPCTracker tracker)
+        {
+            PlayerNumber = playerNumber;
+            PC = pc;
+            PCTracker = tracker;
+        }
+
+        public void ResetFrom(PCCreatedInfo otherInfo)
+        {
+            Reset(otherInfo.PlayerNumber, otherInfo.PC, otherInfo.PCTracker);
         }
     }
 

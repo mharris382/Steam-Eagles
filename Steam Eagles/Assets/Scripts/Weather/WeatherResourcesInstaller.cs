@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Weather.Storms;
 using Weather.Storms.Views;
 using Zenject;
 
@@ -10,12 +11,16 @@ namespace Weather
     [CreateAssetMenu(fileName = "Weather Resources Installer", menuName = "Steam Eagles/Storms/Weather Resources Installer", order = 0)]
     public class WeatherResourcesInstaller : ScriptableObjectInstaller
     {
+        public GlobalStormConfig stormConfig;
         [ValidateInput(nameof(ValidateViewPrefab))]
         public StormView stormViewPrefab;
 
         public override void InstallBindings()
         {
+            StormRegistryInstaller.Install(Container);
+            Container.Bind<GlobalStormConfig>().FromInstance(stormConfig).AsSingle();
             Container.BindFactory<StormView, StormView.Factory>().FromSubContainerResolve().ByNewContextPrefab(stormViewPrefab);
+            
         }
 
         bool ValidateViewPrefab(StormView stormView, ref string errorMessage)

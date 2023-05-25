@@ -9,13 +9,21 @@ namespace Weather.Storms
     public class StormManager : IExtraSlowTickable
     {
         private readonly GlobalStormConfig _config;
+        private readonly StormRegistry _stormRegistry;
+        private readonly StormSubjectsRegistry _subjectsRegistry;
+
         private readonly Storm.Factory _stormFactory;
-        Queue<StormCreationRequest> _creationRequests = new Queue<StormCreationRequest>();
-        Dictionary<string, Storm> _taggedStorms = new Dictionary<string, Storm>();
-        private List<Storm> _activeStorms = new List<Storm>();
-        public StormManager(GlobalStormConfig config, Storm.Factory stormFactory)
+        private Queue<StormCreationRequest> _creationRequests = new Queue<StormCreationRequest>();
+        
+    
+        public StormManager(GlobalStormConfig config,
+            StormRegistry stormRegistry,
+            StormSubjectsRegistry subjectsRegistry,
+            Storm.Factory stormFactory)
         {
             _config = config;
+            _stormRegistry = stormRegistry;
+            _subjectsRegistry = subjectsRegistry;
             _stormFactory = stormFactory;
             MessageBroker.Default.Receive<StormCreationRequest>()
                 .Subscribe(request => _creationRequests.Enqueue(request));
@@ -25,15 +33,24 @@ namespace Weather.Storms
         public void ExtraSlowTick(float deltaTime)
         {
             CompleteStormJobs();
+            CreateStorms();
+            _config.Log($"StormManager ExtraSlowTick:\n Active Storm Count:{_stormRegistry.Count}");
+            RunStormJobs();
+        }
+
+        private void CreateStorms()
+        {
             while (_creationRequests.Count > 0)
             {
+                
                 var request = _creationRequests.Dequeue();
                 var storm = _stormFactory.Create(request.StormBounds, request.StormVelocity, request.StormFalloff);
-                _taggedStorms.Add(request.StormTag, storm);
-                _activeStorms.Add(storm);
+                
+                if (!string.IsNullOrEmpty(request.StormTag))
+                    _stormRegistry.AddStorm(storm, request.StormTag);
+                else
+                    _stormRegistry.AddStorm(storm);
             }
-            _config.Log($"StormManager ExtraSlowTick:\n Active Storm Count:{_activeStorms.Count}");
-            RunStormJobs();
         }
 
         private void CompleteStormJobs()

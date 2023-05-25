@@ -10,10 +10,12 @@ using PhysicsFun.Buildings;
 using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Tilemaps;
 using World;
+using Zenject;
 
 namespace Buildings
 {
@@ -134,6 +136,17 @@ namespace Buildings
 
         #endregion
 
+        #region [Injection Methods]
+
+        [Inject]
+        public void RegistryBuilding(BuildingRegistry buildingRegistry)
+        {
+            buildingRegistry.AddBuilding(this);
+            this.OnDestroyAsObservable().Subscribe(_ => buildingRegistry.RemoveBuilding(this));
+        }
+
+        #endregion
+        
         #region [MonoBehaviour Events]
 
         private void Awake()

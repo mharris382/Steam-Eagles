@@ -12,14 +12,16 @@ namespace CoreLib
     public class PCInstance : IDisposable
     {
         public CompositeDisposable Disposable { get; private set; }
-        public PCInstance(GameObject character, GameObject camera, GameObject input)
+        public PCInstance(int playerNumber, GameObject character, GameObject camera, GameObject input)
         {
             Disposable = new CompositeDisposable();
+            PlayerNumber = playerNumber;
             this.character = character;
             this.camera = camera;
             this.input = input;
         }
 
+        public int PlayerNumber { get; }
         public GameObject character {get; private set;}
         public GameObject camera {get; private set;}
         public GameObject input {get; private set;}

@@ -1,4 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿using CoreLib;
+using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -14,10 +16,12 @@ namespace Weather.Storms.Views
         private Storm.Factory _stormFactory;
         private StormView _stormView;
         private Storm _storm;
+        private GlobalStormConfig _config;
 
         [Inject]
-        public void Install(StormView.Factory stormViewFactory, TestStorm testStorm, Storm.Factory stormFactory)
+        public void Install(StormView.Factory stormViewFactory, GlobalStormConfig config, TestStorm testStorm, Storm.Factory stormFactory)
         {
+            this._config = config;
             this._stormViewFactory = stormViewFactory;
             this._stormFactory = stormFactory;
             this._testStorm = testStorm;
@@ -30,7 +34,10 @@ namespace Weather.Storms.Views
         {
             _stormView = _stormViewFactory.Create();
             var creationParams = _testStorm.GetStormCreationRequest();
-            _stormView.AssignStorm(_storm = _stormFactory.Create(creationParams.StormBounds,  creationParams.StormVelocity, creationParams.StormFalloff));
+            creationParams.StormCreatedSubject.First().Subscribe(_stormView.AssignStorm, () => _config.Log("StormViewTester: Storm Created Subject Completed".Bolded)).AddTo(this);
+            
+            MessageBroker.Default.Publish(creationParams);
+            _config.Log("StormViewTester: Storm Creation Request Sent".Bolded());
         }
         
         

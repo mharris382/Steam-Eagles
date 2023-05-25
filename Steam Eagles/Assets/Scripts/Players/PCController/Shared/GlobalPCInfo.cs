@@ -19,6 +19,21 @@ public class GlobalPCInfo
     
     private readonly bool[] _hasPcs = new bool[2];
     private readonly PCCreatedInfo[] _pcs = new PCCreatedInfo[2];
+
+    private Subject<int> onPCAdded = new Subject<int>();
+    private Subject<int> onPCRemoved = new Subject<int>();
+    private Subject<int> onPCWillChange = new Subject<int>();
+    private Subject<int> onPCChanged = new Subject<int>();
+    
+    
+    public IObservable<int> OnPCAdded => onPCAdded;
+    public IObservable<int> OnPCRemoved => onPCRemoved;
+
+    public IObservable<int> OnPCWillChange => onPCWillChange;
+
+    public IObservable<int> OnPCChanged => onPCChanged;
+
+
     public GlobalPCInfo()
     {
         _cd = new CompositeDisposable();
@@ -29,18 +44,34 @@ public class GlobalPCInfo
     public IPCTracker GetTracker(int player) => _hasPcs[player] ? _pcs[player].PCTracker : null;
 
     
+    
     public bool HasPc(int player) => _hasPcs[player];
     void RegisterNewPC(PCCreatedInfo pcCreatedInfo)
     {
+        int i = pcCreatedInfo.PlayerNumber;
         if (_hasPcs[pcCreatedInfo.PlayerNumber])
         {
-            throw new NotImplementedException();
+            onPCWillChange.OnNext(i);
+            var currentReference = _pcs[pcCreatedInfo.PlayerNumber];
+            if (currentReference != null)
+            {
+                if(currentReference.PC != pcCreatedInfo.PC)
+                    currentReference.PC.Dispose();
+                currentReference.ResetFrom(pcCreatedInfo);
+                onPCChanged.OnNext(i);
+                return;
+            }
         }
-
+        
         _pcs[pcCreatedInfo.PlayerNumber] = pcCreatedInfo;
         _hasPcs[pcCreatedInfo.PlayerNumber] = true;
+        onPCAdded.OnNext(i);
         
-        pcCreatedInfo.PC.Disposable.Add(Disposable.Create(() => CleanupPc(pcCreatedInfo.PlayerNumber)));
+        pcCreatedInfo.PC.Disposable.Add(Disposable.Create(() =>
+        {
+            CleanupPc(pcCreatedInfo.PlayerNumber);
+            onPCRemoved.OnNext(i);
+        }));
         
         PCCount = GetCount();
     }

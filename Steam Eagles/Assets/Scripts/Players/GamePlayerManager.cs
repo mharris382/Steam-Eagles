@@ -127,7 +127,7 @@ namespace Players
                 playerNumber = request.playerCharacterIndex,
                 camera = cameraGO
            };
-           var pcInstance = new PCInstance(characterInstance.gameObject, cameraGO, inputGO);
+           var pcInstance = new PCInstance(request.playerCharacterIndex, characterInstance.gameObject, cameraGO, inputGO);
            GameManager.Instance.SetPC(request.playerCharacterIndex, pcInstance);
             MessageBroker.Default.Publish(assignmentNotification);
         }

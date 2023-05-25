@@ -15,10 +15,8 @@ namespace Weather.Storms
         public static event Action<Storm> OnStormCreated; 
         public static event Action<Storm> OnStormDestroyed;
 
-        public Storm(GlobalStormConfig config, Bounds innerBoundsWs) : this(config, innerBoundsWs, Vector2.zero, Vector2.zero){}
-        public Storm(GlobalStormConfig config, Bounds innerBoundsWs, Vector2 falloff) : this(config, innerBoundsWs, Vector2.zero, falloff){}
         
-        [Inject]
+        
         public Storm(GlobalStormConfig config, Bounds innerBoundsWs, Vector2 velocity, Vector2 falloff )
         {
             _config = config;

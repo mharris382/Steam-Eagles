@@ -16,7 +16,7 @@ public class WeatherSystemsInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<WeatherRunner>().AsSingle().NonLazy();
         Container.Bind<WeatherConfig>().FromInstance(config).AsSingle().NonLazy();
         Container.Bind<TestStorm>().FromInstance(testStorm).AsSingle().NonLazy();
-        Container.Bind<GlobalStormConfig>().FromInstance(stormConfig).AsSingle();
+        
         StormSystemsInstaller.Install(Container);
         Container.BindInterfacesTo<SlowTickUpdater>().AsSingle().NonLazy();
     }

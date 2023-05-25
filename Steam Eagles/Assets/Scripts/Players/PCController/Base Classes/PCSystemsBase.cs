@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Buildings.Rooms.Tracking;
 using Players.PCController;
 using UniRx;
+using UnityEngine;
 
 /// <summary>
 /// base class for any system which will be created once per local player.  This class will handle the creation and disposal of the system
@@ -32,6 +33,7 @@ public abstract class PCSystemsBase<T> : IDisposable  where T : PCSystem
     {
         if (_systems[playerNumber] != null) _systems[playerNumber].Dispose();
         _pcs[playerNumber] = _pcFactory.Create(playerNumber, trackedPC);
+        Debug.Assert(_pcs[playerNumber]!=null);
         _systems[playerNumber] = CreateSystemFor(_pcs[playerNumber]);
     }
 

@@ -6,5 +6,6 @@ public class BuildingGlobalsInstaller : MonoInstaller
     public override void InstallBindings()
     {
         //Container.Bind<MachineCellMap>().AsSingle().NonLazy();
+        Container.Bind<BuildingRegistry>().AsSingle().NonLazy();
     }
 }
