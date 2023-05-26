@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 namespace Buildings.Tiles
 {
+    
     public abstract class PuzzleTile : RuleTile
     {
         public bool debug;
@@ -54,19 +55,21 @@ namespace Buildings.Tiles
             return base.RuleMatch(neighbor, tile);
         }
 
-        private bool TileIsMatch(TileBase other)
+        protected virtual bool TileIsMatch(TileBase other)
         {
+            var src = this;
+            
             if (other == null)
                 return false;
-            if (other == this)
+            if (other == src)
                 return true;
-            foreach (var matchNeighbor in matchNeighbors)
+            foreach (var matchNeighbor in GetMatchingTiles())
             {
-                if (matchNeighbor == other)
-                    return true;
+                if (matchNeighbor == other) return true;
             }
-
             return false;
         }
+
+        protected virtual IEnumerable<TileBase> GetMatchingTiles() => matchNeighbors;
     }
 }
