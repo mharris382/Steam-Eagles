@@ -57,11 +57,13 @@ namespace Buildings
 
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
-        
+        Rooms.Rooms _rooms;
+        private BuildingMap.Factory _buildingMapFactory;
+
         internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
         #endregion
-        
+
         #region [Properties]
 
         public Bounds WorldSpaceBounds
@@ -75,12 +77,14 @@ namespace Buildings
                 return bounds;
             }
         }
+
         public bool IsFullyLoaded
         {
             get;
             set;
         }
-        public BuildingMap Map => _buildingMap ??= new BuildingMap(this, GetComponentsInChildren<Room>());
+
+        public BuildingMap Map => _buildingMap ??= _buildingMapFactory.Create(this);
         public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
         public StructureState State => _structureState ? _structureState : _structureState = GetComponent<StructureState>();
@@ -96,11 +100,12 @@ namespace Buildings
         public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
 
         public PlatformTilemap PlatformTilemap => (_platformTilemap) ? _platformTilemap : _platformTilemap = GetComponentInChildren<PlatformTilemap>();
-        
+
         public WireTilemap WireTilemap => (_wireTilemap) ? _wireTilemap : _wireTilemap = GetComponentInChildren<WireTilemap>();
-        
+
         public LadderTilemap LadderTilemap => (_ladderTilemap) ? _ladderTilemap : _ladderTilemap = GetComponentInChildren<LadderTilemap>();
         public DecorTilemap DecorTilemap => (_decorTilemap) ? _decorTilemap : _decorTilemap = GetComponentInChildren<DecorTilemap>();
+
 
         public BuildingTilemap GetTilemap(BuildingLayers layers)
         {
@@ -137,7 +142,7 @@ namespace Buildings
                     throw new ArgumentOutOfRangeException(nameof(layers), layers, null);
             }
         }
-        
+
         public bool HasResources =>
             WallTilemap != null
             && FoundationTilemap != null
@@ -156,14 +161,19 @@ namespace Buildings
             this.OnDestroyAsObservable().Subscribe(_ => buildingRegistry.RemoveBuilding(this));
         }
 
+        [Inject]
+        public void InjectBuildingMapFactory(BuildingMap.Factory buildingMapFactory)
+        {
+            _buildingMapFactory = buildingMapFactory;
+        }
+
         #endregion
-        
+
         #region [MonoBehaviour Events]
 
         private void Awake()
         {
             _buildingTiles ??= new BuildingTiles(this);
-            _buildingMap ??= new BuildingMap(this, GetComponentsInChildren<Room>());
             _rb = GetComponent<Rigidbody2D>();
             _structureState = GetComponent<StructureState>();
             _box = GetComponent<BoxCollider2D>();
@@ -199,20 +209,19 @@ namespace Buildings
 
         #region [Public Methods]
 
-        
         public void SaveBuilding(string path)
         {
             //TODO: trigger save
             Debug.Log("TODO: Saving Building".Bolded());
         }
 
-        
+
         public void LoadBuilding(string path)
         {
             //TODO: trigger load
             Debug.Log("TODO: Load Building".Bolded());
         }
-        
+
         #endregion
 
         #region [Helper Methods]
@@ -220,7 +229,7 @@ namespace Buildings
         public IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
 
         #endregion
-        
+
         #region [Editor Stuff]
 
         private void UpdateName(string n)
@@ -298,9 +307,8 @@ namespace Buildings
         }
 
         private bool HasLayer(int layer, BuildingLayers layers) => ((layer & (int)layers) != 0);
-        
-        
-        Rooms.Rooms _rooms;
+
+
         public Rooms.Rooms Rooms => _rooms ? _rooms : _rooms = GetComponentInChildren<Rooms.Rooms>();
     }
 

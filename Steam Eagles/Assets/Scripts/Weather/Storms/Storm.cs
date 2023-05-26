@@ -31,6 +31,12 @@ namespace Weather.Storms
         }
         private StormView _stormView;
         public bool HasView => _stormView != null;
+        
+        public int Intensity 
+        {
+            get; 
+            set;
+        }
         public StormView GetOrCreateView()
         {
             var view = _stormView ??= _viewFactory.Create();
@@ -44,7 +50,7 @@ namespace Weather.Storms
             _config = config;
             _falloff = falloff;
             _viewFactory = viewFactory;
-
+            Intensity = 1;
             this.InnerBoundsWs = innerBoundsWs;
             Debug.Assert(InnerBoundsWs.size != Vector3.zero, "Storm bounds cannot be zero");
             this.Velocity = velocity;

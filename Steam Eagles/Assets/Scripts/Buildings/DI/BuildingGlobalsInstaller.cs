@@ -7,5 +7,6 @@ public class BuildingGlobalsInstaller : MonoInstaller
     {
         //Container.Bind<MachineCellMap>().AsSingle().NonLazy();
         Container.Bind<BuildingRegistry>().AsSingle().NonLazy();
+        
     }
 }

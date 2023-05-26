@@ -6,13 +6,15 @@ using Buildings.Tiles;
 using QuikGraph.Algorithms;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 
 namespace Buildings
 {
     public class BuildingMap : IBuildingRoomLookup
     {
+        public class Factory : PlaceholderFactory<Building, BuildingMap> { }
+        
         private readonly Building _building;
-
         private class CellToRoomLookup
         {
             public readonly Vector2 cellSize;
@@ -59,8 +61,9 @@ namespace Buildings
 
         public BuildingGraphs BuildingGraphs { get; }
 
-        public BuildingMap(Building building, Room[] rooms)
+        public BuildingMap(Building building)
         {
+            Room[] rooms = building.GetComponentsInChildren<Room>();
             _building = building;
             _cellToRoomMaps = new Dictionary<Vector2, CellToRoomLookup>();
             _layerToCellSize = new Dictionary<BuildingLayers, Vector2>();

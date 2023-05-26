@@ -165,6 +165,8 @@ namespace Tools.BuildTool
         private void UpdateAim(Vector3 aimPosition, BuildingLayers targetLayer)
         {
             aimPosition = AimDecorator.GetAimPosition(aimPosition);
+            if(Building == null) return;
+            if (Building.Map == null) return;
             var cell = Building.Map.WorldToCell(aimPosition, targetLayer);
             _hoveredPosition.Value = cell;
         }
