@@ -19,8 +19,8 @@ namespace Weather
         {
             StormRegistryInstaller.Install(Container);
             Container.Bind<GlobalStormConfig>().FromInstance(stormConfig).AsSingle();
-            Container.BindFactory<StormView, StormView.Factory>().FromSubContainerResolve().ByNewContextPrefab(stormViewPrefab);
-            
+            //Container.BindFactory<StormView, StormView.Factory>().FromSubContainerResolve().ByNewContextPrefab(stormViewPrefab);
+            Container.BindFactory<StormView, StormView.AltFactory>().FromSubContainerResolve().ByNewContextPrefab(stormViewPrefab).AsSingle();
         }
 
         bool ValidateViewPrefab(StormView stormView, ref string errorMessage)

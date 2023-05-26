@@ -20,7 +20,7 @@ namespace Weather.Storms
             Container.BindInterfacesAndSelfTo<PcStormSubjectManager>().AsSingle().NonLazy();
 
             Container.BindFactory<IStormSubject, StormSubject, StormSubject.Factory>().AsSingle();
-            Container.BindFactory<IPCTracker, GameObject, Camera, PCStormSubject, PCStormSubject.Factory>().AsSingle();
+            Container.BindFactory<PCInstance, IPCTracker, GameObject, Camera, PCStormSubject, PCStormSubject.Factory>().AsSingle();
             Container.BindFactory<Building, BuildingStormSubject, BuildingStormSubject.Factory>().AsSingle();
             Container.BindFactory<Bounds, Vector2, Vector2, Storm, Storm.Factory>().AsSingle();
 

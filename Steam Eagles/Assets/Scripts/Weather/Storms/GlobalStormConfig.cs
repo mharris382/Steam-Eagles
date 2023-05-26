@@ -19,12 +19,11 @@ namespace Weather.Storms
         private Subject<Storm> _stormSubject;
         public StormCreationRequest GetStormCreationRequest(Action<Storm> onStormCreated = null, Action onStormCreatedCompleted = null)
         {
-            _stormSubject??= new Subject<Storm>();
+         
+            var request = new StormCreationRequest(testStormBounds, testStormVelocity, testStormFalloff, testStormTag);
             if (onStormCreated != null)
-            {
-                _stormSubject.Take(1).Subscribe(onStormCreated, onStormCreatedCompleted);
-            }
-            return new StormCreationRequest(testStormBounds, testStormVelocity, testStormFalloff, testStormTag, _stormSubject);
+                request.StormCreatedSubject.Take(1).Subscribe(storm => onStormCreated?.Invoke(storm), onStormCreatedCompleted);
+            return request;
         }
 
         public override string ToString()

@@ -10,6 +10,7 @@ namespace Weather.Storms
         private Dictionary<Storm, string> _stormTags = new Dictionary<Storm, string>();
         public IEnumerable<Storm> GetActiveStorms() => _activeStorms;
 
+        
         public int Count => _activeStorms.Count;
        
         public Storm GetStorm(int index) => _activeStorms[index];

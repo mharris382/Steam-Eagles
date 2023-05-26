@@ -64,6 +64,17 @@ namespace Buildings
         
         #region [Properties]
 
+        public Bounds WorldSpaceBounds
+        {
+            get
+            {
+                var bounds = new Bounds(transform.position + (Vector3)sizeWorldSpace.center, sizeWorldSpace.size);
+                var s = bounds.size;
+                s.z = 10;
+                bounds.size = s;
+                return bounds;
+            }
+        }
         public bool IsFullyLoaded
         {
             get;

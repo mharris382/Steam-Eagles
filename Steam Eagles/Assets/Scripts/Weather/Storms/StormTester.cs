@@ -9,6 +9,8 @@ namespace Weather.Storms
         private readonly GlobalStormConfig _globalStormConfig;
         private Storm _testStorm;
         private bool _requestSent;
+        private bool _removeRequestSent;
+        
         private readonly TestStorm testConfig;
 
         public StormTester(GlobalStormConfig globalStormConfig, TestStorm testStorm)
@@ -19,7 +21,17 @@ namespace Weather.Storms
 
         public void Tick()
         {
-            
+            if (_removeRequestSent )
+            {
+                if(!_testStorm.IsCompleted)
+                    _globalStormConfig.Log($"Removal Request sent, Waiting for removal request to terminate storm...", true);
+                else
+                {
+                    _testStorm = null;
+                    _removeRequestSent = false;
+                }
+                return;
+            }
             if (!_requestSent)
             {
                 _globalStormConfig.Log($"Storm Tester Tick: press {testConfig.testStormKey} to request storm", true);       
@@ -39,7 +51,12 @@ namespace Weather.Storms
             }
             else if (_testStorm != null)
             {
-                _globalStormConfig.Log($"Running Test Storm: {_testStorm}", true);
+                _globalStormConfig.Log($"Running Test Storm: {_testStorm}\n Press {testConfig.testStormKey} to End Storm", true);
+                if (Input.GetKeyDown(testConfig.testStormKey) && !_removeRequestSent)
+                {
+                    MessageBroker.Default.Publish(new StormRemovalRequest(_testStorm));
+                    _removeRequestSent = true;
+                }
             }
         }
 
@@ -55,6 +72,7 @@ namespace Weather.Storms
                     {
                         _globalStormConfig.Log($"Storm Created: {res}", true);
                         _testStorm = res;
+                        _removeRequestSent = false;
                     }
                 },
                 () => _globalStormConfig.Log("Storm Creation Request Completed", true)));

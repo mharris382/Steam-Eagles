@@ -2,6 +2,7 @@
 using CoreLib;
 using CoreLib.Entities;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 namespace Weather.Storms
@@ -15,9 +16,32 @@ namespace Weather.Storms
 
         public EntityType SubjectEntityType => _stormSubject.SubjectEntityType;
 
+        public Bounds SubjectBounds => _stormSubject.SubjectBounds;
+
+
+        private ReactiveProperty<Storm> _subjectStorm;
+        public Storm SubjectStorm
+        {
+            get => _subjectStorm.Value;
+            set
+            {
+                if (value != _subjectStorm.Value)
+                {
+                    if (_subjectStorm.Value != null) _stormSubject.OnStormRemoved(_subjectStorm.Value);
+                    _subjectStorm.Value = value;
+                    if (value != null) _stormSubject.OnStormAdded(value);
+                }
+                
+            }
+        }
+
+        public ReadOnlyReactiveProperty<Storm> SubjectStormObservable => _subjectStorm.ToReadOnlyReactiveProperty();
+        
         public StormSubject(IStormSubject stormSubject)
         {
             _stormSubject = stormSubject;
+            _subjectStorm = new ReactiveProperty<Storm>();
+            
             _cd = new CompositeDisposable();
         }
         
@@ -25,5 +49,6 @@ namespace Weather.Storms
         {
             _cd?.Dispose();
         }
+
     }
 }

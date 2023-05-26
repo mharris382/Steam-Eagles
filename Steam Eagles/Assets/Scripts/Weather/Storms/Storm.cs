@@ -1,5 +1,7 @@
 ﻿using System;
+using UniRx;
 using UnityEngine;
+using Weather.Storms.Views;
 using Zenject;
 
 namespace Weather.Storms
@@ -9,18 +11,40 @@ namespace Weather.Storms
         public class Factory : PlaceholderFactory<Bounds, Vector2, Vector2, Storm> { }
         
         private readonly GlobalStormConfig _config;
+        
         private Vector2 _falloff;
+        private readonly StormView.AltFactory _viewFactory;
         private Bounds _innerBoundsWs;
 
+        public bool IsCompleted
+        {
+            get;
+            private set;
+        }
         public static event Action<Storm> OnStormCreated; 
         public static event Action<Storm> OnStormDestroyed;
 
-        
-        
-        public Storm(GlobalStormConfig config, Bounds innerBoundsWs, Vector2 velocity, Vector2 falloff )
+        public Vector2 Falloff
+        {
+            get => _falloff;
+         
+        }
+        private StormView _stormView;
+        public bool HasView => _stormView != null;
+        public StormView GetOrCreateView()
+        {
+            var view = _stormView ??= _viewFactory.Create();
+            view.AssignStorm(this);
+            return view;
+        }
+
+        public StormView GetView() => _stormView;
+        public Storm(GlobalStormConfig config, Bounds innerBoundsWs, Vector2 velocity, Vector2 falloff, StormView.AltFactory viewFactory)
         {
             _config = config;
             _falloff = falloff;
+            _viewFactory = viewFactory;
+
             this.InnerBoundsWs = innerBoundsWs;
             Debug.Assert(InnerBoundsWs.size != Vector3.zero, "Storm bounds cannot be zero");
             this.Velocity = velocity;
@@ -98,6 +122,13 @@ namespace Weather.Storms
         public void Dispose()
         {
             OnStormDestroyed?.Invoke(this);
+            if (HasView) CleanUpView(_stormView);
+            IsCompleted = true;
+        }
+
+        private void CleanUpView(StormView stormView)
+        {
+            GameObject.Destroy(stormView.gameObject);
         }
     }
 }
