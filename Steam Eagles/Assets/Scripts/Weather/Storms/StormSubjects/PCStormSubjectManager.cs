@@ -6,6 +6,7 @@ using CoreLib.Entities;
 using CoreLib.Signals;
 using UniRx;
 using UnityEngine;
+using Weather.Storms.Views;
 using Zenject;
 
 namespace Weather.Storms
@@ -53,6 +54,7 @@ namespace Weather.Storms
 
     public class PCStormSubject : EntityStormSubject
     {
+        private readonly GlobalStormConfig _config;
         private readonly PCInstance _pc;
         private readonly IPCTracker _tracker;
         private readonly Camera _camera;
@@ -60,8 +62,9 @@ namespace Weather.Storms
 
         public Camera Camera => _camera;
         
-        public PCStormSubject(PCInstance pc, IPCTracker tracker, GameObject character, Camera camera) : base(character)
+        public PCStormSubject(GlobalStormConfig config, PCInstance pc, IPCTracker tracker, GameObject character, Camera camera) : base(character)
         {
+            _config = config;
             _pc = pc;
             _tracker = tracker;
             _camera = camera;
@@ -82,19 +85,34 @@ namespace Weather.Storms
             }
         }
 
+        private StormView _view;
+
         public override void OnStormAdded(Storm storm)
         {
             var stormView = storm.GetOrCreateView();
+            _view = stormView;
             int playerNumber = _pc.PlayerNumber;
             stormView.NotifyPlayerEntered(playerNumber, this);
+            _config.Log($"Player {playerNumber} is now effected by storm ");
         }
 
         public override void OnStormRemoved(Storm storm)
         {
-            if (storm.HasView == false) return;
-            var stormView = storm.GetView();
             int playerNumber = _pc.PlayerNumber;
+            _config.Log($"Player {playerNumber} no longer effected by storm");
+            if (storm.HasView == false )
+            {
+                if (_view != null)
+                {
+                    _view.NotifyPlayerExited(_pc.PlayerNumber, this);
+                }
+                _view= null;
+                return;
+            }
+            var stormView = storm.GetView();
+            
             stormView.NotifyPlayerExited(playerNumber, this);
+            _view= null;
         }
     }
 }

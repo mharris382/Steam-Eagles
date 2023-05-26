@@ -56,6 +56,7 @@ namespace Weather.Storms
                 {
                     MessageBroker.Default.Publish(new StormRemovalRequest(_testStorm));
                     _removeRequestSent = true;
+                    _requestSent = false;
                 }
             }
         }

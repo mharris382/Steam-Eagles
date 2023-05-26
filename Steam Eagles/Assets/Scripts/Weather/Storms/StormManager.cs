@@ -127,6 +127,13 @@ namespace Weather.Storms
                 if(request.Storm == null || request.Storm.IsCompleted)
                     continue;
                 _stormRegistry.RemoveStorm(request.Storm);
+                foreach (var stormSubject in _subjectsRegistry.AllSubjects())
+                {
+                    if (stormSubject.SubjectStorm == request.Storm)
+                    {
+                        stormSubject.SubjectStorm = null;
+                    }
+                }
             }
         }
         
