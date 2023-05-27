@@ -20,7 +20,7 @@ recently I have been feeling that there is a lot of technical debt that needs to
 
 
 
-
+![[Movie_1001.mp4]]
 
 ----
 ## Reflection

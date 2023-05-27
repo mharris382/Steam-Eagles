@@ -14,6 +14,7 @@ namespace UI
 {
     public class UIPauseGame : Window
     {
+        public int quitToMainMenuSceneIndex = 0;
         [Required]
         public GameObject defaultSelectable;
         private PlayerInput _openedByPlayerInput;
@@ -92,33 +93,18 @@ namespace UI
         
         public void QuitButton()
         {
-            
-            using (UniRx.Observable.FromEvent<string>(
-                       t => PersistenceManager.Instance.GameSaved += t,
-                       t => PersistenceManager.Instance.GameSaved -= t).Subscribe((_ =>
-                   {
-                        Debug.Log("Save Completed!");
-                        Application.Quit();
-                   })))
+            PersistenceManager.Instance.GameSaved += s =>
             {
-                
-                MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
-            }
+                Debug.Log($"Saving and quitting: {s}");
+                Application.Quit();
+            };
+            MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
         }
 
         public void QuitToMainMenu()
         {
-            using (UniRx.Observable.FromEvent<string>(
-                       t => PersistenceManager.Instance.GameSaved += t,
-                       t => PersistenceManager.Instance.GameSaved -= t).Subscribe((_ =>
-                   {
-                       Debug.Log("Save Completed!");
-                       SceneManager.LoadScene(0);
-                       Close();
-                   })))
-            {
-                MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
-            }
+            
+            MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
         }
     }
 }

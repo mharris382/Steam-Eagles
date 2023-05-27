@@ -7,11 +7,14 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utilities;
+using Zenject;
 
 namespace Buildables
 {
-    public abstract class BuildableMachineBase : MonoBehaviour, IIconable, IMachineTileProvider
+   
+    public abstract class BuildableMachineBase : Machine, IIconable, IMachineTileProvider
     {
+        
         [Serializable]
         public class FX
         {
@@ -20,6 +23,12 @@ namespace Buildables
         }
 
 
+        [Inject]
+        public void TestInject(BuildablesRegistry buildablesRegistry)
+        {
+            Debug.Log($"Successfully Injected {name}!".Bolded().ColoredBlue(),this);
+            _buildablesRegistry = buildablesRegistry;
+        }
 
         [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)] public GameObject buildingTarget;
         [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
@@ -37,6 +46,7 @@ namespace Buildables
         public string machineAddress;
         private int _machineID;
         private Vector3Int? _spawnedPosition;
+        private BuildablesRegistry _buildablesRegistry;
 
         #region [Properties]
 

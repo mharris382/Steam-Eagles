@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using UniRx;
-using Unity.Collections;
 using Unity.Jobs;
-using UnityEngine;
 using Zenject;
 
 
@@ -22,9 +20,6 @@ namespace Weather.Storms
         private Queue<StormCreationRequest> _creationRequests = new Queue<StormCreationRequest>();
         private Queue<StormRemovalRequest> _removalRequests = new Queue<StormRemovalRequest>();
 
-        private NativeArray<Bounds> _stormOuterBounds;
-        private NativeArray<Bounds> _subjectBounds;
-        private NativeArray<int> _subjectStormIndices;
         private Dictionary<StormSubject, int> _subjectIndices = new Dictionary<StormSubject, int>();
         
         private int _subjectCount;
@@ -38,8 +33,6 @@ namespace Weather.Storms
             {
                 if (_stormCount != value)
                 {
-                    _stormOuterBounds.Dispose();
-                    _stormOuterBounds = new NativeArray<Bounds>(value, Allocator.Persistent);
                     _stormCount = value;
                 }
             }
@@ -51,10 +44,6 @@ namespace Weather.Storms
             {
                 if (_subjectCount != value)
                 {
-                    _subjectBounds.Dispose();
-                    _subjectStormIndices.Dispose();
-                    _subjectBounds = new NativeArray<Bounds>(value, Allocator.Persistent);
-                    _subjectStormIndices = new NativeArray<int>(value, Allocator.Persistent);
                     foreach (var subject in _subjectsRegistry.AllSubjects()) 
                     {
                         if (!_subjectIndices.ContainsKey(subject))
@@ -195,38 +184,8 @@ namespace Weather.Storms
         }
 
 
-        /// <summary>
-        /// NOTE: this implementation does not allow subjects to be in more than one storm
-        /// </summary>
-        struct BoundsCheckJob : IJobParallelFor
-        {
-            public NativeArray<Bounds> subjectBounds;
-            
-            //index of the storm that the subject is in, -1 if not in a storm
-            public NativeArray<int> results; 
-
-            public NativeArray<Bounds> stormBounds;
-            public int stormCount;
-            
-            public void Execute(int index)
-            {
-                var subjectBound = subjectBounds[index];
-                for (int i = 0; i < stormCount; i++)
-                {
-                    var stormBound = stormBounds[i];
-                    if (subjectBound.Intersects(stormBound))
-                    {
-                        results[index] = i;
-                        break;
-                    }
-                }
-                results[index] = -1;
-            }
-        }
-
         public void Dispose()
         {
-            _stormOuterBounds.Dispose();
             _cd.Dispose();
         }
 

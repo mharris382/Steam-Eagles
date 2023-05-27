@@ -285,6 +285,10 @@ namespace SaveLoad
                 }
                 
                 // Generate new path using current time
+                if (path.EndsWith('-'))
+                {
+                    path = path.Remove(path.Length - 1);
+                }
                 string newDirectory = $"{path}-{DateTime.Now:MM_dd_yyyy HH mm}";
                 return newDirectory;
                 // Recursively call the function with the new path

@@ -8,6 +8,4 @@ namespace CoreLib
         bool IsMoving { get; }
         IEnumerable<string> GetFloorNames();
     }
-    
-    
 }

@@ -19,6 +19,8 @@ using Zenject;
 
 namespace Buildings
 {
+    public interface IMachineFactory : IFactory<Machine, Machine> { }
+    
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
@@ -166,6 +168,14 @@ namespace Buildings
         {
             _buildingMapFactory = buildingMapFactory;
         }
+
+        
+        public void InjectMachinePrefabFactory(IMachineFactory machinePrefabFactory)
+        {
+            this.machinePrefabFactory = machinePrefabFactory;
+        }
+
+        public IMachineFactory machinePrefabFactory { get; private set; }
 
         #endregion
 

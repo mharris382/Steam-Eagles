@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using CoreLib;
+using Interactions.Installers;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Interactions
 {
@@ -14,7 +16,8 @@ namespace Interactions
         List<Interactable> _interactables = new List<Interactable>();
         Dictionary<Interactable, float> _interactableDistances = new Dictionary<Interactable, float>();
         Dictionary<InteractionAgent, HashSet<Interactable>> _interactableInRange = new Dictionary<InteractionAgent, HashSet<Interactable>>();
-        
+        private InteractableRegistry _registry;
+
 
         public void RegisterInteractionAgent(InteractionAgent interactionAgent)
         {
@@ -29,9 +32,16 @@ namespace Interactions
             _interactionAgents.Remove(interactionAgent);
             _interactableInRange.Remove(interactionAgent);
         }
-
+        
+        [Inject]
+        public void Inject(InteractableRegistry registry)
+        {
+            _registry = registry;
+        }
         public void RegisterInteractable(Interactable interactable)
         {
+            //_registry.Register(interactable);
+            //return;
             if(_interactables.Contains(interactable))
                 return;
             _interactables.Add(interactable);
@@ -40,6 +50,8 @@ namespace Interactions
 
         public void UnregisterInteractable(Interactable interactable)
         {
+            //_registry.Unregister(interactable);
+           // return;
             _interactables.Remove(interactable);
             _interactableDistances.Remove(interactable);
         }
