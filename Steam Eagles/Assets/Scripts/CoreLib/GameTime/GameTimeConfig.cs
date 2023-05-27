@@ -4,10 +4,21 @@ using UnityEngine;
 
 namespace CoreLib.GameTime
 {
+
     [GlobalConfig("Resources/GameTimeConfig")]
-    public class GameTimeConfig : GlobalConfig<GameTimeConfig>
+    public class GameTimeConfig : GlobalConfig<GameTimeConfig>, IGameTimeConfig
     {
-        [Tooltip("How many real minutes does it take to go 24 hours in game time")]
+        public bool logging = true;
+
+        public void Log(string msg)
+        {
+            if (logging)
+            {
+                Debug.Log(msg);
+            }
+        }
+
+    [Tooltip("How many real minutes does it take to go 24 hours in game time")]
         public float realMinutesInGameDay = 20;
 
         [SerializeField, Tooltip("How many game hours in one game day")]

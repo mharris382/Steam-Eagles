@@ -1,4 +1,6 @@
-﻿namespace Items
+﻿using Utilities.AddressablesUtils;
+
+namespace Items
 {
     [System.Serializable]
     public class ToolControllerReference : ComponentReference<ToolControllerBase>

@@ -48,6 +48,7 @@ namespace UI.MainMenu
                     if (activeDevice == null) continue;
                     activeDevice.SwitchCurrentActionMap(startGameActionMap);
                 }
+                throw new NotImplementedException();
                 var newGameSave = new NewGameSaveCreator(false);
                 newGameSave.CreateNewGameSave(newGameSaveName);
                 PlayerPrefs.SetString("Last Save Path", newGameSaveName);

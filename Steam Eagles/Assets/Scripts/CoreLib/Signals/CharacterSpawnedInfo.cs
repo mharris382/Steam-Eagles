@@ -2,6 +2,7 @@
 
 namespace CoreLib
 {
+    [System.Obsolete("probably use CharacterRegistry instead")]
     public struct CharacterSpawnedInfo
     {
         public readonly string characterName;

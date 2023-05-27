@@ -33,7 +33,41 @@ namespace CoreLib.GameTime
         public static bool operator ==(GameTime gameTime1, GameTime gameTime2) => gameTime1.gameHour == gameTime2.gameHour && gameTime1.gameMinute == gameTime2.gameMinute;
         public static bool operator !=(GameTime gameTime1, GameTime gameTime2) => gameTime1.gameHour != gameTime2.gameHour || gameTime1.gameMinute != gameTime2.gameMinute;
 
+        public static bool operator <(GameTime t1, GameTime t2)
+        {
+            if (t1.gameHour == t2.gameHour)
+            {
+                return t1.gameMinute < t2.gameMinute;
+            }
+            return t1.gameHour < t2.gameHour;
+        }
+        
+        public static bool operator >(GameTime t1, GameTime t2)
+        {
+            if (t1.gameHour == t2.gameHour)
+            {
+                return t1.gameMinute > t2.gameMinute;
+            }
+            return t1.gameHour > t2.gameHour;
+        }
 
+        public static bool operator <=(GameTime t1, GameTime t2)
+        {
+            if (t1.gameHour == t2.gameHour)
+            {
+                return t1.gameMinute <= t2.gameMinute;
+            }
+            return t1.gameHour <= t2.gameHour;
+        }
+        
+        public static bool operator >=(GameTime t1, GameTime t2)
+        {
+            if (t1.gameHour == t2.gameHour)
+            {
+                return t1.gameMinute >= t2.gameMinute;
+            }
+            return t1.gameHour >= t2.gameHour;
+        }
         public float GetPercentageOfDay()
         {
             var minInDay = (24 * 60);
@@ -47,6 +81,11 @@ namespace CoreLib.GameTime
             var secFromHours = GameTimeConfig.Instance.RealSecondsInGameHour * gameHour;
             var totalSeconds = secFromMinutes + secFromHours;
             return TimeSpan.FromSeconds(totalSeconds);
+        }
+
+        public override string ToString()
+        {
+            return $"{gameHour}:{gameMinute}";
         }
     }
 }

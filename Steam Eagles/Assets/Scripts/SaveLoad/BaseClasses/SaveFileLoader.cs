@@ -49,10 +49,11 @@ namespace SaveLoad
         {
             if (!File.Exists(GetSavePath(savePath)))
             {
+                
                 Debug.LogError($"Path not found: {savePath}");
                 return false;
             }
-            var json = File.ReadAllText(GetSavePath(savePath));
+            var json = await File.ReadAllTextAsync(GetSavePath(savePath));
             var data = JsonUtility.FromJson<T>(json);
             return await LoadData(savePath, data);
         }

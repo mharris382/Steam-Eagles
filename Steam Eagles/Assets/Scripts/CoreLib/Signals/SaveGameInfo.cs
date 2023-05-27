@@ -1,5 +1,6 @@
 ﻿namespace CoreLib
 {
+    [System.Obsolete("Call SaveLoader directly")]
     public struct SaveGameRequestedInfo
     {
         public string savePath;
@@ -10,6 +11,7 @@
         }
     }
 
+    [System.Obsolete("Call SaveLoader directly")]
     public struct LoadGameRequestedInfo
     {
         public string loadPath;

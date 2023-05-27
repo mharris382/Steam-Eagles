@@ -54,14 +54,14 @@ namespace SaveLoad
             base.Init();
             inited = true;
             
-            MessageBroker.Default.Receive<SaveGameRequestedInfo>()
-                .Select(t => t.savePath)
-                .Subscribe(SaveGameAtPath)
-                .AddTo(this);
-
-            MessageBroker.Default.Receive<LoadGameRequestedInfo>()
-                .Subscribe(LoadGameRequest)
-                .AddTo(this);
+         MessageBroker.Default.Receive<SaveGameRequestedInfo>()
+             .Select(t => t.savePath)
+             .Subscribe(SaveGameAtPath)
+             .AddTo(this);
+        
+         MessageBroker.Default.Receive<LoadGameRequestedInfo>()
+             .Subscribe(LoadGameRequest)
+             .AddTo(this);
 
             MessageBroker.Default.Receive<CharacterSpawnedInfo>()
                 .DelayFrame(1)

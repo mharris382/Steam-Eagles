@@ -4,6 +4,8 @@ namespace SaveLoad
 {
     public class LoadOrderAttribute : Attribute, IComparable<LoadOrderAttribute>
     {
+        private static LoadOrderAttribute _default;
+        public static LoadOrderAttribute Default => _default ??= new LoadOrderAttribute(0);
         public int Order { get; }
 
         public LoadOrderAttribute(int order)
@@ -13,7 +15,7 @@ namespace SaveLoad
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Order.GetHashCode();
         }
 
         public int CompareTo(LoadOrderAttribute other)

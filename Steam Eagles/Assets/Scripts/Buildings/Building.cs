@@ -20,6 +20,8 @@ using Zenject;
 namespace Buildings
 {
     public interface IMachineFactory : IFactory<Machine, Machine> { }
+
+
     
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
@@ -365,6 +367,20 @@ namespace Buildings
         }
     }
 
+
+    public class BuildingTileLookup
+    {
+
+        class LayerTileLookup
+        {
+            private readonly BuildingLayers _layers;
+
+            public LayerTileLookup(Building building, BuildingLayers layers)
+            {
+                _layers = layers;
+            }
+        }
+    }
 
 
     public struct BuildingCell

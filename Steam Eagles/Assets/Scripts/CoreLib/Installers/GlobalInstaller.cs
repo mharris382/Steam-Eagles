@@ -3,13 +3,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
+using CoreLib.GameTime;
 using CoreLib.SharedVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-
+public class TimeInstaller : Installer<TimeInstaller>
+{
+    public override void InstallBindings()
+    {
+        Container.Bind<IGameTimeConfig>().To<GameTimeConfig>().FromScriptableObjectResource("GameTimeConfig/GameTimeConfig.asset").AsSingle();
+        Container.Bind<GameTimeState>().FromNew().AsSingle();
+        Container.BindInterfacesAndSelfTo<TimeRunner>().AsSingle().NonLazy();
+    }
+}
 
 
 public class GlobalInstaller : MonoInstaller
@@ -20,19 +29,35 @@ public class GlobalInstaller : MonoInstaller
     public SharedTransform p1Character;
     public SharedTransform p2Character;
     public SlowTickConfig slowTickConfig;
+
+
+    [ShowInInspector]
+    [TitleGroup("In Game Time Settings"), InlineEditor(Expanded = true)]
+    public GameTimeConfig timeConfig
+    {
+        get => GameTimeConfig.Instance;
+        set
+        {
+            
+        }
+    }
+    
+    
     
     public override void InstallBindings()
     {
         Container.Bind<SlowTickConfig>().FromInstance(slowTickConfig).AsSingle();
         Container.BindInterfacesAndSelfTo<SlowTickUpdater>().AsSingle().NonLazy();
         Container.BindInterfacesTo<TestSlowTickables>().AsSingle().NonLazy();
-        
-        
+
         Container.Bind<Canvas>().FromComponentInNewPrefab(pauseMenuPrefab).AsSingle().NonLazy();
         Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PauseMenuSetInactiveOnStart>().FromNew().AsSingle().NonLazy();
         Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
         Container.Bind<GlobalGameState>().FromNew().AsSingle();
+
+        TimeInstaller.Install(Container);
+
     }
     
     private class TestSlowTickables : ISlowTickable, IExtraSlowTickable

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace Items
+namespace Utilities.AddressablesUtils
 {
     /// <summary>
     /// Creates an AssetReference that is restricted to having a specific Component.

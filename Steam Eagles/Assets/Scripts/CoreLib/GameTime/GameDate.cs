@@ -38,5 +38,57 @@
         public static bool operator ==(GameDate d1, GameDate d2) => d1.gameDays == d2.gameDays && d1.gameWeeks == d2.gameWeeks;
 
         public static bool operator !=(GameDate d1, GameDate d2) => d1.gameDays != d2.gameDays || d1.gameWeeks != d2.gameWeeks;
+        
+        public static bool operator <(GameDate d1, GameDate d2)
+        {
+            if (d1.gameWeeks == d2.gameWeeks)
+            {
+                return d1.gameDays < d2.gameDays;
+            }
+            else
+            {
+                return d1.gameWeeks < d2.gameWeeks;
+            }
+        }
+        
+        public static bool operator >(GameDate d1, GameDate d2)
+        {
+            if (d1.gameWeeks == d2.gameWeeks)
+            {
+                return d1.gameDays > d2.gameDays;
+            }
+            else
+            {
+                return d1.gameWeeks > d2.gameWeeks;
+            }
+        }
+        public static bool operator <=(GameDate d1, GameDate d2)
+        {
+            if (d1.gameWeeks == d2.gameWeeks)
+            {
+                return d1.gameDays <= d2.gameDays;
+            }
+            else
+            {
+                return d1.gameWeeks <= d2.gameWeeks;
+            }
+        }
+        
+        public static bool operator >=(GameDate d1, GameDate d2)
+        {
+            if (d1.gameWeeks == d2.gameWeeks)
+            {
+                return d1.gameDays >= d2.gameDays;
+            }
+            else
+            {
+                return d1.gameWeeks >= d2.gameWeeks;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{gameWeeks} weeks {gameDays} days";
+        }
     }
 }

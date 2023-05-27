@@ -24,7 +24,11 @@ My hypothesis is that the following signals can be replaced
 ----
 ## Result
 
-
+## Load Request Senders
+- `UICharacterSelection` at `startButton.onClick` in UI/MainMenu
+- `UILoadGameButton` at `loadButton.onClick` in UI
+- `UIMainMenu` at `StartGame` (PUBLIC METHOD) no usages found
+- `UIMainMenu` at `OnContinueButton` called by button
 
 
 

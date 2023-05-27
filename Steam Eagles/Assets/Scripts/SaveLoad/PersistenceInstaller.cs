@@ -1,23 +1,46 @@
-using System;
+using System.IO;
+using System.Linq;
 using CoreLib;
+using SaveLoad.CoreSave;
+using Sirenix.OdinInspector;
 using UniRx;
-using UnityEngine;
 using Zenject;
 
 public class PersistenceInstaller : MonoInstaller
 {
-    public bool logAllRequests = true;
+    [HideLabel]
+    public PersistenceConfig config;
     public override void InstallBindings()
     {
-        Container.BindInterfacesTo<SaveLoadRequestProcessor>().AsSingle().NonLazy();
-        if (logAllRequests)
-        {
-            Container.BindInterfacesTo<SaveLoadRequestLogger>().AsSingle().NonLazy();
-        }
+        Container.Bind<PersistenceConfig>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GlobalSaveLoader>().AsSingle().NonLazy();
+        Container.Bind<GlobalSavePath>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<AsyncCoreSaveDataLoader>().AsSingle().NonLazy();
     }
 }
 
-public class SaveLoadRequestLogger : IInitializable, IDisposable
+[InlineProperty]
+[System.Serializable]
+public class PersistenceConfig : ConfigBase
+{
+    [FolderPath(AbsolutePath = true)]
+    public string testingSavePath;
+
+    bool ValidatePath(string path, ref string msg)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            msg = "Must provide valid testing path";
+            return false;
+        }
+
+        msg = "Directory does not exit";
+        return Directory.Exists(path);
+    }
+}
+
+
+/*public class SaveLoadRequestLogger : IInitializable, IDisposable
 {
     private IDisposable _disposable;
     public void Initialize()
@@ -73,4 +96,4 @@ public class SaveLoadRequestProcessor : IInitializable, IDisposable
     {
         
     }
-}
+}*/

@@ -100,6 +100,7 @@ namespace UI
 
         private void SaveGame()
         {
+            throw new NotImplementedException();
             MessageBroker.Default.Publish(new SaveGameRequestedInfo(GetPathForSaveName(CurrentSaveName)));
             onFinishedSaving.Invoke();
         }

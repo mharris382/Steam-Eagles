@@ -1,4 +1,5 @@
 ﻿using UnityEngine.AddressableAssets;
+using Utilities.AddressablesUtils;
 
 namespace Items
 {

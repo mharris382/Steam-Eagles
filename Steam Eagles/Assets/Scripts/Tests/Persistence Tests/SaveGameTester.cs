@@ -27,12 +27,14 @@ namespace Tests.Persistence_Tests
             if (Input.GetKeyDown(KeyCode.J))
             {
                 Debug.Log(SavePathExists() ? $"Overwriting Save at {GetFullPath()}" : $"Creating Save at {GetFullPath()}");
+                throw new NotImplementedException();
                 MessageBroker.Default.Publish(new SaveGameRequestedInfo(GetFullPath()));
             }
 
             if (Input.GetKeyDown(KeyCode.L))
             {
                 Debug.Log(SavePathExists() ? $"Loading Save at {GetFullPath()}" : $"No Save Exists at {GetFullPath()}");
+                throw new NotImplementedException();
                 MessageBroker.Default.Publish(new LoadGameRequestedInfo(GetFullPath()));
             }
         }

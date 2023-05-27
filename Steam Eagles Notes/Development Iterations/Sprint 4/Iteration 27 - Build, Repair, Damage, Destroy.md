@@ -41,7 +41,29 @@ I would like a new method for saving and loading the tiles into the tilemaps, th
 ----
 ## Reflection
 
+so after some discussion I realized that it would be feasible to save tilemap data not as json files but as image files since each room has fixed size.  To do this would require color mapping pixel color to tile id, however Steph came up with an amazing idea that involves saving the positions of the tiles in the texture, and saving the tile ids in an array in a json file.
 
+Then you process every pixel in the image.  
+
+
+```cs
+public void ProcessImage(Image img, TileArray tiles, out TileGrid tileGrid)
+{
+	int count = 0;
+	tileGrid = new TileGrid(img.width, img.height);
+	for (int x = 0; x < img.width; x++)
+	{
+		for (int y = 0; y < img.height; y++)
+		{
+			Color pix = img.GetPixel(x, y);
+			if(pix.r + pix.g + pix.b > Mathf.Epsilon)
+			{
+				tileGrid.SetTile(x, y, tiles[count++]);
+			}
+		}
+	}
+}
+```
 
 ### What was learned or accomplished?
 

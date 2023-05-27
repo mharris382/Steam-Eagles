@@ -1,4 +1,5 @@
-﻿using CoreLib;
+﻿using System;
+using CoreLib;
 using CoreLib.Signals;
 using SaveLoad;
 using Sirenix.OdinInspector;
@@ -98,12 +99,13 @@ namespace UI
                 Debug.Log($"Saving and quitting: {s}");
                 Application.Quit();
             };
+            throw new NotImplementedException();
             MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
         }
 
         public void QuitToMainMenu()
         {
-            
+            throw new NotImplementedException();
             MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
         }
     }

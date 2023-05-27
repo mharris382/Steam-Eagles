@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using Buildings.CoreData;
+using Sirenix.OdinInspector;
 using Zenject;
 
 namespace Buildings.DI
@@ -18,6 +19,8 @@ namespace Buildings.DI
             {
                 Container.Rebind<TileAssets>().FromInstance(tileAssets).AsSingle().NonLazy();
             }
+
+            Container.BindInterfacesAndSelfTo<BuildingCoreData>().AsSingle().NonLazy();
         }
     }
 }

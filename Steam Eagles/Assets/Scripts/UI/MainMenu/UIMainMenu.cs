@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 public class UIMainMenu : MonoBehaviour
 {
@@ -59,6 +60,9 @@ public class UIMainMenu : MonoBehaviour
             },
         }
     };
+
+    [ShowInInspector, ReadOnly]
+    private GlobalSaveLoader _saveLoader;
 
     [Serializable]
     public class UIPanelGroup
@@ -216,6 +220,13 @@ public class UIMainMenu : MonoBehaviour
     {
         return panelGroup;
     }
+
+    [Inject]
+    public void InjectSaveLoader(GlobalSaveLoader saveLoader)
+    {
+        Debug.Log("Injecting save loader");
+        _saveLoader = saveLoader;
+    }
     
     private void Awake()
     {
@@ -248,7 +259,7 @@ public class UIMainMenu : MonoBehaviour
     {
         if (GameManager.Instance.CanStartGameInSingleplayer())
         {
-            MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
+            ///MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
             return;
         }
         throw new NotImplementedException();
@@ -317,10 +328,30 @@ public class UIMainMenu : MonoBehaviour
     
     public void OnContinueButton()
     {
-        var lastPath = PlayerPrefs.GetString("Last Save Path");
-        if (lastPath != null)
+        if (_saveLoader != null)
         {
-            PersistenceManager.Instance.LoadGameRequest(new LoadGameRequestedInfo(lastPath));
+            _saveLoader.LoadGame(res =>
+            {
+                if (res)
+                {
+                    Debug.Log("Continue button worked");
+                }
+                else
+                {
+                    Debug.LogError("Continue button failed");
+                }
+            });
         }
+        else
+        {
+            throw new NotImplementedException();
+            var lastPath = PlayerPrefs.GetString("Last Save Path");
+            if (lastPath != null)
+            {
+                PersistenceManager.Instance.LoadGameRequest(new LoadGameRequestedInfo(lastPath));
+            }
+            Debug.LogError("Save loader not injected",this);
+        }
+        
     }
 }

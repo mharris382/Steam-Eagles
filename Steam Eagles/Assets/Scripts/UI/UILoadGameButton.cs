@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using CoreLib;
 using CoreLib.GameTime;
 using TMPro;
@@ -36,7 +37,11 @@ namespace UI
             if (Directory.Exists(fullPath))
             {
                 loadButton.interactable = true;
-                loadButton.onClick.AsObservable().Subscribe(_ => MessageBroker.Default.Publish(new LoadGameRequestedInfo(GetFullSavePath()))).AddTo(this);
+                loadButton.onClick.AsObservable().Subscribe(_ =>
+                {
+                    throw new NotImplementedException();
+                    MessageBroker.Default.Publish(new LoadGameRequestedInfo(GetFullSavePath()));
+                }).AddTo(this);
             }
             else
             {
