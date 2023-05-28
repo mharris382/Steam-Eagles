@@ -7,6 +7,19 @@ namespace CoreLib.GameTime
     {
         public int gameHour;
         public int gameMinute;
+
+        public TimeOfDay TimeOfDay
+        {
+            get
+            {
+                int hr = gameHour;
+                hr += 6;
+                hr %= 24;
+                int tod = hr / 6;
+                return (TimeOfDay)tod;
+            }
+        }
+
         public GameTime(int hour, int minute)
         {
             if (minute >= 60)
@@ -87,5 +100,15 @@ namespace CoreLib.GameTime
         {
             return $"{gameHour}:{gameMinute}";
         }
+    }
+
+
+
+    public enum TimeOfDay
+    {
+        MORNING=2,
+        AFTERNOON=3,
+        EVENING=0,
+        NIGHT=1
     }
 }

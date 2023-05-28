@@ -38,7 +38,54 @@ namespace Tests.TimeTests
             var config = Container.Resolve<IGameTimeConfig>();
             Assert.AreEqual(SEC_PER_GAME_MINUTE, config.RealSecondsInGameMinute);
         }
-    
+
+        public class TimeOfDayTests
+        {
+           [Test] public void _8IsMorning()
+            {
+                Assert.AreEqual(TimeOfDay.MORNING, new GameTime(8, 0).TimeOfDay);
+            }
+           [Test] public void _2IsAfternoon()
+            {
+                Assert.AreEqual(TimeOfDay.AFTERNOON, new GameTime(14, 0).TimeOfDay);
+            }
+           [Test] public void _7IsEvening()
+            {
+                Assert.AreEqual(TimeOfDay.EVENING, new GameTime(19, 0).TimeOfDay);
+            }
+           [Test] public void _3IsNight()
+            {
+                Assert.AreEqual(TimeOfDay.NIGHT, new GameTime(3, 0).TimeOfDay);
+            }
+            [Test]public void MorningIs0To6()
+            {
+                var morningStart = new GameTime(6, 1);
+                var morningEnd = new GameTime(11, 59);
+                Assert.AreEqual(TimeOfDay.MORNING, morningStart.TimeOfDay);
+                Assert.AreEqual(TimeOfDay.MORNING, morningEnd.TimeOfDay);
+            }
+           [Test] public void AfternoonIs12To6()
+            {
+                var afternoonStart = new GameTime(12, 1);
+                var afternoonEnd = new GameTime(12+5, 59);
+                Assert.AreEqual(TimeOfDay.AFTERNOON, afternoonStart.TimeOfDay);
+                Assert.AreEqual(TimeOfDay.AFTERNOON, afternoonEnd.TimeOfDay);
+            }
+           [Test] public void EveningIs18To24()
+            {
+                var eveningStart = new GameTime(18, 1);
+                var eveningEnd = new GameTime(23, 59);
+                Assert.AreEqual(TimeOfDay.EVENING, eveningStart.TimeOfDay);
+                Assert.AreEqual(TimeOfDay.EVENING, eveningEnd.TimeOfDay);
+            }
+           [Test] public void NightIs0To6()
+            {
+                var nightStart = new GameTime(0, 1);
+                var nightEnd = new GameTime(5, 59);
+                Assert.AreEqual(TimeOfDay.NIGHT, nightStart.TimeOfDay);
+                Assert.AreEqual(TimeOfDay.NIGHT, nightEnd.TimeOfDay);
+            }
+        }
         public class GameDateTests
         {
             [Test]   public void TestGameDateNotEquals()

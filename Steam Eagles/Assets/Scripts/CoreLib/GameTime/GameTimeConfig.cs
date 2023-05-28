@@ -18,7 +18,7 @@ namespace CoreLib.GameTime
             }
         }
 
-    [Tooltip("How many real minutes does it take to go 24 hours in game time")]
+        [Tooltip("How many real minutes does it take to go 24 hours in game time")]
         public float realMinutesInGameDay = 20;
 
         [SerializeField, Tooltip("How many game hours in one game day")]
