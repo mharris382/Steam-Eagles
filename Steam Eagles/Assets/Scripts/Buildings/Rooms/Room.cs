@@ -1,7 +1,8 @@
 ﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreLib;
+ using Buildings.Damage;
+ using CoreLib;
 using Sirenix.OdinInspector;
 #if UNITY_EDITOR
  using Sirenix.OdinInspector.Editor;
@@ -10,6 +11,7 @@ using Sirenix.OdinInspector;
  using UnityEngine;
  using UnityEngine.Events;
  using UnityEngine.Tilemaps;
+ using Zenject;
 
  namespace Buildings.Rooms
 {
@@ -22,8 +24,9 @@ using Sirenix.OdinInspector;
     [Serializable]
     public class Room : MonoBehaviour
     {
-        [Serializable]
-        public class Events
+        public interface IDamageProviderFactory : IFactory<Room,IDamageOptionProvider>{ }
+        
+        [Serializable] public class Events
         {
             public CharacterEvents characterEvents = new CharacterEvents();
             public PlayerEvents playerEvents = new PlayerEvents();
@@ -59,12 +62,16 @@ using Sirenix.OdinInspector;
                                     ((int)accessLevel & (int)AccessLevel.PILOTS) == 0 && 
                                     ((int)accessLevel & (int)AccessLevel.PASSENGERS) == 0;
 
-      
+        public bool debugGetCells;
+        public GridLayout targetGrid;
+        private IDamageOptionProvider _damageProvider;
+        public IDamageOptionProvider DamageOption => _damageProvider;
 
         public List<Room> connectedRooms = new List<Room>();
 
         private Building _building;
         public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
+
 
         public Bounds RoomBounds
         {
@@ -82,7 +89,7 @@ using Sirenix.OdinInspector;
                 roomBounds = value;
             }
         }
-        
+
         public Bounds Bounds
         {
             get
@@ -114,8 +121,9 @@ using Sirenix.OdinInspector;
                 return wsBounds;
             }
         }
-        
+
         private Rooms _rooms;
+
 
         public Rooms Rooms
         {
@@ -132,8 +140,19 @@ using Sirenix.OdinInspector;
         }
 
         public Vector3 WorldCenter => BuildingTransform.TransformPoint(RoomBounds.center);
-        
-        
+
+
+        #region [Injection Methods]
+
+        [Inject]
+        public void InjectDamageProvider(IDamageProviderFactory factory)
+        {
+            _damageProvider = factory.Create(this);
+        }
+
+        #endregion
+
+
         public void AddConnectedRoom(Room room)
         {
             if (connectedRooms.Contains(room)) return;
@@ -158,7 +177,7 @@ using Sirenix.OdinInspector;
             lsPosition.z = RoomBounds.center.z;
             return RoomBounds.Contains(lsPosition);
         }
-        
+
         public bool ContainsLocalPosition(Vector3 lsPosition)
         {
             lsPosition.z = RoomBounds.center.z;
@@ -166,6 +185,7 @@ using Sirenix.OdinInspector;
         }
 
         public bool ContainsLocalPosition(Vector2 lsPosition) => ContainsLocalPosition(new Vector3(lsPosition.x, lsPosition.y, RoomBounds.center.z));
+
 
         public void SetCameraActive(bool active)
         {
@@ -181,7 +201,7 @@ using Sirenix.OdinInspector;
             OdinEditorWindow.InspectObject(new RoomTester(this));
 #endif
         }
-        
+
         public void Fill(TileBase tileBase, Tilemap target)
         {
             foreach (var cell in GetCells(target))
@@ -189,6 +209,7 @@ using Sirenix.OdinInspector;
                 target.SetTile(cell, tileBase);
             }
         }
+
         public IEnumerable<Vector3Int> GetCells( Tilemap target)
         {
             var center = Bounds.center;
@@ -207,9 +228,6 @@ using Sirenix.OdinInspector;
             }
         }
 
-        public bool debugGetCells;
-        public GridLayout targetGrid;
-        
         public BoundsInt GetCells(GridLayout gridLayout)
         {
             var cellMin = gridLayout.LocalToCell(Bounds.min);

@@ -419,7 +419,7 @@ public class RuleTileCopier : OdinEditorWindow
             var gridH = rect.height / 3f;
             var rule = _original.m_TilingRules[value];
             var sprite = _replacements[value];
-            //var upBox = rect.SplitGrid(rect.width/3f, rect.height/3f, )
+            //var upBox = bounds.SplitGrid(bounds.width/3f, bounds.height/3f, )
             for (int x = 0; x < 3; x++)
             {
                 for (int y = 0; y < 3; y++)

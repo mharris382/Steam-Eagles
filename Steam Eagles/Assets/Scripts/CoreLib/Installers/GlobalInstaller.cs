@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using CoreLib;
 using CoreLib.GameTime;
 using CoreLib.SharedVariables;
@@ -20,6 +21,72 @@ public class TimeInstaller : Installer<TimeInstaller>
     }
 }
 
+
+public class TimeDebug : MonoBehaviour
+{
+    private GameTimeState _state;
+
+    [InfoBox("$infoString")]
+    [ShowInInspector, ReadOnly, DisplayAsString]
+    public string Time
+    {
+        get
+        {
+            if (_state == null)
+            {
+                return "Time State not injected..";
+            }
+
+            if (!_state.IsTimeMoving)
+            {
+                return "Time is paused";
+            }
+
+            return _state.CurrentTime.ToString();
+        }
+        set { }
+    }
+
+
+
+    public string infoString
+    {
+        get
+        {
+            StringBuilder sb = new StringBuilder();
+            if (_state == null)
+            {
+                return "";
+            }
+
+            sb.Append("Time: ");
+            sb.AppendLine(_state.CurrentTime.ToString());
+            sb.Append("Mode:");
+            sb.AppendLine(_state.Mode.ToString());
+            
+            
+            
+            sb.Append("Is Time Moving? ");
+            sb.AppendLine(_state.IsTimeMoving ? "Yes" : "No");
+            if (_state.HasTimeMaximumBeenSet)
+            {
+                sb.Append("Maximum Set:");
+                if(_state.HasMaximumTimeBeenReached) sb.Append(" Reached");
+                sb.AppendLine(_state.CurrentTimeMaximum.ToString());
+            }
+            
+            
+            return sb.ToString();
+        }
+    }
+
+
+[Inject]
+    void Inject(GameTimeState state)
+    {
+        this._state = state;
+    }
+}
 
 public class GlobalInstaller : MonoInstaller
 {

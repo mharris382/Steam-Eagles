@@ -1,17 +1,31 @@
 ﻿using System.Collections.Generic;
+using Buildings.Tiles.Skin;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Buildings.Tiles
 {
-    
-    public abstract class PuzzleTile : RuleTile
+    public interface IPuzzleTile : IVariant
     {
+        string name { get; }
+    }
+    public abstract class PuzzleTile : RuleTile, IPuzzleTile
+    {
+        public string VariantKey => !isVariant ? name : $"{tileRoot}_{name}";
+        
+
+        [ToggleGroup(nameof(isVariant))] public bool isVariant;
+        [ToggleGroup(nameof(isVariant))] public string tileRoot;
+        
+       
+        
         public bool debug;
         public bool alwaysMatchNeighbors = true;
+
         [ShowIf(nameof(alwaysMatchNeighbors))]
         public List<PuzzleTile> matchNeighbors;
+
         public abstract bool CanTileBeDisconnected();
 
 

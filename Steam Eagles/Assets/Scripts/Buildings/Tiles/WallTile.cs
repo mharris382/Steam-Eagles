@@ -8,13 +8,13 @@ namespace Buildings.Tiles
     public class WallTile : DamageableTile
     {
         
+        public RepairableTile damagedVersion;
+
         public override bool CanTileBePlacedInRoom(Room room)
         {
             return room.buildLevel != BuildLevel.NONE;
         }
-        
-        [Required]
-        public RepairableTile damagedVersion;
+
         public override RepairableTile GetDamagedTileVersion()
         {
             return damagedVersion;

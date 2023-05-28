@@ -58,6 +58,8 @@ namespace CoreLib.GameTime
 
         public bool HasTimeMaximumBeenSet => _currentTimeMaximum.HasValue;
         
+        public GameDateTime CurrentTimeMaximum => _currentTimeMaximum ?? GameDateTime.MaxValue;
+        
         public bool HasMaximumTimeBeenReached => _currentTimeMaximum.HasValue && CurrentTime >= _currentTimeMaximum.Value;
         
         

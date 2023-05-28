@@ -87,33 +87,33 @@ namespace Damage
 
         #region [Grid Drawing]
 
-        static bool DrawColoredEnumElement(Rect rect, bool value)
+        static bool DrawColoredEnumElement(Rect bounds, bool value)
         {
-            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.MouseDown && bounds.Contains(Event.current.mousePosition))
             {
                 value = !value;
                 GUI.changed = true;
                 Event.current.Use();
             }
-            EditorGUI.DrawRect(rect.Padding(1), value ? new Color(0.1f, 0.8f, 0.2f): new Color(0,  0, 0, .5f));
+            EditorGUI.DrawRect(bounds.Padding(1), value ? new Color(0.1f, 0.8f, 0.2f): new Color(0,  0, 0, .5f));
             return value;
         }
 
-        Vector2Int DrawGraphVisual(Rect rect, Vector2Int value)
+        Vector2Int DrawGraphVisual(Rect bounds, Vector2Int value)
         {
             
             if (graph == null) {
-                EditorGUI.DrawRect(rect.Padding(1), new Color(0,  0, 0, .5f));
+                EditorGUI.DrawRect(bounds.Padding(1), new Color(0,  0, 0, .5f));
                 CreateGraph();
                 return value;
             }
 
             if (!graph.ContainsVertex(value))
             {
-                EditorGUI.DrawRect(rect.Padding(1), new Color(.7f,  .7f, .7f, .7f));
+                EditorGUI.DrawRect(bounds.Padding(1), new Color(.7f,  .7f, .7f, .7f));
                 return value;
             }
-            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.MouseDown && bounds.Contains(Event.current.mousePosition))
             {
                 CreateGraph();
                 DoHit(value);
@@ -122,10 +122,10 @@ namespace Damage
                 Event.current.Use();
             }
 
-            var leftRect = rect.AlignLeft(rect.width / 2);
-            var rightRect = rect.AlignRight(rect.width / 2);
-            var downRect = rect.AlignBottom(rect.height / 2);
-            var upRect = rect.AlignTop(rect.height / 2);
+            var leftRect = bounds.AlignLeft(bounds.width / 2);
+            var rightRect = bounds.AlignRight(bounds.width / 2);
+            var downRect = bounds.AlignBottom(bounds.height / 2);
+            var upRect = bounds.AlignTop(bounds.height / 2);
             var left = value + Vector2Int.left;
             var right = value + Vector2Int.right;
             var up = value + Vector2Int.up;
@@ -166,7 +166,7 @@ namespace Damage
         static Color  SeedColor = new Color(0.8f, 0.1f, 0.1f);
         private static Color DamageEndColor = new Color(0.6f, 0.1f, 0.1f, .5f);
         static Color UndamagedColor = new Color(.6f,  .6f, 0.2f, .7f);
-        int DrawResultGrid(Rect rect, int value)
+        int DrawResultGrid(Rect bounds, int value)
         {
             int maxDamage = _hit.maxDamage;
             string label = "";
@@ -191,14 +191,14 @@ namespace Damage
                     label = value.ToString();
                     break;
             }
-            EditorGUI.DrawRect(rect.Padding(1), color);
-            EditorGUI.LabelField(rect.Padding(3),label);
+            EditorGUI.DrawRect(bounds.Padding(1), color);
+            EditorGUI.LabelField(bounds.Padding(3),label);
             return value;
         }
 
-        int DrawColoredOutputResult(Rect rect, int value)
+        int DrawColoredOutputResult(Rect bounds, int value)
         {
-            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.MouseDown && bounds.Contains(Event.current.mousePosition))
             {
                 if (value == 0)
                 {
@@ -238,8 +238,8 @@ namespace Damage
 
         
             
-            EditorGUI.DrawRect(rect.Padding(1), boxColor);
-            EditorGUI.LabelField(rect.Padding(3),label);
+            EditorGUI.DrawRect(bounds.Padding(1), boxColor);
+            EditorGUI.LabelField(bounds.Padding(3),label);
             return value;
         }
 

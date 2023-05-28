@@ -46,19 +46,19 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.EditorIcon.Draw(UnityEngine.Rect)">
             <summary>
-            Draws the icon in a square rect, with a custom shader that makes the icon look better when down-scaled.
+            Draws the icon in a square bounds, with a custom shader that makes the icon look better when down-scaled.
             This also handles mouseover effects, and linier color spacing.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EditorIcon.Draw(UnityEngine.Rect,System.Single)">
             <summary>
-            Draws the icon in a square rect, with a custom shader that makes the icon look better when down-scaled.
+            Draws the icon in a square bounds, with a custom shader that makes the icon look better when down-scaled.
             This also handles mouseover effects, and linier color spacing.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EditorIcon.Draw(UnityEngine.Rect,UnityEngine.Texture)">
             <summary>
-            Draws the icon in a square rect, with a custom shader that makes the icon look better when down-scaled.
+            Draws the icon in a square bounds, with a custom shader that makes the icon look better when down-scaled.
             This also handles mouseover effects, and linier color spacing.
             </summary>
         </member>
@@ -469,7 +469,7 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.RulerRect">
             <summary>
-            Gets an icon of a ruler rect symbol.
+            Gets an icon of a ruler bounds symbol.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.SettingsCog">
@@ -1136,12 +1136,12 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.DragAndDropUtilities.ObjectPickerZone(UnityEngine.Rect,System.Object,System.Type,System.Boolean,System.Int32)">
             <summary>
-            Draws a objectpicker button in the given rect. This one is designed to look good on top of DrawDropZone().
+            Draws a objectpicker button in the given bounds. This one is designed to look good on top of DrawDropZone().
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.DragAndDropUtilities.ObjectPickerZone``1(UnityEngine.Rect,``0,System.Boolean,System.Int32)">
             <summary>
-            Draws a objectpicker butter, in the given rect. This one is designed to look good on top of DrawDropZone().
+            Draws a objectpicker butter, in the given bounds. This one is designed to look good on top of DrawDropZone().
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.DragAndDropUtilities.DrawDropZone(UnityEngine.Rect,System.Object,UnityEngine.GUIContent,System.Int32)">
@@ -1410,10 +1410,10 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnMouseDown(UnityEngine.Event,UnityEngine.Rect,System.Int32,System.Boolean)">
             <summary>
-            Returns <c>true</c> when the user clicks a rect with the mouse.
+            Returns <c>true</c> when the user clicks a bounds with the mouse.
             </summary>
             <param name="current">The event.</param>
-            <param name="rect">The rect the user can click on.</param>
+            <param name="bounds">The bounds the user can click on.</param>
             <param name="mouseButton">The button the user has to press.</param>
             <param name="useEvent">If <c>true</c> then the method will call <see cref="M:UnityEngine.Event.Use"/> on the event.</param>
             <returns><c>true</c> on mouse down events with the specified button. Otherwise <c>false</c>.</returns>
@@ -1429,31 +1429,31 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnMouseUp(UnityEngine.Event,UnityEngine.Rect,System.Int32,System.Boolean)">
             <summary>
-            Returns <c>true</c> when the user releases the specified mouse button over the specified rect.
+            Returns <c>true</c> when the user releases the specified mouse button over the specified bounds.
             </summary>
             <param name="current">The <see cref="T:UnityEngine.Event"/>.</param>
-            <param name="rect">The rect the user has to release the mouse button over.</param>
+            <param name="bounds">The bounds the user has to release the mouse button over.</param>
             <param name="mouseButton">The mouse button the user has to release.</param>
             <param name="useEvent">If <c>true</c> then the method will call <see cref="M:UnityEngine.Event.Use"/> on the event.</param>
-            <returns><c>true</c> on mouse up events, with the specified button and over the specified rect. Otherwise <c>false</c>.</returns>
+            <returns><c>true</c> on mouse up events, with the specified button and over the specified bounds. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnLeftClick(UnityEngine.Event,UnityEngine.Rect,System.Boolean)">
             <summary>
-            Returns <c>true</c> when the user left clicks a rect.
+            Returns <c>true</c> when the user left clicks a bounds.
             </summary>
             <param name="current">The <see cref="T:UnityEngine.Event"/>.</param>
-            <param name="rect">The rect the user can click.</param>
+            <param name="bounds">The bounds the user can click.</param>
             <param name="useEvent">If <c>true</c> then the method will call <see cref="M:UnityEngine.Event.Use"/> on the event.</param>
-            <returns><c>true</c> on left click events, on the specified rect. Otherwise <c>false</c>.</returns>
+            <returns><c>true</c> on left click events, on the specified bounds. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnContextClick(UnityEngine.Event,UnityEngine.Rect,System.Boolean)">
             <summary>
-            Returns <c>true</c> when the user right clicks a rect.
+            Returns <c>true</c> when the user right clicks a bounds.
             </summary>
             <param name="current">The <see cref="T:UnityEngine.Event"/>.</param>
-            <param name="rect">The rect the user can right click.</param>
+            <param name="bounds">The bounds the user can right click.</param>
             <param name="useEvent">If <c>true</c> then the method will call <see cref="M:UnityEngine.Event.Use"/> on the event.</param>
-            <returns><c>true</c> on context click events, on the specified rect. Otherwise <c>false</c>.</returns>
+            <returns><c>true</c> on context click events, on the specified bounds. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnKeyDown(UnityEngine.Event,UnityEngine.KeyCode,System.Boolean)">
             <summary>
@@ -1483,11 +1483,11 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.IsHovering(UnityEngine.Event,UnityEngine.Rect)">
             <summary>
-            Returns <c>true</c> when the user hovers the mouse over the specified rect.
+            Returns <c>true</c> when the user hovers the mouse over the specified bounds.
             </summary>
             <param name="current">The <see cref="T:UnityEngine.Event"/>.</param>
-            <param name="rect">The rect the user can hover.</param>
-            <returns><c>true</c> on any event where the mouse is hovering the specified rect. Otherwise <c>false</c>.</returns>
+            <param name="bounds">The bounds the user can hover.</param>
+            <returns><c>true</c> on any event where the mouse is hovering the specified bounds. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.EventExtensions.OnRepaint(UnityEngine.Event)">
             <summary>
@@ -1559,17 +1559,17 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIClipInfo.TopMostRect">
             <summary>
-            Gets the top most clipped rect.
+            Gets the top most clipped bounds.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIClipInfo.VisibleRect">
             <summary>
-            Gets the visible rect.
+            Gets the visible bounds.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIClipInfo.TopRect">
             <summary>
-            Gets the top rect.
+            Gets the top bounds.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIClipInfo.Unclip(UnityEngine.Vector2)">
@@ -1581,9 +1581,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIClipInfo.Unclip(UnityEngine.Rect)">
             <summary>
-            Unclips the specified rect.
+            Unclips the specified bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <returns></returns>
         </member>
         <member name="T:Sirenix.Utilities.Editor.GUIContext`1">
@@ -1770,25 +1770,25 @@
             <summary>
             Ends the layout measuring started by <see cref="M:Sirenix.Utilities.Editor.GUIHelper.EndLayoutMeasuring(System.Int32)"/>
             </summary>
-            <returns>The measured rect.</returns>
+            <returns>The measured bounds.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.EndLayoutMeasuring">
             <summary>
             Ends the layout measuring started by <see cref="M:Sirenix.Utilities.Editor.GUIHelper.EndLayoutMeasuring(System.Int32)"/>
             </summary>
-            <returns>The measured rect.</returns>
+            <returns>The measured bounds.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.GetCurrentLayoutRect">
             <summary>
-            Gets the current layout rect.
+            Gets the current layout bounds.
             </summary>
-            <returns>The current layout rect.</returns>
+            <returns>The current layout bounds.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.GetCurrentLayoutStyle">
             <summary>
-            Gets the current layout rect.
+            Gets the current layout bounds.
             </summary>
-            <returns>The current layout rect.</returns>
+            <returns>The current layout bounds.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.GetPlaymodeTint">
             <summary>
@@ -1817,9 +1817,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.TakeGUIScreenshot(UnityEngine.Rect)">
             <summary>
-            Takes a screenshot of the GUI within the specified rect.
+            Takes a screenshot of the GUI within the specified bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <returns>The screenshot as a render texture.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.PopColor">
@@ -2122,16 +2122,16 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.IndentRect(UnityEngine.Rect)">
             <summary>
-            Indents the rect by the current indent amount.
+            Indents the bounds by the current indent amount.
             </summary>
-            <param name="rect">The rect to indent.</param>
-            <returns>Indented rect.</returns>
+            <param name="bounds">The bounds to indent.</param>
+            <returns>Indented bounds.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.IndentRect(UnityEngine.Rect@)">
             <summary>
-            Indents the rect by the current indent amount.
+            Indents the bounds by the current indent amount.
             </summary>
-            <param name="rect">The rect to indent.</param>
+            <param name="bounds">The bounds to indent.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.RepaintIfRequested(UnityEditor.EditorWindow)">
             <summary>
@@ -2300,12 +2300,12 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITabGroup.OuterRect">
             <summary>
-            Gets the outer rect of the entire tab group.
+            Gets the outer bounds of the entire tab group.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITabGroup.InnerRect">
             <summary>
-            The inner rect of the current tab page.
+            The inner bounds of the current tab page.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITabGroup.SetCurrentPage(Sirenix.Utilities.Editor.GUITabPage)">
@@ -2381,11 +2381,11 @@
             
                  this.table = GUITable.Create(
                      twoDimArray: boolArr,
-                     drawElement: (rect, x, y) => boolArr[x, y] = EditorGUI.Toggle(rect, boolArr[x, y]),
+                     drawElement: (bounds, x, y) => boolArr[x, y] = EditorGUI.Toggle(bounds, boolArr[x, y]),
                      horizontalLabel: "Optional Horizontal Label",               // horizontalLabel is optional and can be null.
-                     columnLabels: (rect, x) => GUI.Label(rect, x.ToString()),   // columnLabels is optional and can be null.
+                     columnLabels: (bounds, x) => GUI.Label(bounds, x.ToString()),   // columnLabels is optional and can be null.
                      verticalLabel: "Optional Vertical Label",                   // verticalLabel is optional and can be null.
-                     rowLabels: (rect, x) => GUI.Label(rect, x.ToString())       // rowLabels is optional and can be null.
+                     rowLabels: (bounds, x) => GUI.Label(bounds, x.ToString())       // rowLabels is optional and can be null.
                  );
              }
             
@@ -2408,20 +2408,20 @@
                      new GUITableColumn()
                      {
                          ColumnTitle = "A",
-                         OnGUI = (rect, i) => someList[i].A = EditorGUI.TextField(rect, someList[i].A),
+                         OnGUI = (bounds, i) => someList[i].A = EditorGUI.TextField(bounds, someList[i].A),
                          Width = 200,
                          MinWidth = 100,
                      },
                      new GUITableColumn()
                      {
                          ColumnTitle = "B",
-                         OnGUI = (rect, i) => someList[i].B = EditorGUI.IntField(rect, someList[i].B),
+                         OnGUI = (bounds, i) => someList[i].B = EditorGUI.IntField(bounds, someList[i].B),
                          Resizable = false,
                      },
                      new GUITableColumn()
                      {
                          ColumnTitle = "C",
-                         OnGUI = (rect, i) => someList[i].C = EditorGUI.IntField(rect, someList[i].C),
+                         OnGUI = (bounds, i) => someList[i].C = EditorGUI.IntField(bounds, someList[i].C),
                          SpanColumnTitle = true,
                      }
                  );
@@ -2445,7 +2445,7 @@
              <para>Styling a cell.</para>
              <para>Each <see cref="T:Sirenix.Utilities.Editor.GUITableCell"/> has two events, OnGUI and OnGUIStyle. OnGUIStyle is called right before OnGUI, but only in repaint events.</para>
              <code>
-             guiTable[x,y].GUIStyle += rect => EditorGUI.DrawRect(rect, Color.red);
+             guiTable[x,y].GUIStyle += bounds => EditorGUI.DrawRect(bounds, Color.red);
              </code>
              </example>
              <example>
@@ -2585,7 +2585,7 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableCell.Rect">
             <summary>
-            Gets the rect.
+            Gets the bounds.
             </summary>
         </member>
         <member name="T:Sirenix.Utilities.Editor.GUITableColumn">
@@ -2655,7 +2655,7 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.ContentRect">
             <summary>
-            Gets the rect containing all rows. 
+            Gets the bounds containing all rows. 
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.RowIndexFrom">
@@ -2670,12 +2670,12 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.OuterRect">
             <summary>
-            Gets the outer rect. The height of this &lt;= <see cref="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.ContentRect"/>.height.
+            Gets the outer bounds. The height of this &lt;= <see cref="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.ContentRect"/>.height.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.GetRowRect(System.Int32)">
             <summary>
-            Gets the row rect.
+            Gets the row bounds.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.BeginTable(System.Int32)">
@@ -2837,7 +2837,7 @@
             <summary>
             Draws a regular Unity ObjectField, but supports labels being nulls, and also adds a small button that will open the object in a new inspector window.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
@@ -2847,7 +2847,7 @@
             <summary>
             Draws a regular Unity ObjectField, but supports labels being nulls, and also adds a small button that will open the object in a new inspector window.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
@@ -2857,7 +2857,7 @@
             <summary>
             Draws a regular Unity ObjectField, but supports labels being nulls, and also adds a small button that will open the object in a new inspector window.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
             <param name="allowSceneObjects">Wheather or not to allow scene objects.</param>
@@ -2932,7 +2932,7 @@
             This object field also adds support for drag and drop, dragging an object to another square object field, swaps the values.
             If you hold down control while letting go it will replace the value, And you can control + click the object field to quickly delete the value it holds.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
@@ -2945,7 +2945,7 @@
             This object field also adds support for drag and drop, dragging an object to another square object field, swaps the values.
             If you hold down control while letting go it will replace the value, And you can control + click the object field to quickly delete the value it holds.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The Unity object.</param>
             <param name="preview">The Texture to be used as the preview.</param>
@@ -2959,7 +2959,7 @@
             This object field also adds support for drag and drop, dragging an object to another square object field, swaps the values.
             If you hold down control while letting go it will replace the value, And you can control + click the object field to quickly delete the value it holds.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
@@ -2972,7 +2972,7 @@
             This object field also adds support for drag and drop, dragging an object to another square object field, swaps the values.
             If you hold down control while letting go it will replace the value, And you can control + click the object field to quickly delete the value it holds.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The Unity object.</param>
             <param name="objectType">The Unity object type. This supports inheritance.</param>
             <param name="allowSceneObjects">Wheather or not to allow scene objects.</param>
@@ -3094,7 +3094,7 @@
             <summary>
             Draws a field for a layer mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="layerMask">The layer mask to draw.</param>
         </member>
@@ -3102,7 +3102,7 @@
             <summary>
             Draws a field for a layer mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="layerMask">The layer mask to draw.</param>
         </member>
@@ -3110,7 +3110,7 @@
             <summary>
             Draws a field for a layer mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="layerMask">The layer mask to draw.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorFields.LayerMaskField(UnityEngine.GUIContent,UnityEngine.LayerMask,UnityEngine.GUILayoutOption[])">
@@ -3140,7 +3140,7 @@
             <summary>
             Draws a Guid field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3149,7 +3149,7 @@
             <summary>
             Draws a Guid field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3184,7 +3184,7 @@
             <summary>
             Draws a Guid field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3194,7 +3194,7 @@
             <summary>
             Draws an int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3204,7 +3204,7 @@
             <summary>
             Draws an int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3213,7 +3213,7 @@
             <summary>
             Draws an int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3222,7 +3222,7 @@
             <summary>
             Draws an int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3266,7 +3266,7 @@
             <summary>
             Draws a delayed int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3276,7 +3276,7 @@
             <summary>
             Draws a delayed int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3285,7 +3285,7 @@
             <summary>
             Draws a delayed int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3294,7 +3294,7 @@
             <summary>
             Draws a delayed int field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3338,7 +3338,7 @@
             <summary>
             Draws a range field for ints.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -3350,7 +3350,7 @@
             <summary>
             Draws a range field for ints.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -3361,7 +3361,7 @@
             <summary>
             Draws a range field for ints.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -3372,7 +3372,7 @@
             <summary>
             Draws a range field for ints.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
             <param name="max">Maximum value.</param>
@@ -3426,7 +3426,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3438,7 +3438,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3449,7 +3449,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3460,7 +3460,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
             <param name="maxValue">The right hand side value of the progress bar.</param>
@@ -3470,7 +3470,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3480,7 +3480,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3490,7 +3490,7 @@
             <summary>
             Draws a colored progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
             <param name="maxValue">The right hand side value of the progress bar.</param>
@@ -3560,7 +3560,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3572,7 +3572,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3583,7 +3583,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3594,7 +3594,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
             <param name="maxValue">The right hand side value of the progress bar.</param>
@@ -3604,7 +3604,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3614,7 +3614,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">The label to use, or null if no label should be used.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
@@ -3624,7 +3624,7 @@
             <summary>
             Draws a colored segmented progress bar field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">The current value of the progress bar.</param>
             <param name="minValue">The left hand side value of the progress bar.</param>
             <param name="maxValue">The right hand side value of the progress bar.</param>
@@ -3694,7 +3694,7 @@
             <summary>
             Draws an overlay on top of a progress bar field.
             </summary>
-            <param name="rect">The rect used to draw the progress bar field with. (Minus the Rect for the prefix label, if any.)</param>
+            <param name="bounds">The bounds used to draw the progress bar field with. (Minus the Rect for the prefix label, if any.)</param>
             <param name="label">The label to draw ontop of the progress bar field.</param>
             <param name="progress">The relative value of the progress bar, from 0 to 1.</param>
             <param name="config">The configuration used to draw the progress bar field.</param>
@@ -3703,7 +3703,7 @@
             <summary>
             Draws an overlay on top of a progress bar field.
             </summary>
-            <param name="rect">The rect used to draw the progress bar field with. (Minus the Rect for the prefix label, if any.)</param>
+            <param name="bounds">The bounds used to draw the progress bar field with. (Minus the Rect for the prefix label, if any.)</param>
             <param name="label">The label to draw ontop of the progress bar field.</param>
             <param name="progress">The relative value of the progress bar, from 0 to 1.</param>
             <param name="config">The configuration used to draw the progress bar field.</param>
@@ -3712,7 +3712,7 @@
             <summary>
             Draws an long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3722,7 +3722,7 @@
             <summary>
             Draws an long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3731,7 +3731,7 @@
             <summary>
             Draws an long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3740,7 +3740,7 @@
             <summary>
             Draws an long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3784,7 +3784,7 @@
             <summary>
             Draws a delayed long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3794,7 +3794,7 @@
             <summary>
             Draws a delayed long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3803,7 +3803,7 @@
             <summary>
             Draws a delayed long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3812,7 +3812,7 @@
             <summary>
             Draws a delayed long field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3856,7 +3856,7 @@
             <summary>
             Draws a float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3866,7 +3866,7 @@
             <summary>
             Draws a float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3875,7 +3875,7 @@
             <summary>
             Draws a float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3884,7 +3884,7 @@
             <summary>
             Draws a float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -3928,7 +3928,7 @@
             <summary>
             Draws a delayed float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -3938,7 +3938,7 @@
             <summary>
             Draws a delayed float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3947,7 +3947,7 @@
             <summary>
             Draws a delayed float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -3956,7 +3956,7 @@
             <summary>
             Draws a delayed float field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4000,7 +4000,7 @@
             <summary>
             Draws a range field for floats.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -4012,7 +4012,7 @@
             <summary>
             Draws a range field for floats.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -4023,7 +4023,7 @@
             <summary>
             Draws a range field for floats.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
@@ -4034,7 +4034,7 @@
             <summary>
             Draws a range field for floats.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <param name="min">Minimum value.</param>
             <param name="max">Maximum value.</param>
@@ -4088,7 +4088,7 @@
             <summary>
             Draws a double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -4098,7 +4098,7 @@
             <summary>
             Draws a double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4107,7 +4107,7 @@
             <summary>
             Draws a double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4116,7 +4116,7 @@
             <summary>
             Draws a double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4160,7 +4160,7 @@
             <summary>
             Draws a delayed double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -4170,7 +4170,7 @@
             <summary>
             Draws a delayed double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4179,7 +4179,7 @@
             <summary>
             Draws a delayed double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4188,7 +4188,7 @@
             <summary>
             Draws a delayed double field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4232,7 +4232,7 @@
             <summary>
             Draws a decimal field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -4242,7 +4242,7 @@
             <summary>
             Draws a decimal field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4251,7 +4251,7 @@
             <summary>
             Draws a decimal field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4260,7 +4260,7 @@
             <summary>
             Draws a decimal field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4304,7 +4304,7 @@
             <summary>
             Draws a text field for strings.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -4314,7 +4314,7 @@
             <summary>
             Draws a text field for strings.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4323,7 +4323,7 @@
             <summary>
             Draws a text field for strings.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4332,7 +4332,7 @@
             <summary>
             Draws a text field for strings.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4376,7 +4376,7 @@
             <summary>
             Draws a delayed text field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -4386,7 +4386,7 @@
             <summary>
             Draws a delayed text field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4395,7 +4395,7 @@
             <summary>
             Draws a delayed text field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4404,7 +4404,7 @@
             <summary>
             Draws a delayed text field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4448,7 +4448,7 @@
             <summary>
             Draws a field that lets the user select a path to a file.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="path">The current value.</param>
             <param name="parentPath">A parent path the path needs to be relative to. Use <c>null</c> for Unity project directory.</param>
@@ -4461,7 +4461,7 @@
             <summary>
             Draws a field that lets the user select a path to a file.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="path">The current value.</param>
             <param name="parentPath">A parent path the path needs to be relative to. Use <c>null</c> for Unity project directory.</param>
             <param name="extensions">Comma separated list of allowed file extensions. Use <c>null</c> to allow any file extension.</param>
@@ -4498,7 +4498,7 @@
             <summary>
             Draws a field that lets the user select a path to a folder.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="path">The current value.</param>
             <param name="parentPath">A parent path the path needs to be relative to. Use <c>null</c> for Unity project directory.</param>
@@ -4510,7 +4510,7 @@
             <summary>
             Draws a field that lets the user select a path to a folder.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="path">The current value.</param>
             <param name="parentPath">A parent path the path needs to be relative to. Use <c>null</c> for Unity project directory.</param>
             <param name="absolutePath">If <c>true</c> the path will be absolute. Otherwise the path will be relative to parentPath or to the Unity project directory.</param>
@@ -4583,7 +4583,7 @@
             <summary>
             Draws a Vector2 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4592,7 +4592,7 @@
             <summary>
             Draws a Vector2 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4601,7 +4601,7 @@
             <summary>
             Draws a Vector2 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4635,7 +4635,7 @@
             <summary>
             Draws a Vector3 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4644,7 +4644,7 @@
             <summary>
             Draws a Vector3 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4653,7 +4653,7 @@
             <summary>
             Draws a Vector3 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4687,7 +4687,7 @@
             <summary>
             Draws a Vector4 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4696,7 +4696,7 @@
             <summary>
             Draws a Vector4 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4705,7 +4705,7 @@
             <summary>
             Draws a Vector4 field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4739,7 +4739,7 @@
             <summary>
             Draws a Color field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value"></param>
             <returns>Value assigned to the field.</returns>
@@ -4748,7 +4748,7 @@
             <summary>
             Draws a Color field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value"></param>
             <returns>Value assigned to the field.</returns>
@@ -4757,7 +4757,7 @@
             <summary>
             Draws a Color field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value"></param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -4791,7 +4791,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="limits">The min and max limit for the value.</param>
@@ -4802,7 +4802,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="limits">The min and max limit for the value.</param>
@@ -4813,7 +4813,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <param name="limits">The min and max limit for the value.</param>
             <param name="showFields">Show fields for min and max value.</param>
@@ -4855,7 +4855,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="minValue">Current min value.</param>
             <param name="maxValue">Current max value.</param>
@@ -4867,7 +4867,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="minValue">Current min value.</param>
             <param name="maxValue">Current max value.</param>
@@ -4879,7 +4879,7 @@
             <summary>
             Draws a slider for setting two values between a min and a max limit.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="minValue">Current min value.</param>
             <param name="maxValue">Current max value.</param>
             <param name="minLimit">The min limit for the value.</param>
@@ -4925,7 +4925,7 @@
             <summary>
             Draws a rotation field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="mode">Draw mode for rotation field.</param>
@@ -4935,7 +4935,7 @@
             <summary>
             Draws a rotation field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <param name="mode">Draw mode for rotation field.</param>
@@ -4945,7 +4945,7 @@
             <summary>
             Draws a rotation field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <param name="mode">Draw mode for rotation field.</param>
             <returns>Value assigned to the field.</returns>
@@ -4983,7 +4983,7 @@
             <summary>
             Draws an euler field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -4992,7 +4992,7 @@
             <summary>
             Draws an euler field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5001,7 +5001,7 @@
             <summary>
             Draws an euler field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -5035,7 +5035,7 @@
             <summary>
             Draws an angle axis field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5044,7 +5044,7 @@
             <summary>
             Draws an angle axis field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5053,7 +5053,7 @@
             <summary>
             Draws an angle axis field for a quaternion.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -5087,7 +5087,7 @@
             <summary>
             Draws a quaternion field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5096,7 +5096,7 @@
             <summary>
             Draws a quaternion field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5105,7 +5105,7 @@
             <summary>
             Draws a quaternion field.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="value">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -5139,7 +5139,7 @@
             <summary>
             Draws a dropdown.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="itemNames">Names of selectable items.</param>
@@ -5150,7 +5150,7 @@
             <summary>
             Draws a dropdown.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="itemNames">Names of selectable items.</param>
@@ -5160,7 +5160,7 @@
             <summary>
             Draws a dropdown.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="itemNames">Names of selectable items.</param>
@@ -5170,7 +5170,7 @@
             <summary>
             Draws a dropdown.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="selected">Current value.</param>
             <param name="itemNames">Names of selectable items.</param>
             <returns>Value assigned to the field.</returns>
@@ -5220,7 +5220,7 @@
             Draws a generic dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="items">Selectable items.</param>
@@ -5241,7 +5241,7 @@
             Draws a generic dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="items">Selectable items.</param>
@@ -5254,7 +5254,7 @@
             Draws a generic dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="items"></param>
@@ -5266,7 +5266,7 @@
             Draws a generic dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="items"></param>
@@ -5278,7 +5278,7 @@
             Draws a generic dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="selected">Current value.</param>
             <param name="items"></param>
             <param name="itemNames">Names of selectable items. If <c>null</c> ToString() will be used instead.</param>
@@ -5336,7 +5336,7 @@
             <summary>
             Draws a dropdown for an enum or an enum mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -5346,7 +5346,7 @@
             <summary>
             Draws a dropdown for an enum or an enum mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5355,7 +5355,7 @@
             <summary>
             Draws a dropdown for an enum or an enum mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current value.</param>
             <returns>Value assigned to the field.</returns>
@@ -5364,7 +5364,7 @@
             <summary>
             Draws a dropdown for an enum or an enum mask.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="selected">Current value.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -5409,7 +5409,7 @@
             Draws a dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current selection.</param>
             <param name="items">Avaible items in the dropdown.</param>
@@ -5421,7 +5421,7 @@
             Draws a dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current selection.</param>
             <param name="items">Avaible items in the dropdown.</param>
@@ -5433,7 +5433,7 @@
             Draws a dropdown.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="selected">Current selection.</param>
             <param name="items">Avaible items in the dropdown.</param>
             <param name="multiSelection">If <c>true</c> then the user can select multiple items. Otherwise the user can only select one item.</param>
@@ -5478,7 +5478,7 @@
             <summary>
             Draws a dropdown field for enum masks.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current selection.</param>
             <param name="style">GUIStyle for drawing the field. Set to <c>null</c> for default.</param>
@@ -5488,7 +5488,7 @@
             <summary>
             Draws a dropdown field for enum masks.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current selection.</param>
             <returns>Value assigned to the field.</returns>
@@ -5497,7 +5497,7 @@
             <summary>
             Draws a dropdown field for enum masks.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="label">Label of field. Set to <c>null</c> for no label.</param>
             <param name="selected">Current selection.</param>
             <returns>Value assigned to the field.</returns>
@@ -5506,7 +5506,7 @@
             <summary>
             Draws a dropdown field for enum masks.
             </summary>
-            <param name="rect">Position and size of the field.</param>
+            <param name="bounds">Position and size of the field.</param>
             <param name="selected">Current selection.</param>
             <returns>Value assigned to the field.</returns>
         </member>
@@ -5585,7 +5585,7 @@
             <summary>
             Draws a GUI field for objects.
             </summary>
-            <param name="rect">The rect to draw the field in.</param>
+            <param name="bounds">The bounds to draw the field in.</param>
             <param name="label">The label of the field.</param>
             <param name="value">The value of the field.</param>
             <param name="objectType">The object type for the field.</param>
@@ -5626,7 +5626,7 @@
             <summary>
             Draws a GUI color field.
             </summary>
-            <param name="rect">The rect to draw the field in.</param>
+            <param name="bounds">The bounds to draw the field in.</param>
             <param name="color">The color of the field.</param>
             <param name="useAlphaInPreview">If set to <c>true</c> then use alpha in the preview.</param>
             <param name="showAlphaBar">If set to <c>true</c> then show alpha bar in the preview.</param>
@@ -5803,7 +5803,7 @@
             <summary>
             Draws a GUI button with an icon.
             </summary>
-            <param name="rect">The rect to draw the button in.</param>
+            <param name="bounds">The bounds to draw the button in.</param>
             <param name="icon">The editor icon for the button.</param>
             <returns><c>true</c> if the button was pressed. Otherwise <c>false</c>.</returns>
         </member>
@@ -5811,7 +5811,7 @@
             <summary>
             Draws a GUI button with an icon.
             </summary>
-            <param name="rect">The rect to draw the button in.</param>
+            <param name="bounds">The bounds to draw the button in.</param>
             <param name="icon">The editor icon for the button.</param>
             <param name="tooltip">The tooltip of the button.</param>
             <returns><c>true</c> if the button was pressed. Otherwise <c>false</c>.</returns>
@@ -5820,7 +5820,7 @@
             <summary>
             Draws a GUI button with an icon.
             </summary>
-            <param name="rect">The rect to draw the button in.</param>
+            <param name="bounds">The bounds to draw the button in.</param>
             <param name="icon">The editor icon for the button.</param>
             <param name="style">The GUI style for the button.</param>
             <param name="tooltip">The tooltip of the button.</param>
@@ -5830,7 +5830,7 @@
             <summary>
             Draws a GUI button with an icon.
             </summary>
-            <param name="rect">The rect to draw the button in.</param>
+            <param name="bounds">The bounds to draw the button in.</param>
             <param name="icon">The icon texture.</param>
             <param name="tooltip">The tooltip for the button.</param>
             <returns><c>true</c> when the button is pressed.</returns>
@@ -5839,7 +5839,7 @@
             <summary>
             Draws a GUI button with an icon.
             </summary>
-            <param name="rect">The rect to draw the button in.</param>
+            <param name="bounds">The bounds to draw the button in.</param>
             <param name="icon">The icon texture.</param>
             <param name="style">Style for the button.</param>
             <param name="tooltip">The tooltip for the button.</param>
@@ -5938,7 +5938,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="label">The button's label.</param>
             <param name="icon">The button's icon.</param>
             <param name="iconAlignment">The button's icon alignment. ButtonIconAlignment.LeftOfText by default.</param>
@@ -5949,7 +5949,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="icon">The button's icon.</param>
             <param name="iconAlignment">The button's icon alignment. ButtonIconAlignment.LeftOfText by default.</param>
             <param name="style">The button's style.</param>
@@ -5959,7 +5959,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="icon">The button's icon.</param>
             <param name="style">The button's style.</param>
             <returns></returns>
@@ -5968,7 +5968,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="label">The button's label.</param>
             <param name="icon">The button's icon.</param>
             <param name="iconAlignment">The button's icon alignment. ButtonIconAlignment.LeftOfText by default.</param>
@@ -5979,7 +5979,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="label">The button's label.</param>
             <param name="icon">The button's icon.</param>
             <param name="iconAlignment">The button's icon alignment. ButtonIconAlignment.LeftOfText by default.</param>
@@ -5990,7 +5990,7 @@
             <summary>
             Draws a SDF icon button.
             </summary>
-            <param name="rect">The button's rect.</param>
+            <param name="bounds">The button's bounds.</param>
             <param name="label">The button's label.</param>
             <param name="icon">The button's icon.</param>
             <param name="iconAlignment">The button's icon alignment. ButtonIconAlignment.LeftOfText by default.</param>
@@ -6093,9 +6093,9 @@
             <summary>
             Draws a solid color rectangle.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="color">The color.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.DrawSolidRect(System.Single,System.Single,UnityEngine.Color,System.Boolean)">
             <summary>
@@ -6104,48 +6104,48 @@
             <param name="width">The width.</param>
             <param name="height">The height.</param>
             <param name="color">The color.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
-            <returns>The rect created.</returns>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
+            <returns>The bounds created.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.DrawBorders(UnityEngine.Rect,System.Int32,System.Boolean)">
             <summary>
-            Draws borders around a rect.
+            Draws borders around a bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="borderWidth">The width of the border on all sides.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.DrawBorders(UnityEngine.Rect,System.Int32,UnityEngine.Color,System.Boolean)">
             <summary>
-            Draws borders around a rect.
+            Draws borders around a bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="borderWidth">The width of the border on all sides.</param>
             <param name="color">The color of the border.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.DrawBorders(UnityEngine.Rect,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
             <summary>
-            Draws borders around a rect.
+            Draws borders around a bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="left">The left size.</param>
             <param name="right">The right size.</param>
             <param name="top">The top size.</param>
             <param name="bottom">The bottom size.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.DrawBorders(UnityEngine.Rect,System.Int32,System.Int32,System.Int32,System.Int32,UnityEngine.Color,System.Boolean)">
             <summary>
-            Draws borders around a rect.
+            Draws borders around a bounds.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="left">The left size.</param>
             <param name="right">The right size.</param>
             <param name="top">The top size.</param>
             <param name="bottom">The bottom size.</param>
             <param name="color">The color of the borders.</param>
-            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the rect in playmode.</param>
+            <param name="usePlaymodeTint">If <c>true</c> applies the user's playmdoe tint to the bounds in playmode.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.ToolbarSearchField(System.String,System.Boolean,System.Single)">
             <summary>
@@ -6167,7 +6167,7 @@
             </summary>
             <param name="height">The height of the toolbar.</param>
             <param name="paddingTop">Padding for the top of the toolbar.</param>
-            <returns>The rect of the horizontal toolbar.</returns>
+            <returns>The bounds of the horizontal toolbar.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginHorizontalToolbar(UnityEngine.GUIStyle,System.Single,System.Int32)">
             <summary>
@@ -6177,7 +6177,7 @@
             <param name="height">The height of the toolbar.</param>
             <param name="topPadding">The top padding.</param>
             <returns>
-            The rect of the horizontal toolbar.
+            The bounds of the horizontal toolbar.
             </returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndHorizontalToolbar">
@@ -6338,14 +6338,14 @@
             </summary>
             <param name="isVisible">The current state of the foldout.</param>
             <param name="label">The label of the foldout.</param>
-            <param name="valueRect">The value rect.</param>
+            <param name="valueRect">The value bounds.</param>
             <param name="style">The GUI style.</param>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.Foldout(UnityEngine.Rect,System.Boolean,UnityEngine.GUIContent,UnityEngine.GUIStyle)">
             <summary>
             Draws a foldout field where clicking on the label toggles to the foldout too.
             </summary>
-            <param name="rect">The rect to draw the foldout field in.</param>
+            <param name="bounds">The bounds to draw the foldout field in.</param>
             <param name="isVisible">The current state of the foldout.</param>
             <param name="label">The label of the foldout.</param>
             <param name="style">The style.</param>
@@ -6365,7 +6365,7 @@
             <param name="label">The label of the box.</param>
             <param name="centerLabel">If set to <c>true</c> then center label.</param>
             <param name="options">The GUI layout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginBox(UnityEngine.GUILayoutOption[])">
             <summary>
@@ -6395,7 +6395,7 @@
             <param name="label">Label for box header.</param>
             <param name="centerLabel">If <c>true</c> the label will be drawn in the center of the box header.</param>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginToolbarBox(UnityEngine.GUIContent,System.Boolean,UnityEngine.GUILayoutOption[])">
             <summary>
@@ -6404,14 +6404,14 @@
             <param name="label">Label for box header.</param>
             <param name="centerLabel">If <c>true</c> the label will be drawn in the center of the box header.</param>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginToolbarBox(UnityEngine.GUILayoutOption[])">
             <summary>
             Begins drawing a box with toolbar style header. Remember to end with <seealso cref="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndToolbarBox"/>.
             </summary>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndToolbarBox">
             <summary>
@@ -6422,7 +6422,7 @@
             <summary>
             Begins drawing a toolbar style box header. Remember to end with <see cref="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndToolbarBoxHeader"/>.
             </summary>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndToolbarBoxHeader">
             <summary>
@@ -6436,7 +6436,7 @@
             <param name="label">The label for the legend style box.</param>
             <param name="centerLabel">If <c>true</c> the label will be drawn in the center of the box.</param>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginLegendBox(UnityEngine.GUIContent,System.Boolean,UnityEngine.GUILayoutOption[])">
             <summary>
@@ -6445,14 +6445,14 @@
             <param name="label">The label for the legend style box.</param>
             <param name="centerLabel">If <c>true</c> the label will be drawn in the center of the box.</param>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginLegendBox(UnityEngine.GUILayoutOption[])">
             <summary>
             Begins drawing a legend style box. Remember to end with <see cref="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndLegendBox"/>.
             </summary>
             <param name="options">GUILayout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndLegendBox">
             <summary>
@@ -6464,7 +6464,7 @@
             Begins drawing an inline box. Remember to end with <see cref="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndInlineBox"/>.
             </summary>
             <param name="options">The GUI layout options.</param>
-            <returns>The rect of the box.</returns>
+            <returns>The bounds of the box.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndInlineBox">
             <summary>
@@ -6496,7 +6496,7 @@
             Begins drawing a vertical menu list.
             </summary>
             <param name="key">The key for the menu list.</param>
-            <returns>The rect created.</returns>
+            <returns>The bounds created.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginMenuListItem(System.Boolean@,System.Boolean@,System.Boolean)">
             <summary>
@@ -6505,7 +6505,7 @@
             <param name="isSelected">Value indicating whether the item is selected.</param>
             <param name="isMouseDown">Value indicating if the mouse is pressed on the item.</param>
             <param name="setAsSelected">If set to <c>true</c> the item is set as selected..</param>
-            <returns>The rect used for the item.</returns>
+            <returns>The bounds used for the item.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndMenuListItem">
             <summary>
@@ -6524,7 +6524,7 @@
             <param name="drawBorder">If set to <c>true</c> borders will be drawn around the vertical list.</param>
             <param name="drawDarkBg">If set to <c>true</c> a dark background will be drawn.</param>
             <param name="options">The GUI layout options.</param>
-            <returns>The rect used for the list.</returns>
+            <returns>The bounds used for the list.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndVerticalList">
             <summary>
@@ -6538,7 +6538,7 @@
             <param name="allowHover">If set to <c>true</c> the item can be hovered with the mouse.</param>
             <param name="style">The style for the vertical list item.</param>
             <param name="options">The GUI layout options.</param>
-            <returns>The rect used for the item.</returns>
+            <returns>The bounds used for the item.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.BeginListItem(System.Boolean,UnityEngine.GUIStyle,UnityEngine.Color,UnityEngine.Color,UnityEngine.Color,UnityEngine.Color,UnityEngine.GUILayoutOption[])">
             <summary>
@@ -6551,7 +6551,7 @@
             <param name="oddColor">The color for odd elements.</param>
             <param name="evenHoverColor">The color for even elements when hovered.</param>
             <param name="oddHoverColor">The color for odd elements when hovered.</param>
-            <returns>The rect used for the item.</returns>
+            <returns>The bounds used for the item.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndListItem">
             <summary>
@@ -6597,7 +6597,7 @@
             </summary>
             <param name="key">The for the field.</param>
             <param name="options">The GUILayout options.</param>
-            <returns>The rect used for the field.</returns>
+            <returns>The bounds used for the field.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.EndHorizontalAutoScrollBox">
             <summary>
@@ -6606,9 +6606,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRectInt(UnityEngine.Rect,System.Int32,System.Int32)">
             <summary>
-            Creates a rect that can be grabbed and pulled to change a value up or down.
+            Creates a bounds that can be grabbed and pulled to change a value up or down.
             </summary>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <param name="id">The control ID for the sliding.</param>
             <param name="value">The current value.</param>
             <returns>
@@ -6617,9 +6617,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRectLong(UnityEngine.Rect,System.Int32,System.Int64)">
             <summary>
-            Creates a rect that can be grabbed and pulled to change a value up or down.
+            Creates a bounds that can be grabbed and pulled to change a value up or down.
             </summary>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <param name="id">The control ID for the sliding.</param>
             <param name="t">The current value.</param>
             <returns>
@@ -6628,9 +6628,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRect(UnityEngine.Rect,System.Int32,System.Single)">
             <summary>
-            Creates a rect that can be grabbed and pulled to change a value up or down.
+            Creates a bounds that can be grabbed and pulled to change a value up or down.
             </summary>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <param name="id">The control ID for the sliding.</param>
             <param name="t">The current value.</param>
             <returns>
@@ -6639,9 +6639,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRectDouble(UnityEngine.Rect,System.Int32,System.Double)">
             <summary>
-            Creates a rect that can be grabbed and pulled to change a value up or down.
+            Creates a bounds that can be grabbed and pulled to change a value up or down.
             </summary>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <param name="id">The control ID for the sliding.</param>
             <param name="t">The current value.</param>
             <returns>
@@ -6650,9 +6650,9 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRect(UnityEngine.Rect,UnityEditor.MouseCursor)">
             <summary>
-            Creates a rect that can be grabbed and pulled
+            Creates a bounds that can be grabbed and pulled
             </summary>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <param name="cursor">The cursor.</param>
             <returns>
             The the mouse delta position.
@@ -6660,10 +6660,10 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.SlideRect(UnityEngine.Vector2,UnityEngine.Rect)">
             <summary>
-            Creates a rect that can be grabbed and pulled
+            Creates a bounds that can be grabbed and pulled
             </summary>
             <param name="position">The position.</param>
-            <param name="rect">The grabbable rect.</param>
+            <param name="bounds">The grabbable bounds.</param>
             <returns>
             The the mouse delta position.
             </returns>
@@ -6688,19 +6688,19 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.GetFeatureRichControlRect(UnityEngine.GUIContent,System.Int32@,System.Boolean@,UnityEngine.Rect@,UnityEngine.GUILayoutOption[])">
             <summary>
-            Gets the feature rich control rect.
+            Gets the feature rich control bounds.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.GetFeatureRichControlRect(UnityEngine.GUIContent,System.Int32,System.Int32@,System.Boolean@,UnityEngine.Rect@,UnityEngine.GUILayoutOption[])">
             <summary>
-            Gets the feature rich control rect.
+            Gets the feature rich control bounds.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.SirenixEditorGUI.GetFeatureRichControl(UnityEngine.Rect,UnityEngine.GUIContent,System.Int32@,System.Boolean@)">
             <summary>
             Creates a control ID that handles keyboard control, focused editor window, indentation and prefix label correctly.
             </summary>
-            <param name="rect">The rect to make a feature rich control for.</param>
+            <param name="bounds">The bounds to make a feature rich control for.</param>
             <param name="label">The label for the control. Leave <c>null</c> for no label.</param>
             <param name="controlId">The created control ID.</param>
             <param name="hasKeyboardFocus">A value indicating whether or not the control has keyboard focus.</param>
@@ -6709,7 +6709,7 @@
             <summary>
             Creates a control ID that handles keyboard control, focused editor window, indentation and prefix label correctly.
             </summary>
-            <param name="rect">The rect to make a feature rich control for.</param>
+            <param name="bounds">The bounds to make a feature rich control for.</param>
             <param name="controlId">The created control ID.</param>
             <param name="hasKeyboardFocus">A value indicating whether or not the control has keyboard focus.</param>
         </member>

@@ -1196,7 +1196,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.LastDrawnValueRect">
             <summary>
-            The last rect that this property was drawn within.
+            The last bounds that this property was drawn within.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.ParentType">
@@ -6080,7 +6080,7 @@
             <summary>
             Draws a table cell element.
             </summary>
-            <param name="rect">The rect.</param>
+            <param name="bounds">The bounds.</param>
             <param name="value">The input value.</param>
             <returns>The output value.</returns>
         </member>
@@ -8606,12 +8606,12 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.OdinMenuItem.Rect">
             <summary>
-            Gets the drawn rect.
+            Gets the drawn bounds.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.OdinMenuItem.LabelRect">
             <summary>
-            Gets the drawn label rect.
+            Gets the drawn label bounds.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.OdinMenuItem.Style">
@@ -8708,8 +8708,8 @@
             <summary>
             Handles the mouse events.
             </summary>
-            <param name="rect">The rect.</param>
-            <param name="triangleRect">The triangle rect.</param>
+            <param name="bounds">The bounds.</param>
+            <param name="triangleRect">The triangle bounds.</param>
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.OdinMenuStyle">
             <summary>
@@ -9863,18 +9863,18 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup">
             <summary>
-            Opens up the selector instance in a popup at the specified rect position.
+            Opens up the selector instance in a popup at the specified bounds position.
             The width of the popup is determined by DefaultWindowWidth, and the height is automatically calculated.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup(UnityEngine.Rect)">
             <summary>
-            Opens up the selector instance in a popup at the specified rect position.
+            Opens up the selector instance in a popup at the specified bounds position.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup(UnityEngine.Rect,System.Single)">
             <summary>
-            Opens up the selector instance in a popup at the specified rect position.
+            Opens up the selector instance in a popup at the specified bounds position.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup(System.Single)">
@@ -9890,7 +9890,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
-            Opens up the selector instance in a popup at the specified rect position.
+            Opens up the selector instance in a popup at the specified bounds position.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.OdinSelector`1.ShowInPopup(UnityEngine.Vector2)">
@@ -9998,11 +9998,11 @@
              <code>
              private static Type currentSelectedType;
              private static IEnumerable&lt;Type&gt; currentSource;
-             private static Func&lt;Rect, OdinSelector&lt;Type&gt;&gt; createTypeSelector = (rect) =>
+             private static Func&lt;Rect, OdinSelector&lt;Type&gt;&gt; createTypeSelector = (bounds) =>
              {
                  TypeSelector selector = new TypeSelector(currentSource, false);
                  selector.SetSelection(currentSelectedType);
-                 selector.ShowInPopup(rect);
+                 selector.ShowInPopup(bounds);
                  return selector;
              };
              

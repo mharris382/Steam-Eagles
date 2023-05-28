@@ -4887,16 +4887,16 @@
             
                  #if UNITY_EDITOR
             
-                     private static bool DrawColoredEnumElement(Rect rect, bool value)
+                     private static bool DrawColoredEnumElement(Rect bounds, bool value)
                      {
-                         if (Event.current.type == EventType.MouseDown &#38;&#38; rect.Contains(Event.current.mousePosition))
+                         if (Event.current.type == EventType.MouseDown &#38;&#38; bounds.Contains(Event.current.mousePosition))
                          {
                              value = !value;
                              GUI.changed = true;
                              Event.current.Use();
                          }
             
-                         UnityEditor.EditorGUI.DrawRect(rect.Padding(1), value ? new Color(0.1f, 0.8f, 0.2f) : new Color(0, 0, 0, 0.5f));
+                         UnityEditor.EditorGUI.DrawRect(bounds.Padding(1), value ? new Color(0.1f, 0.8f, 0.2f) : new Color(0, 0, 0, 0.5f));
             
                          return value;
                      }
@@ -4932,7 +4932,7 @@
             Override how Odin draws each cell.                  <para />
             [TableMatrix(DrawElementMethod='DrawMyElement')]    <para />
             public MyType[,] myArray;                           <para />
-            private static MyType DrawElement(Rect rect, MyType value) { return GUI.DrawMyType(rect, value); }
+            private static MyType DrawElement(Rect bounds, MyType value) { return GUI.DrawMyType(bounds, value); }
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.RowHeight">

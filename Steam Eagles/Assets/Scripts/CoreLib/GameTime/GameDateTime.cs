@@ -6,6 +6,7 @@
         public GameDate gameDate;
         public GameTime gameTime;
 
+        public static GameDateTime MaxValue => new GameDateTime(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
         public static GameDateTime GameStart => GameTimeConfig.Instance.gameStartTime;
 
         public int Minutes
