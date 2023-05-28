@@ -34,7 +34,7 @@ namespace Tests.ItemTests
         {
             var key = AssumedItemNames.ITEM_HYPERGLASS;
             yield return UniTask.ToCoroutine(async () => {
-                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_Pickup");
+                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_pickup");
                 await loadOp;
                 pickup = loadOp.Result;
             });
@@ -44,7 +44,7 @@ namespace Tests.ItemTests
         {
             yield return UniTask.ToCoroutine(async () =>
             {
-                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_Pickup");
+                var loadOp = Addressables.LoadAssetAsync<Pickup>("Hyperglass_pickup");
                 await loadOp;
                 pickup = loadOp.Result;
             });

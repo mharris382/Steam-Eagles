@@ -14,7 +14,7 @@ public class TimeInstaller : Installer<TimeInstaller>
 {
     public override void InstallBindings()
     {
-        Container.Bind<IGameTimeConfig>().To<GameTimeConfig>().FromScriptableObjectResource("GameTimeConfig/GameTimeConfig.asset").AsSingle();
+        Container.Bind<IGameTimeConfig>().To<GameTimeConfig>().FromScriptableObjectResource("GameTimeConfig/GameTimeConfig").AsSingle();
         Container.Bind<GameTimeState>().FromNew().AsSingle();
         Container.BindInterfacesAndSelfTo<TimeRunner>().AsSingle().NonLazy();
     }

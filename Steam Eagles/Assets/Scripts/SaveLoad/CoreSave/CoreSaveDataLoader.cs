@@ -1,4 +1,6 @@
-﻿using CoreLib;
+﻿using System;
+using System.Collections.Generic;
+using CoreLib;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -22,7 +24,7 @@ namespace SaveLoad.CoreSave
     
     
     [LoadOrder(-1000)]
-    public class AsyncCoreSaveDataLoader : AsyncSaveFileLoader<CoreSaveData>, IAsyncGameLoader, IInitializable, ISaveLoaderSystem
+    public class AsyncCoreSaveDataLoader : AsyncSaveFileLoader<CoreSaveData>, IAsyncGameLoader, IInitializable, IJsonSaveLoaderSystem
     {
         private PersistenceConfig _config;
         // public override bool LoadData(CoreSaveData data)
@@ -90,6 +92,21 @@ namespace SaveLoad.CoreSave
             if(transporter != null)
                 SpawnDatabase.Instance.SaveSpawnPoint(transporter.tag, savePath, transporter.transform.position);
             return UniTask.FromResult(true);
+        }
+
+        public IEnumerable<(string, string)> GetSaveFileNames()
+        {
+            yield return (GetJsonFileName(), "json");
+        }
+
+        public string GetJsonFileName()
+        {
+            return "CoreSaveData";
+        }
+
+        public Type GetJsonFileType()
+        {
+            return typeof(CoreSaveData);
         }
     }
 

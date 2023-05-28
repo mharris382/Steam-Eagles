@@ -45,7 +45,7 @@ so after some discussion I realized that it would be feasible to save tilemap da
 
 Then you process every pixel in the image.  
 
-
+![[CheatSheet]]
 ```cs
 public void ProcessImage(Image img, TileArray tiles, out TileGrid tileGrid)
 {

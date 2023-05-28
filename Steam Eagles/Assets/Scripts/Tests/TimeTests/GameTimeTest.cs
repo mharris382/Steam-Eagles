@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Tests.TimeTests
 {
-    public class GameTimeTest  :ZenjectUnitTestFixture
+    public class GameTimeTest : ZenjectUnitTestFixture
     {
         private const float SEC_PER_GAME_MINUTE = 0.1f;
         private const float SEC_PER_GAME_MINUTE_FAST = 0.01f;
@@ -27,13 +27,17 @@ namespace Tests.TimeTests
 
             public float RealSecondsInGameMinute { get; }
         }
+
         bool _canContinue = false;
+
         [Test]
         public void TestConfigGetsCorrectTime()
         {
             TimeInstaller.Install(Container);
-            Container.Rebind<IGameTimeConfig>().To<TestTimeConfig>().FromInstance(new TestTimeConfig(SEC_PER_GAME_MINUTE)).AsSingle().NonLazy();
-            Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
+            Container.Rebind<IGameTimeConfig>().To<TestTimeConfig>()
+                .FromInstance(new TestTimeConfig(SEC_PER_GAME_MINUTE)).AsSingle().NonLazy();
+            Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller")
+                .AsSingle().NonLazy();
 
             var config = Container.Resolve<IGameTimeConfig>();
             Assert.AreEqual(SEC_PER_GAME_MINUTE, config.RealSecondsInGameMinute);
@@ -41,44 +45,59 @@ namespace Tests.TimeTests
 
         public class TimeOfDayTests
         {
-           [Test] public void _8IsMorning()
+            [Test]
+            public void _8IsMorning()
             {
                 Assert.AreEqual(TimeOfDay.MORNING, new GameTime(8, 0).TimeOfDay);
             }
-           [Test] public void _2IsAfternoon()
+
+            [Test]
+            public void _2IsAfternoon()
             {
                 Assert.AreEqual(TimeOfDay.AFTERNOON, new GameTime(14, 0).TimeOfDay);
             }
-           [Test] public void _7IsEvening()
+
+            [Test]
+            public void _7IsEvening()
             {
                 Assert.AreEqual(TimeOfDay.EVENING, new GameTime(19, 0).TimeOfDay);
             }
-           [Test] public void _3IsNight()
+
+            [Test]
+            public void _3IsNight()
             {
                 Assert.AreEqual(TimeOfDay.NIGHT, new GameTime(3, 0).TimeOfDay);
             }
-            [Test]public void MorningIs0To6()
+
+            [Test]
+            public void MorningIs0To6()
             {
                 var morningStart = new GameTime(6, 1);
                 var morningEnd = new GameTime(11, 59);
                 Assert.AreEqual(TimeOfDay.MORNING, morningStart.TimeOfDay);
                 Assert.AreEqual(TimeOfDay.MORNING, morningEnd.TimeOfDay);
             }
-           [Test] public void AfternoonIs12To6()
+
+            [Test]
+            public void AfternoonIs12To6()
             {
                 var afternoonStart = new GameTime(12, 1);
-                var afternoonEnd = new GameTime(12+5, 59);
+                var afternoonEnd = new GameTime(12 + 5, 59);
                 Assert.AreEqual(TimeOfDay.AFTERNOON, afternoonStart.TimeOfDay);
                 Assert.AreEqual(TimeOfDay.AFTERNOON, afternoonEnd.TimeOfDay);
             }
-           [Test] public void EveningIs18To24()
+
+            [Test]
+            public void EveningIs18To24()
             {
                 var eveningStart = new GameTime(18, 1);
                 var eveningEnd = new GameTime(23, 59);
                 Assert.AreEqual(TimeOfDay.EVENING, eveningStart.TimeOfDay);
                 Assert.AreEqual(TimeOfDay.EVENING, eveningEnd.TimeOfDay);
             }
-           [Test] public void NightIs0To6()
+
+            [Test]
+            public void NightIs0To6()
             {
                 var nightStart = new GameTime(0, 1);
                 var nightEnd = new GameTime(5, 59);
@@ -86,33 +105,43 @@ namespace Tests.TimeTests
                 Assert.AreEqual(TimeOfDay.NIGHT, nightEnd.TimeOfDay);
             }
         }
+
         public class GameDateTests
         {
-            [Test]   public void TestGameDateNotEquals()
+            [Test]
+            public void TestGameDateNotEquals()
             {
                 var gameTime1 = new GameDate(12, 30);
                 var gameTime2 = new GameDate(11, 30);
                 Assert.AreNotEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameDateEquals()
+
+            [Test]
+            public void TestGameDateEquals()
             {
                 var gameTime1 = new GameDate(12, 30);
                 var gameTime2 = new GameDate(12, 30);
                 Assert.AreEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameTimeGreaterThan()
+
+            [Test]
+            public void TestGameTimeGreaterThan()
             {
                 var gameTimeBefore = new GameDate(5, 30);
                 var gameTimeAfter = new GameDate(6, 40);
                 Assert.IsTrue(gameTimeAfter > gameTimeBefore);
             }
-            [Test] public void TestGameDateLessThan()
+
+            [Test]
+            public void TestGameDateLessThan()
             {
                 var gameTimeBefore = new GameDate(5, 30);
                 var gameTimeAfter = new GameDate(6, 40);
                 Assert.IsTrue(gameTimeBefore < gameTimeAfter);
             }
-            [Test] public void TestGameDateGreaterThanOrEqual()
+
+            [Test]
+            public void TestGameDateGreaterThanOrEqual()
             {
                 var gameTimeBefore = new GameDate(5, 30);
                 var gameTimeAfter = new GameDate(6, 40);
@@ -120,6 +149,7 @@ namespace Tests.TimeTests
                 Assert.IsTrue(gameTimeAfter >= gameTimeBefore);
                 Assert.IsTrue(gameTimeAfter2 >= gameTimeBefore);
             }
+
             [Test]
             public void TestGameDateLessThanOrEqual()
             {
@@ -130,33 +160,43 @@ namespace Tests.TimeTests
                 Assert.IsTrue(gameTimeBefore <= gameTimeAfter2);
             }
         }
+
         public class GameTimeTests
         {
-            [Test]   public void TestGameTimeNotEquals()
+            [Test]
+            public void TestGameTimeNotEquals()
             {
                 var gameTime1 = new GameDate(12, 30);
                 var gameTime2 = new GameTime(11, 30);
                 Assert.AreNotEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameTimeEquals()
+
+            [Test]
+            public void TestGameTimeEquals()
             {
                 var gameTime1 = new GameTime(12, 30);
                 var gameTime2 = new GameTime(12, 30);
                 Assert.AreEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameDateGreaterThan()
+
+            [Test]
+            public void TestGameDateGreaterThan()
             {
                 var gameTimeBefore = new GameDate(5, 30);
                 var gameTimeAfter = new GameDate(6, 40);
                 Assert.IsTrue(gameTimeAfter > gameTimeBefore);
             }
-            [Test] public void TestGameTimeLessThan()
+
+            [Test]
+            public void TestGameTimeLessThan()
             {
                 var gameTimeBefore = new GameTime(5, 30);
                 var gameTimeAfter = new GameTime(6, 40);
                 Assert.IsTrue(gameTimeBefore < gameTimeAfter);
             }
-            [Test] public void TestGameTimeGreaterThanOrEqual()
+
+            [Test]
+            public void TestGameTimeGreaterThanOrEqual()
             {
                 var gameTimeBefore = new GameTime(5, 30);
                 var gameTimeAfter = new GameTime(6, 40);
@@ -164,6 +204,7 @@ namespace Tests.TimeTests
                 Assert.IsTrue(gameTimeAfter >= gameTimeBefore);
                 Assert.IsTrue(gameTimeAfter2 >= gameTimeBefore);
             }
+
             [Test]
             public void TestGameTimeLessThanOrEqual()
             {
@@ -174,51 +215,62 @@ namespace Tests.TimeTests
                 Assert.IsTrue(gameTimeBefore <= gameTimeAfter2);
             }
         }
-        
+
         public class GameDateTimeTests
         {
-            [Test]   public void TestGameDateTimeNotEquals()
+            [Test]
+            public void TestGameDateTimeNotEquals()
             {
-                var gameTime1 = new GameDateTime(1, 1,2, 30);
-                var gameTime2 = new GameDateTime(1, 1,1, 30);
+                var gameTime1 = new GameDateTime(1, 1, 2, 30);
+                var gameTime2 = new GameDateTime(1, 1, 1, 30);
                 Assert.AreNotEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameDateTimeEquals()
+
+            [Test]
+            public void TestGameDateTimeEquals()
             {
-                var gameTime1 = new GameDateTime(1, 1,2, 30);
-                var gameTime2 = new GameDateTime(1, 1,2, 30);
+                var gameTime1 = new GameDateTime(1, 1, 2, 30);
+                var gameTime2 = new GameDateTime(1, 1, 2, 30);
                 Assert.AreEqual(gameTime1, gameTime2);
             }
-            [Test]   public void TestGameDateGreaterThan()
+
+            [Test]
+            public void TestGameDateGreaterThan()
             {
-                var gameTimeBefore = new GameDateTime(1, 1,5, 30);
+                var gameTimeBefore = new GameDateTime(1, 1, 5, 30);
                 var gameTimeAfter = new GameDateTime(1, 1, 6, 40);
                 Assert.IsTrue(gameTimeAfter > gameTimeBefore);
             }
-            [Test] public void TestGameDateTimeLessThan()
+
+            [Test]
+            public void TestGameDateTimeLessThan()
             {
                 var gameTimeBefore = new GameDateTime(1, 1, 5, 30);
                 var gameTimeAfter = new GameDateTime(1, 1, 6, 40);
                 Assert.IsTrue(gameTimeBefore < gameTimeAfter);
             }
-            [Test] public void TestGameDateTimeGreaterThanOrEqual()
+
+            [Test]
+            public void TestGameDateTimeGreaterThanOrEqual()
             {
-                var gameTimeBefore = new GameDateTime(1, 1,5, 30);
-                var gameTimeAfter = new GameDateTime(1, 1,6, 40);
-                var gameTimeAfter2 = new GameDateTime(1, 1,5, 30);
+                var gameTimeBefore = new GameDateTime(1, 1, 5, 30);
+                var gameTimeAfter = new GameDateTime(1, 1, 6, 40);
+                var gameTimeAfter2 = new GameDateTime(1, 1, 5, 30);
                 Assert.IsTrue(gameTimeAfter >= gameTimeBefore);
                 Assert.IsTrue(gameTimeAfter2 >= gameTimeBefore);
             }
+
             [Test]
             public void TestGameDateTimeLessThanOrEqual()
             {
-                var gameTimeBefore = new GameDateTime(1, 1,5, 30);
-                var gameTimeAfter = new GameDateTime(1, 1,6, 40);
-                var gameTimeAfter2 = new GameDateTime(1, 1,5, 30);
+                var gameTimeBefore = new GameDateTime(1, 1, 5, 30);
+                var gameTimeAfter = new GameDateTime(1, 1, 6, 40);
+                var gameTimeAfter2 = new GameDateTime(1, 1, 5, 30);
                 Assert.IsTrue(gameTimeBefore <= gameTimeAfter);
                 Assert.IsTrue(gameTimeBefore <= gameTimeAfter2);
             }
         }
+
         [UnityTest]
         public IEnumerator TimeRunnerIncrementsMinutes()
         {
@@ -226,7 +278,7 @@ namespace Tests.TimeTests
             var gameTimeState = Container.Resolve<GameTimeState>();
             var timeRunner = Container.Resolve<TimeRunner>();
             timeRunner.Initialize();
-            
+
             yield return null;
             Assert.IsTrue(timeRunner.Running);
             gameTimeState.Mode = TimeMode.NORMAL;
@@ -237,13 +289,16 @@ namespace Tests.TimeTests
                 timePassed += Time.deltaTime;
                 yield return null;
             }
+
             Assert.AreNotEqual(0, timeRunner.IncrementsMin);
             Assert.AreEqual(timeRunner.IncrementsMin, timeRunner.IncrementsMinMoved);
             var endState = gameTimeState.CurrentTime;
-            Assert.IsTrue(endState.gameTime.gameMinute > startState.gameTime.gameMinute, GetDebugString(startState, endState));
-            Assert.IsTrue(endState.gameTime.gameHour == startState.gameTime.gameHour, GetDebugString(startState, endState));
+            Assert.IsTrue(endState.gameTime.gameMinute > startState.gameTime.gameMinute,
+                GetDebugString(startState, endState));
+            Assert.IsTrue(endState.gameTime.gameHour == startState.gameTime.gameHour,
+                GetDebugString(startState, endState));
         }
-        
+
         [UnityTest]
         public IEnumerator TimeRunnerIncrementsHours()
         {
@@ -261,8 +316,10 @@ namespace Tests.TimeTests
                 timePassed += Time.deltaTime;
                 yield return null;
             }
+
             var endState = gameTimeState.CurrentTime;
-            Assert.IsTrue(endState.gameTime.gameHour > startState.gameTime.gameHour, GetDebugString(startState, endState));
+            Assert.IsTrue(endState.gameTime.gameHour > startState.gameTime.gameHour,
+                GetDebugString(startState, endState));
         }
 
         [UnityTest]
@@ -271,12 +328,12 @@ namespace Tests.TimeTests
             _canContinue = false;
             Bindings(SEC_PER_GAME_MINUTE);
             var gameTimeState = Container.Resolve<GameTimeState>();
-            
+
             var startTime = gameTimeState.CurrentTime;
 
             var haltTime = startTime;
             haltTime.Minutes += 30;
-            
+
             var timeRunner = Container.Resolve<TimeRunner>();
             gameTimeState.Mode = TimeMode.NORMAL;
             gameTimeState.SetTimeMaximum(haltTime, () => _canContinue);
@@ -284,17 +341,29 @@ namespace Tests.TimeTests
             yield return new WaitForSeconds(SEC_PER_GAME_MINUTE * 40);
             Assert.IsTrue(timeRunner.Running);
             Assert.IsTrue(gameTimeState.CurrentTime == haltTime, GetDebugString(gameTimeState.CurrentTime, haltTime));
-            yield return new WaitForSeconds(SEC_PER_GAME_MINUTE );
+            yield return new WaitForSeconds(SEC_PER_GAME_MINUTE);
             Assert.IsTrue(gameTimeState.CurrentTime == haltTime, GetDebugString(gameTimeState.CurrentTime, haltTime));
             _canContinue = true;
-            yield return new WaitForSeconds(SEC_PER_GAME_MINUTE );
+            yield return new WaitForSeconds(SEC_PER_GAME_MINUTE);
             Assert.IsTrue(gameTimeState.CurrentTime > haltTime, GetDebugString(gameTimeState.CurrentTime, haltTime));
         }
-        private void Bindings(float time)
+
+
+        [Test]
+        public void TimeConfigResourceExists()
         {
             TimeInstaller.Install(Container);
+            Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle().NonLazy();
+
+            var config = Container.Resolve<IGameTimeConfig>();
+            Assert.IsNotNull(config);
+        }
+
+    private void Bindings(float time)
+        {
             Container.Rebind<IGameTimeConfig>().To<TestTimeConfig>()
                 .FromInstance(new TestTimeConfig(time)).AsSingle().NonLazy();
+            TimeInstaller.Install(Container);
             Container.Bind<CoroutineCaller>().FromNewComponentOnNewGameObject().WithGameObjectName("CoroutineCaller").AsSingle()
                 .NonLazy();
         }

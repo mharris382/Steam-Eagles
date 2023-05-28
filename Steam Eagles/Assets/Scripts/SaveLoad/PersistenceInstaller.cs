@@ -14,8 +14,9 @@ public class PersistenceInstaller : MonoInstaller
     {
         Container.Bind<PersistenceConfig>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GlobalSaveLoader>().AsSingle().NonLazy();
-        Container.Bind<GlobalSavePath>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GlobalSavePath>().AsSingle().NonLazy();
         Container.BindInterfacesTo<AsyncCoreSaveDataLoader>().AsSingle().NonLazy();
+        Container.Bind<PathValidator>().AsSingle().NonLazy();
     }
 }
 
