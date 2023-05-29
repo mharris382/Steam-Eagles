@@ -126,9 +126,25 @@ public class GlobalSaveLoader : IInitializable
         _coroutineCaller.StartCoroutine(PerformLoadOp(loadPath, onLoadFinished));
     }
 
-    IEnumerator PerformSaveOp(string path, Action<bool> callback) => PerformOpGrouped(path, callback, s => s.SaveGameAsync(path), "Save");
+    IEnumerator PerformSaveOp(string path, Action<bool> callback)
+    {
+        IsSaving = true;
+        return PerformOpGrouped(path, callback, s =>
+        {
+            IsSaving = false;
+            return s.SaveGameAsync(path);
+        }, "Save");
+    }
 
-    IEnumerator PerformLoadOp(string path, Action<bool> callback) => PerformOpGrouped(path, callback, s => s.LoadGameAsync(path), "Load");
+    IEnumerator PerformLoadOp(string path, Action<bool> callback)
+    {
+        IsLoading = true;
+        return PerformOpGrouped(path, callback, s =>
+        {
+            IsLoading = false;
+            return s.LoadGameAsync(path);
+        }, "Load");
+    }
 
     IEnumerator PerformOp(string path, Action<bool> callback, Func<ISaveLoaderSystem, UniTask<bool>> opGetter, string opName)
     {
@@ -195,15 +211,15 @@ public class GlobalSaveLoader : IInitializable
         string opName)
     {
         var saveTasks = new List<UniTask<bool>>(_saveLoadHandlers[loadGroup].Select(opGetter));
-        await UniTask.WhenAll(saveTasks);
+        bool[] results= await UniTask.WhenAll(saveTasks);
         bool allSucceeded = true;
         for (int i = 0; i < _saveLoadHandlers[loadGroup].Count; i++)
         {
-            if (saveTasks[i].Status != UniTaskStatus.Succeeded)
-            {
-                _config.Log($"{opName} Failed for System: {_saveLoadHandlers[loadGroup][i].GetType().Name.ColoredRed()}");
-                allSucceeded = false;
-            }
+           if (!results[i])
+           {
+             _config.Log($"{opName} Failed for System: {_saveLoadHandlers[loadGroup][i].GetType().Name.ColoredRed()}");
+             allSucceeded = false;
+           }
         }
         return allSucceeded;
     }

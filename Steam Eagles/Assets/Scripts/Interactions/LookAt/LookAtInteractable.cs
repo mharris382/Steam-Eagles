@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Interactions.Installers;
 using UnityEngine;
 using Zenject;
@@ -9,6 +10,7 @@ namespace Interactions.LookAt
     {
         public GameObject vCam;
         private PlayerVCamFactory _playerVCamFactory;
+        public float minLookTime = 1f;
 
         public async override UniTask<bool> Interact(InteractionAgent agent)
         {
@@ -17,8 +19,9 @@ namespace Interactions.LookAt
             {
                 return false;
             }
+            await UniTask.Delay(TimeSpan.FromSeconds(minLookTime));
             vCam.SetActive(true);
-            await UniTask.WaitUntil(() => agent.CancelPressed);
+            await UniTask.WaitUntil(() => agent.CancelPressed || agent.InteractPressed);
             Destroy(vCam);
             return true;
         }

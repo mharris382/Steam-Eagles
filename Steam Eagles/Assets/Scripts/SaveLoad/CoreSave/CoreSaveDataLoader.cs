@@ -27,6 +27,8 @@ namespace SaveLoad.CoreSave
     public class AsyncCoreSaveDataLoader : AsyncSaveFileLoader<CoreSaveData>, IAsyncGameLoader, IInitializable, IJsonSaveLoaderSystem
     {
         private PersistenceConfig _config;
+
+        private GlobalPCInfo _globalPcInfo;
         // public override bool LoadData(CoreSaveData data)
         // {
         //     SceneManager.LoadScene(data.Scene);
@@ -37,10 +39,11 @@ namespace SaveLoad.CoreSave
         // }
 
         [Inject]
-        public void InjectConfig(PersistenceConfig config)
+        public void InjectConfig(PersistenceConfig config, GlobalPCInfo globalPcInfo)
         {
             _config = config;
             _config.Log("Injected Config into AsyncCoreSaveDataLoader", true);
+            _globalPcInfo = globalPcInfo;
         }
         public override async UniTask<bool> LoadData(string savePath, CoreSaveData data)
         {
@@ -83,14 +86,20 @@ namespace SaveLoad.CoreSave
 
         public UniTask<bool> SaveGameAsync(string savePath)
         {
-            var builder = GameObject.FindGameObjectWithTag("Builder");
-            var transporter = GameObject.FindGameObjectWithTag("Transporter");
-            if(builder == null && transporter == null)
-                return UniTask.FromResult(false);
-            if(builder != null)
-                SpawnDatabase.Instance.SaveSpawnPoint(builder.tag, savePath, builder.transform.position);
-            if(transporter != null)
-                SpawnDatabase.Instance.SaveSpawnPoint(transporter.tag, savePath, transporter.transform.position);
+            for (int i = 0; i < _globalPcInfo.PCCount; i++)
+            {
+                var instance = _globalPcInfo.GetInstance(i);
+                if (instance == null)
+                {
+                    continue;
+                }
+                var character = instance.character;
+                if (character == null)
+                {
+                    continue;
+                }
+                SpawnDatabase.Instance.SaveSpawnPoint(character.tag, savePath, character.transform.localPosition);
+            }
             return UniTask.FromResult(true);
         }
 
