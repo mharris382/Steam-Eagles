@@ -14,10 +14,10 @@ namespace Buildings.CoreData
         private readonly CoroutineCaller _coroutineCaller;
         private Coroutine _initializeCoroutine;
 
-        public BuildingCoreData(Building building, EntityInitializer entityInitializer, CoroutineCaller coroutineCaller)
+        public BuildingCoreData(Building building, CoroutineCaller coroutineCaller)
         {
             _building = building;
-            _entityInitializer = entityInitializer;
+            _entityInitializer = building.GetComponentInChildren<EntityInitializer>();
             _coroutineCaller = coroutineCaller;
         }
         public void Dispose()

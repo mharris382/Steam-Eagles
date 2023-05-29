@@ -7,6 +7,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI
 {
@@ -17,21 +18,30 @@ namespace UI
     public class UILoadGameButton : MonoBehaviour
     {
         public Button _button;
-        public Button loadButton => _button != null ? _button : _button =GetComponent<Button>();
+        public Button loadButton => _button != null ? _button : _button = GetComponent<Button>();
         private TextMeshProUGUI _text;
         public TextMeshProUGUI Text => _text != null ? _text : _text = GetComponentInChildren<TextMeshProUGUI>();
-        
+
         public UIDisplayGameTime timeDisplay;
         public UIDisplayGameDate dateDisplay;
-        
+
         public string savePath;
+        private GlobalSaveLoader saveLoader;
 
         public string GetFullSavePath()
         {
-            return !savePath.StartsWith(Application.persistentDataPath) ?  $"{Application.persistentDataPath}/{savePath}" : savePath;
+            return !savePath.StartsWith(Application.persistentDataPath)
+                ? $"{Application.persistentDataPath}/{savePath}"
+                : savePath;
         }
 
-        protected virtual void Awake()
+        [Inject]
+        public void InjectSaver(GlobalSaveLoader saveLoader)
+        {
+            this.saveLoader = saveLoader;
+        }
+
+    protected virtual void Awake()
         {
             var fullPath = GetFullSavePath();
             if (Directory.Exists(fullPath))
@@ -39,8 +49,11 @@ namespace UI
                 loadButton.interactable = true;
                 loadButton.onClick.AsObservable().Subscribe(_ =>
                 {
-                    throw new NotImplementedException();
-                    MessageBroker.Default.Publish(new LoadGameRequestedInfo(GetFullSavePath()));
+                    Debug.Log($"Loading Game: {fullPath}");
+                    saveLoader.LoadGame(GetFullSavePath(), res =>
+                    {
+                        Debug.Log($"Loaded Game: {res}\npath: {fullPath}");
+                    });
                 }).AddTo(this);
             }
             else

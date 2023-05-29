@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
+using Zenject;
 using Observable = UnityEngine.InputSystem.Utilities.Observable;
 
 namespace UI
@@ -24,7 +25,17 @@ namespace UI
         public Animator pauseAnimator;
 
         private static readonly int IsOpen = Animator.StringToHash("IsOpen");
+        private GlobalSaveLoader saveLoader;
+        private GlobalSavePath savePath;
 
+
+        [Inject]
+        public void InjectMe(GlobalSaveLoader saveLoader, GlobalSavePath savePath)
+        {
+            this. saveLoader = saveLoader;
+            this.savePath = savePath;
+        }
+        
         public override void Open()
         {
             base.Open();
@@ -105,8 +116,11 @@ namespace UI
 
         public void QuitToMainMenu()
         {
-            throw new NotImplementedException();
-            MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
+            saveLoader.SaveGame(res =>
+            {
+                Debug.Assert(res, $"Failed to save game at path: {savePath.FullSaveDirectoryPath}");
+                SceneManager.LoadScene("Main Menu");
+            });
         }
     }
 }

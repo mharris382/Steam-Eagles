@@ -16,7 +16,7 @@ namespace Buildings.DI
             BuildingDamageInstaller.Install(Container);
             Container.Bind<Building>().FromInstance(GetComponentInChildren<Building>()).AsSingle();
             Container.BindFactory<Building, BuildingMap, BuildingMap.Factory>().AsSingle().NonLazy();
-            
+            // Container.Bind<EntityInitializer>().FromInstance(GetComponentInChildren<EntityInitializer>()).AsSingle();
             if (overrideTileAssets)
             {
                 Container.Rebind<TileAssets>().FromInstance(tileAssets).AsSingle().NonLazy();

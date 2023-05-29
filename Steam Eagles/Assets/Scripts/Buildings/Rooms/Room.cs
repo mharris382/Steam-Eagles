@@ -143,12 +143,12 @@ using Sirenix.OdinInspector;
 
 
         #region [Injection Methods]
-
-        [Inject]
-        public void InjectDamageProvider(IDamageProviderFactory factory)
-        {
-            _damageProvider = factory.Create(this);
-        }
+        //
+        // [Inject]
+        // public void InjectDamageProvider(IDamageProviderFactory factory)
+        // {
+        //     _damageProvider = factory.Create(this);
+        // }
 
         #endregion
 

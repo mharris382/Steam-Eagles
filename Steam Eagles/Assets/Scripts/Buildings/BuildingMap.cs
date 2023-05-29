@@ -10,7 +10,69 @@ using Zenject;
 
 namespace Buildings
 {
-    public class BuildingMap : IBuildingRoomLookup
+    public interface IBGrid
+    {
+        Vector2 GetCellSize(BuildingLayers layer);
+        Vector3Int WorldToCell(Vector3 wp, BuildingLayers buildingLayers);
+        Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers);
+        Vector3 CellToWorld(BuildingCell cell);
+        Vector3 CellToLocal(BuildingCell cell);
+        Vector3 CellToLocal(Vector3Int cell, BuildingLayers buildingLayers);
+    }
+
+    public abstract class BGridRuleInstaller : Installer<EditableTile, BGridRuleInstaller>
+    {
+        public override void InstallBindings()
+        {
+            Container.Bind<IBGridRule>().To<CompositeBGridRule>().FromNew().AsSingle();
+            InstallBGridRules();
+        }
+
+        public abstract void InstallBGridRules();
+
+        class CompositeBGridRule : IBGridRule
+        {
+            [Inject]
+            public List<IBGridRule> rules;
+            public bool CanPlaceTile(IBGridReader gridReader, BuildingCell buildingCell, EditableTile tile, ref string failureMessage)
+            {
+
+                foreach (var bGridRule in rules)
+                {
+                    if (!bGridRule.CanPlaceTile(gridReader, buildingCell, tile, ref failureMessage))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+    }
+
+    
+    /// <summary>
+    /// can be injected globally to contain all the rules for placing tiles on the building grid. will need to be able
+    /// to resolve a set of IBGridRules for a given tile type. Since we don't know which set we need until runtime, we
+    /// will use a factory to create the set of rules for a given tile type.
+    /// </summary>
+    public interface IBGridRule
+    {
+        bool CanPlaceTile(IBGridReader gridReader, BuildingCell buildingCell, EditableTile tile, ref string failureMessage);
+    }
+    
+    public interface IBGridReader
+    {
+        bool HasTile(BuildingCell buildingCell);
+        TileBase GetTile(BuildingCell buildingCell);
+    }
+    public interface IBGridWriter   
+    {
+        bool SetTile(BuildingCell buildingCell, TileBase tile);
+    }
+    
+
+    public class BuildingMap : IBuildingRoomLookup, IBGrid
     {
         public class Factory : PlaceholderFactory<Building, BuildingMap> { }
         
@@ -103,7 +165,8 @@ namespace Buildings
 
         public RoomGraph RoomGraph => _roomGraph;
 
-        private CellToRoomLookup GetMapForLayer(BuildingLayers layer)
+        
+        CellToRoomLookup GetMapForLayer(BuildingLayers layer)
         {
             if (!_layerToCellSize.ContainsKey(layer))
                 return _cellToRoomMaps[Vector2.one];

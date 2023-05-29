@@ -15,6 +15,8 @@ public class PathValidator
     public bool ValidatePathForLoad(string directoryPath)
     {
         bool allFilesFound = true;
+        if (directoryPath == Application.persistentDataPath)
+            return false;
         directoryPath = directoryPath.Replace("/", "\\");
         if (Directory.Exists(directoryPath) == false)
             return false;

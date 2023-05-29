@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using CoreLib;
+using Interactions.LookAt;
 using Sirenix.OdinInspector;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 namespace Interactions.Installers
@@ -16,6 +18,37 @@ namespace Interactions.Installers
             Container.BindInterfacesAndSelfTo<AgentRegistry>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<InteractableRegistry>().AsSingle().NonLazy();
             Container.Bind<InteractionGlobalConfig>().FromInstance(globalConfig).AsSingle().NonLazy();
+            Container.Bind<PlayerVCamFactory>().AsSingle().NonLazy();
+        }
+    }
+    public class PlayerVCamFactory : IFactory<InteractionAgent, GameObject, GameObject>
+    {
+        private readonly GlobalPCInfo _globalPcInfo;
+        private readonly LayerMaskFactory _layerMaskFactory;
+
+        public PlayerVCamFactory(GlobalPCInfo globalPcInfo)
+        {
+            _globalPcInfo = globalPcInfo;
+            _layerMaskFactory = new LayerMaskFactory();
+        }
+        public  GameObject Create(InteractionAgent param1, GameObject param2)
+        {
+            int pcIndex = -1;
+            for (int i = 0; i < _globalPcInfo.PCCount; i++)
+            {
+                var pc = _globalPcInfo.GetInstance(i);
+                if (pc.character == param1.gameObject)
+                {
+                    pcIndex = i;
+                    break;   
+                }
+            }
+
+            if (pcIndex == -1)
+                return null;
+            var vCam = GameObject.Instantiate(param2, param2.transform.position, param2.transform.rotation, param2.transform.parent);
+            vCam.layer = _layerMaskFactory.Create(pcIndex);
+            return vCam;
         }
     }
 

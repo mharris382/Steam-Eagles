@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Buildings.BuildingTilemaps;
 using Buildings.Rooms;
 using Buildings.Tiles;
+using Buildings.Tiles.Skin;
 using CoreLib;
 using CoreLib.SaveLoad;
 using Cysharp.Threading.Tasks;
@@ -19,10 +20,12 @@ using Zenject;
 
 namespace Buildings
 {
-    public interface IMachineFactory : IFactory<Machine, Machine> { }
+    public interface IMachineFactory : IFactory<Machine, Machine>
+    {
+    }
 
 
-    
+
     [ExecuteAlways]
     [RequireComponent(typeof(Grid))]
     [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
@@ -31,13 +34,12 @@ namespace Buildings
     {
         #region [Inspector Fields]
 
-        [OnValueChanged(nameof(UpdateName))]
-        public string buildingName;
-        
+        [OnValueChanged(nameof(UpdateName))] public string buildingName;
+
         public Transform tilemapParent;
-        
+
         public int orderInLayer;
-        
+
         public Rect sizeWorldSpace;
 
         #endregion
@@ -82,33 +84,48 @@ namespace Buildings
             }
         }
 
-        public bool IsFullyLoaded
-        {
-            get;
-            set;
-        }
+        public bool IsFullyLoaded { get; set; }
 
         public BuildingMap Map => _buildingMap ??= _buildingMapFactory.Create(this);
         public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
-        public StructureState State => _structureState ? _structureState : _structureState = GetComponent<StructureState>();
+
+        public StructureState State =>
+            _structureState ? _structureState : _structureState = GetComponent<StructureState>();
+
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
 
         public IObservable<BuildingTilemapChangedInfo> TilemapChanged => tilemapChangedSubject;
 
-        public FoundationTilemap FoundationTilemap => _foundationTilemap ? _foundationTilemap : _foundationTilemap = GetComponentInChildren<FoundationTilemap>();
-        public SolidTilemap SolidTilemap => _solidTilemap ? _solidTilemap : _solidTilemap = GetComponentInChildren<SolidTilemap>();
-        public PipeTilemap PipeTilemap => _pipeTilemap ? _pipeTilemap : _pipeTilemap = GetComponentInChildren<PipeTilemap>();
-        public CoverTilemap CoverTilemap => _coverTilemap ? _coverTilemap : _coverTilemap = GetComponentInChildren<CoverTilemap>();
-        public WallTilemap WallTilemap => (_wallTilemap)  ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
+        public FoundationTilemap FoundationTilemap => _foundationTilemap
+            ? _foundationTilemap
+            : _foundationTilemap = GetComponentInChildren<FoundationTilemap>();
 
-        public PlatformTilemap PlatformTilemap => (_platformTilemap) ? _platformTilemap : _platformTilemap = GetComponentInChildren<PlatformTilemap>();
+        public SolidTilemap SolidTilemap =>
+            _solidTilemap ? _solidTilemap : _solidTilemap = GetComponentInChildren<SolidTilemap>();
 
-        public WireTilemap WireTilemap => (_wireTilemap) ? _wireTilemap : _wireTilemap = GetComponentInChildren<WireTilemap>();
+        public PipeTilemap PipeTilemap =>
+            _pipeTilemap ? _pipeTilemap : _pipeTilemap = GetComponentInChildren<PipeTilemap>();
 
-        public LadderTilemap LadderTilemap => (_ladderTilemap) ? _ladderTilemap : _ladderTilemap = GetComponentInChildren<LadderTilemap>();
-        public DecorTilemap DecorTilemap => (_decorTilemap) ? _decorTilemap : _decorTilemap = GetComponentInChildren<DecorTilemap>();
+        public CoverTilemap CoverTilemap =>
+            _coverTilemap ? _coverTilemap : _coverTilemap = GetComponentInChildren<CoverTilemap>();
+
+        public WallTilemap WallTilemap =>
+            (_wallTilemap) ? _wallTilemap : _wallTilemap = GetComponentInChildren<WallTilemap>();
+
+        public PlatformTilemap PlatformTilemap => (_platformTilemap)
+            ? _platformTilemap
+            : _platformTilemap = GetComponentInChildren<PlatformTilemap>();
+
+        public WireTilemap WireTilemap =>
+            (_wireTilemap) ? _wireTilemap : _wireTilemap = GetComponentInChildren<WireTilemap>();
+
+        public LadderTilemap LadderTilemap =>
+            (_ladderTilemap) ? _ladderTilemap : _ladderTilemap = GetComponentInChildren<LadderTilemap>();
+
+        public DecorTilemap DecorTilemap =>
+            (_decorTilemap) ? _decorTilemap : _decorTilemap = GetComponentInChildren<DecorTilemap>();
 
 
         public BuildingTilemap GetTilemap(BuildingLayers layers)
@@ -171,10 +188,17 @@ namespace Buildings
             _buildingMapFactory = buildingMapFactory;
         }
 
-        
+
         public void InjectMachinePrefabFactory(IMachineFactory machinePrefabFactory)
         {
             this.machinePrefabFactory = machinePrefabFactory;
+        }
+
+
+        [Inject]
+        public void AssignSkin(TileSkin tileSkin)
+        {
+
         }
 
         public IMachineFactory machinePrefabFactory { get; private set; }
@@ -189,15 +213,15 @@ namespace Buildings
             _rb = GetComponent<Rigidbody2D>();
             _structureState = GetComponent<StructureState>();
             _box = GetComponent<BoxCollider2D>();
-            
+
             _wallTilemap = GetComponent<WallTilemap>();
             _foundationTilemap = GetComponent<FoundationTilemap>();
             _solidTilemap = GetComponent<SolidTilemap>();
             _pipeTilemap = GetComponent<PipeTilemap>();
             _coverTilemap = GetComponent<CoverTilemap>();
-            
+
             SetupPhysics();
-            
+
             void SetupPhysics()
             {
                 gameObject.layer = LayerMask.NameToLayer("Triggers");
@@ -253,7 +277,7 @@ namespace Buildings
                 var type = buildingTilemap.GetType();
                 if (!buildingTilemaps.ContainsKey(type))
                     buildingTilemaps.Add(type, new List<BuildingTilemap>());
-                buildingTilemaps[type].Add(buildingTilemap);                
+                buildingTilemaps[type].Add(buildingTilemap);
             }
 
             foreach (var kvp in buildingTilemaps)
@@ -327,10 +351,11 @@ namespace Buildings
     public class BuildingTiles
     {
         private readonly Building _building;
-        
+
         public bool isReady { get; private set; }
-        
-        private Dictionary<BuildingLayers, List<TileBase>> _loadedTiles = new Dictionary<BuildingLayers, List<TileBase>>();
+
+        private Dictionary<BuildingLayers, List<TileBase>> _loadedTiles =
+            new Dictionary<BuildingLayers, List<TileBase>>();
 
 
         public TileBase GetDefaultTile(BuildingLayers layers) => _loadedTiles[layers][0];
@@ -340,7 +365,7 @@ namespace Buildings
         public TileBase SolidTile => _loadedTiles[BuildingLayers.SOLID][0];
         public TileBase PipeTile => _loadedTiles[BuildingLayers.PIPE][0];
         public TileBase WireTile => _loadedTiles[BuildingLayers.WIRES][0];
-        
+
         public BuildingTiles(Building building)
         {
             this._building = building;
@@ -356,7 +381,8 @@ namespace Buildings
                 var wallTileLoadOp = Addressables.LoadAssetAsync<WallTile>("WallTile");
                 var damagedWallTileLoadOp = Addressables.LoadAssetAsync<DamagedWallTile>("DamagedWallTile");
                 var pipeTileLoadOp = Addressables.LoadAssetAsync<PipeTile>("PipeTile");
-                await UniTask.WhenAll(solidTileLoadOp.ToUniTask(), wireTileLoadOp.ToUniTask(), wallTileLoadOp.ToUniTask(), damagedWallTileLoadOp.ToUniTask(), pipeTileLoadOp.ToUniTask());
+                await UniTask.WhenAll(solidTileLoadOp.ToUniTask(), wireTileLoadOp.ToUniTask(),
+                    wallTileLoadOp.ToUniTask(), damagedWallTileLoadOp.ToUniTask(), pipeTileLoadOp.ToUniTask());
                 _loadedTiles[BuildingLayers.SOLID].Add(solidTileLoadOp.Result);
                 _loadedTiles[BuildingLayers.WIRES].Add(wireTileLoadOp.Result);
                 _loadedTiles[BuildingLayers.WALL].Add(wallTileLoadOp.Result);
@@ -370,7 +396,6 @@ namespace Buildings
 
     public class BuildingTileLookup
     {
-
         class LayerTileLookup
         {
             private readonly BuildingLayers _layers;
@@ -383,15 +408,46 @@ namespace Buildings
     }
 
 
-    public struct BuildingCell
+    public struct BuildingCell : IEquatable<BuildingCell>
     {
         public Vector3Int cell;
         public BuildingLayers layers;
-        
         public BuildingCell(Vector3Int cell, BuildingLayers layers)
         {
             this.cell = cell;
             this.layers = layers;
         }
+        public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
+        public override bool Equals(object obj) => obj is BuildingCell other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
     }
+
+
+    public struct BuildingRect : IEquatable<BuildingRect>
+    {
+        public readonly BuildingLayers layers;
+        public readonly BoundsInt bounds;
+
+        public int Area2D => bounds.size.x * bounds.size.y;
+        public int Area => bounds.size.x * bounds.size.y * bounds.size.z;
+        
+        public BuildingRect(BoundsInt bounds, BuildingLayers layers)
+        {
+            this.bounds = bounds;
+            this.layers = layers;
+        }
+        public BuildingRect(Vector3Int position, Vector3Int size, BuildingLayers layers)
+        {
+            this.bounds = new BoundsInt(position, size);
+            this.layers = layers;
+        }
+        public BuildingRect(BuildingCell cell, Vector3Int size) : this(cell.cell, size, cell.layers) { }
+        public bool Equals(BuildingRect other) => layers == other.layers && bounds.Equals(other.bounds);
+        public override bool Equals(object obj) => obj is BuildingRect other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine((int)layers, bounds);
+        public bool Contains(BuildingCell cell) => cell.layers == this.layers && bounds.Contains(cell.cell);
+    }
+
+
+
 }
