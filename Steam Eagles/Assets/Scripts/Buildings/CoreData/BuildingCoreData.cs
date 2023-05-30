@@ -39,10 +39,10 @@ namespace Buildings.CoreData
                 yield return null;
             }
 
-            yield return UniTask.ToCoroutine(async () =>
-            {
-                
-            });
+            // yield return UniTask.ToCoroutine(async () =>
+            // {
+            //     
+            // });
             InitializeBuildingCoreData();
             _initializeCoroutine = null;
         }

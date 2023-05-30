@@ -14,24 +14,24 @@ public class PCSystemsInstaller : MonoInstaller
         Container.BindFactory<int, PCTracker.TrackedPC, PC, PC.Factory>();
         Container.BindInterfacesAndSelfTo<PCTracker>().FromNew().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PCEventPublisher>().FromNew().AsSingle().NonLazy();
-
+        Container.Bind<PCViewFactory>().AsSingle().NonLazy();
         if (enableDebugging)
         {
             Container.BindInterfacesAndSelfTo<PCEventDebugger>().AsSingle().NonLazy();
             Debug.Log("Enabled PC Event Debugger", this);
         }
-        Container.Bind<GlobalPCInfo>().AsSingle().NonLazy();
+        Container.Bind<PCRegistry>().AsSingle().NonLazy();
     }
 
     
     
     public class PCEventDebugger : IInitializable
     {
-        private readonly GlobalPCInfo _pcInfo;
+        private readonly PCRegistry _pcRegistry;
 
-        public PCEventDebugger(GlobalPCInfo pcInfo)
+        public PCEventDebugger(PCRegistry pcRegistry)
         {
-            _pcInfo = pcInfo;
+            _pcRegistry = pcRegistry;
         }
         public void Initialize()
         {

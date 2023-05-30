@@ -17,7 +17,9 @@ namespace Buildings.Rooms.Tracking
         private readonly TrackedPC[] _instances;
         private IDisposable _disposable;
         private Subject<(int playerNumber, TrackedPC pc)> onPCChanged = new();
-        public IObservable<(int, TrackedPC)> OnPCChanged => onPCChanged;//.Select(t => (t.playerNumber, t.pc.Instance));
+
+        public IObservable<(int, TrackedPC)> OnPCChanged =>
+            onPCChanged; //.Select(t => (t.playerNumber, t.pc.Instance));
 
         public IObservable<(int, TrackedPC)> OnPCChangedOrExists
         {
@@ -56,15 +58,19 @@ namespace Buildings.Rooms.Tracking
                 }
             }
         }
+
         public PCTracker()
         {
             var cd = new CompositeDisposable();
 
             _instances = new TrackedPC[2] { null, null };
-            MessageBroker.Default.Receive<PCInstanceChangedInfo>().Subscribe(info => SetPCInstance(info.pcInstance, info.playerNumber)).AddTo(cd);
+            MessageBroker.Default.Receive<PCInstanceChangedInfo>()
+                .Subscribe(info => SetPCInstance(info.pcInstance, info.playerNumber)).AddTo(cd);
 
             _disposable = cd;
         }
+
+        public IPCTracker GetTrackerFor(int index) => _instances[index];
 
         private void SetPCInstance(PCInstance infoPCInstance, int infoPlayerNumber)
         {

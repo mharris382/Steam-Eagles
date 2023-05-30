@@ -28,7 +28,7 @@ namespace SaveLoad.CoreSave
     {
         private PersistenceConfig _config;
 
-        private GlobalPCInfo _globalPcInfo;
+        private PCRegistry _pcRegistry;
         // public override bool LoadData(CoreSaveData data)
         // {
         //     SceneManager.LoadScene(data.Scene);
@@ -39,11 +39,11 @@ namespace SaveLoad.CoreSave
         // }
 
         [Inject]
-        public void InjectConfig(PersistenceConfig config, GlobalPCInfo globalPcInfo)
+        public void InjectConfig(PersistenceConfig config, PCRegistry pcRegistry)
         {
             _config = config;
             _config.Log("Injected Config into AsyncCoreSaveDataLoader", true);
-            _globalPcInfo = globalPcInfo;
+            _pcRegistry = pcRegistry;
         }
         public override async UniTask<bool> LoadData(string savePath, CoreSaveData data)
         {
@@ -86,9 +86,9 @@ namespace SaveLoad.CoreSave
 
         public UniTask<bool> SaveGameAsync(string savePath)
         {
-            for (int i = 0; i < _globalPcInfo.PCCount; i++)
+            for (int i = 0; i < _pcRegistry.PCCount; i++)
             {
-                var instance = _globalPcInfo.GetInstance(i);
+                var instance = _pcRegistry.GetInstance(i);
                 if (instance == null)
                 {
                     continue;

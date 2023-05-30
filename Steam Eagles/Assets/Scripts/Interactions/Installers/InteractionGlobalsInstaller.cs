@@ -23,20 +23,20 @@ namespace Interactions.Installers
     }
     public class PlayerVCamFactory : IFactory<InteractionAgent, GameObject, GameObject>
     {
-        private readonly GlobalPCInfo _globalPcInfo;
+        private readonly PCRegistry _pcRegistry;
         private readonly LayerMaskFactory _layerMaskFactory;
 
-        public PlayerVCamFactory(GlobalPCInfo globalPcInfo)
+        public PlayerVCamFactory(PCRegistry pcRegistry)
         {
-            _globalPcInfo = globalPcInfo;
+            _pcRegistry = pcRegistry;
             _layerMaskFactory = new LayerMaskFactory();
         }
         public  GameObject Create(InteractionAgent param1, GameObject param2)
         {
             int pcIndex = -1;
-            for (int i = 0; i < _globalPcInfo.PCCount; i++)
+            for (int i = 0; i < _pcRegistry.PCCount; i++)
             {
-                var pc = _globalPcInfo.GetInstance(i);
+                var pc = _pcRegistry.GetInstance(i);
                 if (pc.character == param1.gameObject)
                 {
                     pcIndex = i;

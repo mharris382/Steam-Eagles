@@ -1,4 +1,5 @@
 ﻿using Players.PCController.Interactions;
+using Players.PCController.RoomCamera;
 using Zenject;
 
 public class PCSceneSystemsInstaller : MonoInstaller
@@ -7,5 +8,6 @@ public class PCSceneSystemsInstaller : MonoInstaller
     {
         PCParallaxSystemsInstaller.Install(Container);
         PCInteractionSystemsInstaller.Install(Container);
+        PCRoomCameraInstaller.Install(Container);
     }
 }

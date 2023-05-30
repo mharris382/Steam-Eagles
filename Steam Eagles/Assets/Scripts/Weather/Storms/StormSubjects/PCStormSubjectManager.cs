@@ -9,10 +9,10 @@ namespace Weather.Storms
 {
     public class PcStormSubjectManager : StormSubjectManagerBase<PCInstance>
     {
-        private readonly GlobalPCInfo _pcRegistry;
+        private readonly PCRegistry _pcRegistry;
         private readonly PCStormSubject.Factory _pcStormSubjectFactory;
 
-        public PcStormSubjectManager(GlobalPCInfo pcRegistry, PCStormSubject.Factory pcStormSubjectFactory)
+        public PcStormSubjectManager(PCRegistry pcRegistry, PCStormSubject.Factory pcStormSubjectFactory)
         {
             _pcRegistry = pcRegistry;
             _pcStormSubjectFactory = pcStormSubjectFactory;

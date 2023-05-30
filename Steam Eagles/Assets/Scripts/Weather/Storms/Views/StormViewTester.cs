@@ -18,13 +18,13 @@ namespace Weather.Storms.Views
         private StormView _stormView;
         private Storm _storm;
         private GlobalStormConfig _config;
-        private GlobalPCInfo _pcRegistry;
+        private PCRegistry _pcRegistry;
 
         [Inject]
         public void Install(StormView.AltFactory stormViewFactory,
             GlobalStormConfig config, 
             TestStorm testStorm,
-            Storm.Factory stormFactory, GlobalPCInfo pcRegistry)
+            Storm.Factory stormFactory, PCRegistry pcRegistry)
         {
             this._config = config;
             this._stormViewFactory = stormViewFactory;

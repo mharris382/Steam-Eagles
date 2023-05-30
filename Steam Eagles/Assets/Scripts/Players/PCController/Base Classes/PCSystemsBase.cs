@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Buildings.Rooms.Tracking;
+using CoreLib.Signals;
 using Players.PCController;
 using UniRx;
 using UnityEngine;
@@ -18,6 +19,7 @@ public abstract class PCSystemsBase<T> : IDisposable  where T : PCSystem
     private PC[] _pcs;
     private IDisposable _disposable;
 
+    public IPCTracker GetTrackerFor(int pc) => _pcTracker.GetTrackerFor(pc);
 
     public PCSystemsBase(PCTracker pcTracker, PC.Factory pcFactory)
     {
@@ -60,7 +62,7 @@ public abstract class PCSystemsBase<T> : IDisposable  where T : PCSystem
             if(system != null) yield return system;
         }
     }
-    public void Dispose()
+    public virtual void Dispose()
     {
         _disposable?.Dispose();
         foreach (var pcSystem in _systems) pcSystem?.Dispose();

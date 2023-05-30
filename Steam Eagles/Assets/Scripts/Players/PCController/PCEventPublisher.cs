@@ -10,19 +10,19 @@ public class PCEventPublisher : IInitializable
 {
     private readonly PCManager _pcManager;
     private readonly PCTracker _pcTracker;
-    private readonly GlobalPCInfo _globalPCInfo;
+    private readonly PCRegistry _pcRegistry;
 
 
-    public PCEventPublisher(PCManager pcManager, PCTracker pcTracker, GlobalPCInfo globalPCInfo)
+    public PCEventPublisher(PCManager pcManager, PCTracker pcTracker, PCRegistry pcRegistry)
     {
         _pcManager = pcManager;
         _pcTracker = pcTracker;
-        _globalPCInfo = globalPCInfo;
+        _pcRegistry = pcRegistry;
     }
         
     public void Initialize()
     {
         _pcTracker.OnPCChangedOrExists
-            .Subscribe(t => MessageBroker.Default.Publish(new PCCreatedInfo(t.Item1, t.Item2.Instance, t.Item2)));
+            .Subscribe(t => MessageBroker.Default.Publish(new PCInfo(t.Item1, t.Item2.Instance, t.Item2)));
     }
 }
