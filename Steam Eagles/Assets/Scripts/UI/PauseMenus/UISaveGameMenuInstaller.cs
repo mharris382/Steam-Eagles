@@ -69,10 +69,11 @@ namespace UI.PauseMenus
 
         public override void InstallBindings()
         {
-            Container.Bind<Button>().FromInstance(saveButton).AsSingle().WhenInjectedInto<NewSaveButtonHandler>();
+            //Container.Bind<DiContainer>().FromInstance(Container).AsSingle().NonLazy();
+            Container.Bind<Button>().FromInstance(saveButton).AsCached().WhenInjectedInto<NewSaveButtonHandler>();
             Container.Bind<TMP_InputField>().FromInstance(saveNameInputField).AsSingle().NonLazy();
             Container.Bind<Transform>().FromInstance(savePathButtonParent).AsSingle();
-            Container.Bind<Button>().FromInstance(savePathButtonPrefab).AsSingle().WhenInjectedInto<SavePathButtonFactory>();
+            Container.Bind<Button>().FromInstance(savePathButtonPrefab).AsCached().WhenInjectedInto<SavePathButtonFactory>();
             
             Container.BindInterfacesAndSelfTo<NewSaveButtonHandler>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<SavePathButtonsList>().AsSingle().NonLazy();
