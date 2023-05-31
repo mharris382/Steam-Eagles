@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 
 namespace CoreLib.Entities.Buildings
 {
+    [System.Obsolete("Use ApplianceSaveLoader instead")]
     [UsedImplicitly]
     public class ApplianceFactory : EntityFactoryBase<ApplianceSaveData>
     {

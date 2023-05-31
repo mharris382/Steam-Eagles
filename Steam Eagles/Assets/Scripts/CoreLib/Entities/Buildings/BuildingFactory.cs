@@ -30,6 +30,4 @@ namespace CoreLib.Entities.Buildings
             return new BuildingSaveData(building);
         }
     }
-
-    
 }

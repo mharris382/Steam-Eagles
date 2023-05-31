@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib.Interfaces;
 using Cysharp.Threading.Tasks;
 using Interactions.Installers;
 using UnityEngine;
@@ -8,13 +9,12 @@ namespace Interactions.LookAt
 {
     public class LookAtInteractable : Interactable
     {
-        public GameObject vCam;
-        private PlayerVCamFactory _playerVCamFactory;
+        private PlayerViewFactory _viewFactory;
         public float minLookTime = 1f;
 
-        public async override UniTask<bool> Interact(InteractionAgent agent)
+        public override async UniTask<bool> Interact(InteractionAgent agent)
         {
-            var vCam = _playerVCamFactory.Create(agent, this.vCam);
+            var vCam = _viewFactory.GetViewForPlayer(agent.gameObject, this.virtualCamera);
             if(vCam == null)
             {
                 return false;
@@ -27,9 +27,9 @@ namespace Interactions.LookAt
         }
         
         [Inject]
-        public void InjectMe(PlayerVCamFactory playerVCamFactory)
+        public void InjectMe(PlayerViewFactory viewFactory)
         {
-            _playerVCamFactory = playerVCamFactory;
+            _viewFactory = viewFactory;
         }
     }
 

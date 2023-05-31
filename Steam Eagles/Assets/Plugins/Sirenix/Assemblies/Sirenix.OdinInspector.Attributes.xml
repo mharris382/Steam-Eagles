@@ -180,7 +180,7 @@
             <para>Use this when you want to ensure an object is from the project, and not from the scene.</para>
             </summary>
             <example>
-            <para>The following example shows a component with a game object property, that must be a prefab from the project, and not a scene object.</para>
+            <para>The following example shows a component with a game object property, that must be a viewPrefab from the project, and not a scene object.</para>
             <code>
             public MyComponent : MonoBehaviour
             {
@@ -969,7 +969,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInAttribute">
             <summary>
-            Disables a member based on which type of a prefab and instance it is in. 
+            Disables a member based on which type of a viewPrefab and instance it is in. 
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInEditorModeAttribute">
@@ -998,7 +998,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInNonPrefabsAttribute">
             <summary>
-            Disables a property if it is drawn from a non-prefab asset or instance.
+            Disables a property if it is drawn from a non-viewPrefab asset or instance.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInPlayModeAttribute">
@@ -1024,17 +1024,17 @@
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInPrefabAssetsAttribute">
             <summary>
-            Disables a property if it is drawn from a prefab asset.
+            Disables a property if it is drawn from a viewPrefab asset.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInPrefabInstancesAttribute">
             <summary>
-            Disables a property if it is drawn from a prefab instance.
+            Disables a property if it is drawn from a viewPrefab instance.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInPrefabsAttribute">
             <summary>
-            Disables a property if it is drawn from a prefab asset or a prefab instance.
+            Disables a property if it is drawn from a viewPrefab asset or a viewPrefab instance.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.DisallowModificationsInAttribute">
@@ -1219,7 +1219,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.EnableInAttribute">
             <summary>
-            Enables a member based on which type of a prefab and instance it is. 
+            Enables a member based on which type of a viewPrefab and instance it is. 
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.EnumPagingAttribute">
@@ -1696,7 +1696,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.HideInAttribute">
             <summary>
-            Hides a member based on which type of a prefab and instance it is in. 
+            Hides a member based on which type of a viewPrefab and instance it is in. 
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.HideInEditorModeAttribute">
@@ -1726,7 +1726,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.HideInNonPrefabsAttribute">
             <summary>
-            Hides a property if it is drawn from a non prefab instance or asset.
+            Hides a property if it is drawn from a non viewPrefab instance or asset.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.HideInPlayModeAttribute">
@@ -1751,17 +1751,17 @@
         </member>
         <member name="T:Sirenix.OdinInspector.HideInPrefabAssetsAttribute">
             <summary>
-            Hides a property if it is drawn from a prefab asset.
+            Hides a property if it is drawn from a viewPrefab asset.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.HideInPrefabInstancesAttribute">
             <summary>
-            Hides a property if it is drawn from a prefab instance.
+            Hides a property if it is drawn from a viewPrefab instance.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.HideInPrefabsAttribute">
             <summary>
-            Hides a property if it is drawn from a prefab instance or a prefab asset.
+            Hides a property if it is drawn from a viewPrefab instance or a viewPrefab asset.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.HideInTablesAttribute">
@@ -3191,7 +3191,7 @@
              </code>
              </example>
              <example>
-             <para>The following example show how OnValueChanged can be used to get a component from a prefab property.</para>
+             <para>The following example show how OnValueChanged can be used to get a component from a viewPrefab property.</para>
              <code>
              public class MyComponent : MonoBehaviour
              {
@@ -4038,7 +4038,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.RequiredInAttribute">
             <summary>
-            Makes a member required based on which type of a prefab and instance it is in. 
+            Makes a member required based on which type of a viewPrefab and instance it is in. 
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.RequiredInPrefabAssetsAttribute.ErrorMessage">
@@ -4261,7 +4261,7 @@
             <para>Use this when you want to ensure an object is a scene object, and not from a project asset.</para>
             </summary>
             <example>
-            <para>The following example shows a component with a game object property, that must be from a scene, and not a prefab asset.</para>
+            <para>The following example shows a component with a game object property, that must be from a scene, and not a viewPrefab asset.</para>
             <code>
             public MyComponent : MonoBehaviour
             {
@@ -4451,7 +4451,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.ShowInAttribute">
             <summary>
-            Shows a member based on which type of a prefab and instance it is in. 
+            Shows a member based on which type of a viewPrefab and instance it is in. 
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.ShowInInlineEditorsAttribute">
@@ -4517,7 +4517,7 @@
             	{
             		// The SuffixLabel attribute draws a label at the end of a property.
             		// It's useful for conveying intend about a property.
-            		// Fx, this field is supposed to have a prefab assigned.
+            		// Fx, this field is supposed to have a viewPrefab assigned.
             		[SuffixLabel("Prefab")]
             		public GameObject GameObject;
             
@@ -6042,7 +6042,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.PrefabKind">
             <summary>
-            The prefab kind returned by <see cref="!:Sirenix.OdinInspector.Editor.OdinPrefabUtility.GetPrefabKind"/> 
+            The viewPrefab kind returned by <see cref="!:Sirenix.OdinInspector.Editor.OdinPrefabUtility.GetPrefabKind"/> 
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.None">
@@ -6062,7 +6062,7 @@
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.Regular">
             <summary>
-            Regular prefab assets.
+            Regular viewPrefab assets.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.Variant">
@@ -6072,22 +6072,22 @@
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.NonPrefabInstance">
             <summary>
-            Non-prefab component or gameobject instances in scenes.
+            Non-viewPrefab component or gameobject instances in scenes.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.PrefabInstance">
             <summary>
-            Instances of regular prefabs, and prefab variants in scenes or nested in other prefabs.
+            Instances of regular prefabs, and viewPrefab variants in scenes or nested in other prefabs.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.PrefabAsset">
             <summary>
-            Prefab assets and prefab variant assets.
+            Prefab assets and viewPrefab variant assets.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.PrefabInstanceAndNonPrefabInstance">
             <summary>
-            Prefab Instances, as well as non-prefab instances.
+            Prefab Instances, as well as non-viewPrefab instances.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.PrefabKind.All">

@@ -11,7 +11,7 @@ namespace CoreLib
         
 
         [SerializeField, PropertyOrder(1000000), EnumToggleButtons]
-        private LogLevel logLevel;
+        private LogLevel logLevel= LogLevel.VERBOSE;
         public void Log(string msg, bool isTestLog = false)
         {
             if(isTestLog && logLevel != LogLevel.TESTING || logLevel == LogLevel.NONE)
@@ -21,7 +21,7 @@ namespace CoreLib
 
         public void Log(Func<string> msg, bool isTestLog = false)
         {
-            if(isTestLog && logLevel != LogLevel.TESTING || logLevel == LogLevel.NONE)
+            if((isTestLog && logLevel != LogLevel.TESTING) || logLevel == LogLevel.NONE)
                 return;
             Debug.Log(msg());
         }

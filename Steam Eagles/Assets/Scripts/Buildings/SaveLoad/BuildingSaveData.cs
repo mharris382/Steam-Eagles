@@ -36,6 +36,14 @@ namespace Buildings.SaveLoad
             }));
         }
 
+        public async UniTask<bool> LoadAsync(Building target)
+        {
+            var loadMachines = LoadAllMachines(target);
+            LoadTilemapData(target);
+            await loadMachines;
+            return true;
+        }
+        
         /// <summary>
         /// first loads prefabs from addressables using keys saved in machine save data
         /// after prefabs are loaded then spawns each machine in the building

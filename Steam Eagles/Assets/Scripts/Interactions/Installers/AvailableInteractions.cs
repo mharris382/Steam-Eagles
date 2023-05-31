@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Interactions.Installers
 {
-    public class AvailableInteractions : RegistryBase<Interactable>
+    public class AvailableInteractions : Registry<Interactable>
     {
         public class Factory : PlaceholderFactory<InteractionAgent, AvailableInteractions> { }
         private readonly InteractionAgent _agent;

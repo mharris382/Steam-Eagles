@@ -3,6 +3,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace CoreLib.Entities
 {
@@ -17,7 +18,14 @@ namespace CoreLib.Entities
         public IReadOnlyReactiveProperty<Entity> EntityProperty => _entity;
 
         public bool isDoneInitializing;
+        private EntityLinkRegistry linkRegistry;
 
+        [Inject]
+        void Inject(EntityLinkRegistry linkRegistry)
+        {
+            this.linkRegistry = linkRegistry;
+            this.linkRegistry.Register(this);
+        }
         /// <summary>
         /// once entity has been setup to store correct custom data (such as inventory data) and all
         /// save data has been loaded, this method is called to all implementing classes to then
@@ -37,6 +45,11 @@ namespace CoreLib.Entities
             {
                 Initialize();
             }
+        }
+
+        private void OnDestroy()
+        {
+            linkRegistry.Unregister(this);
         }
 
         public void Initialize()
@@ -93,8 +106,12 @@ namespace CoreLib.Entities
             _entity.Dispose();
         }
     }
-    
-    
+
+    public class EntityLinkRegistry : Registry<EntityInitializer>
+    {
+        
+    }
+
     public struct EntityInitializedInfo
     {
         public readonly string entityGUID;

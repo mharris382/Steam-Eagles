@@ -57,7 +57,7 @@ namespace Interactions.Installers
     /// keeps track of all agents and updates their available interactions
     /// GLOBAL SINGLETON (bound in Project Context)
     /// </summary>
-    public class AgentRegistry: RegistryBase<InteractionAgent>, ITickable
+    public class AgentRegistry: Registry<InteractionAgent>, ITickable
     {
         private readonly InteractableRegistry _interactableRegistry;
         private readonly AvailableInteractions.Factory _availableInteractionsFactory;
@@ -68,14 +68,14 @@ namespace Interactions.Installers
         public AgentRegistry(AvailableInteractions.Factory availableInteractionsFactory) {
             _availableInteractionsFactory = availableInteractionsFactory;
         }
-        protected override void ValueAdded(InteractionAgent value)
+        protected override void AddValue(InteractionAgent value)
         {
             if (!_inRangeInteractables.ContainsKey(value))
             {
                 _inRangeInteractables.Add(value, _availableInteractionsFactory.Create(value));
             }
         }
-        protected override void ValueRemoved(InteractionAgent value)
+        protected override void RemoveValue(InteractionAgent value)
         {
             if (_inRangeInteractables.ContainsKey(value))
             {
@@ -96,17 +96,17 @@ namespace Interactions.Installers
     /// keeps track of interactables and their interaction ranges
     /// GLOBAL SINGLETON (bound in Project Context)
     /// </summary>
-    public class InteractableRegistry : RegistryBase<Interactable>
+    public class InteractableRegistry : Registry<Interactable>
     {
         private Dictionary<Interactable, float> _distanceLookup = new Dictionary<Interactable, float>();
-        protected override void ValueAdded(Interactable value)
+        protected override void AddValue(Interactable value)
         {
             float distSqr = value.range * value.range;
             _distanceLookup.Add(value, distSqr);
-            base.ValueAdded(value);
+            base.AddValue(value);
         }
 
-        protected override void ValueRemoved(Interactable value)
+        protected override void RemoveValue(Interactable value)
         {
             _distanceLookup.Remove(value);
         }

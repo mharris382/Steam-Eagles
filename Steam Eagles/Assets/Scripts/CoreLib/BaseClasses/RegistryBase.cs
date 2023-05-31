@@ -5,61 +5,87 @@ using UniRx;
 
 namespace CoreLib
 {
-    public abstract class RegistryBase<T> : IDisposable
+    public interface IRegistry<T>
+    {
+        bool Register(T value);
+        bool Unregister(T value);
+        IEnumerable<T> Values { get; }
+        IObservable<T> OnValueAdded { get; }
+        IObservable<T> OnValueRemoved { get; }
+        IReadOnlyReactiveProperty<int> ValueCount { get; }
+    }
+    
+    public abstract class Registry<T> : IRegistry<T>, IDisposable
     {
         private List<T> _values = new List<T>();
         private ReactiveProperty<int> _count;
-        private Subject<T> _onValueAdded = new Subject<T>();
-        private Subject<T> _onValueRemoved = new Subject<T>();
-        
+        private Subject<T> _onValueAdded;
+        private Subject<T> _onValueRemoved;
+        private readonly CompositeDisposable _cd;
+
+
         private ReactiveProperty<int> Count => _count??=new ReactiveProperty<int>(_values.Count);
         public IObservable<T> OnValueAdded => _onValueAdded;
         public IObservable<T> OnValueRemoved => _onValueRemoved;
         public IReadOnlyReactiveProperty<int> ValueCount => Count;
+        public CompositeDisposable Disposable => _cd;
 
-        public RegistryBase()
+        public Registry()
         {
+            _cd = new CompositeDisposable();
+            _onValueAdded = new Subject<T>();
+            _onValueRemoved = new Subject<T>();
             _count = new ReactiveProperty<int>();
+            _count.AddTo(_cd);
+            _onValueAdded.AddTo(_cd);
+            _onValueRemoved.AddTo(_cd);
         }
-
-        
-        public T this[int index] { get => _values[index]; }
+        public T this[int index]
+        {
+            get => _values[index];
+        }
         public IEnumerable<T> Values => _values;
         
-        public void Register(T value)
+        public bool Register(T value)
         {
             if(_values.Contains(value))
-                return;
+            {
+                return false; 
+            }
             _values.Add(value);
-            ValueAdded(value);
+            AddValue(value);
             _onValueAdded.OnNext(value);
             _count.Value = _values.Count;
+            return true;
         }
-        public void Unregister(T value)
+        public bool Unregister(T value)
         {
             if (_values.Remove(value))
             {
-                ValueRemoved(value);
+                RemoveValue(value);
                 _onValueRemoved.OnNext(value);
+                _count.Value = _values.Count;
+                return true;
             }
-            _count.Value = _values.Count();
+            return false;
         }
-
-
-        protected virtual void ValueAdded(T value)
+        
+        protected virtual void ReRegister(T oldValue, T value)
+        {
+               
+        }
+        protected virtual void AddValue(T value)
         {
             
         }
-        protected virtual void ValueRemoved(T value)
+        protected virtual void RemoveValue(T value)
         {
             
         }
 
         public void Dispose()
         {
-            _count?.Dispose();
-            _onValueAdded?.Dispose();
-            _onValueRemoved?.Dispose();
+            _cd?.Dispose();
         }
     }
     

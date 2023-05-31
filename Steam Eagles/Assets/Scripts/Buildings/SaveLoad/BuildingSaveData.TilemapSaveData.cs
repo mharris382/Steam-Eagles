@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms;
 using Buildings.Tiles;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -149,6 +150,14 @@ namespace Buildings.SaveLoad
                         chunk.LoadChunk(building);
                     }
                 }
+
+                public async UniTask LoadAsync(Building building)
+                {
+                    Debug.Log($"Loading chunks for {layerName}");
+                    await UniTask.WaitUntil(() => building.Tiles.isReady);
+                    await UniTask.WhenAll(chunks.Select(t => UniTask.RunOnThreadPool(() => t.LoadChunk(building))));
+                }
+                
                 [Serializable] public class Chunk
                 {
                     [SerializeField] private string roomName;
@@ -236,6 +245,10 @@ namespace Buildings.SaveLoad
                 {
                     tilemapLayerSaveData.Load(building);
                 }
+            }
+            public async UniTask LoadAsync(Building building)
+            {
+                await UniTask.WhenAll(layers.Select(t => t.LoadAsync(building)));
             }
         }
 }

@@ -3,7 +3,7 @@ using Zenject;
 
 namespace Buildables
 {
-    public class BuildablesRegistry : RegistryBase<Machine>
+    public class BuildablesRegistry : Registry<Machine>
     {
         
     }

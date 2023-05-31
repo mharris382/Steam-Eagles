@@ -1,5 +1,6 @@
 using Buildings.Rooms.Tracking;
 using CoreLib;
+using CoreLib.Interfaces;
 using FSM;
 using Players.PCController;
 using UnityEngine;
@@ -14,13 +15,14 @@ public class PCSystemsInstaller : MonoInstaller
         Container.BindFactory<int, PCTracker.TrackedPC, PC, PC.Factory>();
         Container.BindInterfacesAndSelfTo<PCTracker>().FromNew().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PCEventPublisher>().FromNew().AsSingle().NonLazy();
-        Container.Bind<PCViewFactory>().AsSingle().NonLazy();
+        Container.Bind<IPCViewFactory>().To<PCViewFactory>().AsSingle().NonLazy();
+        Container.Bind<PlayerViewFactory>().AsSingle().NonLazy();
         if (enableDebugging)
         {
             Container.BindInterfacesAndSelfTo<PCEventDebugger>().AsSingle().NonLazy();
             Debug.Log("Enabled PC Event Debugger", this);
         }
-        Container.Bind<PCRegistry>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PCRegistry>().AsSingle().NonLazy();
     }
 
     

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using CoreLib.Interfaces;
 using UnityEngine;
 using Zenject;
 
 namespace Players.PCController
 {
+  
 
-    public class PCViewFactory : IFactory<int, GameObject, GameObject>
+    public class PCViewFactory : IFactory<int, GameObject, GameObject>, IPCViewFactory
     {
         private readonly LayerMaskFactory _layerMaskFactory;
 
@@ -38,19 +40,19 @@ namespace Players.PCController
             }
             return copy;
         }
-    }
-    
-    public class LayerMaskFactory : IFactory<int, LayerMask>
-    {
-        private LayerMask[] _pcLayers;
-        public LayerMaskFactory()
+        
+        public class LayerMaskFactory : IFactory<int, LayerMask>
         {
-            _pcLayers = new LayerMask[2]
+            private LayerMask[] _pcLayers;
+            public LayerMaskFactory()
             {
-                LayerMask.NameToLayer("P1"),
-                LayerMask.NameToLayer("P2")
-            };
+                _pcLayers = new LayerMask[2]
+                {
+                    LayerMask.NameToLayer("P1"),
+                    LayerMask.NameToLayer("P2")
+                };
+            }
+            public LayerMask Create(int param) => _pcLayers[param];
         }
-        public LayerMask Create(int param) => _pcLayers[param];
     }
 }

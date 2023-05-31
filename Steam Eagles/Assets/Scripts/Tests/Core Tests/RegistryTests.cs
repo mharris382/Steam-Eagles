@@ -14,13 +14,13 @@ namespace Tests.Core_Tests
         [SetUp]
         public void SetUp()
         {
-            Container.Bind<RegistryBase<Foo>>().To<FooRegistry>().AsSingle().NonLazy();
+            Container.Bind<Registry<Foo>>().To<FooRegistry>().AsSingle().NonLazy();
         }
 
         [Test]
         public void PublishesOnValueAdded()
         {
-            var registry = Container.Resolve<RegistryBase<Foo>>();
+            var registry = Container.Resolve<Registry<Foo>>();
             Assert.NotNull(registry);
             Foo lastValue = null;
             using (registry.OnValueAdded.Subscribe(t => lastValue = t))
@@ -37,7 +37,7 @@ namespace Tests.Core_Tests
         [Test]
         public void PublishesOnValueRemoved()
         {
-            var registry = Container.Resolve<RegistryBase<Foo>>();
+            var registry = Container.Resolve<Registry<Foo>>();
             Assert.NotNull(registry);
             Foo lastValue = null;
             Foo[] values = new Foo[TEST_COUNT];
@@ -60,7 +60,7 @@ namespace Tests.Core_Tests
         [Test]
         public void PublishesCorrectCount()
         {
-            var registry = Container.Resolve<RegistryBase<Foo>>();
+            var registry = Container.Resolve<Registry<Foo>>();
             Assert.NotNull(registry);
             Assert.AreEqual(0, registry.ValueCount.Value);
             for (int i = 0; i < TEST_COUNT; i++)
@@ -81,6 +81,6 @@ namespace Tests.Core_Tests
                 _foo = foo;
             }
         }
-        public class FooRegistry : RegistryBase<Foo> { }
+        public class FooRegistry : Registry<Foo> { }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
+using CoreLib.Interfaces;
 using CoreLib.Signals;
 using UniRx;
 using UnityEngine;
@@ -49,7 +50,7 @@ namespace Players.PCController.RoomCamera
 
     public class RoomCameraSystem : PCSystem
     {
-        private readonly PCViewFactory _viewFactory;
+        private readonly IPCViewFactory _viewFactory;
         private IPCTracker _tracker;
         private GameObject _prevRoomCamera;
         private Room _prevRoom;
@@ -66,7 +67,7 @@ namespace Players.PCController.RoomCamera
                 Debug.Log($"Player {Pc.PlayerNumber} room changed to : {(t == null ? "NO ROOM" : t.name)}", t);
             }).Select(t => t != null ? t.GetComponent<Room>() : null).Subscribe(OnPlayerRoomChanged);
         }
-        public RoomCameraSystem(PC pc, PCViewFactory viewFactory) : base(pc)
+        public RoomCameraSystem(PC pc, IPCViewFactory viewFactory) : base(pc)
         {
             _viewFactory = viewFactory;
         }

@@ -6,10 +6,13 @@ using DG.Tweening.Plugins.Core.PathCore;
 using Items;
 using Items.SaveLoad;
 using SaveLoad;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace CoreLib.Entities.Factory
 {
+    [System.Obsolete("Use CharacterEntitySaveLoader instead")]
     public class CharacterFactory : EntityFactoryBase<CharacterSaveData>
     {
         public CharacterFactory()

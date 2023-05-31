@@ -266,12 +266,12 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.ShowPrefabModificationsDisabledMessage">
             <summary>
-            Specify whether or not the warning for properties that do not support prefab modifications should be shown in the inspector.
+            Specify whether or not the warning for properties that do not support viewPrefab modifications should be shown in the inspector.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.ShowPrefabModifiedValueBar">
             <summary>
-            Specify whether or not the warning for properties that do not support prefab modifications should be shown in the inspector.
+            Specify whether or not the warning for properties that do not support viewPrefab modifications should be shown in the inspector.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.MaxRecursiveDrawDepth">
@@ -1141,7 +1141,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.SupportsPrefabModifications">
             <summary>
-            Whether this property supports having prefab modifications applied or not.
+            Whether this property supports having viewPrefab modifications applied or not.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.Components">
@@ -1217,12 +1217,12 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.DeepReflectionPath">
             <summary>
-            <para>The full path of this property as used by deep reflection, containing all the necessary information to find this property through reflection only. This is used as the path for prefab modifications.</para>
+            <para>The full path of this property as used by deep reflection, containing all the necessary information to find this property through reflection only. This is used as the path for viewPrefab modifications.</para>
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.PrefabModificationPath">
             <summary>
-            <para>The full path of this property as used by prefab modifications and the deep reflection system, containing all the necessary information to find this property through reflection only.</para>
+            <para>The full path of this property as used by viewPrefab modifications and the deep reflection system, containing all the necessary information to find this property through reflection only.</para>
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.State">
@@ -1338,23 +1338,23 @@
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.PrefabModificationHandler">
             <summary>
-            <para>Handles all prefab modifications that apply to the targets of a property tree, if any. This class determines which properties have modifications, what the modifications are, auto-applies modifications if the current instance values do not correspond to the prefab values, and also provides an API for modifying those modifications.</para>
-            <para>NOTE: This class is liable to see a lot of changes, as the prefab modification system is slated to be redesigned for increased extendability in the future. Do not depend overly on the current API.</para>
+            <para>Handles all viewPrefab modifications that apply to the targets of a property tree, if any. This class determines which properties have modifications, what the modifications are, auto-applies modifications if the current instance values do not correspond to the viewPrefab values, and also provides an API for modifying those modifications.</para>
+            <para>NOTE: This class is liable to see a lot of changes, as the viewPrefab modification system is slated to be redesigned for increased extendability in the future. Do not depend overly on the current API.</para>
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PrefabModificationHandler.TargetPrefabs">
             <summary>
-            The prefabs for each prefab instance represented by the property tree, if any.
+            The prefabs for each viewPrefab instance represented by the property tree, if any.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PrefabModificationHandler.HasPrefabs">
             <summary>
-            Whether any of the values the property tree represents are prefab instances.
+            Whether any of the values the property tree represents are viewPrefab instances.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PrefabModificationHandler.PrefabPropertyTree">
             <summary>
-            A prefab tree for the prefabs of this property tree's prefab instances, if any exist.
+            A viewPrefab tree for the prefabs of this property tree's viewPrefab instances, if any exist.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.GetUnityPropertyModification(Sirenix.Utilities.Editor.StringSlice,System.Int32,System.Boolean@)">
@@ -1368,12 +1368,12 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.GetPrefabModificationType(Sirenix.OdinInspector.Editor.InspectorProperty,System.Boolean)">
             <summary>
-            Gets the Odin prefab modification type of a given property, if any.
+            Gets the Odin viewPrefab modification type of a given property, if any.
             </summary>
             <param name="property">The property to check.</param>
             <param name="forceAutoRegister"></param>
             <returns>
-            The prefab modification type of the property if it has one, otherwise null.
+            The viewPrefab modification type of the property if it has one, otherwise null.
             </returns>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RegisterPrefabListLengthModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32,System.Int32)">
@@ -1384,7 +1384,7 @@
             <param name="targetIndex">Selection index of the target to register a modification for.</param>
             <param name="newLength">The modified list length.</param>
             <exception cref="T:System.ArgumentException">
-            Property " + property.Path + " does not have a value entry; cannot register prefab modification to this property.
+            Property " + property.Path + " does not have a value entry; cannot register viewPrefab modification to this property.
             or
             newLength cannot be negative!
             </exception>
@@ -1396,15 +1396,15 @@
             <param name="property">The property to register a modification for.</param>
             <param name="targetIndex">Selection index of the target to register a modification for.</param>
             <param name="forceImmediate">Whether to force the change to be registered immediately, rather than at the end of frame.</param>
-            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register prefab modification to this property.</exception>
+            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register viewPrefab modification to this property.</exception>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RegisterPrefabDictionaryDeltaModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32)">
             <summary>
-            Calculates a delta between the current dictionary property and its prefab counterpart, and registers that delta as a <see cref="F:Sirenix.Serialization.PrefabModificationType.Dictionary" /> modification.
+            Calculates a delta between the current dictionary property and its viewPrefab counterpart, and registers that delta as a <see cref="F:Sirenix.Serialization.PrefabModificationType.Dictionary" /> modification.
             </summary>
             <param name="property">The property to register a modification for.</param>
             <param name="targetIndex">Selection index of the target.</param>
-            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register prefab modification to this property.</exception>
+            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register viewPrefab modification to this property.</exception>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RegisterPrefabDictionaryRemoveKeyModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32,System.Object)">
             <summary>
@@ -1413,7 +1413,7 @@
             <param name="property">The property to register a modification for.</param>
             <param name="targetIndex">Selection index of the target.</param>
             <param name="key">The key to be removed.</param>
-            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register prefab modification to this property.</exception>
+            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register viewPrefab modification to this property.</exception>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RegisterPrefabDictionaryAddKeyModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32,System.Object)">
             <summary>
@@ -1422,7 +1422,7 @@
             <param name="property">The property to register a modification for.</param>
             <param name="targetIndex">Selection index of the target.</param>
             <param name="key">The key to be added.</param>
-            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register prefab modification to this property.</exception>
+            <exception cref="T:System.ArgumentException">Property " + property.Path + " does not have a value entry; cannot register viewPrefab modification to this property.</exception>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RemovePrefabDictionaryModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32,System.Object)">
             <summary>
@@ -1435,7 +1435,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.RemovePrefabModification(Sirenix.OdinInspector.Editor.InspectorProperty,System.Int32,Sirenix.Serialization.PrefabModificationType)">
             <summary>
-            Removes all prefab modifications of a given type on a given property.
+            Removes all viewPrefab modifications of a given type on a given property.
             </summary>
             <param name="property">The property to remove modifications for.</param>
             <param name="targetIndex">Selection index of the target.</param>
@@ -1443,7 +1443,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PrefabModificationHandler.GetPrefabModifications(System.Int32)">
             <summary>
-            Gets all prefab modifications in this property tree for a given selection index.
+            Gets all viewPrefab modifications in this property tree for a given selection index.
             </summary>
             <param name="targetIndex"></param>
             <returns></returns>
@@ -1713,7 +1713,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyTree.PrefabModificationHandler">
             <summary>
-            The prefab modification handler of the tree.
+            The viewPrefab modification handler of the tree.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyTree.IncludesSpeciallySerializedMembers">
@@ -1843,15 +1843,15 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree.GetPropertyAtPrefabModificationPath(System.String)">
             <summary>
-            Gets the property at the given Odin prefab modification path.
+            Gets the property at the given Odin viewPrefab modification path.
             </summary>
-            <param name="path">The prefab modification path of the property to get.</param>
+            <param name="path">The viewPrefab modification path of the property to get.</param>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree.GetPropertyAtPrefabModificationPath(System.String,Sirenix.OdinInspector.Editor.InspectorProperty@)">
             <summary>
-            Gets the property at the given Odin prefab modification path.
+            Gets the property at the given Odin viewPrefab modification path.
             </summary>
-            <param name="path">The prefab modification path of the property to get.</param>
+            <param name="path">The viewPrefab modification path of the property to get.</param>
             <param name="closestProperty"></param>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree.Draw(System.Boolean)">
@@ -1900,7 +1900,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree.UpdateTree">
             <summary>
-            Updates all properties in the entire tree, and validates the prefab state of the tree, if applicable.
+            Updates all properties in the entire tree, and validates the viewPrefab state of the tree, if applicable.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree.ReplaceAllReferences(System.Object,System.Object)">
@@ -2026,7 +2026,7 @@
         <member name="T:Sirenix.OdinInspector.Editor.PropertyTree`1">
             <summary>
             <para>Represents a set of strongly typed values as a tree of properties that can be drawn in the inspector, and provides an array of utilities for querying the tree of properties.</para>
-            <para>This class also handles management of prefab modifications.</para>
+            <para>This class also handles management of viewPrefab modifications.</para>
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyTree`1.RootProperty">
@@ -2140,7 +2140,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree`1.UpdateTree">
             <summary>
-            Updates all properties in the entire tree, and validates the prefab state of the tree, if applicable.
+            Updates all properties in the entire tree, and validates the viewPrefab state of the tree, if applicable.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree`1.ObjectIsReferenced(System.Object,System.String@)">
@@ -2188,14 +2188,14 @@
             <summary>
             Finds the property at the specified modification path.
             </summary>
-            <param name="path">The prefab modification path for the property.</param>
+            <param name="path">The viewPrefab modification path for the property.</param>
             <returns>The property found at the path.</returns>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyTree`1.GetPropertyAtPrefabModificationPath(System.String,Sirenix.OdinInspector.Editor.InspectorProperty@)">
             <summary>
             Finds the property at the specified modification path.
             </summary>
-            <param name="path">The prefab modification path for the property.</param>
+            <param name="path">The viewPrefab modification path for the property.</param>
             <param name="closestProperty"></param>
             <returns>The property found at the path.</returns>
         </member>
@@ -2503,9 +2503,9 @@
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.IMaySupportPrefabModifications">
             <summary>
-            Note: this interface may be temporary, and may eventually be substituted for a public-facing way of extending the prefab modification system.
+            Note: this interface may be temporary, and may eventually be substituted for a public-facing way of extending the viewPrefab modification system.
             <para/>
-            For now, it only exists to denote which internally defined resolvers support prefab modifications being set.
+            For now, it only exists to denote which internally defined resolvers support viewPrefab modifications being set.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.CollectionChangeInfo">
@@ -2726,17 +2726,17 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.ValueChangedFromPrefab">
             <summary>
-            Whether this value entry has been changed from its prefab counterpart.
+            Whether this value entry has been changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.ListLengthChangedFromPrefab">
             <summary>
-            Whether this value entry has had its list length changed from its prefab counterpart.
+            Whether this value entry has had its list length changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.DictionaryChangedFromPrefab">
             <summary>
-            Whether this value entry has had its dictionary values changes from its prefab counterpart.
+            Whether this value entry has had its dictionary values changes from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.WeakSmartValue">
@@ -2797,7 +2797,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.IPropertyValueEntry.ApplyChanges">
             <summary>
-            Applies the changes made to this value entry to the target objects, and registers prefab modifications as necessary.
+            Applies the changes made to this value entry to the target objects, and registers viewPrefab modifications as necessary.
             </summary>
             <returns>True if any changes were made, otherwise, false.</returns>
         </member>
@@ -2809,7 +2809,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.IPropertyValueEntry.ValueIsPrefabDifferent(System.Object,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1"/> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -2834,7 +2834,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.IPropertyValueEntry`1.ValueIsPrefabDifferent(`0,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1"/> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3324,17 +3324,17 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.ValueChangedFromPrefab">
             <summary>
-            Whether this value entry has been changed from its prefab counterpart.
+            Whether this value entry has been changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.ListLengthChangedFromPrefab">
             <summary>
-            Whether this value entry has had its list length changed from its prefab counterpart.
+            Whether this value entry has had its list length changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.DictionaryChangedFromPrefab">
             <summary>
-            Whether this value entry has had its dictionary values changes from its prefab counterpart.
+            Whether this value entry has had its dictionary values changes from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.WeakSmartValue">
@@ -3403,7 +3403,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntry.ApplyChanges">
             <summary>
-            Applies the changes made to this value entry to the target objects, and registers prefab modifications as necessary.
+            Applies the changes made to this value entry to the target objects, and registers viewPrefab modifications as necessary.
             </summary>
             <returns>
             True if any changes were made, otherwise, false.
@@ -3441,7 +3441,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntry.ValueIsPrefabDifferent(System.Object,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3555,7 +3555,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntry`1.ValueIsPrefabDifferent(System.Object,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3564,7 +3564,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntry`1.ValueIsPrefabDifferent(`0,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3606,7 +3606,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntry`2.ApplyChanges">
             <summary>
-            Applies the changes made to this value entry to the target objects, and registers prefab modifications as necessary.
+            Applies the changes made to this value entry to the target objects, and registers viewPrefab modifications as necessary.
             </summary>
             <returns>
             True if any changes were made, otherwise, false.
@@ -3655,17 +3655,17 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.ValueChangedFromPrefab">
             <summary>
-            Whether this value entry has been changed from its prefab counterpart.
+            Whether this value entry has been changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.ListLengthChangedFromPrefab">
             <summary>
-            Whether this value entry has had its list length changed from its prefab counterpart.
+            Whether this value entry has had its list length changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.DictionaryChangedFromPrefab">
             <summary>
-            Whether this value entry has had its dictionary values changes from its prefab counterpart.
+            Whether this value entry has had its dictionary values changes from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.WeakSmartValue">
@@ -3721,7 +3721,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.ApplyChanges">
             <summary>
-            Applies the changes made to this value entry to the target objects, and registers prefab modifications as necessary.
+            Applies the changes made to this value entry to the target objects, and registers viewPrefab modifications as necessary.
             </summary>
             <returns>
             True if any changes were made, otherwise, false.
@@ -3745,7 +3745,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.ValueIsPrefabDifferent(System.Object,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3814,17 +3814,17 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ValueChangedFromPrefab">
             <summary>
-            Whether this value entry has been changed from its prefab counterpart.
+            Whether this value entry has been changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ListLengthChangedFromPrefab">
             <summary>
-            Whether this value entry has had its list length changed from its prefab counterpart.
+            Whether this value entry has had its list length changed from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.DictionaryChangedFromPrefab">
             <summary>
-            Whether this value entry has had its dictionary values changes from its prefab counterpart.
+            Whether this value entry has had its dictionary values changes from its viewPrefab counterpart.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ParentType">
@@ -3864,7 +3864,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ApplyChanges">
             <summary>
-            Applies the changes made to this value entry to the target objects, and registers prefab modifications as necessary.
+            Applies the changes made to this value entry to the target objects, and registers viewPrefab modifications as necessary.
             </summary>
             <returns>
             True if any changes were made, otherwise, false.
@@ -3888,7 +3888,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ValueIsPrefabDifferent(`1,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
@@ -3897,7 +3897,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ValueIsPrefabDifferent(System.Object,System.Int32)">
             <summary>
-            <para>Determines whether the value at the given selection index is different from the given prefab value, as is relevant for prefab modification checks.</para>
+            <para>Determines whether the value at the given selection index is different from the given viewPrefab value, as is relevant for viewPrefab modification checks.</para>
             <para>If the value is a reference type, null and type difference is checked. If value is a value type, a comparer from <see cref="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1" /> is used.</para>
             <para>This method is best ignored unless you know what you are doing.</para>
             </summary>
