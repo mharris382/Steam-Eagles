@@ -42,7 +42,7 @@ namespace Buildings.MyEditor
             public void BuildTree(OdinMenuTree tree)
             {
                 tree.Add($"{_building.buildingName}/Room Cameras", _roomCameraTable);
-                tree.Add(_building.buildingName, _building);
+                tree.Add($"{_building.buildingName}/Building", _building);
                 tree.Add($"{_building.buildingName}/Tilemaps", _tilemapTable);
                 tree.Add($"{_building.buildingName}/Rooms", _roomsTable);
                 tree.Add($"{_building.buildingName}/Mechanisms", _mechanismTable);
@@ -84,6 +84,14 @@ namespace Buildings.MyEditor
             tree.DefaultMenuStyle.IconSize = 28.00f;
             tree.Config.DrawSearchToolbar = true;
             var buildings = FindObjectsOfType<Building>();
+            foreach (var building in buildings)
+            {
+                if (_registeredGroups.ContainsKey(building) == false)
+                {
+                    var group = new BuildingGroup(building);
+                    _registeredGroups.Add(building, group);
+                }
+            }
             foreach (var group in _registeredGroups.Values)
             {
                 group.BuildTree(tree);

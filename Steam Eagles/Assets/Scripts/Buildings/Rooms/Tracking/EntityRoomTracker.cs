@@ -6,42 +6,53 @@ using CoreLib;
 using CoreLib.Entities;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Buildings.Rooms.Tracking
 {
     [RequireComponent(typeof(Building))]
     public class EntityRoomTracker : MonoBehaviour
     {
-        private ReactiveCollection<Entity> _trackedEntities = new ReactiveCollection<Entity>();
-        private Dictionary<Entity, Room> _entityRoomMap = new Dictionary<Entity, Room>();
-        private List<Entity> _entitiesWithoutRoom = new List<Entity>();
+        private ReactiveCollection<EntityInitializer> _trackedEntities = new ReactiveCollection<EntityInitializer>();
+        private Dictionary<EntityInitializer, Room> _entityRoomMap = new Dictionary<EntityInitializer, Room>();
+        private List<EntityInitializer> _entitiesWithoutRoom = new List<EntityInitializer>();
         private Building _building;
-        
+        private EntityLinkRegistry linkRegistry;
+
         public Building Building => _building ??= GetComponent<Building>();
+
+        [Inject]
+        void InjectMe(EntityLinkRegistry linkRegistry)
+        {
+            this.linkRegistry = linkRegistry;
+            linkRegistry.OnValueAdded.Where(t => t != null && t.GetEntityType() != EntityType.STRUCTURE || t.GetEntityType() != EntityType.BUILDING)
+                .Subscribe(t => _trackedEntities.Add(t))
+                .AddTo(this);
+        }
         
         private void Awake()
         {
             _building = GetComponent<Building>();
             
-            MessageBroker.Default.Receive<Entity>()
-                .Where(t => t != null && !_trackedEntities.Contains(t) && t.entityType != EntityType.STRUCTURE || t.entityType != EntityType.BUILDING)
-                .Subscribe(_trackedEntities.Add)
-                .AddTo(this);
+            // MessageBroker.Default.Receive<Entity>()
+            //     .Where(t => t != null && !_trackedEntities.Contains(t) && t.entityType != EntityType.STRUCTURE || t.entityType != EntityType.BUILDING)
+            //     .Subscribe(_trackedEntities.Add)
+            //     .AddTo(this);
+            //
+             void TrackEntity(EntityInitializer e)
+             {
+                 if (_trackedEntities.Contains(e) == false)
+                 {
+                     Debug.Log($"Now Tracking Entity {e.name.Bolded()} in building {Building.name.Bolded()}");
+                     _trackedEntities.Add(e);
+                 }
+             }
+            // MessageBroker.Default.Receive<EntityInitializedInfo>()
+            //     .Where(t => t.entity.entityType == EntityType.CHARACTER || t.entity.entityType == EntityType.ENEMY ||
+            //                 t.entity.entityType == EntityType.NPC)
+            //     .Subscribe(t => TrackEntity(t.entity)).AddTo(this);
 
-            void TrackEntity(Entity e)
-            {
-                if (_trackedEntities.Contains(e) == false)
-                {
-                    Debug.Log($"Now Tracking Entity {e.name.Bolded()} in building {Building.name.Bolded()}");
-                    _trackedEntities.Add(e);
-                }
-            }
-            MessageBroker.Default.Receive<EntityInitializedInfo>()
-                .Where(t => t.entity.entityType == EntityType.CHARACTER || t.entity.entityType == EntityType.ENEMY ||
-                            t.entity.entityType == EntityType.NPC)
-                .Subscribe(t => TrackEntity(t.entity)).AddTo(this);
-
-            foreach (var entity in EntityManager.Instance.GetAllEntities())
+            foreach (var entity in linkRegistry.Values.Where(t => t != null && t.GetEntityType() != EntityType.STRUCTURE || t.GetEntityType() != EntityType.BUILDING))
             {
                 var room = SearchForEntityInBuilding(entity);
                 if (room == null)
@@ -78,20 +89,16 @@ namespace Buildings.Rooms.Tracking
                     UpdateEntityRoom(trackedEntity, room);
                 }
 
-                if (trackedEntity.LinkedGameObject == null)
+                if (trackedEntity == null)
                 {
                     Debug.LogWarning("Cannot track entity without a linked game object", trackedEntity);
                     continue;
                 }
-
-                if (!trackedEntity.dynamic)
-                    continue;
-                
                 CheckForDynamicEntityChangedRooms(trackedEntity);
             }
         }
 
-        private void CheckForDynamicEntityChangedRooms(Entity trackedEntity)
+        private void CheckForDynamicEntityChangedRooms(EntityInitializer trackedEntity)
         {
             if (!_entityRoomMap.ContainsKey(trackedEntity))
             {
@@ -99,7 +106,7 @@ namespace Buildings.Rooms.Tracking
                 return;
             }
             var lastSeenRoom = _entityRoomMap[trackedEntity];
-            var currentPositionWs = trackedEntity.LinkedGameObject.transform.position;
+            var currentPositionWs = trackedEntity.transform.position;
             var currentPositionRs = Building.transform.InverseTransformPoint(currentPositionWs);
             //Entity is still in the same room
             if (lastSeenRoom.RoomBounds.Contains(currentPositionRs))
@@ -130,7 +137,7 @@ namespace Buildings.Rooms.Tracking
             }
         }
 
-        private void UpdateEntityRoom(Entity trackedEntity, Room room)
+        private void UpdateEntityRoom(EntityInitializer trackedEntity, Room room)
         {
            
             
@@ -147,20 +154,20 @@ namespace Buildings.Rooms.Tracking
             }
             MessageBroker.Default.Publish(new EntityChangedRoomMessage(trackedEntity, room));
             if(!trackedEntity.gameObject.TryGetComponent<EntityRoomState>(out var eState)) eState = trackedEntity.gameObject.AddComponent<EntityRoomState>();
-            if (!trackedEntity.LinkedGameObject.TryGetComponent<EntityRoomState>(out var lState)) lState = trackedEntity.LinkedGameObject.AddComponent<EntityRoomState>();
+            if (!trackedEntity.TryGetComponent<EntityRoomState>(out var lState)) lState = trackedEntity.gameObject.AddComponent<EntityRoomState>();
             eState.SetCurrentRoom(room);
             lState.SetCurrentRoom(room);
         }
 
-        private Room SearchForEntityInBuilding(Entity entity)
+        private Room SearchForEntityInBuilding(EntityInitializer entity)
         {
-            if (entity.LinkedGameObject == null)
+            if (entity == null)
             {
                Debug.LogWarning($"Cannot search for entity without a linked game object, {entity.name}");
                return null;
             }
 
-            var lsPos = Building.transform.InverseTransformPoint(entity.LinkedGameObject.transform.position);
+            var lsPos = Building.transform.InverseTransformPoint(entity.transform.position);
             foreach (var graphVertex in Building.Map.RoomGraph.Graph.Vertices)
             {
                 if (graphVertex.RoomBounds.Contains(lsPos))

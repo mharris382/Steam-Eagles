@@ -148,7 +148,7 @@ namespace Buildings.Rooms.Tracking
                     .ToReadOnlyReactiveProperty();
                 
                 MessageBroker.Default.Receive<EntityChangedRoomMessage>()
-                    .Where(t => t.Entity.LinkedGameObject == instance.character)
+                    .Where(t => t.Entity.gameObject == instance.character)
                     .Subscribe(t => OnPCChangedRooms(t.Room)).AddTo(cd);
             }
 
