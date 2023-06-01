@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CoreLib;
+using Cysharp.Threading.Tasks;
 using Game;
 using Players.Shared;
 using SaveLoad;
+using SaveLoad.CoreSave;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.MainMenu
 {
@@ -34,6 +39,13 @@ namespace UI.MainMenu
         public GameObject[] deviceUIIcons;
 
         public UnityEvent onComplete;
+
+        [Inject]
+        public void InjectMe(GlobalSavePath savePath, GlobalSaveLoader saveLoader)
+        {
+            this.savePath = savePath;
+            this.saveLoader = saveLoader;
+        }
         
         private void Awake()
         {
@@ -48,16 +60,42 @@ namespace UI.MainMenu
                     if (activeDevice == null) continue;
                     activeDevice.SwitchCurrentActionMap(startGameActionMap);
                 }
-                throw new NotImplementedException();
-                var newGameSave = new NewGameSaveCreator(false);
-                newGameSave.CreateNewGameSave(newGameSaveName);
-                PlayerPrefs.SetString("Last Save Path", newGameSaveName);
-                Debug.Log($"Current save path is {Application.persistentDataPath}/{PersistenceManager.Instance.SaveDirectoryPath}");
-                MessageBroker.Default.Publish(new LoadGameRequestedInfo(newGameSaveName));
+
+                StartCoroutine(UniTask.ToCoroutine(async () =>
+                {
+                    var loadOp = SceneManager.LoadSceneAsync("AirshipScene");
+                    await loadOp;
+                    
+                    
+                    saveLoader.SaveGame("My New Game", b =>
+                    {
+                        if (b)
+                        {
+                            Debug.Log($"New Game Saved: {savePath.FullSaveDirectoryPath}");
+                            CoreSaveData coreSaveData = new CoreSaveData(SceneManager.GetSceneByName("AirshipScene").buildIndex,
+                                GameManager.Instance.GetCharacterAssignments());
+                            var path = savePath.FullSaveDirectoryPath;
+                            var coreDataSavePath = Path.Combine(path, "CoreSaveData.json");
+                            var json = JsonUtility.ToJson(coreSaveData);
+                            File.WriteAllText(coreDataSavePath, json);
+                        }
+                        else
+                        {
+                            Debug.Log($"New Game failed to save: {savePath.FullSaveDirectoryPath}");
+                        }
+                    });
+                }));
+                // var newGameSave = new NewGameSaveCreator(false);
+                // newGameSave.CreateNewGameSave(newGameSaveName);
+                // PlayerPrefs.SetString("Last Save Path", newGameSaveName);
+                // Debug.Log($"Current save path is {Application.persistentDataPath}/{PersistenceManager.Instance.SaveDirectoryPath}");
+                // MessageBroker.Default.Publish(new LoadGameRequestedInfo(newGameSaveName));
                 
             }).AddTo(this);
 
         }
+        
+        
 
         private void OnEnable()
         {
@@ -70,6 +108,8 @@ namespace UI.MainMenu
         }
 
         private float[] _timeLastMoved = new float[2];
+        private GlobalSaveLoader saveLoader;
+        private GlobalSavePath savePath;
 
         private void Update()
         {

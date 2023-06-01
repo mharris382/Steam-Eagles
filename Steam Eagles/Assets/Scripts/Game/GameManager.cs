@@ -164,7 +164,7 @@ namespace Game
             }
         }
 
-        private string[] GetCharacterAssignments()
+        public string[] GetCharacterAssignments()
         {
             void AddPlayerCharacterAssignment(int i, List<string> list)
             {
