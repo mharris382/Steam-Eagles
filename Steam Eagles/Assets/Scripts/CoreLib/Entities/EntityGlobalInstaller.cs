@@ -52,6 +52,7 @@ namespace CoreLib.Entities
 
         public void Initialize()
         {
+            Debug.Log("Initializing EntityLoadHandler");
             _linkRegistry.OnValueAdded.Select(t => (t, _handleFactory.Create(t)))
                 .Subscribe(tup =>
                 {
@@ -76,26 +77,14 @@ namespace CoreLib.Entities
         }
         void LoadEntity(EntityInitializer initializer, EntityHandle entityHandle)
         {
-            _entityLoadOps.Add(initializer, _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
+            _entityLoadOps.Add(initializer, 
+                _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
             {
                 var result = await _saveLoader.LoadEntity(entityHandle);
                 if (!result) Debug.LogError($"Failed to load entity: {entityHandle.LinkedGameObject.name}");
-                initializer.isDoneInitializing = true;
+                initializer.Initialize();
             })));
         }
     
-    }
-    
-
-    public interface IEntitySaveLoader
-    {
-        UniTask<bool> SaveEntity(EntityHandle handle);
-        UniTask<bool> LoadEntity(EntityHandle handle);
-    }
-
-    public interface IEntityTypeSaveLoader : IEntitySaveLoader
-    {
-        public EntityType GetEntityType();
-        
     }
 }

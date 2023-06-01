@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace CoreLib.Entities.Buildings
 {
+    [System.Obsolete("Use BuildingSaveLoader instead")]
     public class BuildingFactory : EntityFactoryBase<BuildingSaveData>
     {
         public override EntityType GetEntityType() => EntityType.BUILDING;

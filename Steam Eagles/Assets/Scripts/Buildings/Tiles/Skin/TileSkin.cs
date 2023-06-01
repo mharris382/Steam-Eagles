@@ -45,6 +45,33 @@ namespace Buildings.Tiles.Skin
 
             return true;
         }
+
+
+        public void ApplySkin(Building building)
+        {
+            foreach (var tilemap in building.GetComponentsInChildren<Tilemap>())
+            {
+                ApplySkin(tilemap);
+            }
+        }
+        public void ApplySkin(Tilemap tilemap)
+        {
+            var bounds = tilemap.cellBounds;
+            foreach (var cell in bounds.GetAllCells3D())
+            {
+                var tile = tilemap.GetTile<PuzzleTile>(cell);
+                if (HasReplacementTile(tile, out var replacement))
+                {
+                    tilemap.SetTile(cell, replacement);    
+                }
+            }
+        }
+        public bool HasReplacementTile(TileBase tileBase, out TileBase replacement)
+        {
+            replacement = null;
+            if (tileBase == null) return false;
+            return false;
+        }
     }
 
 

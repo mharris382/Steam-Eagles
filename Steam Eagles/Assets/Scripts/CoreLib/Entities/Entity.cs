@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace CoreLib.Entities
 {
+    [System.Obsolete("Use EntityHandle + EntityLinkRegistry instead")]
     [DisallowMultipleComponent]
     public class Entity : MonoBehaviour
     {

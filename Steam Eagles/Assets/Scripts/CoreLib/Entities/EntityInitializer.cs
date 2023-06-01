@@ -19,10 +19,14 @@ namespace CoreLib.Entities
 
         public bool isDoneInitializing;
         private EntityLinkRegistry linkRegistry;
+        private CoroutineCaller coroutineCaller;
+        private EntityConfig logger;
 
         [Inject]
-        void Inject(EntityLinkRegistry linkRegistry)
+        void Inject(EntityLinkRegistry linkRegistry, CoroutineCaller coroutineCaller, EntityConfig globalConfig)
         {
+            this.logger = globalConfig;
+            this.coroutineCaller = coroutineCaller;
             this.linkRegistry = linkRegistry;
             this.linkRegistry.Register(this);
         }
@@ -33,6 +37,8 @@ namespace CoreLib.Entities
         /// </summary>
         /// <param name="entity"></param>
         public abstract void OnEntityInitialized(Entity entity);
+
+        public abstract bool IsReadyToLoad();
 
         private void Awake()
         {
@@ -55,47 +61,9 @@ namespace CoreLib.Entities
         public void Initialize()
         {
             Debug.Log($"Initializing Entity {GetEntityGUID()} ({GetEntityType()})",this);
-            EntityManager.Instance.StartCoroutine(WaitForEntityToLoad(GetEntityGUID(), GetEntityType()));
+            isDoneInitializing = true;
         }
 
-        // private IEnumerator Start()
-        // {
-        //     isDoneInitializing = false;
-        //     while(EntityManager.Instance == null)
-        //         yield return null;
-        //     
-        //     var entityGUID = GetEntityGUID();
-        //     var entityType = GetEntityType();
-        //     
-        //     //yield return UniTask.ToCoroutine(async () =>
-        //     //{
-        //     //    if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})");
-        //     //    var result = await EntityManager.Instance.GetEntityAsync(this);
-        //     //    if (EntityManager.Instance.debug) Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
-        //     //    _entity.Value = result;
-        //     //    OnEntityInitialized(result);
-        //     //    isDoneInitializing = true;
-        //     //});
-        //    
-        //     //OnEntityInitialized(_entity.Value = EntityManager.Instance.GetEntity(this));
-        // }
-        //
-
-        IEnumerator WaitForEntityToLoad(string entityGUID, EntityType entityType)
-        {
-            if(EntityManager.Instance.debug) Debug.Log($"Initializing Entity: {entityGUID} ({entityType})",this);
-            yield return UniTask.ToCoroutine(async () =>
-            {
-                var result = await EntityManager.Instance.GetEntityAsync(this);
-                if (EntityManager.Instance.debug)
-                    Debug.Log($"Finished Initializing Entity: {entityGUID} ({entityType})");
-                _entity.Value = result;
-                OnEntityInitialized(result);
-                isDoneInitializing = true;
-                MessageBroker.Default.Publish(new EntityInitializedInfo(this));
-            });
-        }
-        
         private void OnDisable()
         {
             if(EntityManager.SafeInstance != null)
@@ -105,6 +73,11 @@ namespace CoreLib.Entities
             }
             _entity.Dispose();
         }
+    }
+
+    public abstract class SubEntityInitializer : EntityInitializer
+    {
+        
     }
 
     public class EntityLinkRegistry : Registry<EntityInitializer>

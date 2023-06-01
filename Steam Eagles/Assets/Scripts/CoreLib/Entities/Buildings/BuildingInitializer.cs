@@ -16,5 +16,11 @@ namespace CoreLib.Entities.Buildings
         {
             Building.IsFullyLoaded = true;
         }
+
+        public override bool IsReadyToLoad()
+        {
+            
+            return true;
+        }
     }
 }

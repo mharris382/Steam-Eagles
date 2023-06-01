@@ -46,6 +46,7 @@ namespace Buildings
 
         #region [Private Fields]
 
+        private TileSkin _skin;
         private StructureState _structureState;
         private Grid _grid;
         private Rigidbody2D _rb;
@@ -198,9 +199,11 @@ namespace Buildings
         [Inject]
         public void AssignSkin(TileSkin tileSkin)
         {
-
+            this._skin = tileSkin;
+            UpdateSkin();
         }
 
+    
         public IMachineFactory machinePrefabFactory { get; private set; }
 
         #endregion
@@ -263,6 +266,12 @@ namespace Buildings
         #region [Helper Methods]
 
         public IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
+
+        [Button, HideInEditorMode, ShowIf("@_skin != null")]
+        private void UpdateSkin()
+        {
+            _skin.ApplySkin(this);
+        }
 
         #endregion
 
