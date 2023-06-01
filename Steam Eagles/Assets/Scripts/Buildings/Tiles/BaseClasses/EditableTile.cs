@@ -1,5 +1,7 @@
 ﻿//using PhysicsFun.DynamicBlocks;
 
+using System;
+using System.ComponentModel;
 using System.Linq;
 using Buildings.Rooms;
 using UnityEngine;
@@ -103,5 +105,35 @@ namespace Buildings.Tiles
 
         protected bool CheckIfOtherCellIsFoundation(Vector3Int cell, BuildingMap buildingMap) =>
             CheckIfOtherCellExistsOnMap(cell, buildingMap, BuildingLayers.FOUNDATION);
+
+        public virtual string GetSaveKey()
+        {
+            switch (GetLayer())
+            {
+                case BuildingLayers.NONE:
+                case BuildingLayers.FOUNDATION:
+                case BuildingLayers.COVER:
+                case BuildingLayers.DECOR:
+                case BuildingLayers.REQUIRED:
+                    throw new InvalidEnumArgumentException();
+                    break;
+                case BuildingLayers.WALL:
+                    return "Wall";
+                    break;
+                    break;
+                case BuildingLayers.SOLID:
+                    return "Solid";
+                    break;
+                case BuildingLayers.PIPE:
+                    return "Pipe";
+                case BuildingLayers.PLATFORM:
+                case BuildingLayers.LADDERS:
+                    return "Ladder";
+                case BuildingLayers.WIRES:
+                    return "Wire";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }

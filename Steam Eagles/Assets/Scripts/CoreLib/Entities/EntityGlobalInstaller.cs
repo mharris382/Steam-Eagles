@@ -66,7 +66,8 @@ namespace CoreLib.Entities
             if (_entityLoadOps.ContainsKey(initializer))
             {
                 var loadOp = _entityLoadOps[initializer];
-                _coroutineCaller.StopCoroutine(loadOp);
+                if(_coroutineCaller != null)
+                    _coroutineCaller.StopCoroutine(loadOp);
             }
             if (_entities.ContainsKey(initializer))
             {

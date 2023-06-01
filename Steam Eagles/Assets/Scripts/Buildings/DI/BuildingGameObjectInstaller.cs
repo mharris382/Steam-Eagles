@@ -23,6 +23,7 @@ namespace Buildings.DI
             }
 
             Container.BindInterfacesAndSelfTo<BuildingCoreData>().AsSingle().NonLazy();
+            TilemapSaveDataV3Installer.Install(Container);
         }
     }
 }
