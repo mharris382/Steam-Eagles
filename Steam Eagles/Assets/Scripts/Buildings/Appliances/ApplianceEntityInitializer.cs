@@ -23,5 +23,18 @@ namespace Buildings.Appliances
         {
             BuildingAppliance.IsEntityInitialized = true;
         }
+
+        public override bool IsReadyToLoad()
+        {
+            var building = GetComponentsInParent<EntityInitializer>();
+            if(building.Length == 0)
+                return true;
+            foreach (var entityInitializer in building)
+            {
+                if(!entityInitializer.isDoneInitializing)
+                    return false;
+            }
+            return true;
+        }
     }
 }

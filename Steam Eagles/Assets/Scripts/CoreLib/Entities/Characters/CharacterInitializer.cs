@@ -21,7 +21,13 @@ namespace CoreLib.Entities.Characters
         public override string GetEntityGUID() => tag;
 
         public override EntityType GetEntityType() => EntityType.CHARACTER;
-        
+
+
+        public override bool IsReadyToLoad()
+        {
+            //TODO: check if all data is loaded
+            return true;
+        }
 
         private void Awake()
         {
