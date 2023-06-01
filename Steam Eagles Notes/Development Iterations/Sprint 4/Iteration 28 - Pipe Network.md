@@ -40,7 +40,6 @@ title: Pipe Fluid Flow
 a Pipe Fluid Flow represents a movement of a fluid from an inflow node towards one or more outflow nodes in a connected pipe network
 ```
 
-
 ```ad-info
 title: Pipe Transport Node
 
@@ -79,3 +78,4 @@ Rules:
 
 ### Where to go now?
 
+The best way to proceed would be to write a Unit Test for the Steam Power network, applying a test driven approach to implementing the Steam Power Network.  I can verify that the system works exactly as expected before integrating it into the rest of the game systems.
