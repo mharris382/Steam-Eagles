@@ -1,0 +1,38 @@
+{
+	"nodes":[
+		{"id":"95d65dfa4fc889f9","x":-560,"y":-99,"width":570,"height":494,"type":"group","label":"Tool FSM"},
+		{"type":"group","id":"9eb50dd328a05b2f","x":840,"y":0,"width":717,"height":368,"label":"Default"},
+		{"type":"text","text":"Climbing FSM","id":"673207b1b8bf794a","x":400,"y":720,"width":200,"height":60},
+		{"type":"text","text":"Default","id":"f2f55179309dfa99","x":800,"y":520,"width":250,"height":80},
+		{"type":"text","text":"Grounded FSM","id":"4f35847c169ba8cc","x":860,"y":141,"width":305,"height":72},
+		{"type":"text","text":"Aerial FSM","id":"8cef0d5a260d0895","x":1287,"y":141,"width":250,"height":72},
+		{"type":"text","text":"Selector","id":"7d2787bc4bb40487","x":-540,"y":61,"width":250,"height":60},
+		{"type":"text","text":"Build Tool","id":"eaa779dd9482fd96","x":-260,"y":153,"width":250,"height":60},
+		{"type":"text","text":"Repair Tool","id":"ffff1ae9a5ea95e1","x":-260,"y":213,"width":250,"height":54},
+		{"type":"text","text":"Destruct Tool","id":"05f38c3d8e59b19b","x":-260,"y":267,"width":250,"height":54},
+		{"type":"text","text":"Recipe Tool","id":"6dbdec1b3f19c784","x":-260,"y":321,"width":250,"height":54},
+		{"type":"text","text":"Tool FSM","id":"aa6d24b82c5b5842","x":-540,"y":-79,"width":250,"height":60},
+		{"type":"text","text":"ROOT","id":"c0eb0d41c03b1525","x":340,"y":-960,"width":250,"height":60},
+		{"type":"text","text":"Selector","id":"9fcf2ef685c04bee","x":340,"y":-760,"width":250,"height":54},
+		{"type":"text","text":"Default Animation Logic","id":"0b13d87d85567b65","x":800,"y":-360,"width":404,"height":103},
+		{"type":"text","text":"Tool Animation Logic","id":"06ee688b812e81d3","x":800,"y":-257,"width":404,"height":103},
+		{"id":"3365574883cae1b6","x":550,"y":-500,"width":250,"height":70,"type":"text","text":"Sequence"},
+		{"id":"12c9a675bca7d4d3","x":140,"y":-495,"width":250,"height":65,"type":"text","text":"Climbing Logic"}
+	],
+	"edges":[
+		{"id":"e2ffe4cffd95ad5e","fromNode":"7d2787bc4bb40487","fromSide":"bottom","toNode":"eaa779dd9482fd96","toSide":"left"},
+		{"id":"cae8c2594e853f4d","fromNode":"7d2787bc4bb40487","fromSide":"bottom","toNode":"ffff1ae9a5ea95e1","toSide":"left"},
+		{"id":"e8b9113d1c97ba1a","fromNode":"7d2787bc4bb40487","fromSide":"bottom","toNode":"05f38c3d8e59b19b","toSide":"left"},
+		{"id":"ec9efe29e62f4f14","fromNode":"7d2787bc4bb40487","fromSide":"bottom","toNode":"6dbdec1b3f19c784","toSide":"left"},
+		{"id":"f9d1d66ee8be481f","fromNode":"aa6d24b82c5b5842","fromSide":"bottom","toNode":"7d2787bc4bb40487","toSide":"top"},
+		{"id":"d4b671d14110edc4","fromNode":"8cef0d5a260d0895","fromSide":"top","toNode":"4f35847c169ba8cc","toSide":"top"},
+		{"id":"e3b85f097c5d08f8","fromNode":"4f35847c169ba8cc","fromSide":"bottom","toNode":"8cef0d5a260d0895","toSide":"bottom"},
+		{"id":"9e1a27e5a79bf07f","fromNode":"f2f55179309dfa99","fromSide":"bottom","toNode":"673207b1b8bf794a","toSide":"right","label":"is climbing"},
+		{"id":"39590e6a7b9bceff","fromNode":"673207b1b8bf794a","fromSide":"top","toNode":"f2f55179309dfa99","toSide":"left","label":"!is climbing\n"},
+		{"id":"660c969a3995b0ce","fromNode":"c0eb0d41c03b1525","fromSide":"bottom","toNode":"9fcf2ef685c04bee","toSide":"top"},
+		{"id":"00361934c510a7bb","fromNode":"3365574883cae1b6","fromSide":"bottom","toNode":"0b13d87d85567b65","toSide":"left"},
+		{"id":"70b59611db997373","fromNode":"3365574883cae1b6","fromSide":"bottom","toNode":"06ee688b812e81d3","toSide":"left"},
+		{"id":"b37f59564caa1c15","fromNode":"9fcf2ef685c04bee","fromSide":"bottom","toNode":"12c9a675bca7d4d3","toSide":"top"},
+		{"id":"261add181fb51a2a","fromNode":"9fcf2ef685c04bee","fromSide":"bottom","toNode":"3365574883cae1b6","toSide":"top"}
+	]
+}
