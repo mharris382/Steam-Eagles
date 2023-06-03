@@ -32,6 +32,7 @@ namespace CoreLib.Entities
             Debug.Assert(result, $"Failed to register Entity {GetEntityGUID()} ({GetEntityType()})");
             Debug.Log($"Registered Entity {GetEntityGUID()} ({GetEntityType()})",this);
         }
+       
         /// <summary>
         /// once entity has been setup to store correct custom data (such as inventory data) and all
         /// save data has been loaded, this method is called to all implementing classes to then
@@ -51,6 +52,7 @@ namespace CoreLib.Entities
 
         private void OnDestroy()
         {
+            
             linkRegistry.Unregister(this);
         }
 

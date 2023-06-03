@@ -262,18 +262,20 @@ namespace Buildings
             return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
 
-        public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile)
+        private void SetTile(BuildingCell cell, TileBase tile)
         {
-            var tm = GetTilemap(layer);
-            tm.SetTile(cell, tile);
-            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell, layer));
+            var tm = GetTilemap(cell.layers);
+            tm.SetTile(cell.cell, tile);
+            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
+            var room = GetRoom(cell.cell, cell.layers);
+            var roomEvents = room.GetComponent<RoomEvents>();
+            Debug.Assert(roomEvents != null, room);
+            roomEvents?.OnTileSet(cell.cell, cell.layers, tile);
         }
-        public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile)
-        {
-            var tm = GetTilemap(layer);
-            tm.SetTile(cell, tile);
-            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell, layer));
-        }
+        
+        public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);
+
+        public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile) => SetTile(new BuildingCell(cell, layer), tile);
 
         public void SetTile(Vector3Int cell, EditableTile tile)
         {

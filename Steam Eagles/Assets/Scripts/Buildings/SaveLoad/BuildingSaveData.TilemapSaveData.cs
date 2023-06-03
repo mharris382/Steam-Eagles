@@ -455,11 +455,24 @@ public class RoomTilemapTextures
                 LogFailureReason(room, true, $"Failed to load texture from path {filePath}");
                 return false;
             }
+
+            var roomTextures = GetRoomTextures(room);
+            roomTextures.AssignTexture(_layer, texture);
+            
             return LoadData(room, texture, filePath);
         }
+        
+        
 
         #region [SAVE/LOAD HELPERS]
 
+        RoomTextures GetRoomTextures(Room room)
+        {
+            var roomTextures = room.GetComponent<RoomTextures>();
+            if(roomTextures == null) roomTextures = room.gameObject.AddComponent<RoomTextures>();
+            return roomTextures;
+        }
+        
         public bool GetFilePaths(string saveDirectory, string roomName, out string pngFilePath, out string jsonFilePath, bool fileMustExist)
         {
             pngFilePath = Path.Combine(saveDirectory, $"{roomName}_{_layer}.png");
