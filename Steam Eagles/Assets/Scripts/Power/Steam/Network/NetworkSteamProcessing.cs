@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Power.Steam.Network
 {
-    public class NetworkSteamProcessing 
+    public class NetworkSteamProcessing  : ISteamProcessing
     {
         private readonly INetworkTopology _networkTopology;
 
