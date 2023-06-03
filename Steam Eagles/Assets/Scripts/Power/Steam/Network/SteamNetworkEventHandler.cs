@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using UniRx;
 
 namespace Power.Steam.Network

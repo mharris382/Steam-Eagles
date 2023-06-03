@@ -28,7 +28,9 @@ namespace CoreLib.Entities
             this.logger = globalConfig;
             this.coroutineCaller = coroutineCaller;
             this.linkRegistry = linkRegistry;
-            this.linkRegistry.Register(this);
+            bool result =this.linkRegistry.Register(this);
+            Debug.Assert(result, $"Failed to register Entity {GetEntityGUID()} ({GetEntityType()})");
+            Debug.Log($"Registered Entity {GetEntityGUID()} ({GetEntityType()})",this);
         }
         /// <summary>
         /// once entity has been setup to store correct custom data (such as inventory data) and all
@@ -45,13 +47,7 @@ namespace CoreLib.Entities
             isDoneInitializing = false;
         }
 
-        private void OnEnable()
-        {
-            if (!isDoneInitializing)
-            {
-                Initialize();
-            }
-        }
+ 
 
         private void OnDestroy()
         {
@@ -60,7 +56,7 @@ namespace CoreLib.Entities
 
         public void Initialize()
         {
-            Debug.Log($"Initializing Entity {GetEntityGUID()} ({GetEntityType()})",this);
+            Debug.Log($"Initialized Entity {GetEntityGUID()} ({GetEntityType()})",this);
             isDoneInitializing = true;
         }
 
@@ -76,11 +72,6 @@ namespace CoreLib.Entities
     }
 
     public abstract class SubEntityInitializer : EntityInitializer
-    {
-        
-    }
-
-    public class EntityLinkRegistry : Registry<EntityInitializer>
     {
         
     }

@@ -20,7 +20,6 @@ public class GlobalSavePath : IInitializable
         get => _lastSavePath;
         private set
         {
-            value = value.Replace('/', '\\');
             _lastSavePath = GetValidDirectoryPath(value);
             PlayerPrefs.SetString(PLAYER_PREFS_KEY, _lastSavePath);
             _config.Log($"Save Path: {_lastSavePath.Bolded()}");
@@ -110,5 +109,10 @@ public class GlobalSavePath : IInitializable
                 return;
             }
         }
+    }
+
+    public bool StartsWith(string persistentDataPath)
+    {
+        throw new System.NotImplementedException();
     }
 }

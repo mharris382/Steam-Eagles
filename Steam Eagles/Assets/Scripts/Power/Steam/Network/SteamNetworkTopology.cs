@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Power.Steam.Network
@@ -36,6 +37,11 @@ namespace Power.Steam.Network
         }
 
         public void DisconnectNodes(Vector2Int positionA, Vector2Int positionB)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Vector2Int> GetUsedPositions()
         {
             throw new NotImplementedException();
         }

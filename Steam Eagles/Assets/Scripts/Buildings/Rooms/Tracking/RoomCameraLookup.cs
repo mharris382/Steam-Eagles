@@ -146,7 +146,10 @@ namespace Buildings.Rooms.Tracking
                     return vCam;
                 }
 
-                cinemachineType.GetField("m_Follow").SetValue(component, transform);
+                var field = cinemachineType.GetField("m_Follow");
+                var prop = cinemachineType.GetProperty("Follow");
+                Debug.Assert(prop != null, "Cinemachine Follow property not found");
+                prop.SetValue(component, transform);
             }
 
             return vCam;

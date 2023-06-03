@@ -14,7 +14,7 @@ namespace Buildings.SaveLoad
     {
       [SerializeField] private List<MachineSaveData> _machineSaves = new List<MachineSaveData>();
       [SerializeField] private TilemapSaveData _tilemapSaveData;
-
+      [SerializeField] private TilemapsSaveDataV3 _tilemapsSaveDataV3;
         public BuildingSaveData(Building building)
         {
             _machineSaves = building.GetComponentsInChildren<BuildableMachineBase>().Select(t => new MachineSaveData(t))

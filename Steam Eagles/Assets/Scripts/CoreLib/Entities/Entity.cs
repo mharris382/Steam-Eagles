@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace CoreLib.Entities
 {
@@ -41,5 +42,31 @@ namespace CoreLib.Entities
         
 
         #endregion
+    }
+
+
+    public class EntityV2
+    {
+        public EntityType EntityType { get; }
+        public string GUID { get; }
+        public GameObject LinkedGo { get; }
+        public EntityInitializer EntityInitializer { get;  }
+
+        public EntityV2(EntityInitializer entityInitializer)
+        {
+            EntityType = entityInitializer.GetEntityType();
+            GUID = entityInitializer.GetEntityGUID();
+            LinkedGo = entityInitializer.gameObject;
+            EntityInitializer = entityInitializer;
+        }
+        public class Factory : PlaceholderFactory<EntityInitializer, EntityV2>
+        {
+            
+        }
+
+        public void OnRemoved()
+        {
+            
+        }
     }
 }

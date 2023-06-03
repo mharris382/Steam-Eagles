@@ -31,7 +31,7 @@ namespace UI
         public string GetFullSavePath()
         {
             return !savePath.StartsWith(Application.persistentDataPath)
-                ? $"{Application.persistentDataPath}/{savePath}"
+                ? Path.Combine(Application.persistentDataPath, savePath)
                 : savePath;
         }
 

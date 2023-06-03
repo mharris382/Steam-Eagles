@@ -262,6 +262,12 @@ namespace Buildings
             return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
 
+        public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile)
+        {
+            var tm = GetTilemap(layer);
+            tm.SetTile(cell, tile);
+            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell, layer));
+        }
         public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile)
         {
             var tm = GetTilemap(layer);

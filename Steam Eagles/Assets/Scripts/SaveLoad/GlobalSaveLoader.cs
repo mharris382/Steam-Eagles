@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CoreLib;
 using Cysharp.Threading.Tasks;
@@ -76,6 +77,7 @@ public class GlobalSaveLoader : IInitializable
 
     public void SaveGame(Action<bool> onSaveFinished) => SaveGame(_savePath.FullSaveDirectoryPath, onSaveFinished);
 
+    [System.Obsolete("Use async version")]
     public void SaveGame(string savePath, Action<bool> onSaveFinished)
     {
         if (CheckIfSavingOrLoading(onSaveFinished)) return;
@@ -89,6 +91,7 @@ public class GlobalSaveLoader : IInitializable
 
     private bool CheckPathIsValid(ref string savePath, Action<bool> onSaveFinished)
     {
+        savePath = savePath.Replace('\\', '/');
         if (!_savePath.TrySetSavePath(ref savePath))
         {
             _config.Log($"Failed to set Path: {savePath.Bolded().InItalics().ColoredRed()}");
@@ -112,9 +115,34 @@ public class GlobalSaveLoader : IInitializable
         return false;
     }
 
+    public async UniTask<bool> SaveGame()
+    {
+        List<bool> results = new List<bool>();
+        foreach (var loadGroup in _loadOrderAttributes)
+        {
+            var loaders = _saveLoadHandlers[loadGroup];
+            var groupResult = await UniTask.WhenAll(loaders.Select(t => t.SaveGameAsync(_savePath.FullSaveDirectoryPath)));
+            results.Add(groupResult.All(t => t));
+        }
+        return results.All(t => t);
+    }
 
+    public async UniTask<bool> LoadGame()
+    {
+        List<bool> results = new List<bool>();
+        foreach (var loadGroup in _loadOrderAttributes)
+        {
+            var loaders = _saveLoadHandlers[loadGroup];
+            var groupResult = await UniTask.WhenAll(loaders.Select(t => t.LoadGameAsync(_savePath.FullSaveDirectoryPath)));
+            results.Add(groupResult.All(t => t));
+        }
+        return results.All(t => t);
+    }
+
+    [System.Obsolete("Use Async version instead")]
     public void LoadGame(Action<bool> onLoadFinished) => LoadGame(_savePath.FullSaveDirectoryPath, onLoadFinished);
 
+    
     public void LoadGame(string loadPath, Action<bool> onLoadFinished)
     {
         if (CheckIfSavingOrLoading(onLoadFinished)) return;
@@ -125,27 +153,27 @@ public class GlobalSaveLoader : IInitializable
 
         _coroutineCaller.StartCoroutine(PerformLoadOp(loadPath, onLoadFinished));
     }
-
+    [System.Obsolete("Use Async version instead")]
     IEnumerator PerformSaveOp(string path, Action<bool> callback)
     {
         IsSaving = true;
-        return PerformOpGrouped(path, callback, s =>
+        yield  return PerformOpGrouped(path, callback, s =>
         {
             IsSaving = false;
             return s.SaveGameAsync(path);
         }, "Save");
     }
-
+    [System.Obsolete("Use Async version instead")]
     IEnumerator PerformLoadOp(string path, Action<bool> callback)
     {
         IsLoading = true;
-        return PerformOpGrouped(path, callback, s =>
+       yield return PerformOpGrouped(path, callback, s =>
         {
             IsLoading = false;
             return s.LoadGameAsync(path);
         }, "Load");
     }
-
+    [System.Obsolete("Use Async version instead")]
     IEnumerator PerformOp(string path, Action<bool> callback, Func<ISaveLoaderSystem, UniTask<bool>> opGetter, string opName)
     {
         yield return UniTask.ToCoroutine(async () =>
@@ -177,7 +205,7 @@ public class GlobalSaveLoader : IInitializable
             }
         });
     }
-
+    [System.Obsolete("Use Async version instead")]
     IEnumerator PerformOpGrouped(string path, Action<bool> callback, Func<ISaveLoaderSystem, UniTask<bool>> opGetter,
         string opName)
     {
@@ -206,7 +234,7 @@ public class GlobalSaveLoader : IInitializable
             }
         });
     }
-
+    [System.Obsolete("Use Async version instead")]
     async UniTask<bool> PerformOp(string path, LoadOrderAttribute loadGroup, Func<ISaveLoaderSystem, UniTask<bool>> opGetter,
         string opName)
     {

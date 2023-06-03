@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 namespace Power.Steam.Network
 {
-    public class SteamNetwork : INetwork
+    public class SteamNetwork 
     {
         private readonly NodeHandle.Factory _nodeHandleFactory;
         private readonly NodeRegistry _nodeRegistry;
@@ -37,32 +36,36 @@ namespace Power.Steam.Network
         public void ConnectNodes(Vector2Int positionA, Vector2Int positionB) => _networkTopology.ConnectNodes(positionA, positionB);
 
         public void DisconnectNodes(Vector2Int positionA, Vector2Int positionB) => _networkTopology.DisconnectNodes(positionA, positionB);
+        public IEnumerable<Vector2Int> GetUsedPositions()
+        {
+            return _networkTopology.GetUsedPositions();
+        }
 
         public void UpdateSteamState(float deltaTime) => _steamProcessing.UpdateSteamState(deltaTime);
 
-        public float GetSteamFlowRate(Vector2Int position) => _steamProcessing.GetSteamFlowRate(position);
+
+
+        public bool HasPosition(Vector2Int position)
+        {
+            return _steamProcessing.HasPosition(position);
+        }
+
+        public float GetSteamFlowRate(Vector2Int p1, Vector2Int p2)
+        {
+            return _steamProcessing.GetSteamFlowRate(p1, p2);
+        }
 
         public float GetPressureLevel(Vector2Int position) => _steamProcessing.GetPressureLevel(position);
+        public float GetTemperature(Vector2Int position)
+        {
+            throw new NotImplementedException();
+        }
 
         public bool IsBlocked(Vector2Int position) => _steamProcessing.IsBlocked(position);
 
         public IObservable<GasConsumedEventData> GasConsumedObservable => _steamEventHandling.GasConsumedObservable;
 
         public IObservable<GasProducedEventData> GasProducedObservable => _steamEventHandling.GasProducedObservable;
-    }
-
-    public class SteamNetworkInstaller : Installer<SteamNetworkInstaller>
-    {
-        public override void InstallBindings()
-        {
-            Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
-            Container.Bind<GridGraph<NodeHandle>>().To<NodeGraph>().AsSingle().NonLazy();
-            Container.Bind<INetworkTopology>().To<SteamNetworkTopology>().AsSingle().NonLazy();
-            Container.Bind<ISteamEventHandling>().To<SteamNetworkEventHandler>().AsSingle().NonLazy();
-            Container.Bind<ISteamProcessing>().To<NetworkSteamProcessing>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<SteamNetwork>().AsSingle().NonLazy();
-        }
-        public class NodeGraph : GridGraph<NodeHandle>{ }
     }
 
 

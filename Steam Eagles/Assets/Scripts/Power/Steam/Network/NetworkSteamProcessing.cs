@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Power.Steam.Network
 {
-    public class NetworkSteamProcessing : ISteamProcessing
+    public class NetworkSteamProcessing 
     {
         private readonly INetworkTopology _networkTopology;
 
@@ -16,12 +16,22 @@ namespace Power.Steam.Network
             throw new NotImplementedException();
         }
 
-        public float GetSteamFlowRate(Vector2Int position)
+        public bool HasPosition(Vector2Int position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float GetSteamFlowRate(Vector2Int p0, Vector2Int p1)
         {
             throw new NotImplementedException();
         }
 
         public float GetPressureLevel(Vector2Int position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float GetTemperature(Vector2Int position)
         {
             throw new NotImplementedException();
         }

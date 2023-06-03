@@ -19,7 +19,7 @@ namespace CoreLib.Entities.Factory
             if (_savePath == null)
                 return false;
             var guid = handle.EntityGUID;
-            var jsonFilePath = $"{_savePath.FullSaveDirectoryPath}/{guid}.json";
+            var jsonFilePath =Path.Combine(_savePath.FullSaveDirectoryPath, $"{guid}.json");
             var saveData =  await GetDataFromEntity(handle);
             if (saveData == null)
             {
@@ -45,7 +45,7 @@ namespace CoreLib.Entities.Factory
             if (_savePath == null || !_savePath.HasSavePath)
                 return false;
             var guid = handle.EntityGUID;
-            var jsonFilePath = $"{_savePath.FullSaveDirectoryPath}/{guid}.json";
+            var jsonFilePath = Path.Combine(_savePath.FullSaveDirectoryPath, $"{guid}.json");
             if (!File.Exists(jsonFilePath))
             {
                 Debug.LogError($"Failed to load entity. No save file found at {jsonFilePath}");

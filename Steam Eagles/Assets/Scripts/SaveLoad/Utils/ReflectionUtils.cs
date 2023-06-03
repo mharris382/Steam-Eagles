@@ -35,5 +35,9 @@ namespace SaveLoad
 
             return instances;
         }
+
+
+        public static List<T> GetCustomAttributes<T>(Type type, bool inherited) where T : Attribute => type.GetCustomAttributes(typeof(T), inherited).Select(t => (T)t).ToList();
+        public static T GetCustomAttribute<T>(this Type type, bool inherited) where T : Attribute => GetCustomAttributes<T>(type, inherited).FirstOrDefault();
     }
 }

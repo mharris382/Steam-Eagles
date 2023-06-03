@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Diagnostics;
 using CoreLib;
+using CoreLib.Entities;
 using CoreLib.Signals;
+using Cysharp.Threading.Tasks;
 using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
@@ -10,6 +14,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
 using Zenject;
+using Debug = UnityEngine.Debug;
 using Observable = UnityEngine.InputSystem.Utilities.Observable;
 
 namespace UI
@@ -27,11 +32,13 @@ namespace UI
         private static readonly int IsOpen = Animator.StringToHash("IsOpen");
         private GlobalSaveLoader saveLoader;
         private GlobalSavePath savePath;
+        private EntitySaveHandler entitySaveHandler;
 
 
         [Inject]
-        public void InjectMe(GlobalSaveLoader saveLoader, GlobalSavePath savePath)
+        public void InjectMe(GlobalSaveLoader saveLoader, GlobalSavePath savePath, EntitySaveHandler entitySaveHandler)
         {
+            this.entitySaveHandler = entitySaveHandler;
             this. saveLoader = saveLoader;
             this.savePath = savePath;
         }
@@ -116,10 +123,30 @@ namespace UI
 
         public void QuitToMainMenu()
         {
-            saveLoader.SaveGame(res =>
+            Debug.Log("Saving and quiting to main menu");
+            StartCoroutine(SaveAndQuit());
+        }
+
+        IEnumerator SaveAndQuit()
+        {
+            yield return UniTask.ToCoroutine(async () =>
             {
-                Debug.Assert(res, $"Failed to save game at path: {savePath.FullSaveDirectoryPath}");
-                SceneManager.LoadScene("Main Menu");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Debug.Log($"Starting Entity Save {savePath.FullSaveDirectoryPath}");
+                var entitySaveSuccess = await entitySaveHandler.SaveEntities();
+                Debug.Log($"Finished Entity Save in {sw.ElapsedMilliseconds} ms");
+                sw.Reset();
+                sw.Start();
+                Debug.Log($"Starting Standard Save");
+                var success = await saveLoader.SaveGame();
+                sw.Stop();
+                Debug.Log($"Finished Standard Save in {sw.ElapsedMilliseconds} ms");
+                if (success && entitySaveSuccess)
+                {
+                    Debug.Log("Save successful!");
+                    SceneManager.LoadScene("Main Menu");
+                }
             });
         }
     }

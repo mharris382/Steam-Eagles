@@ -48,7 +48,7 @@ namespace CoreLib
         
         public bool Register(T value)
         {
-            if(_values.Contains(value))
+            if(_values.Contains(value) || !CanRegister(value))
             {
                 return false; 
             }
@@ -68,6 +68,11 @@ namespace CoreLib
                 return true;
             }
             return false;
+        }
+        
+        protected virtual bool CanRegister(T value)
+        {
+            return true;
         }
         
         protected virtual void ReRegister(T oldValue, T value)

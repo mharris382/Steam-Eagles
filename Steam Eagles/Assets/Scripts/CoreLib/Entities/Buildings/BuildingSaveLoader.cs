@@ -12,25 +12,44 @@ namespace CoreLib.Entities.Buildings
     {
         public override EntityType GetEntityType() => EntityType.BUILDING;
 
-        public override UniTask<BuildingSaveData> GetDataFromEntity(EntityHandle entityHandle)
+        public override async UniTask<BuildingSaveData> GetDataFromEntity(EntityHandle entityHandle)
         {
+            var wrapper = entityHandle.LinkedGameObject.GetComponent<BuildingSaveDataWrapper>();
+            if (wrapper == null)
+            {
+                Debug.LogError("Missing BuildingSaveDataWrapper on building", entityHandle.LinkedGameObject);
+            }
+            else
+            {
+                Debug.Log("Saving Building Data Now", wrapper);
+                await wrapper.saveDataV3.SaveGame();
+                Debug.Log("Finished Saving Building Data", wrapper);
+            }
             var building = entityHandle.LinkedGameObject.GetComponent<Building>();
             Debug.Log($"Started Saving building {building.name}", entityHandle.LinkedGameObject);
             var saveData = new BuildingSaveData(building);
-            return UniTask.FromResult(saveData);
+            return saveData;
         }
 
         public override async UniTask<bool> LoadDataIntoEntity(EntityHandle entityHandle, BuildingSaveData data)
         {
             var building = entityHandle.LinkedGameObject.GetComponent<Building>();
             Debug.Log($"Started Loading building {building.name}", entityHandle.LinkedGameObject);
-            
-            
+
+            var wrapper = entityHandle.LinkedGameObject.GetComponent<BuildingSaveDataWrapper>();
+            if (wrapper == null)
+            {
+                Debug.LogError("Missing BuildingSaveDataWrapper on building", entityHandle.LinkedGameObject);
+                return false;
+            }
             building.IsFullyLoaded = false;
             var result = await data.LoadAsync(building);
+            var result2 =  await wrapper.saveDataV3.LoadGame();
+            if(!result) Debug.LogError("Failed to Load Building Save Data", building);
+            if (!result2) Debug.LogError("Tilemaps Save Data Failed to load in building", building);
             building.IsFullyLoaded = true;
             
-            if (!result) Debug.LogError("Failed to load building", building);
+            if (!result || !result2) Debug.LogError("Failed to load building", building);
             Debug.Log($"Finished Loading building {building.name}", entityHandle.LinkedGameObject);
             
             return result;

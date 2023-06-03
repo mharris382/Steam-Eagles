@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using CoreLib;
+using Cysharp.Threading.Tasks;
 using Game;
 using SaveLoad;
 using Sirenix.OdinInspector;
@@ -13,7 +15,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
-
+using System.Linq;
 public class UIMainMenu : MonoBehaviour
 {
     public int startSceneSinglePlayer = 2;
@@ -63,6 +65,9 @@ public class UIMainMenu : MonoBehaviour
 
     [ShowInInspector, ReadOnly]
     private GlobalSaveLoader _saveLoader;
+
+    private CoroutineCaller coroutineCaller;
+    private GlobalSavePath _savePath;
 
     [Serializable]
     public class UIPanelGroup
@@ -222,10 +227,12 @@ public class UIMainMenu : MonoBehaviour
     }
 
     [Inject]
-    public void InjectSaveLoader(GlobalSaveLoader saveLoader)
+    public void InjectSaveLoader(GlobalSaveLoader saveLoader, CoroutineCaller coroutineCaller, GlobalSavePath savePath)
     {
         Debug.Log("Injecting save loader");
         _saveLoader = saveLoader;
+        _savePath = savePath;
+        this.coroutineCaller = coroutineCaller;
     }
     
     private void Awake()
@@ -325,20 +332,26 @@ public class UIMainMenu : MonoBehaviour
     {
         Application.Quit();   
     }
-    
+    public string GetFullSavePath()
+    {
+        return !_savePath.FullSaveDirectoryPath.StartsWith(Application.persistentDataPath)
+            ? Path.Combine(Application.persistentDataPath, _savePath.FullSaveDirectoryPath)
+            : _savePath.FullSaveDirectoryPath;
+    }
     public void OnContinueButton()
     {
         if (_saveLoader != null)
         {
-            _saveLoader.LoadGame(res =>
+            Debug.Log("Starting load game");
+            _saveLoader.LoadGame(GetFullSavePath(), result =>
             {
-                if (res)
+                if (result)
                 {
-                    Debug.Log("Continue button worked");
+                    Debug.Log("Load game successful");
                 }
                 else
                 {
-                    Debug.LogError("Continue button failed");
+                    Debug.LogError("Load game failed");
                 }
             });
         }

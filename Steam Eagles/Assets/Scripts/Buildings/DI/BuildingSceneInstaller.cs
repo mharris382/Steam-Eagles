@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Buildings.Rooms;
+using SaveLoad;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
@@ -13,7 +14,7 @@ namespace Buildings.DI
         public GameObject buildingGameObjectContext;
         public override void InstallBindings()
         {
-            
+            ReflectedInstaller<ILayerSpecificRoomTexSaveLoader>.Install(Container, ContainerLevel.SCENE);
         }
 
 

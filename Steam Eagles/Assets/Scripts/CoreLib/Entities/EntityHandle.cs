@@ -1,16 +1,14 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
 namespace CoreLib.Entities
 {
     
-    public class EntityHandle : IDisposable
+    public class EntityHandle
     {
-        private readonly Registry<EntityHandle> _entityHandle;
-
-        public class Registry : Registry<EntityHandle> { }
-        
+        private readonly IEntitySaveLoader _saveLoader;
         private GlobalSavePath _savePath;
         
         public GameObject LinkedGameObject { get; }
@@ -23,18 +21,17 @@ namespace CoreLib.Entities
         
         EntityHandle(GameObject linkedGameObject, string entityGUID, EntityType type)
         {
-            
             LinkedGameObject = linkedGameObject;
             EntityGUID = entityGUID;
             Type = type;
         }
         
         [Inject]
-        public EntityHandle(EntityInitializer initializer, Registry<EntityHandle> entityHandle) : this(initializer.gameObject, initializer.GetEntityGUID(),
+        public EntityHandle(EntityInitializer initializer,
+            IEntitySaveLoader saveLoader) : this(initializer.gameObject, initializer.GetEntityGUID(),
             initializer.GetEntityType())
         {
-            _entityHandle = entityHandle;
-            _entityHandle.Register(this);
+            _saveLoader = saveLoader;
         }
 
         public bool CanEntityBeSaved()
@@ -44,9 +41,8 @@ namespace CoreLib.Entities
             return LinkedGameObject != null;
         }
 
-        public void Dispose()
-        {
-            _entityHandle.Unregister(this);
-        }
+        
+        public UniTask<bool> Save() => _saveLoader.SaveEntity(this);
+        public UniTask<bool> Load() => _saveLoader.LoadEntity(this);
     }
 }

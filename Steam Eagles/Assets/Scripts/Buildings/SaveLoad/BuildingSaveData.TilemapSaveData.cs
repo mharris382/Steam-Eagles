@@ -2,14 +2,19 @@
 using System.Collections;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Buildings;
 using Buildings.Rooms;
 using Buildings.Tiles;
+using CoreLib;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
+using Debug = UnityEngine.Debug;
 
 namespace Buildings.SaveLoad
 {
@@ -283,10 +288,37 @@ public class TilemapsSaveDataV3
         var rooms = building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE).ToList();
     }
 
+    IEnumerable<Room> GetAllSavedRooms() => _building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE);
+    IEnumerable<RoomTilemapTextures> GetAllSavedRoomTextures() => GetAllSavedRooms().Select(t => _factory.Create(t));
     public async UniTask<bool> LoadGame()
     {
-        var textures =  _building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE).Select(t => _factory.Create(t))
-            .ToList();
+        var textures = GetAllSavedRoomTextures().ToList();
+#if LOAD_PARALLEL
+        return await LoadInParallel(textures);
+#else
+        return await LoadInSequence(textures);
+#endif
+    }
+
+    #region [Load Functions]
+
+    private async UniTask<bool> LoadInParallel(List<RoomTilemapTextures> textures)
+    {
+        var loadOps = from tex in textures select tex.LoadRoom(tex._room);
+        var results = await UniTask.WhenAll(loadOps);
+        var allSuccess = true;
+        for (int i = 0; i < results.Length; i++)
+        {
+            if (!results[i])
+            {
+                allSuccess = false;
+                Debug.Log($"Failed to load room {textures[i]._room.name}".ColoredRed(),textures[i]._room);
+            }
+        }
+        return allSuccess;
+    }
+    private async UniTask<bool> LoadInSequence(List<RoomTilemapTextures> textures)
+    {
         var allSuccess = true;
         foreach (var texture in textures)
         {
@@ -300,7 +332,9 @@ public class TilemapsSaveDataV3
         }
         return allSuccess;
     }
-            
+
+    #endregion
+
     public async UniTask<bool> SaveGame()
     {
         var textures =  _building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE).Select(t => _factory.Create(t))
@@ -310,30 +344,30 @@ public class TilemapsSaveDataV3
     }
 }
 
+
 public class RoomTilemapTextures
 {
     public readonly Room _room;
     private readonly GlobalSavePath _savePath;
+    private readonly RoomTexture.Factory _roomTextureFactory;
+    private readonly TexSaveLoadFactory _texSaveLoadFactory;
 
     private RoomTexture solidTexture;
     private RoomTexture pipeTexture;
     private RoomTexture wallTexture;
     private RoomTexture wireTexture;
 
-    public class Factory : PlaceholderFactory<Room, RoomTilemapTextures>
-    {
-    }
-
-    public RoomTilemapTextures(Room room, GlobalSavePath savePath)
+    public RoomTilemapTextures(Room room, GlobalSavePath savePath, RoomTexture.Factory roomTextureFactory)
     {
         _room = room;
         _savePath = savePath;
+        _roomTextureFactory = roomTextureFactory;
         var building = room.Building;
         var map = building.Map;
-        solidTexture = new RoomTexture(room, BuildingLayers.SOLID);
-        pipeTexture = new RoomTexture(room, BuildingLayers.PIPE);
-        wallTexture = new RoomTexture(room, BuildingLayers.WALL);
-        wireTexture = new RoomTexture(room, BuildingLayers.WIRES);
+        solidTexture =_roomTextureFactory.Create(room, BuildingLayers.SOLID);
+        pipeTexture = _roomTextureFactory.Create(room, BuildingLayers.PIPE);
+        wallTexture = _roomTextureFactory.Create(room, BuildingLayers.WALL);
+        wireTexture = _roomTextureFactory.Create(room, BuildingLayers.WIRES);
     }
 
     IEnumerable<RoomTexture> RoomTextures()
@@ -347,123 +381,270 @@ public class RoomTilemapTextures
     public async UniTask<bool> LoadRoom(Room room)
     {
         var success = true;
-        foreach (var task in RoomTextures().Select(t => t.LoadRoom(room, _savePath.FullSaveDirectoryPath)))
-        {
-            var result = await task;
-            if (!result)
-            {
-                success = false;
-            }
-        }
-        Debug.Log($"Finished loading room {room.name}");
+        var loadTasks = from roomTex in RoomTextures() 
+                                            select roomTex.LoadRoom(room, _savePath.FullSaveDirectoryPath);
+        var results  = await UniTask.WhenAll(loadTasks);
+        success = results.All(t => t);
         return success;
     }
 
     public async UniTask<bool> SaveRoom(Room room)
     {
-        var results = await UniTask.WhenAll(RoomTextures().Select(t => t.SaveRoom(room, _savePath.FullSaveDirectoryPath)));
+        var saveTasks = from roomTex in RoomTextures() 
+                                           select roomTex.SaveRoom(room, _savePath.FullSaveDirectoryPath);
+        var results = await UniTask.WhenAll(saveTasks);
         return results.All(t => t);
     }
 
-    [Serializable]
-    public class RoomTextureJsonData
-    {
-        [SerializeField] public List<TileBase> tiles;
-    }
+
     [Serializable]
     public class RoomTexture
     {
-       [SerializeField] private BuildingLayers _layer;
-       [SerializeField] private BoundsInt _bounds;
-       [SerializeField] private List<TileBase> _tiles;
-
-       public RoomTexture(Room room, BuildingLayers layer)
+       
+        [SerializeField] private BuildingLayers _layer;
+        [SerializeField] private BoundsInt _bounds;
+        [SerializeField] private List<TileBase> _tiles;
+        private readonly IRoomTilemapTextureSaveLoader _saveLoader;
+        
+        //used for debugging load times
+        private Stopwatch _operationTimer;
+        public RoomTexture(Room room, BuildingLayers layer, TexSaveLoadFactory texSaveLoadFactory)
         {
             _layer = layer;
+            _saveLoader = texSaveLoadFactory.Create(layer);
             var building = room.Building;
             var map = building.Map;
             _bounds = map.GetCellsForRoom(room, layer);
             _tiles = new List<TileBase>();
         }
 
-       public async UniTask<bool> SaveRoom(Room room, string saveDirectory)
-       {
-           var map = room.Building.Map;
-           var texture = new Texture2D(_bounds.size.x, _bounds.size.y);
-           Color[] pixels = new Color[_bounds.size.x * _bounds.size.y];
-           for (int x = _bounds.xMin; x < _bounds.xMax; x++)
-           {
-               for (int y = _bounds.yMin; y < _bounds.yMax; y++)
-               {
-                   var pos = new Vector3Int(x, y, 0);
-                   var tile = map.GetTile<EditableTile>(pos, _layer);
-                   var index = (x - _bounds.xMin) + (y - _bounds.yMin) * _bounds.size.x;
-                   pixels[index] = tile == null ? Color.black : Color.white;
-                   if (tile != null) _tiles.Add(tile);
-               }
-           }
-           texture.SetPixels(pixels);
-           texture.Apply();
-           byte[] pngData = texture.EncodeToPNG();
-           string filePath = Path.Combine(saveDirectory, $"{room.name}_{_layer}.png");
-           await File.WriteAllBytesAsync(filePath, pngData);
-           var jsonData = new RoomTextureJsonData() {
-               tiles = _tiles
-           };
-           string jsonFilePath = Path.Combine(saveDirectory, $"{room.name}_{_layer}.json");
-           await File.WriteAllTextAsync(jsonFilePath, JsonUtility.ToJson(jsonData));
-           Debug.Log($"Saved {filePath}");
-           return true;
-       }
+        public async UniTask<bool> SaveRoom(Room room, string saveDirectory)
+        {
+            Debug.Assert(_saveLoader != null);
+            LogOperationStarted(room, false);
+            var texture = GetTextureSaveData(room, out _tiles);
+            var pngData = texture.EncodeToPNG();
+            var jsonData = new JsonData() { tiles = _tiles };
+            
+            string filePath, jsonFilePath;
+            GetFilePaths(saveDirectory, room.name, out filePath, out jsonFilePath, false);
 
-       public async UniTask<bool> LoadRoom(Room room, string saveDirectory)
-       {
-            string filePath = Path.Combine(saveDirectory, $"{room.name}_{_layer}.png");
-            if (File.Exists(filePath) == false) return false;
-            Debug.Log($"Loading {filePath}"); 
-            string jsonFilePath = Path.Combine(saveDirectory, $"{room.name}_{_layer}.json");
-            string jsonString = await File.ReadAllTextAsync(jsonFilePath);
-            var jsonData = JsonUtility.FromJson<RoomTextureJsonData>(jsonString);
-            this._tiles = jsonData.tiles;
-            byte[] imageData = await File.ReadAllBytesAsync(filePath);
-            Debug.Log($"Finished reading from {filePath}"); 
-            Texture2D texture = new Texture2D(_bounds.size.x, _bounds.size.y);
-            if (!texture.LoadImage(imageData))
+            var task1 = File.WriteAllBytesAsync(filePath, pngData);
+            var task2 = File.WriteAllTextAsync(jsonFilePath, JsonUtility.ToJson(jsonData));
+            
+            await task1;
+            await task2;
+            LogOperationFinished(room, false, true);
+            return true;
+        }
+
+        public async UniTask<bool> LoadRoom(Room room, string saveDirectory)
+        {
+            Debug.Assert(_saveLoader != null);
+            LogOperationStarted(room, true);
+            string filePath, jsonFilePath;
+            if (!GetFilePaths(saveDirectory, room.name, out filePath, out jsonFilePath, true))
             {
-                Debug.LogError($"Failed to load image data: {filePath}");
+                LogFailureReason(room, true, $"Failed to get file paths for {saveDirectory}\nimage path:{filePath}\njson path: {jsonFilePath}");
                 return false;
             }
+            await LoadTilesFromJson(jsonFilePath);
+            var texture = await LoadTextureFromPath(filePath);
+            if (texture == null)
+            {
+                LogFailureReason(room, true, $"Failed to load texture from path {filePath}");
+                return false;
+            }
+            return LoadData(room, texture, filePath);
+        }
+
+        #region [SAVE/LOAD HELPERS]
+
+        public bool GetFilePaths(string saveDirectory, string roomName, out string pngFilePath, out string jsonFilePath, bool fileMustExist)
+        {
+            pngFilePath = Path.Combine(saveDirectory, $"{roomName}_{_layer}.png");
+            jsonFilePath = Path.Combine(saveDirectory, $"{roomName}_{_layer}.json");
+            if(fileMustExist == false) return true;
+            return File.Exists(pngFilePath) && File.Exists(jsonFilePath);
+        }
+
+
+        #region [DEBUG HELPERS]
+
+        private void StartTimer()
+        {
+            _operationTimer = new Stopwatch();
+            _operationTimer.Start();
+        }
+
+        private void EndTimer()
+        {
+            _operationTimer.Stop();
+        }
+
+        private void LogFailureReason(Room room, bool isLoad, string reason) => Debug.LogError($"Failed to {(isLoad ? "Load" : "Save")} room {room.name}\n {reason.Bolded()}");
+
+        private void LogOperationFinished(Room room, bool isLoad, bool successful)
+        {
+            EndTimer();
+            LogOperationMsg(room, isLoad, $"{(successful ? "Successfully" : "Unsuccessfully")} Completed in {_operationTimer.ElapsedMilliseconds} ms");
+        }
+
+        private void LogOperationStarted(Room room, bool isLoad)
+        {
+            StartTimer();
+            LogOperationMsg(room, isLoad, "Starting");
+        }
+
+        private void LogOperationMsg(Room room, bool isLoad, string msg) => Debug.Log($"{msg} {(isLoad ? "Load" : "Save").Bolded() } of room {room.name}");
+
+            #endregion
+
+        #region [SAVE HELPERS]
+
+        Texture2D GetTextureSaveData(Room room, out List<TileBase> tiles)
+        {
+            tiles = new List<TileBase>();
+            var texture = new Texture2D(_bounds.size.x, _bounds.size.y);
+            Color[] pixels = new Color[_bounds.size.x * _bounds.size.y];
+            foreach (var tup in GetPositionsAndTilesFromRoom(room))
+            {
+                var color = GetColorForSaveData(tup.cell, tup.tile);
+                pixels[tup.pixIndex] = color;
+                if (tup.tile != null) tiles.Add(tup.tile);
+            }
+            texture.SetPixels(pixels);
             texture.Apply();
+            return texture;
+        }
+
+        IEnumerable<(Vector3Int cell, int pixIndex, TileBase tile)> GetPositionsAndTilesFromRoom(Room room)
+        {
+            var map = room.Building.Map;
+            var roomBounds = map.GetCellsForRoom(room, _layer);
+            for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
+            {
+                for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
+                {
+                    var pos = new Vector3Int(x, y, 0);
+                    var index = (x - roomBounds.xMin) + (y - roomBounds.yMin) * _bounds.size.x;
+                    var tile = map.GetTile<TileBase>(pos, _layer);
+                    yield return (pos, index, tile);
+                }
+            }
+        }
+
+        Color GetColorForSaveData(Vector3Int pos, TileBase tile)
+        {
+            var color = tile == null ? Color.clear : Color.white;
+            var prevColor = color;
+            _saveLoader.SavePositionDataToColor(pos, ref color);
+            if (color != prevColor) Debug.Log($"Color changed to {color} by save loader for layer: {_layer}");
+            return color;
+        }
+
+        #endregion
+        
+        #region [LOAD HELPERS]
+
+        private bool HasTile(Color color) => !(color.a < 0.001f);
+
+        private bool LoadData(Room room, Texture2D texture, string filePath)
+        {
             Color[] pixels = texture.GetPixels();
             int nextTile = 0;
+            bool failed = false;
+            foreach (var tup in GetCellsAndPixels(pixels))
+            {
+                if(!LoadSaveDataAtCell(room, ref nextTile, tup.cell, tup.pixel)) failed = true;
+            }
+            if(!failed)
+                Debug.Log($"Finished applying from {filePath}");
+            else
+                LogFailureReason(room, true,
+                    $"Number of tiles in json ({_tiles.Count} does not match number of tiles found in texture ({nextTile})");
+            LogOperationFinished(room, true, !failed);
+            return !failed;
+        }
+       
+
+        private bool LoadSaveDataAtCell(Room room, ref int nextTile, Vector3Int cell, Color pixel)
+        {
+            if (HasTile(pixel))
+            {
+                try
+                {
+                    var tile = _tiles[nextTile++];
+                    room.Building.Map.SetTile(cell, _layer, tile);
+                    _saveLoader.SetTile(cell, pixel, tile);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to load tile at {cell} {e}");
+                    return false;
+                }
+            }
+            else
+            {
+                _saveLoader.SetEmpty(cell, pixel);
+                room.Building.Map.SetTile(cell, _layer, null);
+            }
+            return true;
+        }
+
+        private IEnumerable<(Vector3Int cell, Color pixel)> GetCellsAndPixels(Color[] pixelData) => GetCellsAndPixels().Select(t => (t.cell, pixelData[t.pixelIndex]));
+
+        private IEnumerable<(Vector3Int cell, int pixelIndex)> GetCellsAndPixels()
+        {
             for (int x = _bounds.xMin; x < _bounds.xMax; x++)
             {
                 for (int y = _bounds.yMin; y < _bounds.yMax; y++)
                 {
                     var pos = new Vector3Int(x, y, 0);
                     var index = (x - _bounds.xMin) + (y - _bounds.yMin) * _bounds.size.x;
-                    var pixel = pixels[index];
-                    if (pixel != Color.black)
-                    {
-                        try
-                        {
-                            var tile = _tiles[nextTile++];
-                            room.Building.Map.SetTile(pos, _layer, tile as EditableTile);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError($"Failed to load tile at {pos} {e}");
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        room.Building.Map.SetTile(pos, _layer, null);
-                    }
+                    yield return (pos, index);
                 }
             }
-            Debug.Log($"Finished applying from {filePath}"); 
-            return true;
-       }
+        }
+
+        private async UniTask LoadTilesFromJson(string jsonFilePath)
+        {
+            string jsonString = await File.ReadAllTextAsync(jsonFilePath);
+            var jsonData = JsonUtility.FromJson<JsonData>(jsonString);
+            this._tiles = jsonData.tiles;
+        }
+
+        private async UniTask<Texture2D> LoadTextureFromPath(string imageFilePath)
+        {
+            byte[] imageData = await File.ReadAllBytesAsync(imageFilePath);
+            Debug.Log($"Finished reading from {imageFilePath}"); 
+            Texture2D texture = new Texture2D(_bounds.size.x, _bounds.size.y);
+            if (!texture.LoadImage(imageData))
+            {
+                Debug.LogError($"Failed to load image data: {imageFilePath}");
+                return  null;
+            }
+            texture.Apply();
+            return texture;
+        }
+
+        #endregion
+        
+        #endregion
+
+
+
+        public class Factory : PlaceholderFactory<Room, BuildingLayers, RoomTexture>
+        {
+            
+        }
+        
+        [Serializable]
+        public class JsonData
+        {
+            [SerializeField] public List<TileBase> tiles;
+        }
     }
+
+    public class Factory : PlaceholderFactory<Room, RoomTilemapTextures> { }
 }
