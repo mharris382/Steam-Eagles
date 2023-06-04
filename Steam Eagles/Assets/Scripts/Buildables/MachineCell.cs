@@ -13,6 +13,12 @@ namespace Buildables
         [SerializeField] private Vector2Int cellPosition;
         
         public Vector2Int CellPosition => cellPosition;
+
+        public Vector2Int BuildingSpacePosition
+        {
+            get;
+            set;
+        }
         public BuildableMachineBase BuildableMachineBase
         {
             get
@@ -49,6 +55,7 @@ namespace Buildables
             var position = cell + offset;
             _disposable = new CompositeDisposable();
             OnCellBuilt((Vector3Int)position, building);
+            BuildingSpacePosition = position;
         }
         
         /// <summary>

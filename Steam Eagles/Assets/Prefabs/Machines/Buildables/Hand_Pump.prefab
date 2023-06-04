@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 179607908368758155}
   - component: {fileID: 1226844166598349077}
   - component: {fileID: 5222301698812553266}
+  - component: {fileID: -1564302317915883063}
+  - component: {fileID: -8377815566534912536}
+  - component: {fileID: 4782790460991219672}
   m_Layer: 0
   m_Name: Hand_Pump
   m_TagString: Untagged
@@ -100,6 +103,50 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-1564302317915883063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3923163384471129829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e4322bdd574ee2a5b58424ef09533a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  producerCell: {fileID: 208267055863175350}
+--- !u!114 &-8377815566534912536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3923163384471129829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 962ce8fd69874232acec4aaf8c07b20f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 2
+  virtualCamera: {fileID: 0}
+  controlHint: Pump Steam
+  hyperPump: {fileID: -1564302317915883063}
+  animator: {fileID: 5222301698812553266}
+  animationName: Hand Pump Use
+--- !u!114 &4782790460991219672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3923163384471129829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 2
 --- !u!1 &7831147022473433406
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,8 +435,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 208267055863175350}
   m_SourcePrefab: {fileID: 100100000, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+--- !u!1 &7535873304196324993 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1158989908035668218, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+  m_PrefabInstance: {fileID: 8683296296196511355}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &208267055863175350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7535873304196324993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d22897c737e45e088857756f161677a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellPosition: {x: 0, y: 0}
+  gasTargetAmount: 1
+  onGasOutput:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &7535873304196325055 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1158989908035668164, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}

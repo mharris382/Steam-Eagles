@@ -9,7 +9,7 @@ namespace Buildables.Installers
     {
         public override void InstallBindings()
         {
-            
+            HypergasInstaller.Install(Container);
         }
     }
 

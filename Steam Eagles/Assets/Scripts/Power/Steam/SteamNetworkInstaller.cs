@@ -1,4 +1,6 @@
 using Buildings;
+using Power;
+using Power.Steam.Core;
 using Power.Steam.Network;
 using UnityEngine;
 using Zenject;
@@ -11,6 +13,7 @@ public class SteamNetworkInstaller : MonoInstaller
         Container.Bind<INetwork>().FromSubContainerResolve()
             .ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
+        SteamIO.Installer.Install(Container);
     }
     
     
