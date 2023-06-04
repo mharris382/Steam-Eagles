@@ -37,7 +37,7 @@ namespace Buildables
             var position = Building.Map.CellToWorld((Vector3Int)producerCell.BuildingSpacePosition, BuildingLayers.PIPE);
             var cellSize = Building.Map.GetCellSize(BuildingLayers.PIPE);
             var offset = cellSize / 2f;
-            Gizmos.DrawWireCube(position + (Vector3)offset, cellSize);
+            Gizmos.DrawCube(position + (Vector3)offset, cellSize);
         }
     }
 }

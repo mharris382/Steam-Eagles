@@ -12,6 +12,9 @@ public class SteamNetworkInstaller : MonoInstaller
         //Power.Steam.Network.SteamNetworkInstaller.Install(Container);
         Container.Bind<INetwork>().FromSubContainerResolve()
             .ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        Container.Bind<SteamProducers>().AsSingle().NonLazy();
+        Container.Bind<SteamConsumers>().AsSingle().NonLazy();
+
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
         SteamIO.Installer.Install(Container);
     }

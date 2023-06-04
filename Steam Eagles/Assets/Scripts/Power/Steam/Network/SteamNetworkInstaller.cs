@@ -14,9 +14,7 @@ namespace Power.Steam.Network
          Container.Bind<ISteamEventHandling>().To<SteamNetworkEventHandler>().AsSingle().NonLazy();
          Container.BindInterfacesTo<NetworkSteamProcessing>().AsSingle().NonLazy();
          Container.Bind<INetwork>().To<SteamNetwork>().AsSingle().NonLazy();
-         Container.Bind<SteamProducers>().AsSingle().NonLazy();
-         Container.Bind<SteamConsumers>().AsSingle().NonLazy();
-
+         
          // Container.BindFactory<Vector2Int, SteamState, SteamState.Factory>().AsSingle().NonLazy();
          // Container.BindFactory<Vector2Int, Vector2Int, SteamFlow, SteamFlow.Factory>().AsSingle().NonLazy();
         }

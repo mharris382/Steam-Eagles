@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Power.Steam.Network
 {
@@ -30,10 +32,11 @@ namespace Power.Steam.Network
                 _systems.Remove(pos);
             }
         }
+        public int Count => _systems.Count;
     }
     public class SteamProducers : SteamSystems<ISteamProducer>{}
     public class SteamConsumers : SteamSystems<ISteamConsumer>{}
-    public class SteamNetwork : INetwork
+    public class SteamNetwork : INetwork, ITickable
     {
         private readonly NodeHandle.Factory _nodeHandleFactory;
         private readonly NodeRegistry _nodeRegistry;
@@ -43,6 +46,7 @@ namespace Power.Steam.Network
         private readonly ISteamEventHandling _steamEventHandling;
         private readonly SteamProducers _producers;
         private readonly SteamConsumers _consumers;
+        private readonly CoroutineCaller _coroutineCaller;
 
 
         public SteamNetwork(
@@ -53,7 +57,7 @@ namespace Power.Steam.Network
             ISteamProcessing steamProcessing, 
             ISteamEventHandling steamEventHandling, 
             SteamProducers producers,
-            SteamConsumers consumers)
+            SteamConsumers consumers, CoroutineCaller coroutineCaller)
         {
             this._nodeHandleFactory = nodeHandleFactory;
             this._nodeRegistry = nodeRegistry;
@@ -63,6 +67,17 @@ namespace Power.Steam.Network
             _steamEventHandling = steamEventHandling;
             _producers = producers;
             _consumers = consumers;
+            _coroutineCaller = coroutineCaller;
+            _coroutineCaller.StartCoroutine(TickSelf());
+        }
+
+        IEnumerator TickSelf()
+        {
+            while (true)
+            {
+                Tick();
+                yield return null;
+            }
         }
 
         public NodeHandle AddNode(Vector2Int position, NodeType nodeType) => _networkTopology.AddNode(position, nodeType);
@@ -120,6 +135,13 @@ namespace Power.Steam.Network
         public void RemoveProducer(Vector2Int position)
         {
             _producers.RemoveSystem(position);
+        }
+
+        public void Tick()
+        {
+            int producerCount = _producers.Count;
+            int consumerCount = _consumers.Count;
+            Debug.Log($"Ticking SteamNetwork BITCHES!\tProducer Count= {producerCount}\tConsumer Count= {consumerCount}");
         }
     }
 

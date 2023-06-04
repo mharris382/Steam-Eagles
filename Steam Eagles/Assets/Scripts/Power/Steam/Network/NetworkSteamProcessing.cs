@@ -5,11 +5,15 @@ namespace Power.Steam.Network
 {
     public class NetworkSteamProcessing  : ISteamProcessing
     {
+        public SteamConsumers SteamConsumers { get; }
         private readonly INetworkTopology _networkTopology;
-
-        public NetworkSteamProcessing(INetworkTopology networkTopology)
+        private readonly SteamProducers _steamProducers;
+        private readonly SteamConsumers _steamConsumers;
+        public NetworkSteamProcessing(INetworkTopology networkTopology, SteamProducers steamProducers, SteamConsumers steamConsumers)
         {
+            SteamConsumers = steamConsumers;
             _networkTopology = networkTopology;
+            _steamProducers = steamProducers;
         }
         public void UpdateSteamState(float deltaTime)
         {

@@ -16,8 +16,7 @@ namespace Buildables
 
         public Vector2Int BuildingSpacePosition
         {
-            get;
-            set;
+            get => (Vector2Int)BuildableMachineBase.Building.Map.WorldToCell(transform.position, BuildingLayers.PIPE);
         }
         public BuildableMachineBase BuildableMachineBase
         {
@@ -55,7 +54,6 @@ namespace Buildables
             var position = cell + offset;
             _disposable = new CompositeDisposable();
             OnCellBuilt((Vector3Int)position, building);
-            BuildingSpacePosition = position;
         }
         
         /// <summary>
