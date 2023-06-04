@@ -1,4 +1,5 @@
-﻿using Buildings;
+﻿using System;
+using Buildings;
 using Power.Steam;
 using UniRx;
 using UnityEngine;
@@ -33,6 +34,26 @@ namespace Buildables
         {
             Log($"{BuildableMachineBase.name} just produced {amount} gas from {name}");
             onGasOutput?.Invoke(amount);
+        }
+
+
+        private void OnDrawGizmos()
+        {
+            var machine = BuildableMachineBase;
+            if (machine == null) return;
+            var building = machine.Building;
+            if (building == null)
+            {
+                DrawGizmosForPrefab(machine);
+            }
+        }
+
+        private void DrawGizmosForPrefab(BuildableMachineBase machine)
+        {
+            var size = machine.MachineGridSize;
+            var position = new Vector3(CellPosition.x, CellPosition.y);
+            Gizmos.color = GizmoColor;
+            Gizmos.DrawCube(position , Vector3.one);
         }
     }
 }

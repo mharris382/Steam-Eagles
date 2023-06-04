@@ -65,6 +65,7 @@ namespace Buildings.MyEditor
                 if(roomCameraWrapper.HasCamera==false)
                 {
                     var vCam = roomCameraWrapper.VCam;
+                    if (vCam == null) continue;
                     var nearClipPlane = vCam.m_Lens.NearClipPlane;
                     var farClipPlane = vCam.m_Lens.FarClipPlane;
                     if (!nearClipPlanes.TryGetValue(nearClipPlane, out var list))
@@ -143,11 +144,41 @@ namespace Buildings.MyEditor
             private CinemachineVirtualCamera _vCam;
 
             public CinemachineVirtualCamera VCam => RoomVirtualCamera;
+            
+            [HorizontalGroup("Follow Camera")]
             [ShowInInspector]
+            [LabelText("Is Follow")]
             public bool IsCameraDynamic
             {
-                get => _room.isRoomCameraDynamic;
-                set => _room.isRoomCameraDynamic = value;
+                get => _room.roomCameraConfig.IsDynamic;
+                set => _room.roomCameraConfig.IsDynamic = value;
+            }
+
+            bool IsCameraValid(bool isDynamic, ref string msg)
+            {
+                if (!isDynamic) return true;
+                
+                if (VCam == null)
+                {
+                    msg = "No camera found";
+                    return false;
+                }
+
+                var framingTransposer = VCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                if (framingTransposer == null)
+                {
+                    msg = "No framing transposer found on camera!";
+                    return false;
+                }
+
+                return true;
+            }
+
+            [HorizontalGroup("Follow Camera")]
+            [Button]
+            void FixFollowCamera()
+            {
+                
             }
             
             [ShowInInspector]

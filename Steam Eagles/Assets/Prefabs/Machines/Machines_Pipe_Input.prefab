@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7136242161487415563}
   - component: {fileID: 7136242161487415562}
-  - component: {fileID: 5964552863735594616}
+  - component: {fileID: 3374716748081034153}
   m_Layer: 0
   m_Name: Machines_Pipe_Input
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7136242161487415562
 SpriteRenderer:
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5964552863735594616
+--- !u!114 &3374716748081034153
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,8 +94,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7136242161487415797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6ef6e8e2b954d978fcf5356843b4972, type: 3}
+  m_Script: {fileID: 11500000, guid: c4216cea74ea4dd1ba823b6d994e45f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  amount: 1000
+  cellPosition: {x: 0, y: 1}
+  gasTargetAmount: 1
+  onGasInput:
+    m_PersistentCalls:
+      m_Calls: []

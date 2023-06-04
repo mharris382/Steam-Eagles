@@ -4,6 +4,7 @@ using System.Linq;
 using Buildings.Rooms;
 using Buildings.Tiles;
 using QuikGraph.Algorithms;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
@@ -120,6 +121,13 @@ namespace Buildings
 
         private readonly Dictionary<BuildingLayers, Vector2> _layerToCellSize;
         private readonly Dictionary<BuildingLayers, Tilemap> _layerToTilemap;
+        private readonly Dictionary<BuildingLayers, BuildingMapEvents> _layerToEvents = new ();
+        class BuildingMapEvents
+        {
+            public Subject<(Vector3Int cell, TileBase tile)> onTileChanged = new Subject<(Vector3Int cell, TileBase)>();
+            public IObservable<(Vector3Int cell, TileBase tile)> OnTileSet => onTileChanged.Where(t => t.tile != null);
+            public IObservable<Vector3Int> OnTileCleared => onTileChanged.Where(t => t.tile == null).Select(t => t.cell);
+        }
 
         public BuildingGraphs BuildingGraphs { get; }
 
@@ -268,9 +276,13 @@ namespace Buildings
             tm.SetTile(cell.cell, tile);
             _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
             var room = GetRoom(cell.cell, cell.layers);
+            
+            var buildingEvents = GetBuildingMapEvents(cell.layers);
+            buildingEvents.onTileChanged.OnNext((cell.cell, tile));
+            
             var roomEvents = room.GetComponent<RoomEvents>();
             Debug.Assert(roomEvents != null, room);
-            roomEvents?.OnTileSet(cell.cell, cell.layers, tile);
+            roomEvents.OnTileSet(cell.cell, cell.layers, tile);
         }
         
         public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);
@@ -279,10 +291,6 @@ namespace Buildings
 
         public void SetTile(Vector3Int cell, EditableTile tile)
         {
-            if (tile == null)
-            {
-                throw new NullReferenceException("Cannot clear cell by setting tile to null. If this was the intent use overload \'SetTile(cell, layer, null)\' instead");
-            }
             var layer = tile.GetLayer();
             SetTile(cell, layer, tile);
             
@@ -292,6 +300,20 @@ namespace Buildings
 
         public IEnumerable<Vector3Int> GetAllCells(BuildingLayers layers) => _cellToRoomMaps[_layerToCellSize[layers]].GetAllCells().Select(t => t.cell);
 
+        private BuildingMapEvents GetBuildingMapEvents(BuildingLayers layers)
+        {
+            if (!_layerToEvents.TryGetValue(layers, out var bme))
+            {
+                _layerToEvents.Add(layers, bme = new BuildingMapEvents());
+            }
+            return bme;
+        }
+
+
+        public IObservable<Vector2Int> OnTileCleared2D(BuildingLayers layers) => OnTileCleared(layers).Select(t => (Vector2Int)t);
+        public IObservable<Vector3Int> OnTileCleared(BuildingLayers layers) => GetBuildingMapEvents(layers).OnTileCleared;
+        public IObservable<(Vector2Int cell, TileBase tile)> OnTileSet2D(BuildingLayers layers) => OnTileSet(layers).Select(t => ((Vector2Int)t.cell, t.tile));
+        public IObservable<(Vector3Int cell, TileBase tile)> OnTileSet(BuildingLayers layers) => GetBuildingMapEvents(layers).OnTileSet;
     }
 
 

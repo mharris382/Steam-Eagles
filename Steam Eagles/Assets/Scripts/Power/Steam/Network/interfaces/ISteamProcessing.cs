@@ -14,6 +14,9 @@ namespace Power.Steam.Network
         void UpdateSteamState(float deltaTime);
         
         bool IsBlocked(Vector2Int position);
+        
+        
+        void LoadSteamStateForTexture(BoundsInt cellBounds, Texture2D saveTexture);
     }
     
     

@@ -40,7 +40,8 @@ namespace Buildings.BuildingTilemaps
                 Debug.Assert(_deconstructionPickupSpawners.ContainsKey(tile),
                     $"Destructable tile ({tile.name}) found on tilemap ({name}, Type:{this.GetType().Name}), but no pickup spawner found for it.", this);
                 _deconstructionPickupSpawners[tile].SpawnLocal(transform, Tilemap.CellToLocal(cellPosition), new DestructParams(default, default));
-                Tilemap.SetTile(cellPosition, null);
+                Building.Map.SetTile(cellPosition, this.Layer, null);
+                //Tilemap.SetTile(cellPosition, null);
                 return true;
             }
             else

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Power.Steam.Network
@@ -9,6 +10,7 @@ namespace Power.Steam.Network
         private readonly NodeHandle.Factory _nodeHandleFactory;
         private readonly NodeRegistry _nodeRegistry;
         private readonly GridGraph<NodeHandle> _gridGraph;
+        private readonly Dictionary<Vector2Int, NodeHandle> _usedPositions = new();
 
         public SteamNetworkTopology(
             NodeHandle.Factory nodeHandleFactory,
@@ -22,28 +24,29 @@ namespace Power.Steam.Network
         public NodeHandle AddNode(Vector2Int position, NodeType nodeType)
         {
             var handle = _nodeHandleFactory.Create((Vector3Int)position, nodeType);
-            throw new NotImplementedException();
+            _usedPositions.Add(position, handle);
             return handle;
         }
 
         public void RemoveNode(Vector2Int position)
         {
-            throw new NotImplementedException();
+            if (_usedPositions.ContainsKey(position))
+            {
+                _nodeRegistry.Unregister(_usedPositions[position]);
+                _usedPositions.Remove(position);
+            }
         }
 
         public void ConnectNodes(Vector2Int positionA, Vector2Int positionB)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void DisconnectNodes(Vector2Int positionA, Vector2Int positionB)
         {
-            throw new NotImplementedException();
+            
         }
 
-        public IEnumerable<Vector2Int> GetUsedPositions()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<Vector2Int> GetUsedPositions() => _gridGraph.Graph.Vertices.Select(t => (Vector2Int)t.Position);
     }
 }

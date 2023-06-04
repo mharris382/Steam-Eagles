@@ -1,7 +1,12 @@
+using System.Linq;
 using Buildings;
+using Buildings.Rooms;
+using Cysharp.Threading.Tasks;
 using Power;
+using Power.Steam;
 using Power.Steam.Core;
 using Power.Steam.Network;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -9,17 +14,73 @@ public class SteamNetworkInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        //Power.Steam.Network.SteamNetworkInstaller.Install(Container);
-        Container.Bind<INetwork>().FromSubContainerResolve()
-            .ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
-        Container.Bind<SteamProducers>().AsSingle().NonLazy();
-        Container.Bind<SteamConsumers>().AsSingle().NonLazy();
+        
+        
+        Container.BindInterfacesAndSelfTo<SteamNetworkState>().AsSingle().NonLazy();
 
-        Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
+        //binds Producers and Consumers as well as Producer Factory and Consumer Factory
         SteamIO.Installer.Install(Container);
+        
+        Container.Bind(typeof(INetwork), typeof(NodeRegistry)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        
+        
+        Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
     }
     
-    
+    public class SteamNetworkTilemapBridge : IInitializable
+    {
+        private readonly Building _building;
+        private readonly INetwork _network;
+        private readonly CoroutineCaller _coroutineCaller;
+
+        public SteamNetworkTilemapBridge(Building building, INetwork network, CoroutineCaller coroutineCaller)
+        {
+            _building = building;
+            _network = network;
+            _coroutineCaller = coroutineCaller;
+        }
+        public void Initialize()
+        {
+            var map = _building.Map;
+            _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
+            {
+                Debug.Log("Waiting for building to load before initializing steam network", _building);
+                await UniTask.WaitUntil(() => _building.IsFullyLoaded);
+                Debug.Log("Building loaded, initializing steam network", _building);
+                var pipeCells = _building.Map.GetAllNonEmptyCells(BuildingLayers.PIPE).Select(t => (Vector2Int)t).ToArray();
+                Debug.Log($"Found {pipeCells.Length} pipe cells", _building);
+                InitializeNetwork(pipeCells);
+                var rooms = _building.Map.GetAllBoundsForLayer(BuildingLayers.PIPE);
+                Debug.Log("Starting state load");
+                await UniTask.WhenAll(rooms.Select(t => (t.Item1, t.Item2.GetComponent<RoomTextures>())).Select(t => LoadRoomFromTexture(t.Item1, t.Item2)));
+                Debug.Log("Finished state load");
+            }));
+            
+            map.OnTileCleared2D(BuildingLayers.PIPE).Where(_network.HasPosition).Subscribe(_network.RemoveNode).AddTo(_building);
+            map.OnTileSet2D(BuildingLayers.PIPE).Where(t => !_network.HasPosition(t.cell)).Subscribe(t => _network.AddNode(t.cell, NodeType.PIPE)).AddTo(_building);
+        }
+
+        private async UniTask LoadRoomFromTexture(BoundsInt boundsInt, RoomTextures roomTextures)
+        {
+            Debug.Log($"Waiting For Room Textures {roomTextures.name} PIPE Texture assignment", _building);
+            await UniTask.WaitUntil(() => roomTextures.PipeTexture != null);
+            Debug.Log($"Room Textures {roomTextures.name} PIPE Texture assignment complete", _building);
+            _network.LoadSteamStateForTexture(boundsInt, roomTextures.PipeTexture);
+        }
+
+        private void InitializeNetwork(Vector2Int[] pipeCells)
+        {
+            for (int i = 0; i < pipeCells.Length; i++)
+            {
+                _network.AddNode(pipeCells[i], NodeType.PIPE);
+            }
+        }
+
+        
+
+    }
+
     class Tester : IInitializable
     {
         private readonly INetwork _steamNetwork;

@@ -44,7 +44,6 @@ using Sirenix.OdinInspector;
         
         [SerializeField] private Events events = new Events();
         public GameObject roomCamera;
-        public bool isRoomCameraDynamic;
         public  RoomCameraConfig roomCameraConfig;
         [EnumToggleButtons]
         public AccessLevel accessLevel = AccessLevel.EVERYONE;

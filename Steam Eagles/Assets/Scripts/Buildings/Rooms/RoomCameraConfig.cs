@@ -23,6 +23,11 @@ namespace Buildings.Rooms
         }
 
 
+        public bool IsDynamic
+        {
+            get => followPlayer;
+            set => followPlayer = value;
+        }
         public Vector3 GetCameraPosition(Room room, Vector3 characterPositionWs,
             Vector3 cameraPositionWs)
         {

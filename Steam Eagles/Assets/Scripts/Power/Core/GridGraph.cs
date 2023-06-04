@@ -37,6 +37,7 @@ public class GridGraph<T>
         set => _canAddEdge = value;
     }
     public bool HasNode(Vector3Int node) => _usedNodes.ContainsKey(node);
+    public bool HasNode(Vector2Int node) => HasNode((Vector3Int)node);
     
     public bool AddNode(GridNode node)
     {
@@ -102,6 +103,8 @@ public class GridGraph<T>
         if (!HasNode(position)) return null;
         return _usedNodes[position];
     }
+
+    public GridNode GetNode(Vector2Int position) => GetNode((Vector3Int)position);
     public  int GetNeighborCount(Vector3Int position)
     {
         int cnt = 0;
@@ -129,6 +132,12 @@ public class GridGraph<T>
         }
         return cnt;
     }
+    public bool RemoveNode(Vector3Int position)
+    {
+        if (!HasNode(position)) return false;
+        return RemoveNode(_usedNodes[position]);
+    }
+    public bool RemoveNode(Vector2Int position) => RemoveNode((Vector3Int)position);
     public bool RemoveNode(GridNode node)
     {
         if(!HasNode(node.Position))return false;
