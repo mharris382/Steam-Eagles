@@ -3,18 +3,55 @@ using System.Collections.Generic;
 using Buildings.Tiles;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Buildings
 {
     [Serializable]
     public class TileAssets
     {
+        [LabelWidth(75)]  [Required] public LadderTile ladderTile;
+        [LabelWidth(75)]  [Required] public WireTile wireTile;
         [LabelWidth(75)]  [Required] public SolidTile solidTile;
         [LabelWidth(75)]  public WallTilePair wallTiles;
         [LabelWidth(75)]  public PipeTilePair pipeTiles;
 
 
-        
+        public TileBase GetDefaultTile(BuildingLayers layer)
+        {
+            switch (layer)
+            {
+                case BuildingLayers.NONE:
+                    break;
+                case BuildingLayers.WALL:
+                    return wallTiles.repairedTile;
+                    break;
+                case BuildingLayers.FOUNDATION:
+                case BuildingLayers.SOLID:
+                    return solidTile;
+                    break;
+                case BuildingLayers.PIPE:
+                    return pipeTiles.repairedTile;
+                    break;
+                case BuildingLayers.COVER:
+                    break;
+                case BuildingLayers.PLATFORM:
+                    break;
+                case BuildingLayers.DECOR:
+                    break;
+                case BuildingLayers.WIRES:
+                    return wireTile;
+                    break;
+                case BuildingLayers.LADDERS:
+                    return ladderTile;
+                    break;
+                case BuildingLayers.REQUIRED:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(layer), layer, null);
+            }
+            throw new NotImplementedException();
+        }
     }
 
     

@@ -31,7 +31,7 @@ namespace Buildings.MyEditor
         public float standardFarClipPlane = 1000f;
 
         [BoxGroup("Clip Planes")]
-        [Button]
+        [Button][ButtonGroup("Clip Planes/Buttons")]
         public void StandardizeClipPlanes()
         {
             foreach (var roomCamera in _roomList)
@@ -42,6 +42,16 @@ namespace Buildings.MyEditor
                     vcam.m_Lens.NearClipPlane = standardNearClipPlane;
                     vcam.m_Lens.FarClipPlane = standardFarClipPlane;
                 }
+            }
+        }
+        [Button][ButtonGroup("Clip Planes/Buttons")]
+        public void StandardizeAllClipPlanes()
+        {
+            var vcams = GameObject.FindObjectsByType<CinemachineVirtualCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var cinemachineVirtualCamera in vcams)
+            {
+                cinemachineVirtualCamera.m_Lens.NearClipPlane = standardNearClipPlane;
+                cinemachineVirtualCamera.m_Lens.FarClipPlane = standardFarClipPlane;
             }
         }
 

@@ -400,18 +400,22 @@ public class RoomTilemapTextures
     [Serializable]
     public class RoomTexture
     {
-       
+        private readonly TileAssets _tileAssets;
         [SerializeField] private BuildingLayers _layer;
         [SerializeField] private BoundsInt _bounds;
         [SerializeField] private List<TileBase> _tiles;
         private readonly IRoomTilemapTextureSaveLoader _saveLoader;
-        
+
         //used for debugging load times
         private Stopwatch _operationTimer;
-        public RoomTexture(Room room, BuildingLayers layer, TexSaveLoadFactory texSaveLoadFactory)
+
+        public RoomTexture(Room room, TileAssets tileAssets, BuildingLayers layer,
+            TexSaveLoadFactory texSaveLoadFactory)
         {
+            _tileAssets = tileAssets;
             _layer = layer;
             _saveLoader = texSaveLoadFactory.Create(layer);
+            Debug.Assert(_saveLoader != null);
             var building = room.Building;
             var map = building.Map;
             _bounds = map.GetCellsForRoom(room, layer);
@@ -425,13 +429,13 @@ public class RoomTilemapTextures
             var texture = GetTextureSaveData(room, out _tiles);
             var pngData = texture.EncodeToPNG();
             var jsonData = new JsonData() { tiles = _tiles };
-            
+
             string filePath, jsonFilePath;
             GetFilePaths(saveDirectory, room.name, out filePath, out jsonFilePath, false);
 
             var task1 = File.WriteAllBytesAsync(filePath, pngData);
             var task2 = File.WriteAllTextAsync(jsonFilePath, JsonUtility.ToJson(jsonData));
-            
+
             await task1;
             await task2;
             LogOperationFinished(room, false, true);
@@ -445,9 +449,11 @@ public class RoomTilemapTextures
             string filePath, jsonFilePath;
             if (!GetFilePaths(saveDirectory, room.name, out filePath, out jsonFilePath, true))
             {
-                LogFailureReason(room, true, $"Failed to get file paths for {saveDirectory}\nimage path:{filePath}\njson path: {jsonFilePath}");
+                LogFailureReason(room, true,
+                    $"Failed to get file paths for {saveDirectory}\nimage path:{filePath}\njson path: {jsonFilePath}");
                 return false;
             }
+
             await LoadTilesFromJson(jsonFilePath);
             var texture = await LoadTextureFromPath(filePath);
             if (texture == null)
@@ -458,13 +464,17 @@ public class RoomTilemapTextures
 
             var roomTextures = GetRoomTextures(room);
             roomTextures.AssignTexture(_layer, texture);
-            
+
             return LoadData(room, texture, filePath);
         }
-        
-        
 
-        #region [SAVE/LOAD HELPERS]
+        TileBase GetDefaultTile()
+        {
+            return _tileAssets.GetDefaultTile(_layer);
+        }
+
+
+    #region [SAVE/LOAD HELPERS]
 
         RoomTextures GetRoomTextures(Room room)
         {
@@ -588,8 +598,14 @@ public class RoomTilemapTextures
                 try
                 {
                     var tile = _tiles[nextTile++];
+                    Debug.Assert(_saveLoader != null);
+                    Debug.Assert(room.Building != null);
+                    Debug.Assert(room.Building.Map != null);
+                    if (tile == null) tile = GetDefaultTile();
+                    Debug.Assert(tile != null);
                     room.Building.Map.SetTile(cell, _layer, tile);
                     _saveLoader.SetTile(cell, pixel, tile);
+                    Debug.Log($"Loaded tile {tile.name} in {room.name}");
                 }
                 catch (Exception e)
                 {
