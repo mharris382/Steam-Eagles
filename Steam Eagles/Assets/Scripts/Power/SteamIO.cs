@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using CoreLib.Extensions;
+using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Power.Steam.Network;
 using UniRx;
 using UnityEngine;
@@ -17,6 +22,153 @@ namespace Power
                 Container.Bind<SteamConsumers>().AsSingle().NonLazy();
                 Container.BindFactory<Vector2Int, Func<float>, Action<float>, Producer, Producer.Factory>().AsSingle().NonLazy();
                 Container.BindFactory<Vector2Int, Func<float>, Action<float>, Consumer, Consumer.Factory>().AsSingle().NonLazy();
+                Container.Bind<Connections>().AsSingle().NonLazy();
+            }
+        }
+
+        public class Connections
+        {
+            private readonly NodeRegistry _nodeRegistry;
+
+            struct TrackedPosition : IEquatable<TrackedPosition>
+            {
+                public Vector2Int Position { get; }
+
+                public TrackedPosition(Vector2Int position)
+                {
+                    Position = position;
+                }
+
+                public TrackedPosition(Vector3Int position)
+                {
+                    Position = (Vector2Int)position;
+                }
+
+                public static implicit operator TrackedPosition(Vector2Int position) => new(position);
+                public static implicit operator Vector2Int(TrackedPosition position) => position.Position;
+                public static implicit operator TrackedPosition(Vector3Int position) => new(position);
+                public static implicit operator Vector3Int(TrackedPosition position) => (Vector3Int)position.Position;
+
+                public bool Equals(TrackedPosition other) => Position.Equals(other.Position);
+
+                public override bool Equals(object obj) => obj is TrackedPosition other && Equals(other);
+
+                public override int GetHashCode() => Position.GetHashCode();
+            }
+
+
+            private readonly Dictionary<TrackedPosition, Vector3Int> _positionToConnected = new();
+
+            [ItemCanBeNull]
+            private readonly Dictionary<Vector3Int, HashSet<TrackedPosition>> _connectedToPosition = new();
+
+            private readonly HashSet<Vector2Int> _unconnectedTracked = new();
+
+
+            public Connections(NodeRegistry nodeRegistry, SteamProducers producers, SteamConsumers consumers)
+            {
+                _nodeRegistry = nodeRegistry;
+                producers.OnSystemAdded.Select(t => t.Item1)
+                    .Merge(consumers.OnSystemAdded.Select(t => t.Item1))
+                    .Subscribe(AddTrackedPosition);
+                producers.OnSystemRemoved.Select(t => t.Item1)
+                    .Merge(consumers.OnSystemRemoved.Select(t => t.Item1))
+                    .Subscribe(RemoveTrackedPosition);
+                _nodeRegistry.OnValueAdded.Select(t => t.Position2D).Subscribe(OnNodeAdded);
+                _nodeRegistry.OnValueRemoved.Select(t => t.Position).Subscribe(OnNodeRemoved);
+            }
+
+            private void OnNodeAdded(Vector2Int position)
+            {
+                foreach (var neighbor in position.Neighbors())
+                {
+                    if (_unconnectedTracked.Contains(neighbor))
+                    {
+                        ConnectionPosition(neighbor, (Vector3Int)position);
+                    }
+                }
+            }
+
+            private void OnNodeRemoved(Vector3Int position)
+            {
+                if (_connectedToPosition.ContainsKey(position))
+                {
+                    foreach (var pos in GetConnectedTrackedPostions(position))
+                    {
+                        DisconnectPosition(pos);
+                    }
+                    GetConnectedTrackedPostions(position).Clear();
+                }
+            }
+
+            private void ConnectionPosition(Vector2Int tracked, Vector3Int position)
+            {
+                GetConnectedTrackedPostions(position).Add(tracked);
+                _positionToConnected[tracked] = position;
+            }
+
+            private void DisconnectPosition(Vector2Int tracked, bool tryReconnect = true)
+            {
+                if (_positionToConnected.ContainsKey(tracked))
+                {
+                    var prevConnected = _positionToConnected[tracked];
+                    GetConnectedTrackedPostions(prevConnected).Remove(tracked);
+                    if (tryReconnect && TryGetNewConnection(tracked, out var newConnected))
+                    {
+                        ConnectionPosition(tracked, newConnected);
+                    }
+                    else
+                    {
+                        _positionToConnected.Remove(tracked);
+                        _unconnectedTracked.Add(tracked);
+                    }
+                }
+            }
+
+            bool TryGetNewConnection(TrackedPosition tracked, out Vector3Int newConnected)
+            {
+                newConnected = Vector3Int.zero;
+                var adjacent = _nodeRegistry.GetAdjacentComponents(tracked).ToArray();
+                if(adjacent.Length > 0)
+                {
+                    newConnected = adjacent[0].node.Position;
+                    return true;
+                }
+                
+                return false;
+            }
+
+            private HashSet<TrackedPosition> GetConnectedTrackedPostions(Vector3Int from)
+            {
+                if (!_connectedToPosition.TryGetValue(from, out var connected))
+                {
+                    _connectedToPosition.Add(from, connected = new HashSet<TrackedPosition>());
+                }
+                return connected;
+            }
+
+            private void AddTrackedPosition(Vector2Int position)
+            {
+                if (TryGetNewConnection(position, out var newConnected))
+                {
+                    ConnectionPosition(position, newConnected);
+                }
+                else
+                {
+                    _unconnectedTracked.Add(position);
+                }
+            }
+            
+            private void RemoveTrackedPosition(Vector2Int position)
+            {
+                if(_unconnectedTracked.Contains(position))
+                {
+                    _unconnectedTracked.Remove(position);
+                }
+                else
+                {
+                    DisconnectPosition(position, tryReconnect:false);
+                }
             }
         }
         public class Consumer : ISteamConsumer, IDisposable

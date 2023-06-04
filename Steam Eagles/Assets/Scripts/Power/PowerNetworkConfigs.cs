@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Power
         }
         
         [Serializable]
-        public class SteamNetworkConfig
+        public class SteamNetworkConfig : ConfigBase
         {
             [Tooltip("How often the steam network should update it's state in seconds."), SuffixLabel("sec")]
             public float updateRate = 1f;
@@ -30,6 +31,9 @@ namespace Power
             public float minTemperature = 0f;
             
             public float pipeCapacity = 100f;
+            
+            
+            public int maximumNodesToProcessPerFrame = 100;
         }
     }
     

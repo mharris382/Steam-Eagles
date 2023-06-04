@@ -8,8 +8,9 @@ using Zenject;
 
 namespace Power.Steam.Network
 {
-    
-    public class SteamSystems<T>
+ 
+
+    public class SteamSystems<T> : IEnumerable<(Vector2Int cell, T value)>
     {
         private Dictionary<Vector2Int, T> _systems = new();
         
@@ -26,7 +27,7 @@ namespace Power.Steam.Network
         {
             _nodeRegistry = nodeRegistry;
             //whenever a node is removed, check if it was a connection
-        
+            
         }
 
         public bool TryGetConnection(Vector2Int vector2Int, out GridNode node)
@@ -36,6 +37,10 @@ namespace Power.Steam.Network
             {
                 node = _nodeRegistry.GetValue(vector2Int);
             }
+            var adjacent = _nodeRegistry.GetAdjacentComponents(vector2Int).ToArray();
+            if (adjacent.Length == 0)
+                return false;
+            node = adjacent[0].node;
             return false;
         }
 
@@ -57,8 +62,8 @@ namespace Power.Steam.Network
                 _systems.Remove(pos);
             }
         }
-        
-        
+
+      
         public int Count => _systems.Count;
 
         public IEnumerable<(Vector2Int cell, T value)> GetValues()
@@ -75,9 +80,14 @@ namespace Power.Steam.Network
             return _systems[pos];
         }
         public T GetSystem(Vector3Int pos) => GetSystem((Vector2Int) pos);
-        
-        
-        
+
+
+        public IEnumerator<(Vector2Int cell, T value)> GetEnumerator() => _systems.Select(kv => (kv.Key, kv.Value)).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
     public class SteamProducers : SteamSystems<ISteamProducer>{}
 

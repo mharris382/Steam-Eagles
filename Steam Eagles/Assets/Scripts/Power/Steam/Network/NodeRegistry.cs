@@ -16,6 +16,7 @@ namespace Power.Steam.Network
         };
         
         private readonly GridGraph<NodeHandle> _graph;
+        private Dictionary<Vector2Int, NodeHandle> _handles = new();
         public int nextGUID = 0;
         private Dictionary<GridNode, int> _nodeComponents = new();
         private bool _dirty;
@@ -35,6 +36,7 @@ namespace Power.Steam.Network
                 Debug.LogError($"Failed to add node at {value.Position}");
                 return;
             }
+            _handles.Add(value.Position2D, value);
             _dirty = true;
             base.AddValue(value);
         }
@@ -42,6 +44,7 @@ namespace Power.Steam.Network
         {
             _dirty = true;
             _graph.RemoveNode(value.Position);
+            _handles.Remove(value.Position2D);
             base.RemoveValue(value);
         }
 
@@ -83,6 +86,14 @@ namespace Power.Steam.Network
         public GridNode GetValue(Vector2Int position)
         {
             return _graph.GetNode(position);
+        }
+        public NodeHandle GetHandle(Vector2Int position)
+        {
+            if (!_handles.ContainsKey(position))
+            {
+                return null;
+            }
+            return _handles[position];
         }
         public bool HasValue(Vector2Int position)
         {

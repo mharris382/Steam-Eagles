@@ -23,6 +23,30 @@ namespace Power.Steam.Network
         }
         public NodeHandle AddNode(Vector2Int position, NodeType nodeType)
         {
+            if (_usedPositions.ContainsKey(position))
+            {
+                if (_usedPositions[position] != null)
+                {
+                    if (_usedPositions[position].NodeType == nodeType)
+                    {
+                        return _usedPositions[position];
+                    }
+
+                    if (nodeType != NodeType.PIPE)
+                    {
+                        _usedPositions.Remove(position);
+                    }
+                    else
+                    {
+                        return _usedPositions[position];
+                    }
+                }
+                else
+                {
+                    _usedPositions.Remove(position);
+                }
+                
+            }
             var handle = _nodeHandleFactory.Create((Vector3Int)position, nodeType);
             _usedPositions.Add(position, handle);
             return handle;

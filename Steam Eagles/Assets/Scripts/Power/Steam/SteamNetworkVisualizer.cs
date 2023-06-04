@@ -141,13 +141,27 @@ namespace Power.Steam
             public int Count => _dictionary.Count;
             public void Add(Vector3Int position, SpriteRenderer sr, T value)
             {
-                _dictionary.Add(position, (sr, value));
+                if (_updating)
+                {
+                    _addQueue.Enqueue((position, sr, value));
+                }
+                else
+                {
+                    _dictionary.Add(position, (sr, value));
+                }
             }
             public void Remove(Vector3Int position)
             {
-                var sr = GetSpriteRenderer(position);
-                visualizer.RemoveSpriteAtPosition(position);
-                _dictionary.Remove(position);
+                if (_updating)
+                {
+                    _removeQueue.Enqueue(position);
+                }
+                else
+                {
+                    var sr = GetSpriteRenderer(position);
+                    visualizer.RemoveSpriteAtPosition(position);
+                    _dictionary.Remove(position);
+                }
             }
             
             public SpriteRenderer GetSpriteRenderer(Vector3Int position) => _dictionary[position].Item1;
@@ -159,9 +173,14 @@ namespace Power.Steam
                 
             }
 
+            bool _updating;
+            Queue<Vector3Int> _removeQueue = new Queue<Vector3Int>();
+            Queue<(Vector3Int, SpriteRenderer, T)> _addQueue = new ();
             public IEnumerator SlowUpdate(int countPerFrame)
             {
                 int cnt = 0;
+                if(_dictionary.Count == 0)yield break;
+                _updating = true;
                 foreach (var position in GetPositions())
                 {
                     cnt++;
@@ -171,6 +190,16 @@ namespace Power.Steam
                         yield return null;
                     }
                     Update(position, GetSpriteRenderer(position), GetValue(position));
+                }
+                _updating = false;
+                
+                while (_removeQueue.Count > 0) 
+                    Remove(_removeQueue.Dequeue());
+                
+                while (_addQueue.Count > 0)
+                {
+                    var (position, sr, value) = _addQueue.Dequeue();
+                    Add(position, sr, value);
                 }
             }
         }

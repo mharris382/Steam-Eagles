@@ -1,12 +1,12 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Buildings;
-using Buildings.Rooms;
-using Cysharp.Threading.Tasks;
 using Power;
 using Power.Steam;
 using Power.Steam.Core;
 using Power.Steam.Network;
-using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -22,65 +22,12 @@ public class SteamNetworkInstaller : MonoInstaller
         SteamIO.Installer.Install(Container);
         
         Container.Bind(typeof(INetwork), typeof(NodeRegistry)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
-        
-        
+
+        Container.Bind<PowerNetworkConfigs.SteamNetworkConfig>().FromInstance(PowerNetworkConfigs.Instance.steamNetworkConfig).AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
     }
-    
-    public class SteamNetworkTilemapBridge : IInitializable
-    {
-        private readonly Building _building;
-        private readonly INetwork _network;
-        private readonly CoroutineCaller _coroutineCaller;
-
-        public SteamNetworkTilemapBridge(Building building, INetwork network, CoroutineCaller coroutineCaller)
-        {
-            _building = building;
-            _network = network;
-            _coroutineCaller = coroutineCaller;
-        }
-        public void Initialize()
-        {
-            var map = _building.Map;
-            _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
-            {
-                Debug.Log("Waiting for building to load before initializing steam network", _building);
-                await UniTask.WaitUntil(() => _building.IsFullyLoaded);
-                Debug.Log("Building loaded, initializing steam network", _building);
-                var pipeCells = _building.Map.GetAllNonEmptyCells(BuildingLayers.PIPE).Select(t => (Vector2Int)t).ToArray();
-                Debug.Log($"Found {pipeCells.Length} pipe cells", _building);
-                InitializeNetwork(pipeCells);
-                var rooms = _building.Map.GetAllBoundsForLayer(BuildingLayers.PIPE);
-                Debug.Log("Starting state load");
-                await UniTask.WhenAll(rooms.Select(t => (t.Item1, t.Item2.GetComponent<RoomTextures>())).Select(t => LoadRoomFromTexture(t.Item1, t.Item2)));
-                Debug.Log("Finished state load");
-            }));
-            
-            map.OnTileCleared2D(BuildingLayers.PIPE).Where(_network.HasPosition).Subscribe(_network.RemoveNode).AddTo(_building);
-            map.OnTileSet2D(BuildingLayers.PIPE).Where(t => !_network.HasPosition(t.cell)).Subscribe(t => _network.AddNode(t.cell, NodeType.PIPE)).AddTo(_building);
-        }
-
-        private async UniTask LoadRoomFromTexture(BoundsInt boundsInt, RoomTextures roomTextures)
-        {
-            Debug.Log($"Waiting For Room Textures {roomTextures.name} PIPE Texture assignment", _building);
-            await UniTask.WaitUntil(() => roomTextures.PipeTexture != null);
-            Debug.Log($"Room Textures {roomTextures.name} PIPE Texture assignment complete", _building);
-            _network.LoadSteamStateForTexture(boundsInt, roomTextures.PipeTexture);
-        }
-
-        private void InitializeNetwork(Vector2Int[] pipeCells)
-        {
-            for (int i = 0; i < pipeCells.Length; i++)
-            {
-                _network.AddNode(pipeCells[i], NodeType.PIPE);
-            }
-        }
-
-        
-
-    }
-
     class Tester : IInitializable
     {
         private readonly INetwork _steamNetwork;
@@ -98,4 +45,142 @@ public class SteamNetworkInstaller : MonoInstaller
             Debug.Log($"Initialized steam network for {_building.name}", _building);
         }
     }
+    
+    public class SteamNetworkBusinessLogic : IInitializable
+    {
+        private readonly NodeRegistry _pipes;
+        private readonly SteamConsumers _consumers;
+        private readonly SteamProducers _producers;
+        private readonly CoroutineCaller _coroutineCaller;
+        private readonly PowerNetworkConfigs.SteamNetworkConfig _config;
+
+        public SteamNetworkBusinessLogic(NodeRegistry pipes, SteamConsumers consumers, SteamProducers producers, 
+            CoroutineCaller coroutineCaller, PowerNetworkConfigs.SteamNetworkConfig config)
+        {
+            _pipes = pipes;
+            _consumers = consumers;
+            _producers = producers;
+            _coroutineCaller = coroutineCaller;
+            _config = config;
+        }
+
+        public void Initialize()
+        {
+            _coroutineCaller.StartCoroutine(SteamNetworkLogic());
+        }
+        IEnumerator SteamNetworkLogic()
+        {
+            
+            HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+            float timeUpdateStarted = 0;
+            int count = 0;
+            void StartUpdate()
+            {
+                Debug.Log("Starting Steam Network Update");
+                timeUpdateStarted = Time.time;
+                visited.Clear();
+                count = 0;
+            }
+
+            float GetRemainingTimeTillNextUpdate() => Mathf.Max(0, _config.updateRate - (Time.time - timeUpdateStarted));
+            
+            
+            while (true)
+            {
+                StartUpdate();
+                foreach (var updateConsumer in GetUpdateConsumers(visited))
+                {
+                    updateConsumer();
+                    count++;
+                    if (count >= _config.maximumNodesToProcessPerFrame)
+                    {
+                        yield return null;
+                        Debug.Log("Hit Maximum Nodes to Process Per Frame");
+                        count = 0;
+                    }
+                }
+
+                foreach (var updateProducer in GetUpdateProducers(visited))
+                {
+                    updateProducer();
+                    count++;
+                    if (count >= _config.maximumNodesToProcessPerFrame)
+                    {
+                        yield return null;
+                        Debug.Log("Hit Maximum Nodes to Process Per Frame");
+                        count = 0;
+                    }
+                }
+
+                foreach (var updateNode in UpdateNodes())
+                {
+                    updateNode();
+                    count++;
+                    if (count >= _config.maximumNodesToProcessPerFrame)
+                    {
+                        yield return null;
+                        Debug.Log("Hit Maximum Nodes to Process Per Frame");
+                        count = 0;
+                    }
+                }
+                
+                
+                yield return new WaitForSeconds(GetRemainingTimeTillNextUpdate());
+            }
+        }
+   
+        IEnumerable<Action> GetUpdateConsumers( HashSet<Vector2Int> visited)
+        {
+            int cnt = 0;
+            var consumers = _consumers.Where(t => t.value.IsActive).ToArray();
+            foreach (var io in consumers)
+            {
+                if (_consumers.TryGetConnection(io.cell, out var node))
+                {
+                    _config.Log($"Connected to {node.Position}");
+                    cnt++;
+                    yield return () =>
+                    {
+                        _config.Log("Placeholder Consumer Update");
+                    };
+                }
+            }
+            _config.Log($"{cnt} Active Consumers");
+        }
+        IEnumerable<Action> GetUpdateProducers(HashSet<Vector2Int> visited)
+        {
+            int cnt = 0;
+            var producers = _producers.Where(t => t.value.IsActive).ToArray();
+            foreach (var io in producers)
+            {
+                if (_producers.TryGetConnection(io.cell, out var node))
+                {
+                    _config.Log($"Connected to {node.Position}");
+                    cnt++;
+                    yield return () =>
+                    {
+                        _config.Log("Placeholder Producer Update");
+                    };
+                }
+                
+            }
+            _config.Log($"{cnt} Active Producers");
+        }
+
+        IEnumerable<Action> UpdateNodes()
+        {
+            var values = _pipes.Values.ToArray();
+            foreach (var pipesValue in values)
+            {
+                yield return () =>
+                {
+                    _config.Log($"Placeholder Pipe Update: {pipesValue.ToString()}",true);
+                };
+            }
+        }
+
+    
+    }
 }
+
+
