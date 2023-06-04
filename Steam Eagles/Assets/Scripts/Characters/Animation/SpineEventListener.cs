@@ -14,6 +14,7 @@ public class SpineEventListener : MonoBehaviour
     [System.Serializable]
     public class UnityEvents
     {
+        [SpineEvent]
         public string eventName;
         public UnityEvent onSpineEvent;
         public bool debug;
