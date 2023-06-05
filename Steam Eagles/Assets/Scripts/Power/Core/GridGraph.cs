@@ -71,7 +71,7 @@ public class GridGraph<T>
             if (HasNode(neighbor))
             {
                 var neighborNode = _usedNodes[neighbor];
-                if (neighborNode == null)
+                if (neighborNode.Equals(default(GridNode)))
                 {
                     _usedNodes.Remove(neighbor);
                     return true;
@@ -100,7 +100,7 @@ public class GridGraph<T>
 
     public GridNode GetNode(Vector3Int position)
     {
-        if (!HasNode(position)) return null;
+        if (!HasNode(position)) return default;
         return _usedNodes[position];
     }
 

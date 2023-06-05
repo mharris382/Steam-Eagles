@@ -114,7 +114,7 @@ namespace Power.Steam.Network
             return 0;
         }
 
-        private void SetTemperature(Vector2Int position, float temp)
+        public void SetTemperature(Vector2Int position, float temp)
         {
             if (!HasPosition(position))
             {
@@ -123,7 +123,7 @@ namespace Power.Steam.Network
             var state = _steamNodeStates[position];
             state.Temperature = temp;
         }
-        private void SetPressure(Vector2Int position, float pressure)
+        public void SetPressureLevel(Vector2Int position, float pressure)
         {
             if (!HasPosition(position))
             {
@@ -153,7 +153,7 @@ namespace Power.Steam.Network
                         var color = saveTexture.GetPixel(x, y);
                         var pressure = color.r;
                         var temperature = color.g;
-                        SetPressure(cell, 0);
+                        SetPressureLevel(cell, 0);
                         SetTemperature(cell, 0);
                         loadedCellCount++;
                     }

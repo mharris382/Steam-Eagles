@@ -37,6 +37,10 @@ namespace Power.Steam.Network
         }
 
 
+        IEnumerable<Flow> GetFlows()
+        {
+            return _flowCache.Values.SelectMany(t => t.Values);
+        }
         IEnumerator Loop()
         {
             while (true)
@@ -45,6 +49,31 @@ namespace Power.Steam.Network
                 DoUpdate();
                 int flowComponentCount = _flowCacheByComponent.Count;
                 Debug.Log($"Steam Flow Calculator Update Complete. {flowComponentCount} flows calculated in {Time.time - timeNow} seconds");
+                foreach (var flow in GetFlows())
+                {
+                    var amountTryToProduced = flow.ProducerCell.Value.GetSteamProductionRate();
+                    var amountTryToConsumed = flow.ConsumerCell.Value.GetSteamConsumptionRate();
+                    var flowStart = _pipes.GetHandle(flow.Path[0]);
+                    var amountProduced = Mathf.Min(amountTryToProduced, _config.pipeCapacity - flowStart.Pressure);
+                    flowStart.Pressure += amountProduced;
+                    flow.ProducerCell.Value.ProduceSteam(amountProduced);
+                    NodeHandle lastNode = null;
+                    for (int i = 1; i < flow.Path.Count; i++)
+                    {
+                        var handleFrom = _pipes.GetHandle(flow.Path[i - 1]);
+                        var handleTo = _pipes.GetHandle(flow.Path[i]);
+                        float amountCanTransfer = Mathf.Min(handleFrom.Pressure/2f, _config.pipeCapacity - handleFrom.Pressure/2f);
+                        handleFrom.Pressure -= amountCanTransfer;
+                        handleTo.Pressure += amountCanTransfer;
+                        handleTo.Temperature = handleFrom.Temperature;
+                        lastNode = handleTo;
+                    }
+                    var flowEnd = lastNode;
+                    float amountCanConsumer = flowEnd.Pressure;
+                    float amountToConsumer = Mathf.Min(amountCanConsumer, amountTryToConsumed);
+                    flowEnd.Pressure -= amountToConsumer;
+                    flow.ConsumerCell.Value.ConsumeSteam(amountToConsumer);
+                }
                 yield return new WaitForSeconds(Mathf.Max(_config.updateRate - (Time.time - timeNow), 0));
             }
         }
@@ -74,7 +103,7 @@ namespace Power.Steam.Network
                     Debug.Assert(_pipes.HasValue(connectedPosition));
                     var connectedNode = _pipes.GetValue(connectedPosition);
                     var component = _pipes.GetComponentID(connectedNode);
-                    var newCell = new Cell<ISteamConsumer>((Vector2Int)connectedPosition, consumer.value, component, connectedNode);
+                    var newCell = new Cell<ISteamConsumer>((Vector2Int)consumer.cell, consumer.value, component,(Vector3Int) consumer.cell);
                     consumersFound.Add(newCell);
                 }
             }
@@ -100,8 +129,7 @@ namespace Power.Steam.Network
             foreach (var producers in producersByComponent)
             {
                 //DO NOT NEED TO UPDATE IF COMPONENT IS NOT DIRTY
-                if (!_pipes.IsComponentDirty(producers.Key))
-                    continue;
+               
                 
                 if (!consumersByComponent.ContainsKey(producers.Key))
                     continue;
@@ -130,23 +158,24 @@ namespace Power.Steam.Network
                 }
                 foreach (var steamConsumer in steamConsumers)
                 {
-                    if (!flows.ContainsKey(steamConsumer))
+                    if (flows.ContainsKey(steamConsumer))
                     {
-                        try
-                        {
-                            var path = _pipes.GetPath(steamProducer.RootPosition2D, steamConsumer.RootPosition2D);
-                            var flow = new Flow(steamProducer, steamConsumer, path);
-                            flows.Add(steamConsumer, flow);
-                            if(_flowCacheByComponent.TryGetValue(steamProducer.ComponentID, out var flowsByComponent))
-                                flowsByComponent.Add(flow);
-                            Debug.Log($"Created flow! {flow}");
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError(e);
-                            continue;
-                        }
+                        flows.Remove(steamConsumer);
                         //flows.Add(steamConsumer, new Flow(steamProducer, steamConsumer));
+                    }
+                    try
+                    {
+                        var path = _pipes.GetPath(steamProducer.RootPosition2D, steamConsumer.RootPosition2D);
+                        var flow = new Flow(steamProducer, steamConsumer, path);
+                        flows.Add(steamConsumer, flow);
+                        if(_flowCacheByComponent.TryGetValue(steamProducer.ComponentID, out var flowsByComponent))
+                            flowsByComponent.Add(flow);
+                        Debug.Log($"Created flow! {flow}");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                        continue;
                     }
                 }
             }

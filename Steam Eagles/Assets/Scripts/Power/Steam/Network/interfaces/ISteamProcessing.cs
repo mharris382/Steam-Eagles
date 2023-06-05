@@ -17,6 +17,9 @@ namespace Power.Steam.Network
         
         
         void LoadSteamStateForTexture(BoundsInt cellBounds, Texture2D saveTexture);
+        
+        void SetPressureLevel(Vector2Int position, float pressure);
+        void SetTemperature(Vector2Int position, float temp);
     }
     
     

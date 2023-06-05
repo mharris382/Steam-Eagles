@@ -17,11 +17,13 @@ namespace Power.Steam.Network
         public float Temperature
         {
             get =>  _steamProcessing.GetTemperature(Position2D);
+            set => _steamProcessing.SetTemperature(Position2D, value);
         }
 
         public float Pressure
         {
-          get =>_steamProcessing.GetPressureLevel(Position2D);  
+          get =>_steamProcessing.GetPressureLevel(Position2D);
+          set => _steamProcessing.SetPressureLevel(Position2D, value);
         } 
         
         public NodeHandle(Vector3Int position, NodeType type, NodeRegistry nodeRegistry, ISteamProcessing steamProcessing)

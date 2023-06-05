@@ -32,7 +32,7 @@ namespace Power.Steam.Network
 
         public bool TryGetConnection(Vector2Int vector2Int, out GridNode node)
         {
-            node = null;
+            node = default;
             if (_nodeRegistry.HasValue(vector2Int))
             {
                 node = _nodeRegistry.GetValue(vector2Int);
@@ -156,6 +156,16 @@ namespace Power.Steam.Network
         public void LoadSteamStateForTexture(BoundsInt cellBounds, Texture2D saveTexture)
         {
             _steamProcessing.LoadSteamStateForTexture(cellBounds, saveTexture);
+        }
+
+        public void SetPressureLevel(Vector2Int position, float pressure)
+        {
+            _steamProcessing.SetPressureLevel(position, pressure);
+        }
+
+        public void SetTemperature(Vector2Int position, float temp)
+        {
+            _steamProcessing.SetTemperature(position, temp);
         }
 
         public IObservable<GasConsumedEventData> GasConsumedObservable => _steamEventHandling.GasConsumedObservable;

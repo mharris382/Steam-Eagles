@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class GridNode : IEquatable<GridNode>, IEquatable<Vector3Int>, IComparable<GridNode>
+public struct GridNode : IEquatable<GridNode>, IEquatable<Vector3Int>, IComparable<GridNode>
 {
     public Vector3Int Position { get; }
 

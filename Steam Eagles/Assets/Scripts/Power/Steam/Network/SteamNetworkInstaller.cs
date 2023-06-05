@@ -7,7 +7,7 @@ namespace Power.Steam.Network
     {
         public override void InstallBindings()
         {
-         Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
+         //Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
          Container.Bind<GridGraph<NodeHandle>>().To<NodeGraph>().AsSingle().NonLazy();
          Container.Bind<NodeRegistry>().AsSingle().NonLazy();
          Container.Bind<INetworkTopology>().To<SteamNetworkTopology>().AsSingle().NonLazy();

@@ -209,14 +209,22 @@ namespace Power
             private readonly Func<float> _consumptionRateGetter;
 
             private readonly Action<float> _onSteamConsumed;
+            private readonly NodeHandle.Factory _factory;
 
-            public Consumer(Vector2Int cell, Func<float> consumptionRateGetter, Action<float> onSteamConsumed, SteamConsumers consumers)
+            public Consumer(Vector2Int cell, Func<float> consumptionRateGetter, Action<float> onSteamConsumed, SteamConsumers consumers, NodeRegistry nodeRegistry, NodeHandle.Factory factory)
             {
                 _cell = cell;
                 _consumptionRateGetter = consumptionRateGetter;
                 _onSteamConsumed = onSteamConsumed;
+                _factory = factory;
+                var h = _factory.Create((Vector3Int)cell, NodeType.INPUT);
+                nodeRegistry.Register(h);
                 consumers.AddSystem(cell, this);
-                _disposable = Disposable.Create(() => consumers.RemoveSystem(cell));
+                _disposable = Disposable.Create(() =>
+                {
+                    nodeRegistry.Unregister(h);
+                    consumers.RemoveSystem(cell);
+                });
             }
 
             public bool IsActive { get; set; }
@@ -234,15 +242,23 @@ namespace Power
             private readonly Vector2Int _cell;
             private readonly Func<float> _productionRateGetter;
             private readonly Action<float> _onSteamProduced;
+            private readonly NodeHandle.Factory _factory;
             private readonly IDisposable _disposable;
 
-            public Producer(Vector2Int cell,  Func<float> productionRateGetter,Action<float> onSteamProduced, SteamProducers producers)
+            public Producer(Vector2Int cell,  Func<float> productionRateGetter,Action<float> onSteamProduced, SteamProducers producers, NodeRegistry nodeRegistry, NodeHandle.Factory factory)
             {
                 _cell = cell;
                 _productionRateGetter = productionRateGetter;
                 _onSteamProduced = onSteamProduced;
+                _factory = factory;
                 producers.AddSystem(cell, this);
-                _disposable = Disposable.Create(() => producers.RemoveSystem(cell));
+                var h = _factory.Create((Vector3Int)cell, NodeType.INPUT);
+                nodeRegistry.Register(h);
+                _disposable = Disposable.Create(() =>
+                {
+                    nodeRegistry.Unregister(h);
+                    producers.RemoveSystem(cell);
+                });
             }
             public bool IsActive { get; set; }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
+using CoreLib.Extensions;
 using QuikGraph.Algorithms;
 using UnityEngine;
 
@@ -150,13 +151,53 @@ namespace Power.Steam.Network
 
         public List<Vector2Int> GetPath(Vector2Int src, Vector2Int dst)
         {
+            if (!_graph.Graph.ContainsVertex((Vector3Int)src))
+            {
+                foreach (var neighbor in src.Neighbors())
+                {
+                    if(_graph.Graph.ContainsVertex((Vector3Int)neighbor))
+                    {
+                        src = neighbor;
+                        break;
+                    }
+                }
+            }
+            if (!_graph.Graph.ContainsVertex((Vector3Int)dst))
+            {
+                foreach (var neighbor in dst.Neighbors())
+                {
+                    if (_graph.Graph.ContainsVertex((Vector3Int)neighbor))
+                    {
+                        dst = neighbor;
+                        break;
+                    }
+                }
+            }
+
             var startNode = GetValue(src);
             var endNode = GetValue(dst);
+            
+            Debug.Assert(_graph.Graph.ContainsVertex(startNode));
+            Debug.Assert(_graph.Graph.ContainsVertex(endNode));
+            Debug.Assert(GetComponentID(startNode.Position) == GetComponentID(endNode.Position));
+            
             var tryFunc = _graph.Graph.ShortestPathsDijkstra(e => 1, startNode);
+            var tryFunc2 = _graph.Graph.ShortestPathsDijkstra(e => 1, endNode);
             var path = new List<Vector2Int>();
             if (tryFunc(endNode, out var pathList))
             {
                 foreach (var node in pathList)
+                {
+                    path.Add((Vector2Int)node.Source.Position);
+                    path.Add((Vector2Int)node.Target.Position);
+                }
+            }
+            else if (tryFunc2(startNode, out var pathList2))
+            {
+                var list = pathList2.ToList();
+                list.Reverse();
+                pathList2 = list;
+                foreach (var node in pathList2)
                 {
                     path.Add((Vector2Int)node.Source.Position);
                     path.Add((Vector2Int)node.Target.Position);

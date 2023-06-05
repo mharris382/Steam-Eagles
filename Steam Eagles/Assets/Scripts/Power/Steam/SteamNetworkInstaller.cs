@@ -21,7 +21,8 @@ public class SteamNetworkInstaller : MonoInstaller
         //binds Producers and Consumers as well as Producer Factory and Consumer Factory
         SteamIO.Installer.Install(Container);
         
-        Container.Bind(typeof(INetwork), typeof(NodeRegistry)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        Container.Bind(typeof(INetwork), typeof(NodeRegistry), typeof(ISteamProcessing)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
 
         Container.Bind<PowerNetworkConfigs.SteamNetworkConfig>().FromInstance(PowerNetworkConfigs.Instance.steamNetworkConfig).AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
