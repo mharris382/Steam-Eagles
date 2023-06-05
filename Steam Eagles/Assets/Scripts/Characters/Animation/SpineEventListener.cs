@@ -1,28 +1,41 @@
+using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Spine;
 using Spine.Unity;
 using UniRx;
+using UnityEngine.Events;
+using Event = Spine.Event;
 
 public class SpineEventListener : MonoBehaviour
 {
     private SkeletonAnimation skeletonAnimation;
 
-    private Subject<(TrackEntry track, Event e)> _onSpineEvent = new();
+    private Subject<(TrackEntry track, Spine.Event e)> _onSpineEvent = new();
 
     public UnityEvents[] events;
 
     [System.Serializable]
     public class UnityEvents
     {
+        [HorizontalGroup(width:0.8f)]
         [SpineEvent]
         public string eventName;
-        public UnityEvent onSpineEvent;
+        [HorizontalGroup(width:0.2f),ToggleLeft]
         public bool debug;
-        internal void OnEvent((TrackEntry track, Event e) data)
+        [FoldoutGroup("Events Listeners")]
+        public UnityEvent onSpineEvent;
+        [FoldoutGroup("Events Listeners")]
+        public SpineEventListenerBase[] listeners;
+        internal void OnEvent((TrackEntry track, Spine.Event e) data)
         {
             onSpineEvent?.Invoke();
             if(debug){
                 Debug.Log($"Received {eventName} spine event");
+            }
+            foreach (var listener in listeners)
+            {
+                listener.OnSpineEvent(data.track, data.e);
             }
         }
     }
@@ -39,7 +52,7 @@ public class SpineEventListener : MonoBehaviour
         }
     }
 
-    private void HandleSpineEvent(TrackEntry trackEntry, Event e)
+    private void HandleSpineEvent(TrackEntry trackEntry, Spine.Event e)
     {
         // Handle the Spine event here
         Debug.Log("Received Spine event: " + e.Data.Name);
@@ -47,7 +60,7 @@ public class SpineEventListener : MonoBehaviour
     }
 
 
-    public IObservable<(TrackEntry track, Event e)> OnSpineEvent(string eventName){
+    public IObservable<(TrackEntry track, Spine.Event e)> OnSpineEvent(string eventName){
         return _onSpineEvent.Where(t => t.e.Data.Name == eventName);
     }
 }

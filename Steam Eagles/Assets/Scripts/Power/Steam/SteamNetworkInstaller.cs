@@ -27,6 +27,7 @@ public class SteamNetworkInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
     }
     class Tester : IInitializable
     {

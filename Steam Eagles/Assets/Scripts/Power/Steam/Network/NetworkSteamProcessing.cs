@@ -153,8 +153,8 @@ namespace Power.Steam.Network
                         var color = saveTexture.GetPixel(x, y);
                         var pressure = color.r;
                         var temperature = color.g;
-                        SetPressure(cell, pressure);
-                        SetTemperature(cell, temperature);
+                        SetPressure(cell, 0);
+                        SetTemperature(cell, 0);
                         loadedCellCount++;
                     }
                 }

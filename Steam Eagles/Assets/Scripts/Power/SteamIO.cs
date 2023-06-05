@@ -170,6 +170,33 @@ namespace Power
                     DisconnectPosition(position, tryReconnect:false);
                 }
             }
+
+            public Vector3Int GetConnectedNode(Vector2Int position)
+            {
+                if(_positionToConnected.ContainsKey(position))
+                {
+                    return _positionToConnected[position];
+                }
+                else if (!TryGetNewConnection(position, out var connected))
+                {
+                    return connected;
+                }
+
+                throw new Exception();
+            }
+
+            public bool HasConnection(Vector2Int position)
+            {
+                try
+                {
+                    GetConnectedNode(position);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
         public class Consumer : ISteamConsumer, IDisposable
         {

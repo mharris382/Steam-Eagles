@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreLib;
 using QuikGraph.Algorithms;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Power.Steam.Network
         private Dictionary<Vector2Int, NodeHandle> _handles = new();
         public int nextGUID = 0;
         private Dictionary<GridNode, int> _nodeComponents = new();
+        private Dictionary<int, bool> _dirtyComponents = new();
         private bool _dirty;
         private int _componentCount;
         public int GetNextGUID() => nextGUID++;
@@ -42,6 +44,12 @@ namespace Power.Steam.Network
         }
         protected override void RemoveValue(NodeHandle value)
         {
+            if (_nodeComponents.ContainsKey(value.Position))
+            {
+                if (_dirtyComponents.ContainsKey(_nodeComponents[value.Position]))
+                    _dirtyComponents[_nodeComponents[value.Position]] = true;
+                else _dirtyComponents.Add(_nodeComponents[value.Position], true);
+            }
             _dirty = true;
             _graph.RemoveNode(value.Position);
             _handles.Remove(value.Position2D);
@@ -66,7 +74,8 @@ namespace Power.Steam.Network
         {
            _componentCount = _graph.Graph.WeaklyConnectedComponents(_nodeComponents);
         }
-        
+
+        public int GetComponentID(Vector3Int position) => GetComponentID((Vector2Int)position);
         public int GetComponentID(Vector2Int position)
         {
             if (_dirty)
@@ -82,7 +91,7 @@ namespace Power.Steam.Network
                 return componentID;
             return -1;
         }
-
+        public GridNode GetValue(Vector3Int position) => GetValue((Vector2Int)position);
         public GridNode GetValue(Vector2Int position)
         {
             return _graph.GetNode(position);
@@ -99,7 +108,10 @@ namespace Power.Steam.Network
         {
             return _graph.HasNode(position);
         }
-
+        public bool HasValue(Vector3Int position)
+        {
+            return HasValue((Vector2Int)position);
+        }
         public IEnumerable<(int component, GridNode node)> GetAdjacentComponents(Vector2Int position, bool includeSelf = false)
         {
             foreach (var vector2Int in directions)
@@ -115,6 +127,46 @@ namespace Power.Steam.Network
                 if (id != -1)
                     yield return (id, _graph.GetNode(position));
             } 
+        }
+
+
+        public bool IsComponentDirty(int component)
+        {
+            if (_dirtyComponents.ContainsKey(component) == false)
+            {
+                _dirtyComponents.Add(component, true);
+            }
+            return _dirtyComponents[component];
+        }
+        
+        public void ClearDirtyComponents()
+        {
+            foreach (var component in _dirtyComponents.Keys.ToArray())
+            {
+                if(_dirtyComponents[component])
+                    _dirtyComponents[component] = false;
+            }
+        }
+
+        public List<Vector2Int> GetPath(Vector2Int src, Vector2Int dst)
+        {
+            var startNode = GetValue(src);
+            var endNode = GetValue(dst);
+            var tryFunc = _graph.Graph.ShortestPathsDijkstra(e => 1, startNode);
+            var path = new List<Vector2Int>();
+            if (tryFunc(endNode, out var pathList))
+            {
+                foreach (var node in pathList)
+                {
+                    path.Add((Vector2Int)node.Source.Position);
+                    path.Add((Vector2Int)node.Target.Position);
+                }
+            }
+            else
+            {
+                throw new Exception("Path not found");
+            }
+            return path;
         }
     }
 }
