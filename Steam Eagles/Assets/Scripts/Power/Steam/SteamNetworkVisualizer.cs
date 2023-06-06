@@ -90,6 +90,7 @@ namespace Power.Steam
         [Serializable]
         public class ColorConfig
         {
+            public float scale = 10;
             public Gradient colorGradient = new Gradient() {
                 alphaKeys = new []{ new GradientAlphaKey(0, 0), new GradientAlphaKey(1, 1)},
                 colorKeys = new []{new GradientColorKey(Color.white, 0), new GradientColorKey(Color.white, 1)}
@@ -97,12 +98,12 @@ namespace Power.Steam
 
             public Color GetColor(float t)
             {
-                return colorGradient.Evaluate(t);
+                return colorGradient.Evaluate(t/scale);
             }
 
             public Color GetColor(float t, float ta)
             {
-                var c1 = colorGradient.Evaluate(t);
+                var c1 = colorGradient.Evaluate(t/scale);
                 var c2 = colorGradient.Evaluate(ta);
                 c1.a = c2.a;
                 return c1;
@@ -147,7 +148,14 @@ namespace Power.Steam
                 }
                 else
                 {
-                    _dictionary.Add(position, (sr, value));
+                    if (!_dictionary.ContainsKey(position))
+                    {
+                        _dictionary.Add(position, (sr, value));    
+                    }
+                    else
+                    {
+                        _dictionary[position] = (sr, value);
+                    }
                 }
             }
             public void Remove(Vector3Int position)
@@ -163,8 +171,8 @@ namespace Power.Steam
                     _dictionary.Remove(position);
                 }
             }
-            
-            public SpriteRenderer GetSpriteRenderer(Vector3Int position) => _dictionary[position].Item1;
+
+            public SpriteRenderer GetSpriteRenderer(Vector3Int position) => visualizer.GetSpriteForPosition(position, NodeType.PIPE);
             public T GetValue(Vector3Int position) => _dictionary[position].Item2;
             public IEnumerable<Vector3Int> GetPositions() => _dictionary.Keys;
 
@@ -209,7 +217,7 @@ namespace Power.Steam
             public override void Update(Vector3Int position, SpriteRenderer sr, ISteamConsumer value)
             {
                 var colorConfig = base.visualizer.consumerColorConfig;
-                sr.color = colorConfig.GetColor(value.GetSteamConsumptionRate());
+                sr.color = colorConfig.GetColor(value.IsActive ? value.GetSteamConsumptionRate() : 0);
             }
         }
 
@@ -218,7 +226,7 @@ namespace Power.Steam
             public override void Update(Vector3Int position, SpriteRenderer sr, ISteamProducer value)
             {
                 var colorConfig = base.visualizer.producerColorConfig;
-                sr.color = colorConfig.GetColor(value.GetSteamProductionRate());
+                sr.color = colorConfig.GetColor(value.IsActive ? value.GetSteamProductionRate() : 0);
             }
         }
 

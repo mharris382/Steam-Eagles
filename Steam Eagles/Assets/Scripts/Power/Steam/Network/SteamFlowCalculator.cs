@@ -51,28 +51,42 @@ namespace Power.Steam.Network
                 Debug.Log($"Steam Flow Calculator Update Complete. {flowComponentCount} flows calculated in {Time.time - timeNow} seconds");
                 foreach (var flow in GetFlows())
                 {
-                    var amountTryToProduced = flow.ProducerCell.Value.GetSteamProductionRate();
-                    var amountTryToConsumed = flow.ConsumerCell.Value.GetSteamConsumptionRate();
-                    var flowStart = _pipes.GetHandle(flow.Path[0]);
-                    var amountProduced = Mathf.Min(amountTryToProduced, _config.pipeCapacity - flowStart.Pressure);
-                    flowStart.Pressure += amountProduced;
-                    flow.ProducerCell.Value.ProduceSteam(amountProduced);
-                    NodeHandle lastNode = null;
-                    for (int i = 1; i < flow.Path.Count; i++)
+                    try
                     {
-                        var handleFrom = _pipes.GetHandle(flow.Path[i - 1]);
-                        var handleTo = _pipes.GetHandle(flow.Path[i]);
-                        float amountCanTransfer = Mathf.Min(handleFrom.Pressure/2f, _config.pipeCapacity - handleFrom.Pressure/2f);
-                        handleFrom.Pressure -= amountCanTransfer;
-                        handleTo.Pressure += amountCanTransfer;
-                        handleTo.Temperature = handleFrom.Temperature;
-                        lastNode = handleTo;
+                        var amountTryToProduced = flow.ProducerCell.Value.GetSteamProductionRate();
+                        var amountTryToConsumed = flow.ConsumerCell.Value.GetSteamConsumptionRate();
+                        var flowStart = _pipes.GetHandle(flow.Path[0]);
+                        var amountProduced = Mathf.Min(amountTryToProduced, _config.pipeCapacity - flowStart.Pressure);
+                        flowStart.Pressure += amountProduced;
+                        flow.ProducerCell.Value.ProduceSteam(amountProduced);
+                        NodeHandle lastNode = null;
+                        for (int i = 1; i < flow.Path.Count; i++)
+                        {
+                            var handleFrom = _pipes.GetHandle(flow.Path[i - 1]);
+                            var handleTo = _pipes.GetHandle(flow.Path[i]);
+                            float amountCanTransfer = Mathf.Min(handleFrom.Pressure/2f, _config.pipeCapacity - handleFrom.Pressure/2f);
+                            handleFrom.Pressure -= amountCanTransfer;
+                            handleTo.Pressure += amountCanTransfer;
+                            handleTo.Temperature = handleFrom.Temperature;
+                            lastNode = handleTo;
+                        }
+                        var flowEnd = lastNode;
+                        float amountCanConsumer = flowEnd.Pressure;
+                        float amountToConsumer = Mathf.Min(amountCanConsumer, amountTryToConsumed);
+                        flowEnd.Pressure -= amountToConsumer;
+                        flow.ConsumerCell.Value.ConsumeSteam(amountToConsumer);
                     }
-                    var flowEnd = lastNode;
-                    float amountCanConsumer = flowEnd.Pressure;
-                    float amountToConsumer = Mathf.Min(amountCanConsumer, amountTryToConsumed);
-                    flowEnd.Pressure -= amountToConsumer;
-                    flow.ConsumerCell.Value.ConsumeSteam(amountToConsumer);
+                    catch (Exception e)
+                    {
+                        var producer = flow.ProducerCell.Value;
+                        var consumer = flow.ConsumerCell.Value;
+                        var maxAmount = Mathf.Min(producer.GetSteamProductionRate(),
+                            consumer.GetSteamConsumptionRate());
+                        Debug.Log($"Failed to find path, falling back to direct input connections: {maxAmount}");
+                        producer.ProduceSteam(maxAmount);
+                        consumer.ConsumeSteam(maxAmount);
+                        continue;
+                    }
                 }
                 yield return new WaitForSeconds(Mathf.Max(_config.updateRate - (Time.time - timeNow), 0));
             }
@@ -174,8 +188,11 @@ namespace Power.Steam.Network
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError(e);
-                        continue;
+                        var flow = new Flow(steamProducer, steamConsumer, new List<Vector2Int>(new [] {steamProducer.cell, steamConsumer.cell}));
+                        flows.Add(steamConsumer, flow);
+                        if(_flowCacheByComponent.TryGetValue(steamProducer.ComponentID, out var flowsByComponent))
+                            flowsByComponent.Add(flow);
+                        Debug.Log($"Created fallback flow! {flow}");
                     }
                 }
             }

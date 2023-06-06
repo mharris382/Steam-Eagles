@@ -50,25 +50,7 @@ namespace Power.Steam.Network
             
             _gridGraph.OnNodeAdded.Subscribe(OnNodeAdded);
             _gridGraph.OnNodeRemoved.Subscribe(OnNodeRemoved);
-            _gridGraph.OnEdgeAdded.Subscribe(OnEdgeAdded);
-            _gridGraph.OnEdgeRemoved.Subscribe(OnEdgeRemoved);
-        }
-        private void OnEdgeRemoved(TaggedUndirectedEdge<GridNode,NodeHandle> o)
-        {
-            var p0 =(Vector2Int)o.Source.Position;
-            var p1 =(Vector2Int)o.Target.Position;
-            if (HasPosition(p0))
-            {
-                Debug.LogError(" new NotImplementedException()");
-            }
-            if (HasPosition(p1))
-            {
-                Debug.LogError(" new NotImplementedException()");
-            }
-        }
-        private void OnEdgeAdded(TaggedUndirectedEdge<GridNode,NodeHandle> o)
-        {
-            Debug.LogError(" new NotImplementedException()");
+          
         }
         private void OnNodeAdded(GridNode o)
         {

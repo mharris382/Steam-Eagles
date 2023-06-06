@@ -5715,7 +5715,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1564507143092256201, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 1564507143092256201, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5807,6 +5807,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1564507143092256203, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1156763784088924493}
+    - targetCorrespondingSourceObject: {fileID: 1564507143092256203, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1939876209726316912}
   m_SourcePrefab: {fileID: 100100000, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
 --- !u!4 &389625917916280376 stripped
 Transform:
@@ -5855,6 +5858,49 @@ MonoBehaviour:
   outputCells:
   - {fileID: 3654372663814236005}
   - {fileID: 2495979068509365217}
+  events:
+    AmountStoredChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1939876209726316912}
+          m_TargetAssemblyTypeName: Buildables.HypergasGeneratorAnimator, SteamEagles.Buildables
+          m_MethodName: OnAmountStoredChanged
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    ProductionStateChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1939876209726316912}
+          m_TargetAssemblyTypeName: Buildables.HypergasGeneratorAnimator, SteamEagles.Buildables
+          m_MethodName: OnProducingChanged
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1939876209726316912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389625917916280378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bceffe2ed5542f6ac3b59b2a4ececde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3433087895941291746
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5865,7 +5911,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 89890402641532033, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.7927836
+      value: 0.9739259
       objectReference: {fileID: 0}
     - target: {fileID: 89890402641532033, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5873,7 +5919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 89890402641532033, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6095032
+      value: 0.22686644
       objectReference: {fileID: 0}
     - target: {fileID: 1274116268307032620, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_SortingLayer
@@ -5901,7 +5947,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1706739646577756122, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.7418405
+      value: -0.86800575
       objectReference: {fileID: 0}
     - target: {fileID: 1706739646577756122, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.y
@@ -5909,15 +5955,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1706739646577756122, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6705764
+      value: 0.49655414
       objectReference: {fileID: 0}
     - target: {fileID: 3170567103175641342, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7422268
+      value: 0.8682948
       objectReference: {fileID: 0}
     - target: {fileID: 3170567103175641342, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6701488
+      value: 0.4960486
       objectReference: {fileID: 0}
     - target: {fileID: 3453110759098130482, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_Name
@@ -5941,11 +5987,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4496153024061118355, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7931338
+      value: -0.9737935
       objectReference: {fileID: 0}
     - target: {fileID: 4496153024061118355, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6090475
+      value: 0.22743398
       objectReference: {fileID: 0}
     - target: {fileID: 4549744087906187345, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_RootOrder
@@ -6009,11 +6055,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6428950069446624612, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7422268
+      value: 0.8682948
       objectReference: {fileID: 0}
     - target: {fileID: 6428950069446624612, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6701488
+      value: 0.4960486
       objectReference: {fileID: 0}
     - target: {fileID: 7578147705705993645, guid: 534d8cb3fe86ab345a812f52273ec70b, type: 3}
       propertyPath: m_Name

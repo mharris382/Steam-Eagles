@@ -20,8 +20,8 @@ public class SteamNetworkInstaller : MonoInstaller
 
         //binds Producers and Consumers as well as Producer Factory and Consumer Factory
         SteamIO.Installer.Install(Container);
-        
-        Container.Bind(typeof(INetwork), typeof(NodeRegistry), typeof(ISteamProcessing)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PipeGridGraph>().AsSingle().NonLazy();
+        Container.Bind(typeof(INetwork), typeof(NodeRegistry), typeof(ISteamProcessing), typeof(GridGraph<NodeHandle>)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
         Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
 
         Container.Bind<PowerNetworkConfigs.SteamNetworkConfig>().FromInstance(PowerNetworkConfigs.Instance.steamNetworkConfig).AsSingle().NonLazy();
@@ -29,6 +29,7 @@ public class SteamNetworkInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
+        
     }
     class Tester : IInitializable
     {

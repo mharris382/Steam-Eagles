@@ -2,7 +2,7 @@
 {
     public interface ISteamConsumer
     {
-        bool IsActive { get; }
+        bool IsActive { get; set; }
         float GetSteamConsumptionRate();
         void ConsumeSteam(float amount);
     }

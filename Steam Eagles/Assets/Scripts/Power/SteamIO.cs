@@ -93,7 +93,7 @@ namespace Power
             {
                 if (_connectedToPosition.ContainsKey(position))
                 {
-                    foreach (var pos in GetConnectedTrackedPostions(position))
+                    foreach (var pos in GetConnectedTrackedPostions(position).ToArray())
                     {
                         DisconnectPosition(pos);
                     }

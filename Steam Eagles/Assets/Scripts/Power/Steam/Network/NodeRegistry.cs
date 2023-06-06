@@ -3,12 +3,94 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using CoreLib.Extensions;
+using QuikGraph;
 using QuikGraph.Algorithms;
 using UnityEngine;
+using Zenject;
+using UniRx;
 
 namespace Power.Steam.Network
 {
-    public class NodeRegistry : Registry<NodeHandle>
+    public class PipeGridGraph : IInitializable
+    {
+        private readonly NodeRegistry _nodes;
+        private readonly NodeHandle.Factory _nodeHandleFactory;
+        private GridGraph2D _graph;
+        private Dictionary<Vector2Int, int> _components = new();
+
+        public  PipeGridGraph(
+            SteamConsumers consumers, 
+            SteamProducers producers,
+            NodeRegistry nodes,
+            NodeHandle.Factory nodeHandleFactory)
+        {
+            _nodes = nodes;
+            _nodeHandleFactory = nodeHandleFactory;
+            Consumers = consumers;
+            Producers = producers;
+            _graph = new();
+        }
+
+        public SteamConsumers Consumers { get; }
+        public SteamProducers Producers { get; }
+
+        public AdjacencyGraph<Vector2Int, SEdge<Vector2Int>> PipeGraph => _graph.Graph;
+
+        public void Initialize()
+        {
+            _nodes.OnValueAdded.Where(t => t != null).Select(t => t.Position2D).Subscribe(Add);
+            Consumers.OnSystemAdded.Select(t => t.Item1).Subscribe(Add);
+            Producers.OnSystemAdded.Select(t => t.Item1).Subscribe(Add);
+            
+            _nodes.OnValueRemoved.Where(t => t != null).Select(t => t.Position2D).Subscribe(Remove);
+            Consumers.OnSystemRemoved.Select(t => t.Item1).Subscribe(Remove);
+            Producers.OnSystemRemoved.Select(t => t.Item1).Subscribe(Remove);
+        }
+        private void Remove(Vector2Int position)
+        {
+            if (!_graph.Graph.ContainsVertex(position))
+                return;
+            _graph.Graph.RemoveVertex(position);
+            DirtyGraph(position);
+        }
+
+        private void Add(Vector2Int pos)
+        {
+            if (!_graph.Graph.ContainsVertex(pos))
+            {
+                _graph.AddNode(pos);
+                Debug.Assert(_components.ContainsKey(pos) == false, $"Components already contains {pos}");
+                _components.Add(pos, -1);
+                DirtyGraph(pos);
+            }
+        }
+
+        private void DirtyGraph(Vector2Int position)
+        {
+            foreach (var neighbor in position.Neighbors())
+            {
+                if(_components.ContainsKey(neighbor))
+                    _components[neighbor] = -1;
+            }
+        }
+
+        public int GetComponent(Vector2Int position)
+        {
+            if (_graph.Graph.ContainsVertex(position) == false)
+            {
+                Debug.LogError($"Graph does not contain vertex {position}");
+                return -1;
+            }
+            if (_components.ContainsKey(position) && _components[position] != -1)
+            {
+                _components.Add(position, -1);
+            }
+            var count = _graph.Graph.WeaklyConnectedComponents(_components);
+            return _components[position];
+        }
+    }
+
+public class NodeRegistry : Registry<NodeHandle>
     {
         private static Vector2Int[] directions = new[] {
             Vector2Int.up,
@@ -16,7 +98,7 @@ namespace Power.Steam.Network
             Vector2Int.left,
             Vector2Int.right
         };
-        
+        [System.Obsolete("", false)]
         private readonly GridGraph<NodeHandle> _graph;
         private Dictionary<Vector2Int, NodeHandle> _handles = new();
         public int nextGUID = 0;
@@ -35,11 +117,18 @@ namespace Power.Steam.Network
         {
             if (!_graph.AddNode(value.Position))
             {
-                Unregister(value);
                 Debug.LogError($"Failed to add node at {value.Position}");
                 return;
             }
-            _handles.Add(value.Position2D, value);
+
+            if (_handles.ContainsKey(value.Position2D))
+            {
+                _handles[value.Position2D] = value;
+            }
+            else
+            {
+                _handles.Add(value.Position2D, value);
+            }
             _dirty = true;
             base.AddValue(value);
         }

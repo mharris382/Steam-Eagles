@@ -41,7 +41,18 @@ public class GridGraph<T>
     
     public bool AddNode(GridNode node)
     {
-        if (HasNode(node.Position)) return false;
+        if (HasNode(node.Position))
+        {
+            if (!graph.ContainsVertex(node))
+            {
+                graph.AddVertex(node);
+            }
+            else
+            {
+                return true;
+            }
+            
+        }
         graph.AddVertex(node);
         _usedNodes.Add(node.Position, node);
         _edgeCache.Clear();
