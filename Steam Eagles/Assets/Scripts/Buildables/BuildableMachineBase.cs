@@ -11,7 +11,11 @@ using Zenject;
 
 namespace Buildables
 {
-   
+    public interface IMachineCustomSaveData
+    {
+        void LoadDataFromJson(string json);
+        string SaveDataToJson();
+    }
     public abstract class BuildableMachineBase : Machine, IIconable, IMachineTileProvider
     {
         
