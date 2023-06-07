@@ -10,7 +10,7 @@ namespace Buildings.SaveLoad
         public string machineAddress;
         public Vector2Int machineCellPosition;
         public bool isFlipped;
-
+        public string customSaveData;
         public bool IsValid() => !string.IsNullOrEmpty(machineAddress);
             
         public MachineSaveData() { }
@@ -24,6 +24,11 @@ namespace Buildings.SaveLoad
             machineAddress = machine.machineAddress;
             machineCellPosition = machine.CellPosition;
             isFlipped = machine.IsFlipped;
+            var customSaver = machine.GetComponent<IMachineCustomSaveData>();
+            if (customSaver != null)
+            {
+                customSaveData = customSaver.SaveDataToJson();
+            }
         }
     }
 }

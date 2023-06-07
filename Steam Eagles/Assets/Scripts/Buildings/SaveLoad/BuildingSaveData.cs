@@ -71,7 +71,9 @@ namespace Buildings.SaveLoad
                 {
                     var prefab = loadedMachines[machineSaveData.machineAddress];
                     prefab.IsFlipped = machineSaveData.isFlipped;
-                    prefab.Build((Vector3Int)machineSaveData.machineCellPosition, target);
+                    var machine =prefab.Build((Vector3Int)machineSaveData.machineCellPosition, target);
+                    var customSaveData = machine.GetComponent<IMachineCustomSaveData>();
+                    if (customSaveData != null) customSaveData.LoadDataFromJson(machineSaveData.customSaveData);
                 }
 
                 foreach (var asyncOperationHandle in machineLoadOps)

@@ -1,5 +1,4 @@
 ﻿using System;
-using Power;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,47 +6,68 @@ using Zenject;
 
 namespace Buildables
 {
-    public class ExhaustVentController
-    {
-        private readonly ExhaustVent _exhaustVent;
-        private readonly HypergasEngineConfig _config;
-
-        public class Factory : PlaceholderFactory<ExhaustVent, ExhaustVentController> { }
-        
-        
-        public ExhaustVentController(ExhaustVent exhaustVent, HypergasEngineConfig config, SteamIO.Consumer.Factory consumerFactory)
-        {
-            _exhaustVent = exhaustVent;
-            _config = config;
-            var cellPosition = exhaustVent.cell.BuildingSpacePosition;
-            var consumer = consumerFactory.Create(cellPosition, GetConsumptionRate, ConsumeSteam);
-            consumer.IsActive = true;
-        }
-        float GetConsumptionRate() => _config.exhaustVentMaxConsumerRate;
-
-        void ConsumeSteam(float amount)
-        {
-            _exhaustVent.onSteamConsumed.Invoke(amount);
-        }
-    }
-    public class SteamTurbine : MonoBehaviour
+    public class SteamTurbine : MonoBehaviour, IMachineCustomSaveData
     {
         [Required,ChildGameObjectsOnly] public MachineCell inputCell;
         [Required,ChildGameObjectsOnly] public MachineCell outputCell;
         private SteamTurbineController _controller;
 
         [SerializeField] private Events events;
+        private HypergasEngineConfig _config;
+        private string _json;
+
         [Serializable]
         private class Events
         {
             public UnityEvent<bool> producerActive;
             public UnityEvent<float> amountFilled;
         }
+           
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
+        public float ConsumeRate
+        {
+            get;
+            set;
+        }
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
+        public float ProduceRate
+        {
+            get;
+            set;
+        }
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
+        public bool IsConsuming
+        {
+            get;
+            set;
+        }
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
+        public bool IsProducing
+        {
+            get;
+            set;
+        }
 
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging"), ProgressBar(0, nameof(StorageCapacity))]
+        public float AmountStored
+        {
+            get;
+            set;
+        }
+
+        private float StorageCapacity => _config?.generatorStorageCapacity ?? 1000;
+        
+        
         [Inject]
-        void InjectMe(SteamTurbineController.Factory controllerFactory)
+        void InjectMe(SteamTurbineController.Factory controllerFactory, HypergasEngineConfig config)
         {
             _controller = controllerFactory.Create(this);
+            _config = config;
+            if (!string.IsNullOrEmpty(_json))
+            {
+                _controller.LoadFromJson(_json);
+                _json = null;
+            }
         }
 
         public void Feedback(float filled, bool producerIsActive)
@@ -55,58 +75,29 @@ namespace Buildables
             events.amountFilled.Invoke(filled);
             events.producerActive.Invoke(producerIsActive);
         }
-    }
 
-
-    public class SteamTurbineController
-    {
-        public class Factory : PlaceholderFactory<SteamTurbine, SteamTurbineController> { }
-        private readonly SteamTurbine _turbine;
-        private readonly HypergasEngineConfig _config;
-
-        private float _amountConsumed;
-        private readonly SteamIO.Consumer _consumer;
-        private readonly SteamIO.Producer _producer;
-
-        
-        public SteamTurbineController(SteamTurbine turbine,
-            SteamIO.Producer.Factory producerFactory,
-            SteamIO.Consumer.Factory consumerFactory, HypergasEngineConfig config)
+        private void OnDestroy()
         {
-            _turbine = turbine;
-            _config = config;
-            var inputCellPosition = turbine.inputCell.BuildingSpacePosition;
-            var outputCellPosition = turbine.outputCell.BuildingSpacePosition;
-            _producer = producerFactory.Create(inputCellPosition, GetProductionRate, ProduceSteam);
-            _consumer = consumerFactory.Create(outputCellPosition, GetConsumptionRate, ConsumeSteam);
-        }
-        
-        float GetProductionRate()
-        {
-            return Mathf.Min(_config.generatorMaxProducerRate, _amountConsumed);
-        }
-        float GetConsumptionRate()
-        {
-            return Mathf.Min(_config.generatorMaxConsumerRate, _config.generatorStorageCapacity - _amountConsumed);
-        }
-        void ProduceSteam(float amount)
-        {
-            _amountConsumed -= amount;
-            _amountConsumed = Mathf.Clamp(_amountConsumed, 0, _config.pumpStorageCapacity);
-            OnSteamChanged();
-        }
-        void ConsumeSteam(float amount)
-        {
-            _amountConsumed += amount;
-            _amountConsumed = Mathf.Clamp(_amountConsumed, 0, _config.pumpStorageCapacity);
-            OnSteamChanged();
+            _controller.Dispose();
         }
 
-        private void OnSteamChanged()
+        public void LoadDataFromJson(string json)
         {
-            _producer.IsActive = _amountConsumed > 0;
-            _consumer.IsActive = true;
-            _turbine.Feedback(_amountConsumed / _config.pumpStorageCapacity, _producer.IsActive);
+            if (_controller == null)
+            {
+                _json = json;
+            }
+            else
+            {
+                _controller.LoadFromJson(json);
+            }
         }
+
+        public string SaveDataToJson()
+        {
+            return _controller.SaveToJson();
+        }
+
+       
     }
 }
