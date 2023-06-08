@@ -3,6 +3,7 @@ using FMODUnity;
 using Zenject;
 
 using STOP_MODE = FMOD.Studio.STOP_MODE;
+
 public abstract class FMODLoopingEventBase : IInitializable, IDisposable
 {
     private readonly EventReference _event;

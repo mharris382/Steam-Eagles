@@ -27,6 +27,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 19904
+--- !u!114 &-8541659772659667331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Footstep
+  m_EditorClassIdentifier: 
+  Path: event:/Footstep
+  Guid:
+    Data1: -798141793
+    Data2: 1216466225
+    Data3: 445973643
+    Data4: -625494026
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 600
 --- !u!114 &-7716088488309096815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,17 +145,19 @@ MonoBehaviour:
   - {fileID: 1674415375344157029}
   - {fileID: 6806358472309568043}
   - {fileID: -6602069084922840246}
+  - {fileID: 2924718624880632120}
   EditorEvents:
   - {fileID: -8701015017041753123}
   - {fileID: -7716088488309096815}
   - {fileID: 2813908003119881036}
   - {fileID: -4447536127489348248}
+  - {fileID: -8541659772659667331}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6806358472309568043}
   StringsBanks:
   - {fileID: 301517338111838257}
-  cacheTime: 638218399704035111
+  cacheTime: 638218492304678113
   cacheVersion: 131603
 --- !u!114 &301517338111838257
 MonoBehaviour:
@@ -145,10 +174,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638218399674697766
+  lastModified: 638218492304002993
   FileSizes:
   - Name: Desktop
-    Value: 1014
+    Value: 1088
   Exists: 1
 --- !u!114 &1674415375344157029
 MonoBehaviour:
@@ -197,6 +226,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &2924718624880632120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/SFX.bank
+  m_EditorClassIdentifier: 
+  Path: ../FMOD Project/SteamEagles/Build/Desktop/SFX.bank
+  Name: SFX
+  StudioPath: bank:/SFX
+  lastModified: 638218492304678113
+  FileSizes:
+  - Name: Desktop
+    Value: 40512
+  Exists: 1
 --- !u!114 &6806358472309568043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +261,7 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638218399674687767
+  lastModified: 638218492303987925
   FileSizes:
   - Name: Desktop
     Value: 2076
