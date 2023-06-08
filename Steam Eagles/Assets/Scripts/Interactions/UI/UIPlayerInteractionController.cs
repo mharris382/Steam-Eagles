@@ -20,7 +20,7 @@ namespace Interactions.UI
         private PlayerCharacterGUIController Controller => _controller ? _controller : _controller = GetComponent<PlayerCharacterGUIController>();
 
         private CharacterInteractionAgent PCAgent => Controller.HasAllResources()
-            ? (_pcAgent != null ? _pcAgent : _pcAgent = Controller.PcEntityProperty.Value.LinkedGameObject.GetComponent<CharacterInteractionAgent>()) : null;
+            ? (_pcAgent != null ? _pcAgent : _pcAgent = Controller.PlayerCharacter.GetComponent<CharacterInteractionAgent>()) : null;
         
         private IEnumerator Start()
         {

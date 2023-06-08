@@ -3,6 +3,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 namespace CoreLib.Entities
@@ -21,6 +22,8 @@ namespace CoreLib.Entities
         private EntityLinkRegistry linkRegistry;
         private CoroutineCaller coroutineCaller;
         private EntityConfig logger;
+
+        public UnityEvent<GameObject> onEntityLoaded;
 
         [Inject]
         void Inject(EntityLinkRegistry linkRegistry, CoroutineCaller coroutineCaller, EntityConfig globalConfig)
@@ -60,6 +63,7 @@ namespace CoreLib.Entities
         {
             Debug.Log($"Initialized Entity {GetEntityGUID()} ({GetEntityType()})",this);
             isDoneInitializing = true;
+            onEntityLoaded?.Invoke(gameObject);
         }
 
         private void OnDisable()

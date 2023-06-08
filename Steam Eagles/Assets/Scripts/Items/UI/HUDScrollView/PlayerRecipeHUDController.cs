@@ -4,6 +4,7 @@ using System.Linq;
 using Characters;
 using CoreLib;
 using CoreLib.Entities;
+using Cysharp.Threading.Tasks;
 using Game;
 using Sirenix.OdinInspector;
 using SteamEagles.Characters;
@@ -25,7 +26,7 @@ namespace Items.UI.HUDScrollView
         private ToolState _toolState;
         private PlayerCharacterGUIController _guiController;
         private Inventory _backpack;
-        private IEnumerator _waitForEntitySetup;
+        private Coroutine _waitForEntitySetup;
 
         public bool invertSelection;
         private bool _initialized = false;
@@ -59,8 +60,8 @@ namespace Items.UI.HUDScrollView
 
         private void Awake()
         {
-            GUIController.PcEntityProperty.Subscribe(OnPcEntityChange).AddTo(this);
-            GUIController.ShowRecipeHUD.Subscribe(gameObject.SetActive).AddTo(this);
+            // GUIController.PcEntityProperty.Subscribe(OnPcEntityChange).AddTo(this);
+            // GUIController.ShowRecipeHUD.Subscribe(gameObject.SetActive).AddTo(this);
             gameObject.SetActive(GUIController.ShowRecipeHUD.Value);
             
         }
@@ -68,13 +69,28 @@ namespace Items.UI.HUDScrollView
         private bool HasResources() => GUIController != null && GUIController.HasAllResources()  && ToolState != null;
 
 
+        private void OnSetup()
+        {
+            if (_waitForEntitySetup != null)
+                StopCoroutine(_waitForEntitySetup);
+            _backpack = null;
+            _waitForEntitySetup = StartCoroutine(UniTask.ToCoroutine(async () =>
+            {
+                await UniTask.WaitUntil(() => GUIController.PlayerCharacter != null);
+                var initializer = GUIController.PlayerCharacter.GetComponent<EntityInitializer>();
+                await UniTask.WaitUntil(() => initializer.isDoneInitializing);
+                _backpack = GetBackpack();
+                
+            }));
+        }
+
         public Inventory GetBackpack()
         {
             if (!HasResources())
                 return null;
-            if (GUIController.pcEntity.LinkedGameObject == null)
+            if (GUIController.PlayerCharacter == null)
             {
-                Debug.LogError("Supposed to have all resources, but no linked game object", GUIController.pcEntity);
+                Debug.LogError("Supposed to have all resources, but no linked game object", GUIController.PlayerCharacter);
                 _backpack = null;
                 return null;
             }
@@ -84,8 +100,8 @@ namespace Items.UI.HUDScrollView
                 return _backpack;
             }
 
-            var allInventories = GUIController.pcEntity.LinkedGameObject.GetComponentsInChildren<Inventory>();
-            ToolState toolState = GUIController.pcEntity.LinkedGameObject.GetComponent<ToolState>();
+            var allInventories = GUIController.PlayerCharacter.GetComponentsInChildren<Inventory>();
+            ToolState toolState = GUIController.PlayerCharacter.GetComponent<ToolState>();
             Inventory mainInventory = null, toolbeltInventory = null;
             foreach (var i in allInventories)
             {
@@ -97,75 +113,46 @@ namespace Items.UI.HUDScrollView
         }
 
 
-        private void OnPcEntityChange(Entity e)
-        {
-            if (_waitForEntitySetup != null)
-                StopCoroutine(_waitForEntitySetup);
-            _backpack = null;
-            _waitForEntitySetup = WaitForEntitySetup(e);
-        }
-
-        private IEnumerator WaitForEntitySetup(Entity e)
-        {
-            while (e.LinkedGameObject == null)
-            {
-                yield return null;
-            }
-
-            var character = e.LinkedGameObject.GetComponent<CharacterState>();
-            while (!character.IsEntityInitialized)
-            {
-                Debug.Log($"Waiting for character {character.name} to be initialized",this);
-                yield return null;
-            }
-            yield return null;
-            
-            var backpack = GetBackpack();
-            Debug.Assert(backpack != null, "Backpack is null");
-            Setup(testTool, backpack);
-            _waitForEntitySetup = null;
-        }
-
-        private void Update()
-        {
-            if (GUIController.HasAllResources() == false)
-            {
-                _initialized = false;
-                canvasGroup.alpha = 0;
-                return;
-            }
-
-            CheckInitialize();
-            var inputPlayer = GUIController.playerInput;
-            
-            var recipeSelect = inputPlayer.actions["Select Recipe"].ReadValue<float>();
-            if (recipeSelect != 0)
-            {
-                if(Time.realtimeSinceStartup - _timeLastUpdated > UpdateInterval)
-                    _timeLastUpdated = Time.realtimeSinceStartup;
-                else
-                    return;
-                if (recipeSelect > 0)
-                {
-                    if(invertSelection)scrollView.SelectPrev();
-                    else scrollView.SelectNext();
-                }
-                else
-                {
-                    if(invertSelection)scrollView.SelectNext();
-                    else scrollView.SelectPrev();
-                }
-            }
-        }
-
-        private void CheckInitialize()
-        {
-            if (_initialized == false)
-            {
-                _initialized = true;
-                Initialize();
-            }
-        }
+        // private void Update()
+        // {
+        //     if (GUIController.HasAllResources() == false)
+        //     {
+        //         _initialized = false;
+        //         canvasGroup.alpha = 0;
+        //         return;
+        //     }
+        //
+        //     CheckInitialize();
+        //     var inputPlayer = GUIController.playerInput;
+        //     
+        //     var recipeSelect = inputPlayer.actions["Select Recipe"].ReadValue<float>();
+        //     if (recipeSelect != 0)
+        //     {
+        //         if(Time.realtimeSinceStartup - _timeLastUpdated > UpdateInterval)
+        //             _timeLastUpdated = Time.realtimeSinceStartup;
+        //         else
+        //             return;
+        //         if (recipeSelect > 0)
+        //         {
+        //             if(invertSelection)scrollView.SelectPrev();
+        //             else scrollView.SelectNext();
+        //         }
+        //         else
+        //         {
+        //             if(invertSelection)scrollView.SelectNext();
+        //             else scrollView.SelectPrev();
+        //         }
+        //     }
+        // }
+        //
+        // private void CheckInitialize()
+        // {
+        //     if (_initialized == false)
+        //     {
+        //         _initialized = true;
+        //         Initialize();
+        //     }
+        // }
 
         private void Initialize()
         {
