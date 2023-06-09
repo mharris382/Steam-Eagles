@@ -134,7 +134,7 @@ namespace Tools.DestructTool
 
         public override string ToolMode
         {
-            get => _mode;
+            get => !string.IsNullOrEmpty(_mode) ? _mode : SOLID_MODE;
             set
             {
                 _mode = value;
@@ -261,6 +261,13 @@ namespace Tools.DestructTool
         }
         private bool TryGetDestructable(DestructToolModeConfig mode, ref BuildingToolAimInfo aimInfo, out IDestruct destruct, out DestructParams destructParams)
         {
+            if (mode == null)
+            {
+                Debug.LogError("Null Mode", this);
+                destruct = null;
+                destructParams = default;
+                return false;
+            }
             if (mode.PerformTilemapSearch && Building != null)
             {
                 if (DoTilemapSearch(ref aimInfo, out destruct, out destructParams))

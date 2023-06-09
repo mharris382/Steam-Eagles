@@ -59,6 +59,7 @@ namespace UI.PlayerGUIs
             _pcRegistry = pcRegistry;
 
             var onAdded = _pcRegistry.OnValueAdded.Where(t => t.PlayerNumber == this.playerID);
+            onAdded.Subscribe(t => t.PC.hud = gameObject).AddTo(this);
             var onInputAdded =onAdded.Select(t => t.PC.input.GetComponent<PlayerInput>()).Where(t => t != null);
             var onCameraAdded = onAdded.Select(t => t.PC.camera.GetComponent<Camera>()).Where(t => t != null);
             var onCharacterAdded = onAdded.Select(t => t.PC.character);

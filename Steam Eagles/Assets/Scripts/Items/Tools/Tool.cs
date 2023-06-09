@@ -46,7 +46,19 @@ namespace Items
 
             return false;
         }
-        
-        
+
+
+        private GameObject _controllerPrefab;
+        public bool IsControllerPrefabLoaded() => _controllerPrefab != null;
+
+        public async UniTask<GameObject> GetControllerPrefab()
+        {
+            if (_controllerPrefab == null)
+            {
+                _controllerPrefab = await controllerPrefab.LoadAssetAsync<GameObject>();
+            }
+            return _controllerPrefab;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CoreLib;
 using UnityEngine;
 
@@ -16,8 +17,16 @@ namespace Items
         public ToolSlot destructToolSlot;
         public ToolSlot repairToolSlot;
         ToolBelt _toolBelt;
-        
-        
+
+
+        public IEnumerable<Tool> GetTools()
+        {
+            yield return craftToolSlot.tool;
+            yield return buildToolSlot.tool;
+            yield return destructToolSlot.tool;
+            yield return repairToolSlot.tool;
+        }
+
         public void Awake()
         {
             

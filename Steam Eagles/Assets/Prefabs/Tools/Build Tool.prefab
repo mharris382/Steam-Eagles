@@ -78,8 +78,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99aa01c60504707be14515e4db1e06c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activationEvents:
+    onActivated:
+      m_PersistentCalls:
+        m_Calls: []
+    onDeactivated:
+      m_PersistentCalls:
+        m_Calls: []
+    onActivationStateChanged:
+      m_PersistentCalls:
+        m_Calls: []
+  modeDisplayUI: {fileID: 0}
+  emptyIcon: {fileID: 0}
   targetBuilding: {fileID: 0}
-  pathTool: {fileID: 2597735137080609047}
+  tool: {fileID: 0}
+  recipeSwitchRate: 0.2
+  faceDirectionOfCharacter: 1
+  allowPartiallyValidPath: 1
+  defaultBuildTool: {fileID: 0}
+  gui: {fileID: 2493790515308950699}
+  config:
+    timePerTile: 0.1
 --- !u!114 &1690898606110418464
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
+using Tools.BuildTool;
 using UniRx;
 using UnityEngine;
 
@@ -35,6 +36,16 @@ namespace Tools.UI
             SharedToolData.ErrorMessage.Select(t => !string.IsNullOrEmpty(t)).Subscribe(SetVisible).AddTo(cd);
             SharedToolData.ErrorMessage.Subscribe(SetFailureMessage).AddTo(cd);
             CreateFadeTween();
+        }
+
+        public override void HideToolHUD()
+        {
+            failureMessageText.enabled = false;
+        }
+
+        public override void ShowToolHUD(ToolControllerBase controllerBase)
+        {
+            failureMessageText.enabled = true;
         }
 
         private void SetFailureMessage(string message)

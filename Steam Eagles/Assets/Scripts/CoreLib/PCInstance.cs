@@ -25,6 +25,8 @@ namespace CoreLib
         public GameObject character {get; private set;}
         public GameObject camera {get; private set;}
         public GameObject input {get; private set;}
+        
+        public GameObject hud {get; set;}
 
         public Proxies SystemProxies { get; private set; } = new Proxies();
         public void Dispose()

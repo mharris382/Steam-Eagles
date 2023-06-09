@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Tools.BuildTool
 {
+    [System.Obsolete("Use CharacterTools instead")]
     public class ToolSwapController : MonoBehaviour
     {
         [SerializeField] private float toolSwitchRate = .2f;
