@@ -57,6 +57,8 @@ namespace Buildings.SaveLoad
                 Debug.Log("Waiting for machines to load...");
                 await UniTask.WhenAll(machineLoadOps.Values.Select(t => t.ToUniTask()));
                 Debug.Log("Machines loaded.");
+                var bMachines = target.GetComponent<BMachines>();
+                Debug.Assert(bMachines != null, "Building is missing BMachines component.", target);
                 
                 var loadedMachines = new Dictionary<string, BuildableMachineBase>();
                 foreach (var kvp in machineLoadOps)
@@ -71,7 +73,7 @@ namespace Buildings.SaveLoad
                 {
                     var prefab = loadedMachines[machineSaveData.machineAddress];
                     prefab.IsFlipped = machineSaveData.isFlipped;
-                    var machine =prefab.Build((Vector3Int)machineSaveData.machineCellPosition, target);
+                    var machine = bMachines.Build(prefab, machineSaveData.machineCellPosition, machineSaveData.isFlipped);
                     var customSaveData = machine.GetComponent<IMachineCustomSaveData>();
                     if (customSaveData != null) customSaveData.LoadDataFromJson(machineSaveData.customSaveData);
                 }

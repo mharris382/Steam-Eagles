@@ -89,6 +89,7 @@ namespace Tools.RecipeTool
             AimHandler.UpdateAimPosition(previewer.TargetLayer);
             previewer.SetVisible(true);
             _selectedCell = AimHandler.HoveredPosition.Value;
+            
             previewer.UpdatePreview(building, ref _selectedCell , out _isValid, ref _errorMessage, isFlipped);
             _selectedMachine = previewer.machine;
         }
@@ -129,8 +130,9 @@ namespace Tools.RecipeTool
         {
             if(_selectedMachine == null)
                 return false;
-            
-            var instance = _selectedMachine.Build(_selectedCell, building);
+            var bMachines = building.GetComponent<BMachines>();
+            var placement =(Vector2Int) _selectedCell;
+            var instance = bMachines.Build(_selectedMachine, placement, _selectedMachine.IsFlipped);
             return instance != null;
         }
 

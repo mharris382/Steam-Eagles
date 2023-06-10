@@ -79,7 +79,7 @@ namespace Tools.BuildTool
                 if (_toolState != null)
                 {
                     var characterState = _toolState.GetComponent<CharacterState>();
-                    _camera = characterState.AssignedPlayerCamera;
+                    return _camera = characterState.AssignedPlayerCamera;
                 }
                 return _camera;
             }

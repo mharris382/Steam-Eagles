@@ -34,13 +34,19 @@ namespace Tools.RecipeTool
         public void UpdatePreview(Building building, ref Vector3Int hoveredPositionValue, out bool isValid,
             ref string errorMessage, bool isFlipped)
         {
+            var bMachines = building.GetComponent<BMachines>();
             machine.IsFlipped = isFlipped;
-            var cell = FindBestCell(building, hoveredPositionValue);
-            var position = building.Map.CellToWorld(cell, TargetLayer);
+           // var cell = FindBestCell(building, hoveredPositionValue);
+           var cell = (Vector2Int)hoveredPositionValue;
+            Debug.Assert(bMachines != null, "Building is missing BMachines component", building);
+            var machineMap = bMachines.Map;
+            isValid = machineMap.CanPlaceMachine(machine, cell, ref errorMessage);
+            var position = building.Map.CellToWorld((Vector3Int)cell, TargetLayer);
             previewSprite.transform.position = position;
-            isValid = machine.IsPlacementValid(building, ref cell, ref errorMessage);
-            hoveredPositionValue = cell;
+            hoveredPositionValue = (Vector3Int)cell;
             previewSprite.color = isValid ? _config.validColor : _config.invalidColor;
+         
+            // isValid = machine.IsPlacementValid(building, ref cell, ref errorMessage);
         }
         
         private  Vector3Int FindBestCell(Building building, Vector3Int cell)

@@ -20,9 +20,7 @@ using Zenject;
 
 namespace Buildings
 {
-    public interface IMachineFactory : IFactory<Machine, Machine>
-    {
-    }
+
 
 
 
@@ -190,10 +188,7 @@ namespace Buildings
         }
 
 
-        public void InjectMachinePrefabFactory(IMachineFactory machinePrefabFactory)
-        {
-            this.machinePrefabFactory = machinePrefabFactory;
-        }
+
 
 
         [Inject]
@@ -204,8 +199,7 @@ namespace Buildings
         }
 
     
-        public IMachineFactory machinePrefabFactory { get; private set; }
-
+        
         #endregion
 
         #region [MonoBehaviour Events]
@@ -421,9 +415,15 @@ namespace Buildings
     {
         public Vector3Int cell;
         public BuildingLayers layers;
+        public Vector2Int cell2D => (Vector2Int)cell;
         public BuildingCell(Vector3Int cell, BuildingLayers layers)
         {
             this.cell = cell;
+            this.layers = layers;
+        }
+        public BuildingCell(Vector2Int cell, BuildingLayers layers)
+        {
+            this.cell = (Vector3Int)cell;
             this.layers = layers;
         }
         public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
@@ -456,7 +456,4 @@ namespace Buildings
         public override int GetHashCode() => HashCode.Combine((int)layers, bounds);
         public bool Contains(BuildingCell cell) => cell.layers == this.layers && bounds.Contains(cell.cell);
     }
-
-
-
 }

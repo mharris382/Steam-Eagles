@@ -128,7 +128,7 @@ namespace Buildables
             set
             {
                 _machineID = value;
-                Debug.Log($"Machine: {name} assigned ID {value}",this);
+                Debug.Log($"BMachine: {name} assigned ID {value}",this);
             }
         }
 
@@ -157,7 +157,33 @@ namespace Buildables
 
         public Sprite GetIcon() => previewIcon != null ? previewIcon : ( sr != null ? sr.sprite : null );
 
+        public IEnumerable<Vector3Int> GetCells(Vector2Int position)
+        {
+            var cell = (Vector3Int) position;
+            var size = this.MachineGridSize;
+            var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
+            for (int x = 0; x < size.x; x++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    var cellPos = cell + new Vector3Int(x, y, 0);
+                    yield return cellPos + offset;
+                }
+            }
+        }
 
+        public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position)
+        {
+            var cell = (Vector3Int) position;
+            var size = this.MachineGridSize;
+            var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
+            for (int x = 0; x < size.x; x++)
+            {
+                var y = 0;
+                var cellPos = cell + new Vector3Int(x, y, 0);
+                yield return cellPos + offset;
+            }
+        }
         public IEnumerable<Vector3Int> GetCells()
         {
             var cell = (Vector3Int) CellPosition;
@@ -185,7 +211,7 @@ namespace Buildables
                 previewSpriteRenderer.sprite = GetIcon();
             }
         }
-
+        [System.Obsolete("use BMachines instead")]
         public bool IsPlacementValid(Building building, ref Vector3Int cell, ref string errorMessage)
         {//if flipped, offset position by size x
             _spawnedPosition = cell;
@@ -205,7 +231,7 @@ namespace Buildables
             {
                 if (!IsPlacementOnGround(building, cell, MachineGridSize))
                 {
-                    errorMessage = "Machine must be placed on ground";
+                    errorMessage = "BMachine must be placed on ground";
                     return false;
                 }
             }
@@ -341,6 +367,12 @@ namespace Buildables
             return grid;
         }
 
+
+        public void DestroyMachine()
+        {
+            throw new NotImplementedException();
+        }
+
         #region [Editor]
 
         [PropertyOrder(-10)] [Button, HideIf(nameof(HasBuilding))]
@@ -381,7 +413,7 @@ namespace Buildables
             }
             else if (b.gameObject != building)
             {
-                error = $"Machine is child of wrong the building target: {building.name}";
+                error = $"BMachine is child of wrong the building target: {building.name}";
             }
 
             return true;

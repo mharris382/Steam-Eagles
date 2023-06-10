@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Characters;
 using CoreLib;
 using DefaultNamespace;
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
@@ -31,6 +32,7 @@ namespace SteamEagles.Characters
     
         #region Public variables
 
+        [ShowInInspector]
         public Camera AssignedPlayerCamera { get; set; }
         public CapsuleCollider2D Collider => _capsuleCollider;
    

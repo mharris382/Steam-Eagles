@@ -119,6 +119,7 @@ namespace Buildings
         private readonly Dictionary<Vector2, CellToRoomLookup> _cellToRoomMaps;
         private readonly RoomGraph _roomGraph;
 
+        private readonly Dictionary<BuildingLayers, HashSet<Vector2Int>> _blockedCells = new();
         private readonly Dictionary<BuildingLayers, Vector2> _layerToCellSize;
         private readonly Dictionary<BuildingLayers, Tilemap> _layerToTilemap;
         private readonly Dictionary<BuildingLayers, BuildingMapEvents> _layerToEvents = new ();
@@ -188,6 +189,7 @@ namespace Buildings
 
         public Vector2 GetCellSize(BuildingLayers layer) => _layerToCellSize[layer];
 
+        public Vector3 CellToWorldCentered(Vector3Int cell, BuildingLayers buildingLayers) => CellToWorld(cell, buildingLayers) + (Vector3)GetCellSize(buildingLayers)/2f;
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
         public Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
         public Vector3 CellToWorld(BuildingCell cell) => CellToWorld(cell.cell, cell.layers);
@@ -237,6 +239,7 @@ namespace Buildings
 
         public TileBase GetTile(BuildingCell cell) => GetTile(cell.cell, cell.layers);
 
+        public bool HasCell(BuildingCell cell) => GetTile(cell) != null;
         public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
         {
             if (!_layerToTilemap.ContainsKey(layers))
@@ -294,6 +297,53 @@ namespace Buildings
             var layer = tile.GetLayer();
             SetTile(cell, layer, tile);
             
+        }
+
+
+        public bool IsCellBlocked(Vector3Int cell, BuildingLayers layer) => IsCellBlocked((Vector2Int)cell, layer);
+        public bool IsCellBlocked(BuildingCell cell) => IsCellBlocked(cell.cell2D, cell.layers);
+        public bool IsCellBlocked(Vector2Int cell, BuildingLayers layer)
+        {
+            if (_blockedCells.TryGetValue(layer, out var blockedCells))
+            {
+                return blockedCells.Contains(cell);
+            }
+            return false;
+        }
+        public void UnblockCell(Vector2Int cell, BuildingLayers layer)
+        {
+            if (_blockedCells.TryGetValue(layer, out var blockedCells))
+            {
+                blockedCells.Remove(cell);
+            }
+        }
+        public void UnblockCells(IEnumerable<Vector2Int> cells, BuildingLayers layer)
+        {
+            if (_blockedCells.TryGetValue(layer, out var blockedCells))
+            {
+                foreach (var cell in cells)
+                {
+                    blockedCells.Remove(cell);
+                }
+            }
+        }
+
+        public void BlockCell(Vector2Int cell, BuildingLayers layer)
+        {
+            if (!_blockedCells.TryGetValue(layer, out var blockedCells))
+            {
+                _blockedCells.Add(layer, blockedCells = new ());
+            }
+            blockedCells.Add(cell);
+        }
+        
+        public void BlockCells(IEnumerable<Vector2Int> cells, BuildingLayers layer)
+        {
+            if (!_blockedCells.TryGetValue(layer, out var blockedCells))
+            {
+                _blockedCells.Add(layer, blockedCells = new ());
+            }
+            foreach (var cell in cells) _blockedCells[layer].Add(cell);
         }
 
         public IEnumerable<Vector3Int> GetAllNonEmptyCells(BuildingLayers layer) => GetAllCells(layer).Where(t => GetTile(t, layer) != null);
