@@ -44,7 +44,12 @@ namespace Buildables
             get;// => _amountStored.Value;
             set;// => _amountStored.Value = value;
         }
-
+        [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
+        public float ConsumptionRate
+        {
+            get;// => _amountStored.Value;
+            set;// => _amountStored.Value = value;
+        }
         public bool IsProducing
         {
             get => _isProducing.Value;

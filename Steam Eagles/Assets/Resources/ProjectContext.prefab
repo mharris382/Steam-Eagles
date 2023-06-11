@@ -176,10 +176,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hypergasEngineConfig:
-    amountStoredBeforeProduction: 10
-    consumptionRate: 100
+    amountStoredBeforeProduction: 5
+    hypergasStorageCapacity: 15
+    hypergasConsumptionRate: 2
+    timeWithoutOutputBeforeGasDeterioration: 5
+    gasDeterateRate: 1
+    deteriorationInterval: 1
     pumpProductionRate: 100
     pumpStorageCapacity: 10
+    generatorMaxConsumerRate: 1
+    generatorMaxProducerRate: 1
+    generatorStorageCapacity: 10
+    exhaustVentMaxConsumerRate: 1
 --- !u!114 &-8107959291497868363
 MonoBehaviour:
   m_ObjectHideFlags: 0

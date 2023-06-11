@@ -46,9 +46,10 @@ namespace Buildables
             _config = config;
             _steamNetwork = steamNetwork;
             _storedAmount = new();
-            _hasStartedUp = _storedAmount.Where(t => t > _config.amountStoredBeforeProduction).Select(_ => true)
-                .Merge(_storedAmount.Where(t => t < 0.01f).Select(_ => false)).ToReadOnlyReactiveProperty();
-            _productionRate = _hasStartedUp.Select(t => t ? Mathf.Min(_storedAmount.Value, _config.generatorMaxProducerRate) : 0).ToReadOnlyReactiveProperty();
+            var isRunning = _storedAmount.Where(t => t > _config.amountStoredBeforeProduction).Select(_ => true)
+                .Merge(_storedAmount.Where(t => t < 0.01f).Select(_ => false));
+            _hasStartedUp = isRunning.ToReadOnlyReactiveProperty();
+            _productionRate = isRunning.Select(t => t ? _config.generatorMaxProducerRate : 0).ToReadOnlyReactiveProperty();
 
             _storedAmount.Subscribe(t => hypergasGenerator.AmountStored = t).AddTo(cd);
             _hasStartedUp.Subscribe(t => _hypergasGenerator.HasStartedUp = t).AddTo(cd);
@@ -101,7 +102,7 @@ namespace Buildables
             set => _storedAmount.Value = Mathf.Clamp(value, 0, _config.hypergasStorageCapacity);
         }
 
-        float GetProductionRate() => _productionRate.Value;
+        float GetProductionRate() =>  _productionRate.Value;
 
         void OnOutputProduced(float amount)
         {
@@ -132,11 +133,13 @@ namespace Buildables
         public void UpdateEngine(float deltaTime)
         {
             Debug.Log("Updating engine");
+            _hypergasGenerator.ConsumptionRate = ConsumptionRateGetter();
+            _hypergasGenerator.ProductionRate = ProductionRateGetter();
         }
 
         float ProductionRateGetter()
         {
-            return _config.hypergasConsumptionRate;
+            return _productionRate.Value;
         }
         float ConsumptionRateGetter()
         {
