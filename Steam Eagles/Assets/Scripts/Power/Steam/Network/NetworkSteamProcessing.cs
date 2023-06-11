@@ -48,8 +48,8 @@ namespace Power.Steam.Network
             _gridGraph = gridGraph;
             _coroutineCaller = coroutineCaller;
             
-            _gridGraph.OnNodeAdded.Subscribe(OnNodeAdded);
-            _gridGraph.OnNodeRemoved.Subscribe(OnNodeRemoved);
+            _gridGraph.OnNodeAdded.Where(_ => !_steamNodeStates.ContainsKey(_.Position2D)).Subscribe(OnNodeAdded);
+            _gridGraph.OnNodeRemoved.Where(_ => _steamNodeStates.ContainsKey(_.Position2D)).Subscribe(OnNodeRemoved);
           
         }
         private void OnNodeAdded(GridNode o)

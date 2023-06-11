@@ -59,8 +59,7 @@ namespace Power.Steam.Network
             if (!_graph.Graph.ContainsVertex(pos))
             {
                 _graph.AddNode(pos);
-                Debug.Assert(_components.ContainsKey(pos) == false, $"Components already contains {pos}");
-                _components.Add(pos, -1);
+                _components.TryAdd(pos, -1);
                 DirtyGraph(pos);
             }
         }
@@ -134,6 +133,11 @@ public class NodeRegistry : Registry<NodeHandle>
         }
         protected override void RemoveValue(NodeHandle value)
         {
+            if (!_graph.RemoveNode(value.Position))
+            {
+                Debug.LogError("Failed to remove node " + value.Position );
+                
+            }
             if (_nodeComponents.ContainsKey(value.Position))
             {
                 if (_dirtyComponents.ContainsKey(_nodeComponents[value.Position]))
@@ -141,7 +145,7 @@ public class NodeRegistry : Registry<NodeHandle>
                 else _dirtyComponents.Add(_nodeComponents[value.Position], true);
             }
             _dirty = true;
-            _graph.RemoveNode(value.Position);
+           
             _handles.Remove(value.Position2D);
             base.RemoveValue(value);
         }

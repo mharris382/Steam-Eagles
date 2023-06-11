@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using QuikGraph;
 using Sirenix.OdinInspector;
+
 using UnityEngine;
 
 namespace Utilities
@@ -37,6 +38,18 @@ namespace Utilities
             {
                 spriteRendererFactory.GetNodeRenderer(vert);
             }
+        }
+        
+        public void RemoveVertex(Vector2Int vertex)
+        {
+            var sr = spriteRendererFactory.GetNodeRenderer(vertex);
+            sr.enabled = false;
+        }
+
+        public void RemoveEdge(SEdge<Vector2Int> edge)
+        {
+            var sr = spriteRendererFactory.GetEdgeRenderer(edge);
+            sr.enabled = false;
         }
         public abstract AdjacencyGraph<Vector2Int, SEdge<Vector2Int>> GetGraph();
     }

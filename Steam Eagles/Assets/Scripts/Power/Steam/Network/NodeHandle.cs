@@ -32,7 +32,10 @@ namespace Power.Steam.Network
             this.Position = position;
             this.NodeType = type;
             this.ID = nodeRegistry.GetNextGUID();
-            nodeRegistry.Register(this);
+            if (!nodeRegistry.HasValue(position))
+            {
+                nodeRegistry.Register(this);
+            }
         }
 
         public override string ToString()

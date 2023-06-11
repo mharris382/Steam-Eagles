@@ -4,6 +4,7 @@ using UnityEngine;
 public struct GridNode : IEquatable<GridNode>, IEquatable<Vector3Int>, IComparable<GridNode>
 {
     public Vector3Int Position { get; }
+    public Vector2Int Position2D => (Vector2Int)Position;
 
     public GridNode(Vector3Int position)
     {

@@ -10,7 +10,6 @@ namespace Power.Steam.Network
         private readonly NodeHandle.Factory _nodeHandleFactory;
         private readonly NodeRegistry _nodeRegistry;
         private readonly GridGraph<NodeHandle> _gridGraph;
-        private readonly Dictionary<Vector2Int, NodeHandle> _usedPositions = new();
 
         public SteamNetworkTopology(
             NodeHandle.Factory nodeHandleFactory,
@@ -23,41 +22,28 @@ namespace Power.Steam.Network
         }
         public NodeHandle AddNode(Vector2Int position, NodeType nodeType)
         {
-            if (_usedPositions.ContainsKey(position))
+            if (_nodeRegistry.HasValue(position))
             {
-                if (_usedPositions[position] != null)
+                var node = _nodeRegistry.GetHandle(position);
+                if (nodeType != NodeType.PIPE && node.NodeType == NodeType.PIPE)
                 {
-                    if (_usedPositions[position].NodeType == nodeType)
-                    {
-                        return _usedPositions[position];
-                    }
-
-                    if (nodeType != NodeType.PIPE)
-                    {
-                        _usedPositions.Remove(position);
-                    }
-                    else
-                    {
-                        return _usedPositions[position];
-                    }
+                    _nodeRegistry.Unregister(node);
+                    
                 }
                 else
                 {
-                    _usedPositions.Remove(position);
+                    return node;
                 }
-                
             }
             var handle = _nodeHandleFactory.Create((Vector3Int)position, nodeType);
-            _usedPositions.Add(position, handle);
             return handle;
         }
 
         public void RemoveNode(Vector2Int position)
         {
-            if (_usedPositions.ContainsKey(position))
+            if (_nodeRegistry.HasValue(position))
             {
-                _nodeRegistry.Unregister(_usedPositions[position]);
-                _usedPositions.Remove(position);
+                _nodeRegistry.Unregister(_nodeRegistry.GetHandle(position));
             }
         }
 

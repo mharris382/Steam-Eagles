@@ -62,9 +62,9 @@ namespace CoreLib
         {
             if (_values.Remove(value))
             {
-                RemoveValue(value);
                 _onValueRemoved.OnNext(value);
                 _count.Value = _values.Count;
+                RemoveValue(value);
                 return true;
             }
             return false;

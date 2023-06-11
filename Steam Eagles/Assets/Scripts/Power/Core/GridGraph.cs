@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoreLib.Extensions;
 using QuikGraph;
 using UniRx;
 using UnityEngine;
@@ -14,7 +15,6 @@ public class GridGraph<T>
     };
     public delegate T UndirectedEdgeTagResolver(GridNode source, GridNode target);
     
-    Dictionary<Vector3Int, GridNode> _usedNodes = new();
     AdjacencyGraph<GridNode, TaggedUndirectedEdge<GridNode, T>> graph= new();
     Queue<TaggedUndirectedEdge<GridNode,T>> _edgeCache = new();
     
@@ -36,64 +36,31 @@ public class GridGraph<T>
         get => _canAddEdge ?? (_ => true); 
         set => _canAddEdge = value;
     }
-    public bool HasNode(Vector3Int node) => _usedNodes.ContainsKey(node);
+
+    public bool HasNode(Vector3Int node) => graph.ContainsVertex(node);
     public bool HasNode(Vector2Int node) => HasNode((Vector3Int)node);
     
     public bool AddNode(GridNode node)
     {
-        if (HasNode(node.Position))
-        {
-            if (!graph.ContainsVertex(node))
-            {
-                graph.AddVertex(node);
-            }
-            else
-            {
-                return true;
-            }
-            
-        }
-        graph.AddVertex(node);
-        _usedNodes.Add(node.Position, node);
+        
+        if(!graph.ContainsVertex(node))
+            graph.AddVertex(node);
         _edgeCache.Clear();
-        if (!CheckForEdge(Vector3Int.up) ||
-            !CheckForEdge(Vector3Int.down) || 
-            !CheckForEdge(Vector3Int.left) ||
-            !CheckForEdge(Vector3Int.right))
+        foreach (var neighbor in node.Position.Neighbors())
         {
-            graph.RemoveVertex(node);
-            _edgeCache.Clear();
-            _usedNodes.Remove(node.Position);
-            return false;
+            if (graph.ContainsVertex(neighbor))
+            {
+                _edgeCache.Enqueue(CreateEdge(node, neighbor));
+            }
         }
 
-        //at this point we know we can add the node
-        
         _onNodeAdded.OnNext(node);
         while (_edgeCache.Count > 0)
         {
             var e = _edgeCache.Dequeue();
-            graph.AddEdge(e);
+            if(!graph.ContainsEdge(e))
+                graph.AddEdge(e);
             _onEdgeAdded.OnNext(e);
-        }
-        bool CheckForEdge(Vector3Int i)
-        {
-            var neighbor = node.Position + i;
-            if (HasNode(neighbor))
-            {
-                var neighborNode = _usedNodes[neighbor];
-                if (neighborNode.Equals(default(GridNode)))
-                {
-                    _usedNodes.Remove(neighbor);
-                    return true;
-                }
-                var newEdge = CreateEdge(node, neighborNode);
-                if(!CanAddEdge(newEdge))
-                    return false;
-                _edgeCache.Enqueue(newEdge);
-                return true;
-            }
-            return true;
         }
         return true;
     }
@@ -111,8 +78,7 @@ public class GridGraph<T>
 
     public GridNode GetNode(Vector3Int position)
     {
-        if (!HasNode(position)) return default;
-        return _usedNodes[position];
+        return position;
     }
 
     public GridNode GetNode(Vector2Int position) => GetNode((Vector3Int)position);
@@ -138,33 +104,30 @@ public class GridGraph<T>
             var offset = position + direction;
             if (HasNode(offset))
             {
-                neighbors[cnt++] = _usedNodes[offset];
+                neighbors[cnt++] = offset;
             }
         }
         return cnt;
     }
-    public bool RemoveNode(Vector3Int position)
-    {
-        if (!HasNode(position)) return false;
-        return RemoveNode(_usedNodes[position]);
-    }
     public bool RemoveNode(Vector2Int position) => RemoveNode((Vector3Int)position);
     public bool RemoveNode(GridNode node)
     {
-        if(!HasNode(node.Position))return false;
         _edgeCache.Clear();
-        if (graph.TryGetOutEdges(node, out var edges))
+        foreach (var neighbor in node.Position.Neighbors())
         {
-            foreach (var edge in edges) 
+            if (graph.ContainsVertex(neighbor) == false) continue;
+            if(graph.TryGetEdge(node, neighbor, out var edge))
+                _edgeCache.Enqueue(edge);
+            if (graph.TryGetEdge(neighbor, node, out edge))
                 _edgeCache.Enqueue(edge);
         }
-        graph.RemoveVertex(node);
         while (_edgeCache.Count > 0)
         {
             var edge =_edgeCache.Dequeue();
             graph.RemoveEdge(edge);
             _onEdgeRemoved.OnNext(edge);
         }
+        graph.RemoveVertex(node);
         _onNodeRemoved.OnNext(node);
         return true;
     }
