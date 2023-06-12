@@ -158,7 +158,7 @@ namespace Tools.BuildTool
 
         public sealed override bool UsesRecipes(out List<Recipe> recipes)
         {
-            Debug.Assert(tool != null, $"{tool.name} == null", this);
+            Debug.Assert(tool != null, $"tool == null", this);
             Debug.Assert(tool.Recipes != null, $"{tool}.Recipes == null", tool);
             _recipes = recipes = new List<Recipe>(GetRecipes());
             return true;
