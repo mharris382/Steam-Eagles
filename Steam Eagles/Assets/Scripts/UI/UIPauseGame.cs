@@ -139,7 +139,7 @@ namespace UI
                 sw.Reset();
                 sw.Start();
                 Debug.Log($"Starting Standard Save");
-                var success = await saveLoader.SaveGame();
+                var success = await saveLoader.SaveGameAsync();
                 sw.Stop();
                 Debug.Log($"Finished Standard Save in {sw.ElapsedMilliseconds} ms");
                 if (success && entitySaveSuccess)

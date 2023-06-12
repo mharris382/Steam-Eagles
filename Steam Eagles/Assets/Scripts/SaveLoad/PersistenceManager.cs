@@ -13,6 +13,7 @@ using Directory = System.IO.Directory;
 
 namespace SaveLoad
 {
+    [System.Obsolete("use global save loader instead")]
     public class PersistenceManager : Singleton<PersistenceManager>
     {
         public string presetPath = "Editor Test";
@@ -223,7 +224,7 @@ namespace SaveLoad
             }
 
             //var loadHandler = new LoadGameHandler(true);
-            //loadHandler.LoadGame(SaveDirectoryPath);
+            //loadHandler.LoadGameAsync(SaveDirectoryPath);
             
             var loadHandler = new AsyncLoadGameHandler(true);
             StartCoroutine(LoadAsync(loadHandler));

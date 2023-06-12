@@ -49,9 +49,9 @@ public class TexSaveLoadFactoryImpl : IFactory<BuildingLayers, IRoomTilemapTextu
 
     public IRoomTilemapTextureSaveLoader Create(BuildingLayers param)
     {
-        if (_layerSpecificRoomTexSaveLoaders.ContainsKey(param))
+        if (_layerSpecificRoomTexSaveLoaders.TryGetValue(param, out var loader))
         {
-            return _layerSpecificRoomTexSaveLoaders[param];
+            return loader;
         }
         return _nullTextureSaveLoader;
     }

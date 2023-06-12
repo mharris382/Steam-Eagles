@@ -103,9 +103,8 @@ namespace Power.Steam.Network
                 {
                     var connectedPosition = _connections.GetConnectedNode(producer.cell);
                     Debug.Assert(_pipes.HasValue(connectedPosition));
-                    var connectedNode = _pipes.GetValue(connectedPosition);
-                    var component = _pipes.GetComponentID(connectedNode);
-                    var newCell = new Cell<ISteamProducer>((Vector2Int)connectedPosition, producer.value, component, connectedNode);
+                    var component = _pipes.GetComponentID(connectedPosition);
+                    var newCell = new Cell<ISteamProducer>((Vector2Int)connectedPosition, producer.value, component, connectedPosition);
                     producersFound.Add(newCell);
                 }
             }
@@ -115,8 +114,7 @@ namespace Power.Steam.Network
                 {
                     var connectedPosition = _connections.GetConnectedNode(consumer.cell);
                     Debug.Assert(_pipes.HasValue(connectedPosition));
-                    var connectedNode = _pipes.GetValue(connectedPosition);
-                    var component = _pipes.GetComponentID(connectedNode);
+                    var component = _pipes.GetComponentID(connectedPosition);
                     var newCell = new Cell<ISteamConsumer>((Vector2Int)consumer.cell, consumer.value, component,(Vector3Int) consumer.cell);
                     consumersFound.Add(newCell);
                 }

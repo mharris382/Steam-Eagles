@@ -156,6 +156,11 @@ namespace Buildables
         }
         void OnInputConsumed(float amount)
         {
+            if (_disposed)
+            {
+                Debug.LogWarning("Trying to consume gas after disposal", _hypergasGenerator);
+                return;
+            }
             if (amount <= 0.01f) return;
             StoredAmount += amount;
             if (amount >= 0.5f) _timeInputLastConsumed.OnNext(Unit.Default);

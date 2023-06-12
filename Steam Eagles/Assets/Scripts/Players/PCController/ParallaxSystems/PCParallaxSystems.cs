@@ -9,9 +9,14 @@ public class PCParallaxSystems : PCSystems<PCParallaxSystem>, IInitializable, IT
     private readonly ISystemFactory<PCParallaxSystem> _factory;
     private readonly ParallaxSprites _parallaxSprites;
 
-    public override PCParallaxSystem CreateSystemFor(PC pc) => _factory.Create(pc);
-    
-    
+    public override PCParallaxSystem CreateSystemFor(PC pc)
+    {
+        Debug.Assert(_factory != null, "Factory is null");
+        Debug.Assert(pc != null, "PC is null");
+        return _factory.Create(pc);
+    }
+
+
     public void Tick()
     {
         Debug.Log("Ticking PCParallaxSystems");
@@ -27,6 +32,11 @@ public class PCParallaxSystems : PCSystems<PCParallaxSystem>, IInitializable, IT
         {
             pcParallaxSystem.LateTick();
         }
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
     }
 
     public PCParallaxSystems(PCTracker pcTracker, PC.Factory pcFactory, ISystemFactory<PCParallaxSystem> factory, ParallaxSprites parallaxSprites) : base(pcTracker, pcFactory, factory)

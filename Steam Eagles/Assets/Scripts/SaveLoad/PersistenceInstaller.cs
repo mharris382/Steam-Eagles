@@ -1,9 +1,11 @@
 using System.IO;
 using System.Linq;
 using CoreLib;
+using SaveLoad;
 using SaveLoad.CoreSave;
 using Sirenix.OdinInspector;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 public class PersistenceInstaller : MonoInstaller
@@ -15,8 +17,14 @@ public class PersistenceInstaller : MonoInstaller
         Container.Bind<PersistenceConfig>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GlobalSaveLoader>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GlobalSavePath>().AsSingle().NonLazy();
-        Container.BindInterfacesTo<AsyncCoreSaveDataLoader>().AsSingle().NonLazy();
+       //Container.BindInterfacesTo<AsyncCoreSaveDataLoader>().AsSingle().NonLazy();
         Container.Bind<PathValidator>().AsSingle().NonLazy();
+         var saveLoadSystems = ReflectionUtils.GetConcreteTypes<ISaveLoaderSystem>();
+         foreach (var saveLoadSystem in saveLoadSystems)
+         {
+             Container.Bind<ISaveLoaderSystem>().To(saveLoadSystem).FromNew().AsSingle();
+             config.Log($"Bound {saveLoadSystem.Name}");
+         }
     }
 }
 

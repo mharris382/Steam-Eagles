@@ -30,7 +30,7 @@ public class PathValidator
                 string fullPath = Path.Combine(directoryPath, $"{saveFileName.name}.{saveFileName.ext}" );
                 if (File.Exists(fullPath) == false)
                 {
-                    Debug.LogError($"File not found: {fullPath.Bolded().InItalics().ColoredRed()}");
+                    Debug.LogWarning($"File not found: {fullPath.Bolded().InItalics().ColoredRed()}");
                     allFilesFound = false;
                     missingFiles.Add((fullPath, system));
                 }
@@ -39,11 +39,11 @@ public class PathValidator
 
         if (!allFilesFound)
         {
-            Debug.LogError($"Missing Files: {missingFiles.Count}");
+            Debug.LogWarning($"Missing Files: {missingFiles.Count}");
             foreach (var missingFile in missingFiles)
             {
-                Debug.LogError($"Missing File: {missingFile.Item1.Bolded().InItalics()} " +
-                               $"for System: {missingFile.Item2.GetType().Name}");
+                Debug.LogWarning($"Missing File: {missingFile.Item1.Bolded().InItalics()} " +
+                                 $"for System: {missingFile.Item2.GetType().Name}");
             }   
         }
         return allFilesFound;

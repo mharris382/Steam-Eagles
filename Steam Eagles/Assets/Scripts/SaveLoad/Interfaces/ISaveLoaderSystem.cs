@@ -8,6 +8,7 @@ public interface ISaveLoaderSystem
     UniTask<bool> LoadGameAsync(string loadPath);
 
     bool IsSystemOptional() => false;
+    string SubFolderName() => string.Empty;
     IEnumerable<(string name, string ext)> GetSaveFileNames();
 }
 

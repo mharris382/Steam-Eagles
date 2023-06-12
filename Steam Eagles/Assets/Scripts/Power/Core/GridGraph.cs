@@ -7,12 +7,6 @@ using UnityEngine;
 
 public class GridGraph<T>
 {
-    private static Vector3Int[] _directions = new Vector3Int[] {
-        Vector3Int.up,
-        Vector3Int.right,
-        Vector3Int.down,
-        Vector3Int.left
-    };
     public delegate T UndirectedEdgeTagResolver(GridNode source, GridNode target);
     
     AdjacencyGraph<GridNode, TaggedUndirectedEdge<GridNode, T>> graph= new();
@@ -20,14 +14,21 @@ public class GridGraph<T>
     
     Subject<GridNode> _onNodeAdded = new();
     Subject<GridNode> _onNodeRemoved = new();
-    Subject<TaggedUndirectedEdge<GridNode, T>> _onEdgeAdded = new();
-    Subject<TaggedUndirectedEdge<GridNode, T>> _onEdgeRemoved = new();
+    
+    
+    [System.Obsolete("Use SEdge version")] Subject<TaggedUndirectedEdge<GridNode, T>> _onEdgeAdded = new();
+    [System.Obsolete("Use SEdge version")] Subject<TaggedUndirectedEdge<GridNode, T>> _onEdgeRemoved = new();
 
     private Predicate<TaggedUndirectedEdge<GridNode, T>> _canAddEdge;
     
     public IObservable<GridNode> OnNodeRemoved => _onNodeRemoved;
     public IObservable<GridNode> OnNodeAdded => _onNodeAdded;
+    
+    
+    [System.Obsolete("Use SEdge version")]
     public IObservable<TaggedUndirectedEdge<GridNode, T>> OnEdgeAdded => _onEdgeAdded;
+    
+    [System.Obsolete("Use SEdge version")]
     public IObservable<TaggedUndirectedEdge<GridNode, T>> OnEdgeRemoved => _onEdgeRemoved;
 
     public AdjacencyGraph<GridNode, TaggedUndirectedEdge<GridNode, T>> Graph => graph;
@@ -85,9 +86,8 @@ public class GridGraph<T>
     public  int GetNeighborCount(Vector3Int position)
     {
         int cnt = 0;
-        foreach (var direction in _directions)
+        foreach (var offset in position.Neighbors())
         {
-            var offset = position + direction;
             if (HasNode(offset))
             {
                 cnt++;
@@ -99,9 +99,9 @@ public class GridGraph<T>
     {
         int cnt = 0;
         neighbors = new GridNode[4];
-        foreach (var direction in _directions)
+        foreach (var offset in position.Neighbors())
         {
-            var offset = position + direction;
+            
             if (HasNode(offset))
             {
                 neighbors[cnt++] = offset;

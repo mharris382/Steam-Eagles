@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UniRx;
@@ -9,57 +8,6 @@ using Zenject;
 
 namespace UI.PauseMenus
 {
-    public class NewSaveButtonHandler : IInitializable, IDisposable
-    {
-        private readonly Button _button;
-        private readonly TMP_InputField _inputField;
-        private readonly SavePathButtonsList _pathButtonsList;
-        private readonly GlobalSaveLoader _globalSaveLoader;
-        private readonly List<char> _invalidCharacters;
-        private CompositeDisposable _disposable;
-
-        public NewSaveButtonHandler(Button button, 
-            TMP_InputField inputField,
-            SavePathButtonsList pathButtonsList,
-            GlobalSaveLoader globalSaveLoader)
-        {
-            _button = button;
-            _inputField = inputField;
-            _pathButtonsList = pathButtonsList;
-            _globalSaveLoader = globalSaveLoader;
-            _invalidCharacters = new List<char>(new[] { '#', '/', '\\', '%','*', '?', '<','>', '|', ':', '"', '{','}' });
-        }
-
-        public void Initialize()
-        {
-            var cd = new CompositeDisposable();
-            _inputField.onValueChanged.AsObservable()
-                .Subscribe(saveName =>
-                {
-                    foreach (var invalidCharacter in _invalidCharacters)
-                        if (saveName.Contains(invalidCharacter))
-                            _inputField.text = saveName.Replace(invalidCharacter, ' ');
-                }).AddTo(cd);
-            _button.onClick.AsObservable().Subscribe(_ => {
-                    var path = GetNewSavePath();
-                    _globalSaveLoader.SaveGame(path, result =>
-                    {
-                        if (!result) Debug.LogError($"Failed to save game at {path}");
-                        else
-                        {
-                            Debug.Log($"Saved Game at {path}");
-                            _pathButtonsList.RebuildList();    
-                        }
-                    });
-                }).AddTo(cd);
-            this._disposable = cd;
-        }
-
-        string GetNewSavePath() => $"{Application.persistentDataPath}/{_inputField.text}";
-
-        public void Dispose() => _disposable?.Dispose();
-    }
-
     public class UISaveGameMenuInstaller : MonoInstaller
     {
         [SerializeField,ChildGameObjectsOnly] private Button saveButton;

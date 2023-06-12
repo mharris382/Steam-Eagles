@@ -2,6 +2,7 @@
 using System.IO;
 using CoreLib;
 using CoreLib.GameTime;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -26,8 +27,9 @@ namespace UI
         public UIDisplayGameDate dateDisplay;
 
         public string savePath;
-        private GlobalSaveLoader saveLoader;
-
+        private GlobalSaveLoader _saveLoader;
+        private CoroutineCaller _coroutineCaller;
+        private bool _isLoading;
         public string GetFullSavePath()
         {
             return !savePath.StartsWith(Application.persistentDataPath)
@@ -36,32 +38,29 @@ namespace UI
         }
 
         [Inject]
-        public void InjectSaver(GlobalSaveLoader saveLoader)
+        public void InjectSaver(GlobalSaveLoader saveLoader, CoroutineCaller coroutineCaller)
         {
-            this.saveLoader = saveLoader;
+            this._saveLoader = saveLoader;
+            _coroutineCaller = coroutineCaller;
         }
 
-    protected virtual void Awake()
+        protected virtual void Awake()
         {
-            var fullPath = GetFullSavePath();
-            if (Directory.Exists(fullPath))
-            {
-                loadButton.interactable = true;
-                loadButton.onClick.AsObservable().Subscribe(_ =>
-                {
-                    Debug.Log($"Loading Game: {fullPath}");
-                    saveLoader.LoadGame(GetFullSavePath(), res =>
-                    {
-                        Debug.Log($"Loaded Game: {res}\npath: {fullPath}");
-                    });
-                }).AddTo(this);
-            }
-            else
-            {
-                loadButton.interactable = false;
-            }
+            loadButton.interactable = true;
+            loadButton.onClick.AsObservable().Where(_ => !_isLoading).Subscribe(_ => TriggerLoadGame(GetFullSavePath()));
         }
-        
+
+        void TriggerLoadGame(string loadPath)
+        {
+            _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
+            {
+                _isLoading = true;
+                var result = await _saveLoader.LoadGameAsync(loadPath);
+                if (result) Debug.Log($"Load successful: {loadPath.Bolded().InItalics()}");
+                else Debug.LogError($"Load unsuccessful: {loadPath.Bolded().InItalics()}");
+                _isLoading = false;
+            }));
+        }
         
         public void SetSavePath(string path)
         {
