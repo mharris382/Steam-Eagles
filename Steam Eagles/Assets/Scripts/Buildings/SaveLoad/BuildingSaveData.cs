@@ -30,7 +30,7 @@ namespace Buildings.SaveLoad
             {
                 Debug.Log($"Loading all data for building: {target.ID}...", target);
                 var loadMachines = LoadAllMachines(target);
-                LoadTilemapData(target);
+                //LoadTilemapData(target);
                 await loadMachines;
                 onCompleted?.Invoke();
             }));
@@ -39,7 +39,7 @@ namespace Buildings.SaveLoad
         public async UniTask<bool> LoadAsync(Building target)
         {
             var loadMachines = LoadAllMachines(target);
-            LoadTilemapData(target);
+            // LoadTilemapData(target);
             await loadMachines;
             return true;
         }
