@@ -22,6 +22,7 @@ namespace Buildings.CoreData
         }
         public void Dispose()
         {
+            if (_coroutineCaller == null) return;
             Debug.Log($"BuildingCoreData Disposed for {_building.name}",_building);
             if (_initializeCoroutine != null) _coroutineCaller.StopCoroutine(_initializeCoroutine);
         }

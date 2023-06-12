@@ -32,6 +32,8 @@ namespace Buildables
         private float _usableAmount;
 
         private Coroutine _lastDeterioateCoroutine;
+        private bool _disposed;
+
         public HypergasEngineController(
             HypergasGenerator hypergasGenerator, 
             SteamIO.Producer.Factory producerFactory, 
@@ -40,6 +42,8 @@ namespace Buildables
             INetwork steamNetwork)
         {
             var cd = new CompositeDisposable();
+            _disposed = false;
+            Disposable.Create(() => _disposed = true).AddTo(cd);
             _hypergasGenerator = hypergasGenerator;
             _producerFactory = producerFactory;
             _consumerFactory = consumerFactory;
@@ -106,6 +110,11 @@ namespace Buildables
 
         void OnOutputProduced(float amount)
         {
+            if (_disposed)
+            {
+                Debug.LogWarning("Trying to produce gas after disposal", _hypergasGenerator);
+                return;
+            }
             if (amount <= 0.01f) return;
             amount /= (float)_producers.Length;            
             StoredAmount-= amount;
@@ -154,13 +163,15 @@ namespace Buildables
 
         public void Dispose()
         {
+            _disposed = true;
+            if(_hypergasGenerator != null)
+                _hypergasGenerator.StopCoroutine(_lastDeterioateCoroutine);
             _disposable?.Dispose();
             _storedAmount?.Dispose();
             _hasStartedUp?.Dispose();
             _productionRate?.Dispose();
             _timeOutputLastConsumed?.Dispose();
             _timeInputLastConsumed?.Dispose();
-            _hypergasGenerator.StopCoroutine(_lastDeterioateCoroutine);
         }
 
 
