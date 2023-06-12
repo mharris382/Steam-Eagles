@@ -377,8 +377,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4438283006891795381}
   - component: {fileID: 4938345582890992225}
-  - component: {fileID: 5334655694938119347}
-  - component: {fileID: 8315739876795502193}
   m_Layer: 10
   m_Name: '[Tool Controllers]'
   m_TagString: Untagged
@@ -426,33 +424,6 @@ MonoBehaviour:
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
---- !u!114 &5334655694938119347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927174135669236134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fa66f6430c94ad88d0b3be29b240018, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8315739876795502193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927174135669236134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56d409eeb835446a8771e5a98d709156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toolBeltInventory: {fileID: 1229341134484648457}
-  entityInitializer: {fileID: 6001154586176199686}
-  characterTools: {fileID: 3699429497452213875}
 --- !u!1 &1380520933487908615
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,7 +964,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxToolSlots: 7
-  toolParent: {fileID: 0}
+  toolParent: {fileID: 4438283006891795381}
 --- !u!1 &2462750353514555147
 GameObject:
   m_ObjectHideFlags: 0
