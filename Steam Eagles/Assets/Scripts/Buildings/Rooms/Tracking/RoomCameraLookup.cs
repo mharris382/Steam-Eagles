@@ -127,6 +127,7 @@ namespace Buildings.Rooms.Tracking
         public static GameObject CreateVCamForPlayerFromTemplate(GameObject vCamTemplate, int playerNumber,
             Transform transform)
         {
+            vCamTemplate.layer = LayerMask.NameToLayer("TransparentFX");
             var vCam = Object.Instantiate(vCamTemplate, vCamTemplate.transform.parent);
             vCam.name = $"{vCamTemplate.name}";
             vCam.layer = LayerMask.NameToLayer($"P{playerNumber + 1}");

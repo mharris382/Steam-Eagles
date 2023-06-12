@@ -25,7 +25,7 @@ namespace Players.PCController.Tools
             {
                 
             }
-            public GameObject Create(PC param1, GameObject param2)
+            public GameObject Create(PC param1, GameObject original)
             {
                 throw new System.NotImplementedException();
             }

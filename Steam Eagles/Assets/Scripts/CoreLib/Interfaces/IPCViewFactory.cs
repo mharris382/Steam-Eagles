@@ -5,7 +5,7 @@ namespace CoreLib.Interfaces
 {
     public interface IPCViewFactory
     {
-        public GameObject Create(int playerNumber, GameObject viewPrefab);
+        public GameObject Create(int playerNumber, GameObject original);
     }
 
     public interface IPCIdentifier

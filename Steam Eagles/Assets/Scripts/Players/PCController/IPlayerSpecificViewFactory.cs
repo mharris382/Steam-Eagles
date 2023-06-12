@@ -22,21 +22,22 @@ namespace Players.PCController
                 new Dictionary<GameObject, GameObject>()
             };
         }
-        public GameObject Create(int param1, GameObject param2)
+        public GameObject Create(int param1, GameObject original)
         {
-            if (param2 == null)
+            if (original == null)
             {
                 Debug.LogError("Null value");
                 return null;
             }
+
+            original.layer = LayerMask.NameToLayer("TransparentFX");
             var playerSpecificCopies = _playerSpecificCopies[param1];
-            if (!playerSpecificCopies.TryGetValue(param2, out var copy) || copy == null)
+            if (!playerSpecificCopies.TryGetValue(original, out var copy) || copy == null)
             {
-                copy = GameObject.Instantiate(param2, param2.transform.position, param2.transform.rotation,
-                    param2.transform.parent);
+                copy = GameObject.Instantiate(original, original.transform.position, original.transform.rotation,
+                    original.transform.parent);
                 copy.layer = _layerMaskFactory.Create(param1);
-                if (playerSpecificCopies.ContainsKey(param2)) playerSpecificCopies.Remove(param2);
-                playerSpecificCopies.Add(param2, copy);
+                playerSpecificCopies.Add(original, copy);
             }
             return copy;
         }
