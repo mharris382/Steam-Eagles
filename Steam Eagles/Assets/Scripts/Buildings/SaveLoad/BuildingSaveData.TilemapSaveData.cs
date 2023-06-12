@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define LOAD_PARALLEL
+using System;
 using System.Collections;
 using System.IO;
 using System.Collections.Generic;
@@ -465,7 +466,12 @@ public class RoomTilemapTextures
             var roomTextures = GetRoomTextures(room);
             roomTextures.AssignTexture(_layer, texture);
 
-            return LoadData(room, texture, filePath);
+            var sw = new Stopwatch();
+            sw.Start();
+            var result = LoadData(room, texture, filePath);
+            sw.Stop();
+            Debug.Log($"{room.name} LoadData took {sw.ElapsedMilliseconds}ms");
+            return result;
         }
 
         TileBase GetDefaultTile()
@@ -645,15 +651,21 @@ public class RoomTilemapTextures
 
         private async UniTask<Texture2D> LoadTextureFromPath(string imageFilePath)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             byte[] imageData = await File.ReadAllBytesAsync(imageFilePath);
-            Debug.Log($"Finished reading from {imageFilePath}"); 
+            stopwatch.Stop();
+            Debug.Log($"Finished reading from {imageFilePath} : {stopwatch.ElapsedMilliseconds} ms"); 
+            stopwatch.Restart();
             Texture2D texture = new Texture2D(_bounds.size.x, _bounds.size.y);
             if (!texture.LoadImage(imageData))
             {
                 Debug.LogError($"Failed to load image data: {imageFilePath}");
                 return  null;
             }
+            stopwatch.Stop();
             texture.Apply();
+            Debug.Log($"Finished applying texture: {stopwatch.ElapsedMilliseconds} ms");
             return texture;
         }
 

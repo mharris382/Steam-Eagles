@@ -10,7 +10,10 @@ public struct GridNode : IEquatable<GridNode>, IEquatable<Vector3Int>, IComparab
     {
         Position = position;
     }
-
+    public GridNode(Vector2Int position)
+    {
+        Position = new Vector3Int(position.x, position.y);
+    }
     public bool Equals(GridNode other)
     {
         if (ReferenceEquals(null, other)) return false;
@@ -26,10 +29,10 @@ public struct GridNode : IEquatable<GridNode>, IEquatable<Vector3Int>, IComparab
         return Equals((GridNode)obj);
     }
     public override int GetHashCode() => Position.GetHashCode();
-    
+    public static implicit  operator Vector2Int (GridNode node) => node.Position2D;
     public static implicit  operator Vector3Int (GridNode node) => node.Position;
     public static implicit  operator GridNode (Vector3Int position) => new(position);
-
+    public static implicit  operator GridNode (Vector2Int position) => new(position);
     public int CompareTo(GridNode other)
     {
         var x = other.Position.x.CompareTo(Position.x);

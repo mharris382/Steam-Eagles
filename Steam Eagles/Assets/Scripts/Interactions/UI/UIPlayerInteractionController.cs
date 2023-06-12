@@ -19,7 +19,7 @@ namespace Interactions.UI
         
         private PlayerCharacterGUIController Controller => _controller ? _controller : _controller = GetComponent<PlayerCharacterGUIController>();
 
-        private CharacterInteractionAgent PCAgent => Controller.HasAllResources()
+        private CharacterInteractionAgent PCAgent => Controller.HasAllResources() && Controller.PlayerCharacter != null
             ? (_pcAgent != null ? _pcAgent : _pcAgent = Controller.PlayerCharacter.GetComponent<CharacterInteractionAgent>()) : null;
         
         private IEnumerator Start()
@@ -37,7 +37,8 @@ namespace Interactions.UI
         {
             if ((!Controller.HasAllResources())) 
                 return;
-            
+            if (PCAgent == null)
+                return;
 
             //read interact input from player input and pass to interaction agent
             PCAgent.InteractPressed = Controller.playerInput.actions["Interact"].WasPressedThisFrame();

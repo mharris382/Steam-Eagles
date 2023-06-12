@@ -17,7 +17,7 @@ namespace SaveLoad
                 if (containerLevelAttribute.Level == this.containerLevel)
                 {
                     Container.Bind(concreteType).AsSingle().NonLazy();
-                    Debug.Log($"Bound {nameof(TBound)} to {concreteType.Name} at {containerLevelAttribute.Level} level");
+                    Debug.Log($"Bound {typeof(TBound).Name} to {concreteType.Name} at {containerLevelAttribute.Level} level");
                 }
             }
         }

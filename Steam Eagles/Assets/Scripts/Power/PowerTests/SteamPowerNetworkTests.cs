@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,6 +133,175 @@ public class GridGraphTests
             Assert.AreEqual(2, graph.GetNeighborCount(node));
             Assert.AreEqual(1, graph.GetNeighborCount(node2, out var neighbors));
             Assert.AreEqual(neighbors[0], node);
+        }
+    }
+}
+
+
+public class GridNodeTests
+{
+    private GraphWrapper graph;
+
+    [SetUp]
+    public void SetUp()
+    {
+        graph = new GraphWrapper();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        graph.Dispose();
+    }
+    [Test]
+    public void TestContainsVertex()
+    {
+        var pos = new Vector2Int(0, 0);
+        var node = new GridNode(pos);
+        Assert.AreEqual(new GridNode(new Vector3Int(0,0,0)), node);
+        var graph = new AdjacencyGraph<GridNode, SEdge<GridNode>>();
+        graph.AddVertex(node);
+        Assert.IsTrue(graph.ContainsVertex(new Vector3Int(0,0,0)));
+        pos += Vector2Int.right;
+        graph.AddVertex(pos);
+        Assert.IsTrue(graph.ContainsVertex(new Vector3Int(1, 0,0)));
+    }
+    
+    [Test]
+    public void TestContainsEdges()
+    {
+        var pos = new Vector2Int(0, 0);
+        var node = new GridNode(pos);
+        Assert.AreEqual(new GridNode(new Vector3Int(0,0,0)), node);
+        var graph = new AdjacencyGraph<GridNode, SEdge<GridNode>>();
+        graph.AddVertex(node);
+        Assert.IsTrue(graph.ContainsVertex(new Vector3Int(0,0,0)));
+        pos += Vector2Int.right;
+        graph.AddVertex(pos);
+        Assert.IsTrue(graph.ContainsVertex(new Vector3Int(1, 0,0)));
+        var added1 = graph.AddEdge(new SEdge<GridNode>(Vector2Int.zero, pos));
+        var added2 = graph.AddEdge(new SEdge<GridNode>(pos, Vector2Int.zero));
+        Assert.IsTrue(added1);
+        Assert.IsTrue(added2);
+
+        var edge = new SEdge<GridNode>(Vector2Int.zero, Vector2Int.right);
+        var edge2 = new SEdge<GridNode>(Vector2Int.right, Vector2Int.zero);
+        Assert.IsTrue(graph.ContainsEdge(edge));
+        Assert.IsTrue(graph.ContainsEdge(Vector2Int.zero, Vector2Int.right));
+        Assert.IsTrue(graph.ContainsEdge(Vector2Int.right, Vector2Int.zero));
+    }
+
+
+    [Test]
+    public void TestWrapperAddVertex()
+    {
+        WrapperAddTestVerts();
+    }
+
+    private void WrapperAddTestVerts()
+    {
+        var pos = new Vector2Int(0, 0);
+        var node = new GridNode(pos);
+        Assert.AreEqual(new GridNode(new Vector3Int(0, 0, 0)), node);
+
+        graph.AddVertex(node);
+        Assert.IsTrue(graph.Graph.ContainsVertex(new Vector3Int(0, 0, 0)));
+        pos += Vector2Int.right;
+        graph.AddVertex(pos);
+        Assert.IsTrue(graph.Graph.ContainsVertex(new Vector3Int(1, 0, 0)));
+    }
+
+    [Test]
+    public void TestWrapperAddBiDirectionalEdge()
+    {
+        WrapperAddBiDirectionalEdges();
+    }
+
+    private void WrapperAddBiDirectionalEdges()
+    {
+        WrapperAddTestVerts();
+        var added1 = graph.AddBiDirectionalEdge(Vector2Int.zero, Vector2Int.right);
+        Assert.IsTrue(added1);
+
+        var edge = new SEdge<GridNode>(Vector2Int.zero, Vector2Int.right);
+        var edge2 = new SEdge<GridNode>(Vector2Int.right, Vector2Int.zero);
+        Assert.IsTrue(graph.Graph.ContainsEdge(edge));
+        Assert.IsTrue(graph.Graph.ContainsEdge(Vector2Int.zero, Vector2Int.right));
+        Assert.IsTrue(graph.Graph.ContainsEdge(Vector2Int.right, Vector2Int.zero));
+    }
+
+    [Test]
+    public void TestWrapperAddDirectionalEdge()
+    {
+        WrapperAddDirectionalEdge();
+    }
+
+    private void WrapperAddDirectionalEdge()
+    {
+        WrapperAddTestVerts();
+        Assert.IsTrue(graph.Graph.ContainsVertex(new Vector3Int(1, 0, 0)));
+        var added1 = graph.AddDirectionalEdge(Vector2Int.zero, Vector2Int.right);
+        Assert.IsTrue(added1);
+        Assert.IsTrue(graph.Graph.ContainsEdge(Vector2Int.zero, Vector2Int.right));
+        Assert.IsFalse(graph.Graph.ContainsEdge(Vector2Int.right, Vector2Int.zero));
+    }
+
+
+    [Test]
+    public void TestWrapperFiresAddVertex()
+    {
+        List<GridNode> nodes = new();
+        var d = graph.OnNodeAdded.Subscribe(nodes.Add);
+        TestWrapperAddVertex();
+        d.Dispose();
+        Assert.IsTrue(nodes.Contains(Vector2Int.zero));
+        Assert.IsTrue(nodes.Contains(Vector2Int.right));
+    }
+    [Test]
+    public void TestWrapperFiresRemoveVertex()
+    {
+        List<GridNode> nodes = new();
+        var d = graph.OnNodeRemoved.Subscribe(nodes.Add);
+        using (d)
+        {
+            WrapperAddTestVerts();
+        
+            Assert.IsFalse(nodes.Contains(Vector2Int.zero));
+            Assert.IsFalse(nodes.Contains(Vector2Int.right));
+        
+            graph.Graph.RemoveVertex(Vector2Int.zero);
+            Assert.IsTrue(nodes.Contains(Vector2Int.zero));
+        
+            graph.Graph.RemoveVertex(Vector2Int.right);
+            Assert.IsTrue(nodes.Contains(Vector2Int.right));
+        }
+    }
+    [Test]
+    public void TestWrapperFiresAddEdge()
+    {
+        List<SEdge<GridNode>> sEdges = new();
+        var d = graph.OnEdgeAdded.Subscribe(sEdges.Add);
+        using (d)
+        {
+            WrapperAddBiDirectionalEdges();
+            Assert.IsTrue(sEdges.Contains(new SEdge<GridNode>(Vector2Int.zero, Vector2Int.right)));
+            Assert.IsTrue(sEdges.Contains(new SEdge<GridNode>(Vector2Int.right,Vector2Int.zero)));
+        }
+    }
+    
+    [Test]
+    public void TestWrapperFiresRemoveEdge()
+    {
+        List<SEdge<GridNode>> sEdges = new();
+        var d = graph.OnEdgeRemoved.Subscribe(sEdges.Add);
+        using (d)
+        {
+            WrapperAddBiDirectionalEdges();
+            Assert.IsFalse(sEdges.Contains(new SEdge<GridNode>(Vector2Int.zero, Vector2Int.right)));
+            Assert.IsFalse(sEdges.Contains(new SEdge<GridNode>(Vector2Int.right,Vector2Int.zero)));
+            graph.Graph.RemoveVertex(Vector2Int.zero);
+            Assert.IsTrue(sEdges.Contains(new SEdge<GridNode>(Vector2Int.zero, Vector2Int.right)));
+            Assert.IsTrue(sEdges.Contains(new SEdge<GridNode>(Vector2Int.right,Vector2Int.zero)));
         }
     }
 }

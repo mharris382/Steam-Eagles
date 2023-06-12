@@ -66,7 +66,7 @@ public class UIMainMenu : MonoBehaviour
     [ShowInInspector, ReadOnly]
     private GlobalSaveLoader _saveLoader;
 
-    private CoroutineCaller coroutineCaller;
+    private CoroutineCaller _coroutineCaller;
     private GlobalSavePath _savePath;
 
     [Serializable]
@@ -232,7 +232,7 @@ public class UIMainMenu : MonoBehaviour
         Debug.Log("Injecting save loader");
         _saveLoader = saveLoader;
         _savePath = savePath;
-        this.coroutineCaller = coroutineCaller;
+        _coroutineCaller = coroutineCaller;
     }
     
     private void Awake()
@@ -343,17 +343,11 @@ public class UIMainMenu : MonoBehaviour
         if (_saveLoader != null)
         {
             Debug.Log("Starting load game");
-            _saveLoader.LoadGame(GetFullSavePath(), result =>
-            {
-                if (result)
-                {
-                    Debug.Log("Load game successful");
-                }
-                else
-                {
-                    Debug.LogError("Load game failed");
-                }
-            });
+            _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () => {
+                var result = await _saveLoader.LoadGameAsync();
+                if (result) Debug.Log($"Load game successful: {_savePath.FullSaveDirectoryPath}",this);
+                else Debug.LogError($"Load game failed: {_savePath.FullSaveDirectoryPath}",this);
+            }));
         }
         else
         {
