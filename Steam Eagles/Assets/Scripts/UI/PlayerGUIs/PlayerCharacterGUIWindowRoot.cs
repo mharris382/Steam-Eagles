@@ -45,19 +45,8 @@ namespace UI.PlayerGUIs
         private void Awake()
         {
             _guiState = new ReactiveProperty<GUIState>(GUIState.DISABLED);
-            _stateMachine = new StateMachine();
-            _stateMachine.AddState("DISABLED", new PlayerGUIDisabledState(this, playerCharacterHUD));
-            _stateMachine.AddState("HUD", new PlayerHUDState(this, playerCharacterHUD));
-            _stateMachine.AddState("CHARACTER_WINDOW", new PlayerCharacterWindowState(this, playerCharacterHUD, characterWindowController));
             
-            _stateMachine.AddTransitionFromAny("HUD", _ => guiState.Value == GUIState.NORMAL_GAMEPLAY_HUD);
-            _stateMachine.AddTransition("CHARACTER_WINDOW", "HUD", _ => characterWindowController.WindowState == UICharacterWindowController.CharacterWindowState.CLOSED);
-            _stateMachine.AddTransition("HUD", "CHARACTER_WINDOW", _ => characterWindowController.WindowState != UICharacterWindowController.CharacterWindowState.CLOSED);
-            _stateMachine.AddTransitionFromAny("DISABLED", _ => guiState.Value == GUIState.DISABLED);
-            
-            _stateMachine.SetStartState("DISABLED");
-            _stateMachine.Init();
-
+            RebuildStateMachine();
             characterWindowController.OnCharacterWindowStateChange
                 .Select(t => t != UICharacterWindowController.CharacterWindowState.CLOSED)
                 .Subscribe(isCharacterWindowOpen => _guiState.Value = isCharacterWindowOpen ? GUIState.CHARACTER_WINDOW : GUIState.NORMAL_GAMEPLAY_HUD)
@@ -72,7 +61,25 @@ namespace UI.PlayerGUIs
         private void Update()
         {
             CheckGUIState();
+            if (_stateMachine == null)
+                RebuildStateMachine();
             _stateMachine.OnLogic();
+        }
+
+        private void RebuildStateMachine()
+        {
+            _stateMachine = new StateMachine();
+            _stateMachine.AddState("DISABLED", new PlayerGUIDisabledState(this, playerCharacterHUD));
+            _stateMachine.AddState("HUD", new PlayerHUDState(this, playerCharacterHUD));
+            _stateMachine.AddState("CHARACTER_WINDOW", new PlayerCharacterWindowState(this, playerCharacterHUD, characterWindowController));
+            
+            _stateMachine.AddTransitionFromAny("HUD", _ => guiState.Value == GUIState.NORMAL_GAMEPLAY_HUD);
+            _stateMachine.AddTransition("CHARACTER_WINDOW", "HUD", _ => characterWindowController.WindowState == UICharacterWindowController.CharacterWindowState.CLOSED);
+            _stateMachine.AddTransition("HUD", "CHARACTER_WINDOW", _ => characterWindowController.WindowState != UICharacterWindowController.CharacterWindowState.CLOSED);
+            _stateMachine.AddTransitionFromAny("DISABLED", _ => guiState.Value == GUIState.DISABLED);
+            
+            _stateMachine.SetStartState("DISABLED");
+            _stateMachine.Init();
         }
 
         private void CheckGUIState()
