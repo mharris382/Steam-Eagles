@@ -31,7 +31,7 @@ namespace Interactions.Installers
             _pcRegistry = pcRegistry;
             _layerMaskFactory = new LayerMaskFactory();
         }
-        public  GameObject Create(InteractionAgent param1, GameObject param2)
+        public  GameObject Create(InteractionAgent param1, GameObject original)
         {
             int pcIndex = -1;
             for (int i = 0; i < _pcRegistry.PCCount; i++)
@@ -46,7 +46,7 @@ namespace Interactions.Installers
 
             if (pcIndex == -1)
                 return null;
-            var vCam = GameObject.Instantiate(param2, param2.transform.position, param2.transform.rotation, param2.transform.parent);
+            var vCam = GameObject.Instantiate(original, original.transform.position, original.transform.rotation, original.transform.parent);
             vCam.layer = _layerMaskFactory.Create(pcIndex);
             return vCam;
         }

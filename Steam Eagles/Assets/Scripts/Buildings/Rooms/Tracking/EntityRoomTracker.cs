@@ -115,27 +115,27 @@ namespace Buildings.Rooms.Tracking
             //Entity has most likely moved to a new room that is adjacent to the last seen room
             if (Building.Map.RoomGraph.Graph.TryGetOutEdges(lastSeenRoom, out var neighbors))
             {
-                foreach (var room in neighbors.Select(t => t.Target))
+                foreach (var r in neighbors.Select(t => t.Target))
                 {
-                    if (room.RoomBounds.Contains(currentPositionRs))
+                    if (r.RoomBounds.Contains(currentPositionRs))
                     {
-                        UpdateEntityRoom(trackedEntity, room);
+                        UpdateEntityRoom(trackedEntity, r);
+                        return;
                     }
                 }
             }
             //Entity has moved to a room that is not adjacent to the last seen room, need to perform a full search to re-locate the entity
-            else
+            
+            var room = SearchForEntityInBuilding(trackedEntity);
+            if (room == null)
             {
-                var room = SearchForEntityInBuilding(trackedEntity);
-                if (room == null)
-                {
-                    throw new NotImplementedException(
-                        $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
-                        $"a room that is not adjacent to the last seen room, and could not be found in the building");
-                }
-                UpdateEntityRoom(trackedEntity, room);
+                throw new NotImplementedException(
+                    $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
+                    $"a room that is not adjacent to the last seen room, and could not be found in the building");
             }
-        }
+            UpdateEntityRoom(trackedEntity, room);
+        
+    }
 
         private void UpdateEntityRoom(EntityInitializer trackedEntity, Room room)
         {

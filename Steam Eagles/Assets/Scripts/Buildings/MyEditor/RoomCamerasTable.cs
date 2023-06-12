@@ -178,7 +178,8 @@ namespace Buildings.MyEditor
             [Button]
             void FixFollowCamera()
             {
-                
+                var ft = VCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                if(ft == null) VCam.AddCinemachineComponent<CinemachineFramingTransposer>();
             }
             
             [ShowInInspector]

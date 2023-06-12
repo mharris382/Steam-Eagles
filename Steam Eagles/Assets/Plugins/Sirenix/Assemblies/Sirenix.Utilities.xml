@@ -13,46 +13,46 @@
             <summary>
             Lerps between multiple colors.
             </summary>
-            <param name="colors">The colors.</param>
-            <param name="t">The t.</param>
+            <original name="colors">The colors.</original>
+            <original name="t">The t.</original>
             <returns></returns>
         </member>
         <member name="M:Sirenix.Utilities.ColorExtensions.MoveTowards(UnityEngine.Color,UnityEngine.Color,System.Single)">
             <summary>
             Moves the towards implementation for Color.
             </summary>
-            <param name="from">From color.</param>
-            <param name="to">To color.</param>
-            <param name="maxDelta">The maximum delta.</param>
+            <original name="from">From color.</original>
+            <original name="to">To color.</original>
+            <original name="maxDelta">The maximum delta.</original>
         </member>
         <member name="M:Sirenix.Utilities.ColorExtensions.TryParseString(System.String,UnityEngine.Color@)">
             <summary>
             Tries to parse a string to a Color. The following formats are supported:
             "new Color(0.4, 0, 0, 1)", "#FFEEBBFF", "#FFEECC", "FFEEBBFF", "FFEECC"
             </summary>
-            <param name="colorStr">The color string.</param>
-            <param name="color">The color.</param>
+            <original name="colorStr">The color string.</original>
+            <original name="color">The color.</original>
             <returns>Returns true if the parse was a success.</returns>
         </member>
         <member name="M:Sirenix.Utilities.ColorExtensions.ToCSharpColor(UnityEngine.Color)">
             <summary>
             Converts a color to a string formatted to c#
             </summary>
-            <param name="color">The color.</param>
+            <original name="color">The color.</original>
             <returns>new Color(r, g, b, a)</returns>
         </member>
         <member name="M:Sirenix.Utilities.ColorExtensions.Pow(UnityEngine.Color,System.Single)">
             <summary>
             Pows the color with the specified factor.
             </summary>
-            <param name="color">The color.</param>
-            <param name="factor">The factor.</param>
+            <original name="color">The color.</original>
+            <original name="factor">The factor.</original>
         </member>
         <member name="M:Sirenix.Utilities.ColorExtensions.NormalizeRGB(UnityEngine.Color)">
             <summary>
             Normalizes the RGB values of the color ignoring the alpha value.
             </summary>
-            <param name="color">The color.</param>
+            <original name="color">The color.</original>
         </member>
         <member name="T:Sirenix.Utilities.DelegateExtensions">
             <summary>
@@ -78,7 +78,7 @@
             <summary>
             Determines whether the specified field is an alias.
             </summary>
-            <param name="fieldInfo">The field to check.</param>
+            <original name="fieldInfo">The field to check.</original>
             <returns>
               <c>true</c> if the specified field is an alias; otherwise, <c>false</c>.
             </returns>
@@ -87,8 +87,8 @@
             <summary>
             Returns the original, backing field of an alias field if the field is an alias.
             </summary>
-            <param name="fieldInfo">The field to check.</param>
-            /// <param name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the field is not aliased.</param>
+            <original name="fieldInfo">The field to check.</original>
+            /// <original name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the field is not aliased.</original>
             <returns></returns>
             <exception cref="T:System.ArgumentException">The field was not aliased; this only occurs if throwOnNotAliased is true.</exception>
         </member>
@@ -246,223 +246,223 @@
             <summary>
             Calls an action on each item before yielding them.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="action">The action to call for each item.</param>
+            <original name="source">The collection.</original>
+            <original name="action">The action to call for each item.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
             Perform an action on each item.
             </summary>
-            <param name="source">The source.</param>
-            <param name="action">The action to perform.</param>
+            <original name="source">The source.</original>
+            <original name="action">The action to perform.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
             <summary>
             Perform an action on each item.
             </summary>
-            <param name="source">The source.</param>
-            <param name="action">The action to perform.</param>
+            <original name="source">The source.</original>
+            <original name="action">The action to perform.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.Convert``1(System.Collections.IEnumerable,System.Func{System.Object,``0})">
             <summary>
             Convert each item in the collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="converter">Func to convert the items.</param>
+            <original name="source">The collection.</original>
+            <original name="converter">Func to convert the items.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.ToImmutableList``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Convert a collection to an immutable list.
             </summary>
-            <param name="source">The collection.</param>
+            <original name="source">The collection.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0})">
             <summary>
             Add an item to the beginning of a collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="prepend">Func to create the item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="prepend">Func to create the item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
             Add an item to the beginning of a collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="prepend">The item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="prepend">The item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependWith``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the beginning of another collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="prepend">The collection to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="prepend">The collection to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Func{``0})">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">Func to create the item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">Func to create the item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,``0)">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The collection to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The collection to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},System.Func{``0})">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">Func to create the item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">Func to create the item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},``0)">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The collection to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The collection to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},System.Func{``0})">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">Func to create the item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">Func to create the item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},``0)">
             <summary>
             Add an item to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The item to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The item to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.PrependIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the beginning of another collection, if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="prepend">The collection to prepend.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="prepend">The collection to prepend.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendWith``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0})">
             <summary>
             Add an item to the end of a collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="append">Func to create the item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="append">Func to create the item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendWith``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
             Add an item to the end of a collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="append">The item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="append">The item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendWith``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the end of another collection.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="append">The collection to append.</param>
+            <original name="source">The collection.</original>
+            <original name="append">The collection to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Func{``0})">
             <summary>
             Add an item to the end of a collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">Func to create the item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">Func to create the item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,``0)">
             <summary>
             Add an item to the end of a collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">The item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">The item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the end of another collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">The collection to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">The collection to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},System.Func{``0})">
             <summary>
             Add an item to the end of a collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">Func to create the item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">Func to create the item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},``0)">
             <summary>
             Add an item to the end of a collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">The item to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">The item to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AppendIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Add a collection to the end of another collection if a condition is met.
             </summary>
-            <param name="source">The collection.</param>
-            <param name="condition">The condition.</param>
-            <param name="append">The collection to append.</param>
+            <original name="source">The collection.</original>
+            <original name="condition">The condition.</original>
+            <original name="append">The collection to append.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.FilterCast``1(System.Collections.IEnumerable)">
             <summary>
             Returns and casts only the items of type <typeparamref name="T"/>.
             </summary>
-            <param name="source">The collection.</param>
+            <original name="source">The collection.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AddRange``1(System.Collections.Generic.HashSet{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Adds a collection to a hashset.
             </summary>
-            <param name="hashSet">The hashset.</param>
-            <param name="range">The collection.</param>
+            <original name="hashSet">The hashset.</original>
+            <original name="range">The collection.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.IsNullOrEmpty``1(System.Collections.Generic.IList{``0})">
             <summary>
             Returns <c>true</c> if the list is either null or empty. Otherwise <c>false</c>.
             </summary>
-            <param name="list">The list.</param>
+            <original name="list">The list.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.Populate``1(System.Collections.Generic.IList{``0},``0)">
             <summary>
             Sets all items in the list to the given value.
             </summary>
-            <param name="list">The list.</param>
-            <param name="item">The value.</param>
+            <original name="list">The list.</original>
+            <original name="item">The value.</original>
         </member>
         <member name="M:Sirenix.Utilities.LinqExtensions.AddRange``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
@@ -488,31 +488,31 @@
             <summary>
             Increases or decrease the number of items in the list to the specified count.
             </summary>
-            <param name="list">The list.</param>
-            <param name="length">The new length.</param>
+            <original name="list">The list.</original>
+            <original name="length">The new length.</original>
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0}@,System.Int32,System.Func{``0})">
             <summary>
             Increases or decrease the number of items in the list to the specified count.
             </summary>
-            <param name="list">The list.</param>
-            <param name="length">The new length.</param>
-            <param name="newElement">Value of new elements.</param>
+            <original name="list">The list.</original>
+            <original name="length">The new length.</original>
+            <original name="newElement">Value of new elements.</original>
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0},System.Int32)">
             <summary>
             Increases or decrease the number of items in the list to the specified count.
             </summary>
-            <param name="list">The list.</param>
-            <param name="length">The new length.</param>
+            <original name="list">The list.</original>
+            <original name="length">The new length.</original>
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
             <summary>
             Increases or decrease the number of items in the list to the specified count.
             </summary>
-            <param name="list">The list.</param>
-            <param name="length">The new length.</param>
-            <param name="newElement">Value of new elements.</param>
+            <original name="list">The list.</original>
+            <original name="length">The new length.</original>
+            <original name="newElement">Value of new elements.</original>
         </member>
         <member name="T:Sirenix.Utilities.MemberInfoExtensions">
             <summary>
@@ -545,27 +545,27 @@
             <summary>
             Gets all attributes of the specified generic type.
             </summary>
-            <param name="member">The member.</param>
+            <original name="member">The member.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberInfoExtensions.GetAttributes``1(System.Reflection.ICustomAttributeProvider,System.Boolean)">
             <summary>
             Gets all attributes of the specified generic type.
             </summary>
-            <param name="member">The member.</param>
-            <param name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</param>
+            <original name="member">The member.</original>
+            <original name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberInfoExtensions.GetAttributes(System.Reflection.ICustomAttributeProvider)">
             <summary>
             Gets all attribute instances defined on a MemeberInfo.
             </summary>
-            <param name="member">The member.</param>
+            <original name="member">The member.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberInfoExtensions.GetAttributes(System.Reflection.ICustomAttributeProvider,System.Boolean)">
             <summary>
             Gets all attribute instances on a MemberInfo.
             </summary>
-            <param name="member">The member.</param>
-            <param name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</param>
+            <original name="member">The member.</original>
+            <original name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberInfoExtensions.GetNiceName(System.Reflection.MemberInfo)">
             <summary>
@@ -576,7 +576,7 @@
             <summary>
             Determines whether a FieldInfo, PropertyInfo or MethodInfo is static.
             </summary>
-            <param name="member">The member.</param>
+            <original name="member">The member.</original>
             <returns>
               <c>true</c> if the specified member is static; otherwise, <c>false</c>.
             </returns>
@@ -586,7 +586,7 @@
             <summary>
             Determines whether the specified member is an alias.
             </summary>
-            <param name="memberInfo">The member to check.</param>
+            <original name="memberInfo">The member to check.</original>
             <returns>
               <c>true</c> if the specified member is an alias; otherwise, <c>false</c>.
             </returns>
@@ -595,8 +595,8 @@
             <summary>
             Returns the original, backing member of an alias member if the member is an alias.
             </summary>
-            <param name="memberInfo">The member to check.</param>
-            /// <param name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the member is not aliased.</param>
+            <original name="memberInfo">The member to check.</original>
+            /// <original name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the member is not aliased.</original>
             <returns></returns>
             <exception cref="T:System.ArgumentException">The member was not aliased; this only occurs if throwOnNotAliased is true.</exception>
         </member>
@@ -630,7 +630,7 @@
             <summary>
             Determines whether the specified method is an alias.
             </summary>
-            <param name="methodInfo">The method to check.</param>
+            <original name="methodInfo">The method to check.</original>
             <returns>
               <c>true</c> if the specified method is an alias; otherwise, <c>false</c>.
             </returns>
@@ -639,8 +639,8 @@
             <summary>
             Returns the original, backing method of an alias method if the method is an alias.
             </summary>
-            <param name="methodInfo">The method to check.</param>
-            /// <param name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the method is not aliased.</param>
+            <original name="methodInfo">The method to check.</original>
+            /// <original name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the method is not aliased.</original>
             <returns></returns>
             <exception cref="T:System.ArgumentException">The method was not aliased; this only occurs if throwOnNotAliased is true.</exception>
         </member>
@@ -764,8 +764,8 @@
             <summary>
             Determines whether the directory has a given directory in its hierarchy of children.
             </summary>
-            <param name="parentDir">The parent directory.</param>
-            <param name="subDir">The sub directory.</param>
+            <original name="parentDir">The parent directory.</original>
+            <original name="subDir">The sub directory.</original>
         </member>
         <member name="M:Sirenix.Utilities.PathUtilities.FindParentDirectoryWithName(System.IO.DirectoryInfo,System.String)">
             <summary>
@@ -776,25 +776,25 @@
             <summary>
             Returns a value indicating whether or not a path can be made relative to another.
             </summary>
-            <param name="absoluteParentPath">The parent path.</param>
-            <param name="absolutePath">The path to make relative to the parent path.</param>
+            <original name="absoluteParentPath">The parent path.</original>
+            <original name="absolutePath">The path to make relative to the parent path.</original>
             <returns>A value indicating if the path can be made relative to the parent path.</returns>
         </member>
         <member name="M:Sirenix.Utilities.PathUtilities.MakeRelative(System.String,System.String)">
             <summary>
             Returns a path string to path that is relative to the parent path.
             </summary>
-            <param name="absoluteParentPath">The parent path.</param>
-            <param name="absolutePath">The path to make relative to the parent path.</param>
+            <original name="absoluteParentPath">The parent path.</original>
+            <original name="absolutePath">The path to make relative to the parent path.</original>
             <returns>A relative path from parent path to path.</returns>
         </member>
         <member name="M:Sirenix.Utilities.PathUtilities.TryMakeRelative(System.String,System.String,System.String@)">
             <summary>
             Tries to make a path that is relative from parent path to path.
             </summary>
-            <param name="absoluteParentPath">The parent path.</param>
-            <param name="absolutePath">The path to make relative to the parent path.</param>
-            <param name="relativePath">A relative path from parent path to path. <c>null</c> if no relative path could be made.</param>
+            <original name="absoluteParentPath">The parent path.</original>
+            <original name="absolutePath">The path to make relative to the parent path.</original>
+            <original name="relativePath">A relative path from parent path to path. <c>null</c> if no relative path could be made.</original>
             <returns>A value indicating if the method succeeded in making a relative path.</returns>
         </member>
         <member name="M:Sirenix.Utilities.PathUtilities.Combine(System.String,System.String)">
@@ -816,7 +816,7 @@
             <summary>
             Determines whether the specified property is an alias.
             </summary>
-            <param name="propertyInfo">The property to check.</param>
+            <original name="propertyInfo">The property to check.</original>
             <returns>
               <c>true</c> if the specified property is an alias; otherwise, <c>false</c>.
             </returns>
@@ -825,8 +825,8 @@
             <summary>
             Returns the original, backing property of an alias property if the property is an alias.
             </summary>
-            <param name="propertyInfo">The property to check.</param>
-            /// <param name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the property is not aliased.</param>
+            <original name="propertyInfo">The property to check.</original>
+            /// <original name="throwOnNotAliased">if set to <c>true</c> an exception will be thrown if the property is not aliased.</original>
             <returns></returns>
             <exception cref="T:System.ArgumentException">The property was not aliased; this only occurs if throwOnNotAliased is true.</exception>
         </member>
@@ -840,121 +840,121 @@
             <summary>
             Returns a Rect with the specified width.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetHeight(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect with the specified height.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetSize(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect with the specified size.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetSize(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect with the specified size.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="widthAndHeight">The desired width and height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="widthAndHeight">The desired width and height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetSize(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Returns a Rect with the specified size.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="size">The desired size of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="size">The desired size of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.HorizontalPadding(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount on the X-axis.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="padding">The desired padding.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="padding">The desired padding.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.HorizontalPadding(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount on the X-axis.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="left">Desired padding on the left side.</param>
-            <param name="right">Desired padding on the right side.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="left">Desired padding on the left side.</original>
+            <original name="right">Desired padding on the right side.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.VerticalPadding(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount on the Y-axis.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="padding">The desired padding.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="padding">The desired padding.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.VerticalPadding(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount on the Y-axis.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="top">The desired padding on the top.</param>
-            <param name="bottom">The desired padding on the bottom.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="top">The desired padding on the top.</original>
+            <original name="bottom">The desired padding on the bottom.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Padding(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="padding">The desired padding.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="padding">The desired padding.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Padding(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="horizontal">The desired horizontal padding.</param>
-            <param name="vertical">The desired vertical padding.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="horizontal">The desired horizontal padding.</original>
+            <original name="vertical">The desired vertical padding.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Padding(UnityEngine.Rect,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been inserted by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="left">The desired padding on the left.</param>
-            <param name="right">The desired padding on the right.</param>
-            <param name="top">The desired padding on the top.</param>
-            <param name="bottom">The desired padding on the bottom.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="left">The desired padding on the left.</original>
+            <original name="right">The desired padding on the right.</original>
+            <original name="top">The desired padding on the top.</original>
+            <original name="bottom">The desired padding on the bottom.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignLeft(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified width, that has been aligned to the left of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenter(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified width, that has been aligned to horizontal center of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenter(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect, with the specified width and height in the center of the provided bounds.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignRight(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified width, that has been aligned to the right of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignRight(UnityEngine.Rect,System.Single,System.Boolean)">
             <summary>
@@ -965,101 +965,101 @@
             <summary>
             Returns a Rect, with the specified height, that has been aligned to the top of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignMiddle(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified height, that has been aligned to the vertical middle of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignBottom(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified height, that has been aligned to the bottom of the original Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenterX(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified width, that has been aligned horizontally to the center of the original bounds.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenterY(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified height, that has been aligned vertically to the center of the original bounds.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenterXY(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect, with the specified width and height, that has been aligned horizontally and vertically to the center of the original bounds.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="size">The desired width and height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="size">The desired width and height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AlignCenterXY(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect, with the specified width and height, that has been aligned horizontally and vertically to the center of the original bounds.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="width">The desired width of the new Rect.</param>
-            <param name="height">The desired height of the new Rect.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="width">The desired width of the new Rect.</original>
+            <original name="height">The desired height of the new Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Expand(UnityEngine.Rect,System.Single)">
             <summary>
             Returns a Rect that has been expanded by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="expand">The desired expansion.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="expand">The desired expansion.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Expand(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been expanded by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="horizontal">The desired expansion on the X-axis.</param>
-            <param name="vertical">The desired expansion on the Y-axis.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="horizontal">The desired expansion on the X-axis.</original>
+            <original name="vertical">The desired expansion on the Y-axis.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Expand(UnityEngine.Rect,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             Returns a Rect that has been expanded by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="left">The desired expansion on the left.</param>
-            <param name="right">The desired expansion on the right.</param>
-            <param name="top">The desired expansion on the top.</param>
-            <param name="bottom">The desired expansion on the bottom.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="left">The desired expansion on the left.</original>
+            <original name="right">The desired expansion on the right.</original>
+            <original name="top">The desired expansion on the top.</original>
+            <original name="bottom">The desired expansion on the bottom.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.Split(UnityEngine.Rect,System.Int32,System.Int32)">
             <summary>
             Splits a Rect horizontally into the specified number of sub-rects, and returns a sub-bounds for the specified index.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="index">The index for the subrect. Includes 0, and excludes count.</param>
-            <param name="count">The amount of subrects the Rect should be split into.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="index">The index for the subrect. Includes 0, and excludes count.</original>
+            <original name="count">The amount of subrects the Rect should be split into.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SplitVertical(UnityEngine.Rect,System.Int32,System.Int32)">
             <summary>
             Splits a Rect vertically into the specified number of sub-rects, and returns a sub-bounds for the specified index.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="index">The index for the subrect. Includes 0, and excludes count.</param>
-            <param name="count">The amount of subrects the Rect should be split into.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="index">The index for the subrect. Includes 0, and excludes count.</original>
+            <original name="count">The amount of subrects the Rect should be split into.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SplitGrid(UnityEngine.Rect,System.Single,System.Single,System.Int32)">
             <summary>
             Splits a Rect into a grid from left to right and then down.
             </summary>
-            <param name="bounds">The original bounds.</param>
-            <param name="width">The width of a grid cell.</param>
-            <param name="height">The height of a grid cell.</param>
-            <param name="index">The index of the grid cell.</param>
+            <original name="bounds">The original bounds.</original>
+            <original name="width">The width of a grid cell.</original>
+            <original name="height">The height of a grid cell.</original>
+            <original name="index">The index of the grid cell.</original>
             <returns></returns>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SplitTableGrid(UnityEngine.Rect,System.Int32,System.Single,System.Int32)">
@@ -1071,262 +1071,262 @@
             <summary>
             Moves a Rect to the specified center X position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The desired center x position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The desired center x position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetCenterY(UnityEngine.Rect,System.Single)">
             <summary>
             Moves a Rect to the specified center Y position.
             </summary>
-            <param name="bounds">The desired original Rect.</param>
-            <param name="y">The desired desired center y position.</param>
+            <original name="bounds">The desired original Rect.</original>
+            <original name="y">The desired desired center y position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetCenter(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Moves a Rect to the specified center position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The desired center X position.</param>
-            <param name="y">The desired center Y position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The desired center X position.</original>
+            <original name="y">The desired center Y position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetCenter(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Moves a Rect to the specified center position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="center">The desired center position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="center">The desired center position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetPosition(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Moves a Rect to the specified position.
             </summary>
-            <param name="bounds">The orignal Rect.</param>
-            <param name="position">The desired position.</param>
+            <original name="bounds">The orignal Rect.</original>
+            <original name="position">The desired position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.ResetPosition(UnityEngine.Rect)">
             <summary>
             Resets a Rect's position to zero.
             </summary>
-            <param name="bounds">The original Rect.</param>
+            <original name="bounds">The original Rect.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddPosition(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Moves a Rect's position by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="move">The change in position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="move">The change in position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddPosition(UnityEngine.Rect,System.Single,System.Single)">
             <summary>
             Moves a Rect's position by the specified amount.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The x.</param>
-            <param name="y">The y.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The x.</original>
+            <original name="y">The y.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetX(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's X position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The desired X position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The desired X position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddX(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's X position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubX(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts from a Rect's X position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="x">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="x">The value to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetY(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's Y position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="y">The desired Y position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="y">The desired Y position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddY(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's Y position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="y">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="y">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubY(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts a Rect's Y position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="y">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="y">The value to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetMin(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Sets the min position of a Rect.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="min">The desired min position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="min">The desired min position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddMin(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Adds to a Rect's min position.
             </summary>
-            <param name="bounds">The original bounds.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original bounds.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubMin(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Subtracts a Rect's min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The vlaue to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The vlaue to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetMax(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Sets a Rect's max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="max">The desired max position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="max">The desired max position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddMax(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Adds to a Rect's max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubMax(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Subtracts a Rect's max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetXMin(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's X min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="xMin">The desired min X position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="xMin">The desired min X position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddXMin(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's X min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubXMin(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts from a Rect's X min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetXMax(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's X max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="xMax">The desired X max position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="xMax">The desired X max position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddXMax(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's X max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubXMax(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts a Rect's X max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetYMin(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's Y min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="yMin">The desired Y min.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="yMin">The desired Y min.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddYMin(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's Y min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubYMin(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts a Rect's Y min position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to subtract.</original>
             <returns></returns>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SetYMax(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's Y max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="yMax">The desired Y max position.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="yMax">The desired Y max position.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.AddYMax(UnityEngine.Rect,System.Single)">
             <summary>
             Adds to a Rect's Y max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to add.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to add.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SubYMax(UnityEngine.Rect,System.Single)">
             <summary>
             Subtracts from a Rect's Y max position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="value">The value to subtract.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="value">The value to subtract.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.MinWidth(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's width, if it is less than the specified value.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="minWidth">The desired min width.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="minWidth">The desired min width.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.MaxWidth(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's width, if it is greater than the specified value.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="maxWidth">The desired max width.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="maxWidth">The desired max width.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.MinHeight(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's height, if it is less than the specified value.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="minHeight">The desired min height.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="minHeight">The desired min height.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.MaxHeight(UnityEngine.Rect,System.Single)">
             <summary>
             Sets a Rect's height, if it is greater than the specified value.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="maxHeight">The desired max height.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="maxHeight">The desired max height.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.ExpandTo(UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
             Expands a bounds to contain a given position.
             </summary>
-            <param name="bounds">The original Rect.</param>
-            <param name="pos">The position to expand the bounds towards.</param>
+            <original name="bounds">The original Rect.</original>
+            <original name="pos">The position to expand the bounds towards.</original>
         </member>
         <member name="T:Sirenix.Utilities.StringExtensions">
             <summary>
@@ -1352,7 +1352,7 @@
             <summary>
             Returns true if this string is null, empty, or contains only whitespace.
             </summary>
-            <param name="str">The string to check.</param>
+            <original name="str">The string to check.</original>
             <returns><c>true</c> if this string is null, empty, or contains only whitespace; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:Sirenix.Utilities.StringExtensions.CalculateLevenshteinDistance(System.String,System.String)">
@@ -1374,37 +1374,37 @@
             <summary>
             Checks whether a given string is a valid CSharp identifier name. This also checks full type names including namespaces.
             </summary>
-            <param name="identifier">The identifier to check.</param>
+            <original name="identifier">The identifier to check.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.IsCastableTo(System.Type,System.Type,System.Boolean)">
             <summary>
             Determines whether a type can be casted to another type.
             </summary>
-            <param name="from">From.</param>
-            <param name="to">To.</param>
-            <param name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</param>
+            <original name="from">From.</original>
+            <original name="to">To.</original>
+            <original name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCastMethodDelegate(System.Type,System.Type,System.Boolean)">
             <summary>
             If a type can be casted to another type, this provides a function to manually convert the type.
             </summary>
-            <param name="from">From.</param>
-            <param name="to">To.</param>
-            <param name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</param>
+            <original name="from">From.</original>
+            <original name="to">To.</original>
+            <original name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCastMethodDelegate``2(System.Boolean)">
             <summary>
             If a type can be casted to another type, this provides a function to manually convert the type.
             </summary>
-            <param name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</param>
+            <original name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCastMethod(System.Type,System.Type,System.Boolean)">
             <summary>
             If a type can be casted to another type, this provides the method info of the method in charge of converting the type.
             </summary>
-            <param name="from">From.</param>
-            <param name="to">To.</param>
-            <param name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</param>
+            <original name="from">From.</original>
+            <original name="to">To.</original>
+            <original name="requireImplicitCast">if set to <c>true</c> an implicit or explicit operator must be defined on the given type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetEqualityComparerDelegate``1">
              <summary>
@@ -1424,30 +1424,30 @@
             <summary>
             Gets the first attribute of type T. Returns null in the no attribute of type T was found.
             </summary>
-            <param name="type">The type.</param>
-            <param name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</param>
+            <original name="type">The type.</original>
+            <original name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.ImplementsOrInherits(System.Type,System.Type)">
             <summary>
             Determines whether a type implements or inherits from another type.
             </summary>
-            <param name="type">The type.</param>
-            <param name="to">To.</param>
+            <original name="type">The type.</original>
+            <original name="to">To.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.ImplementsOpenGenericType(System.Type,System.Type)">
             <summary>
             Determines whether a type implements an open generic interface or class such as IList&lt;&gt; or List&lt;&gt;.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericType">Type of the open generic type.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericType">Type of the open generic type.</original>
             <returns></returns>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.ImplementsOpenGenericInterface(System.Type,System.Type)">
             <summary>
             Determines whether a type implements an open generic interface such as IList&lt;&gt;.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericInterfaceType">Type of the open generic interface.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericInterfaceType">Type of the open generic interface.</original>
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException">Type " + openGenericInterfaceType.Name + " is not a generic type definition and an interface.</exception>
         </member>
@@ -1455,29 +1455,29 @@
             <summary>
             Determines whether a type implements an open generic class such as List&lt;&gt;.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericType">Type of the open generic interface.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericType">Type of the open generic interface.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetArgumentsOfInheritedOpenGenericType(System.Type,System.Type)">
             <summary>
             Gets the generic arguments of an inherited open generic class or interface.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericType">The open generic type to get the arguments of.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericType">The open generic type to get the arguments of.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetArgumentsOfInheritedOpenGenericClass(System.Type,System.Type)">
             <summary>
             Gets the generic arguments of an inherited open generic class.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericType">Type of the open generic class.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericType">Type of the open generic class.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetArgumentsOfInheritedOpenGenericInterface(System.Type,System.Type)">
             <summary>
             Gets the generic arguments of an inherited open generic interface.
             </summary>
-            <param name="candidateType">Type of the candidate.</param>
-            <param name="openGenericInterfaceType">Type of the open generic interface.</param>
+            <original name="candidateType">Type of the candidate.</original>
+            <original name="openGenericInterfaceType">Type of the open generic interface.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetOperatorMethod(System.Type,Sirenix.Utilities.Operator,System.Type,System.Type)">
             <summary>
@@ -1543,13 +1543,13 @@
             <summary>
             Gets the name of the compilable nice.
             </summary>
-            <param name="type">The type.</param>
+            <original name="type">The type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCompilableNiceFullName(System.Type)">
             <summary>
             Gets the full name of the compilable nice.
             </summary>
-            <param name="type">The type.</param>
+            <original name="type">The type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCustomAttribute``1(System.Type,System.Boolean)">
             <summary>
@@ -1567,14 +1567,14 @@
             <summary>
             Gets all attributes of type T.
             </summary>
-            <param name="type">The type.</param>
+            <original name="type">The type.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetCustomAttributes``1(System.Type,System.Boolean)">
             <summary>
             Gets all attributes of type T.
             </summary>
-            <param name="type">The type</param>
-            <param name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</param>
+            <original name="type">The type</original>
+            <original name="inherit">If true, specifies to also search the ancestors of element for custom attributes.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.IsDefined``1(System.Type)">
             <summary>
@@ -1590,14 +1590,14 @@
             <summary>
             Determines whether a type inherits or implements another type. Also include support for open generic base types such as List&lt;&gt;.
             </summary>
-            <param name="type"></param>
+            <original name="type"></original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.InheritsFrom(System.Type,System.Type)">
             <summary>
             Determines whether a type inherits or implements another type. Also include support for open generic base types such as List&lt;&gt;.
             </summary>
-            <param name="type"></param>
-            <param name="baseType"></param>
+            <original name="type"></original>
+            <original name="baseType"></original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetInheritanceDistance(System.Type,System.Type)">
             <summary>
@@ -1613,14 +1613,14 @@
             <summary>
             FieldInfo will return the fieldType, propertyInfo the PropertyType, MethodInfo the return type and EventInfo will return the EventHandlerType.
             </summary>
-            <param name="memberInfo">The MemberInfo.</param>
+            <original name="memberInfo">The MemberInfo.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.GetMemberValue(System.Reflection.MemberInfo,System.Object)">
             <summary>
             Gets the value contained in a given <see cref="T:System.Reflection.MemberInfo"/>. Currently only <see cref="T:System.Reflection.FieldInfo"/> and <see cref="T:System.Reflection.PropertyInfo"/> is supported.
             </summary>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> to get the value of.</param>
-            <param name="obj">The instance to get the value from.</param>
+            <original name="member">The <see cref="T:System.Reflection.MemberInfo"/> to get the value of.</original>
+            <original name="obj">The instance to get the value from.</original>
             <returns>The value contained in the given <see cref="T:System.Reflection.MemberInfo"/>.</returns>
             <exception cref="T:System.ArgumentException">Can't get the value of the given <see cref="T:System.Reflection.MemberInfo"/> type.</exception>
         </member>
@@ -1628,9 +1628,9 @@
             <summary>
             Sets the value of a given MemberInfo. Currently only <see cref="T:System.Reflection.FieldInfo"/> and <see cref="T:System.Reflection.PropertyInfo"/> is supported.
             </summary>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> to set the value of.</param>
-            <param name="obj">The object to set the value on.</param>
-            <param name="value">The value to set.</param>
+            <original name="member">The <see cref="T:System.Reflection.MemberInfo"/> to set the value of.</original>
+            <original name="obj">The object to set the value on.</original>
+            <original name="value">The value to set.</original>
             <exception cref="T:System.ArgumentException">
             Property has no setter
             or
@@ -1641,9 +1641,9 @@
             <summary>//
             Tries to infer a set of valid generic parameters for a generic type definition, given a subset of known parameters.
             </summary>
-            <param name="genericTypeDefinition">The generic type definition to attempt to infer parameters for.</param>
-            <param name="inferredParams">The inferred parameters, if inferral was successful.</param>
-            <param name="knownParameters">The known parameters to infer from.</param>
+            <original name="genericTypeDefinition">The generic type definition to attempt to infer parameters for.</original>
+            <original name="inferredParams">The inferred parameters, if inferral was successful.</original>
+            <original name="knownParameters">The known parameters to infer from.</original>
             <returns>True if the parameters could be inferred, otherwise, false.</returns>
             <exception cref="T:System.ArgumentNullException">
             genericTypeDefinition is null
@@ -1657,8 +1657,8 @@
             <para>Checks whether an array of types satisfy the constraints of a given generic type definition.</para>
             <para>If this method returns true, the given parameters can be safely used with <see cref="M:System.Type.MakeGenericType(System.Type[])"/> with the given generic type definition.</para>
             </summary>
-            <param name="genericType">The generic type definition to check.</param>
-            <param name="parameters">The parameters to check validity for.</param>
+            <original name="genericType">The generic type definition to check.</original>
+            <original name="parameters">The parameters to check validity for.</original>
             <exception cref="T:System.ArgumentNullException">
             genericType is null
             or
@@ -1671,8 +1671,8 @@
             <para>Checks whether an array of types satisfy the constraints of a given generic method definition.</para>
             <para>If this method returns true, the given parameters can be safely used with <see cref="M:System.Reflection.MethodInfo.MakeGenericMethod(System.Type[])"/> with the given generic method definition.</para>
             </summary>
-            <param name="genericMethod">The generic method definition to check.</param>
-            <param name="parameters">The parameters to check validity for.</param>
+            <original name="genericMethod">The generic method definition to check.</original>
+            <original name="parameters">The parameters to check validity for.</original>
             <exception cref="T:System.ArgumentNullException">
             genericType is null
             or
@@ -1699,8 +1699,8 @@
             <summary>
             Determines whether a generic type contains the specified generic argument constraints.
             </summary>
-            <param name="type">The type.</param>
-            <param name="types">The generic argument types.</param>
+            <original name="type">The type.</original>
+            <original name="types">The generic argument types.</original>
         </member>
         <member name="M:Sirenix.Utilities.TypeExtensions.IsFullyConstructedGenericType(System.Type)">
             <summary>
@@ -1722,7 +1722,7 @@
             <summary>
             Gets a value indicating if the string is a reserved C# keyword.
             </summary>
-            <param name="identifier">The identifier to check.</param>
+            <original name="identifier">The identifier to check.</original>
             <returns><c>true</c> if the string is a C# keyword. Otherwise <c>false</c>.</returns>
         </member>
         <member name="T:Sirenix.Utilities.UnityExtensions">
@@ -1739,7 +1739,7 @@
             to call Unity's own equality operators, for example when
             not running on the main thread.
             </summary>
-            <param name="obj">The Unity object to check.</param>
+            <original name="obj">The Unity object to check.</original>
             <returns>True if the object is null, missing or destroyed; otherwise false.</returns>
         </member>
         <member name="T:Sirenix.Utilities.ArrayUtilities">
@@ -1752,8 +1752,8 @@
             Creates a new array with an added element.
             </summary>
             <typeparam name="T">The element type of the array.</typeparam>
-            <param name="array">The array.</param>
-            <param name="value">The value to add.</param>
+            <original name="array">The array.</original>
+            <original name="value">The value to add.</original>
             <returns>The new array.</returns>
             <exception cref="T:System.ArgumentNullException">The given array was null.</exception>
         </member>
@@ -1762,9 +1762,9 @@
             Creates a new array with an element inserted at a given index.
             </summary>
             <typeparam name="T">The element type of the array.</typeparam>
-            <param name="array">The array.</param>
-            <param name="index">The index to insert at.</param>
-            <param name="value">The value to insert.</param>
+            <original name="array">The array.</original>
+            <original name="index">The index to insert at.</original>
+            <original name="value">The value to insert.</original>
             <exception cref="T:System.ArgumentNullException">The given array was null.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">The index to insert at was out of range.</exception>
         </member>
@@ -1773,8 +1773,8 @@
             Creates a new array with an element removed.
             </summary>
             <typeparam name="T">The element type of the array.</typeparam>
-            <param name="array">The array.</param>
-            <param name="index">The index to remove an element at.</param>
+            <original name="array">The array.</original>
+            <original name="index">The index to remove an element at.</original>
             <returns></returns>
             <exception cref="T:System.ArgumentNullException">The given array was null.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">The given index to remove an element at was out of range.</exception>
@@ -1919,7 +1919,7 @@
             Creates a delegate which gets the value of a field. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
             <typeparam name="FieldType">The type of the field to get a value from.</typeparam>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1927,7 +1927,7 @@
             <summary>
             Creates a delegate which gets the value of a field. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1936,7 +1936,7 @@
             Creates a delegate which sets the value of a field. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
             <typeparam name="FieldType">The type of the field to set a value to.</typeparam>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</original>
             <returns>A delegate which sets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1944,7 +1944,7 @@
             <summary>
             Creates a delegate which sets the value of a field. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</original>
             <returns>A delegate which sets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1954,7 +1954,7 @@
             </summary>
             <typeparam name="InstanceType">The type of the instance to get a value from.</typeparam>
             <typeparam name="FieldType">The type of the field to get a value from.</typeparam>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1963,8 +1963,8 @@
             Creates a delegate which gets the value of a field from a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
             <typeparam name="FieldType">The type of the field to get a value from.</typeparam>
-            <param name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</param>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</original>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1972,8 +1972,8 @@
             <summary>
             Creates a delegate which gets the weakly typed value of a field from a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
-            <param name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</param>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</original>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1983,7 +1983,7 @@
             </summary>
             <typeparam name="InstanceType">The type of the instance to set a value on.</typeparam>
             <typeparam name="FieldType">The type of the field to set a value to.</typeparam>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</param>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a setter for.</original>
             <returns>A delegate which sets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -1992,8 +1992,8 @@
             Creates a delegate which sets the value of a field on a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
             <typeparam name="FieldType">The type of the field to set a value to.</typeparam>
-            <param name="instanceType">Type of the instance.</param>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo" /> instance describing the field to create a setter for.</param>
+            <original name="instanceType">Type of the instance.</original>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo" /> instance describing the field to create a setter for.</original>
             <returns>
             A delegate which sets the value of the given field.
             </returns>
@@ -2004,8 +2004,8 @@
             <summary>
             Creates a delegate which sets the weakly typed value of a field on a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
-            <param name="instanceType">Type of the instance.</param>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo" /> instance describing the field to create a setter for.</param>
+            <original name="instanceType">Type of the instance.</original>
+            <original name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo" /> instance describing the field to create a setter for.</original>
             <returns>
             A delegate which sets the value of the given field.
             </returns>
@@ -2016,8 +2016,8 @@
             <summary>
             Creates a delegate which gets the weakly typed value of a field from a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
-            <param name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</param>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</param>
+            <original name="instanceType">The <see cref="T:System.Type"/> of the instance to get a value from.</original>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance describing the field to create a getter for.</original>
             <returns>A delegate which gets the value of the given field.</returns>
             <exception cref="T:System.ArgumentNullException">The fieldInfo parameter is null.</exception>
         </member>
@@ -2025,8 +2025,8 @@
             <summary>
             Creates a delegate which sets the weakly typed value of a property on a weakly typed instance of a given type. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
-            <param name="instanceType">Type of the instance.</param>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo" /> instance describing the property to create a setter for.</param>
+            <original name="instanceType">Type of the instance.</original>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo" /> instance describing the property to create a setter for.</original>
             <returns>
             A delegate which sets the value of the given field.
             </returns>
@@ -2038,7 +2038,7 @@
             Creates a delegate which sets the value of a property. If emitting is not supported on the current platform, the delegate will use reflection to set the value.
             </summary>
             <typeparam name="PropType">The type of the property to set a value to.</typeparam>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a setter for.</param>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a setter for.</original>
             <returns>A delegate which sets the value of the given property.</returns>
             <exception cref="T:System.ArgumentNullException">The propertyInfo parameter is null.</exception>
         </member>
@@ -2047,7 +2047,7 @@
             Creates a delegate which gets the value of a property. If emitting is not supported on the current platform, the delegate will use reflection to get the value.
             </summary>
             <typeparam name="PropType">The type of the property to get a value from.</typeparam>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a getter for.</param>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a getter for.</original>
             <returns>A delegate which gets the value of the given property.</returns>
             <exception cref="T:System.ArgumentNullException">The propertyInfo parameter is null.</exception>
         </member>
@@ -2057,7 +2057,7 @@
             </summary>
             <typeparam name="InstanceType">The type of the instance to set a value on.</typeparam>
             <typeparam name="PropType">The type of the property to set a value to.</typeparam>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a setter for.</param>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a setter for.</original>
             <returns>A delegate which sets the value of the given property.</returns>
             <exception cref="T:System.ArgumentNullException">The propertyInfo parameter is null.</exception>
         </member>
@@ -2067,7 +2067,7 @@
             </summary>
             <typeparam name="InstanceType">The type of the instance to get a value from.</typeparam>
             <typeparam name="PropType">The type of the property to get a value from.</typeparam>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a getter for.</param>
+            <original name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance describing the property to create a getter for.</original>
             <returns>A delegate which gets the value of the given property.</returns>
             <exception cref="T:System.ArgumentNullException">The propertyInfo parameter is null.</exception>
         </member>
@@ -2077,21 +2077,21 @@
             </summary>
             <typeparam name="InstanceType">The type of the class which the method is on.</typeparam>
             <typeparam name="ReturnType">The type which is returned by the given method info.</typeparam>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.</returns>
         </member>
         <member name="M:Sirenix.Utilities.EmitUtilities.CreateStaticMethodCaller(System.Reflection.MethodInfo)">
             <summary>
             Creates a fast delegate method which calls a given parameterless static method.
             </summary>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.</returns>
         </member>
         <member name="M:Sirenix.Utilities.EmitUtilities.CreateWeakInstanceMethodCaller``1(System.Reflection.MethodInfo)">
             <summary>
             Creates a fast delegate method which calls a given parameterless weakly typed instance method.
             </summary>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.</returns>
         </member>
         <member name="M:Sirenix.Utilities.EmitUtilities.CreateWeakInstanceMethodCaller(System.Reflection.MethodInfo)">
@@ -2105,7 +2105,7 @@
             </summary>
             <typeparam name="TResult">The type of the result.</typeparam>
             <typeparam name="TArg1">The type of the first argument.</typeparam>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>
             A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.
             </returns>
@@ -2135,7 +2135,7 @@
             Creates a fast delegate method which calls a given parameterless instance method.
             </summary>
             <typeparam name="InstanceType">The type of the class which the method is on.</typeparam>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.</returns>
         </member>
         <member name="M:Sirenix.Utilities.EmitUtilities.CreateInstanceMethodCaller``2(System.Reflection.MethodInfo)">
@@ -2144,7 +2144,7 @@
             </summary>
             <typeparam name="InstanceType">The type of the class which the method is on.</typeparam>
             <typeparam name="Arg1">The type of the argument with which to call the method.</typeparam>
-            <param name="methodInfo">The method info instance which is used.</param>
+            <original name="methodInfo">The method info instance which is used.</original>
             <returns>A delegate which calls the method and returns the result, except it's hundreds of times faster than MethodInfo.Invoke.</returns>
         </member>
         <member name="T:Sirenix.Utilities.Flags">
@@ -2327,7 +2327,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.GlobalConfigAttribute"/> class.
             </summary>
-            <param name="assetPath">The relative asset. Remember to locate the path within a resources folder if you want the config file to be loaded at runtime without the Unity Editor.</param>
+            <original name="assetPath">The relative asset. Remember to locate the path within a resources folder if you want the config file to be loaded at runtime without the Unity Editor.</original>
         </member>
         <member name="T:Sirenix.Utilities.GUILayoutOptions">
              <summary>
@@ -2469,7 +2469,7 @@
             <summary>
             Returns <c>true</c> if the item is contained in the list.
             </summary>
-            <param name="item">The item's value.</param>
+            <original name="item">The item's value.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableHashSet`1.GetEnumerator">
             <summary>
@@ -2535,27 +2535,27 @@
             <summary>
             Index accessor.
             </summary>
-            <param name="index">Index.</param>
+            <original name="index">Index.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.Contains(System.Object)">
             <summary>
             Returns <c>true</c> if the item is contained in the list.
             </summary>
-            <param name="value">The item's value.</param>
+            <original name="value">The item's value.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.CopyTo(System.Object[],System.Int32)">
             <summary>
             Copy the list to an array,
             </summary>
-            <param name="array">Target array.</param>
-            <param name="arrayIndex">Index.</param>
+            <original name="array">Target array.</original>
+            <original name="arrayIndex">Index.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.CopyTo(System.Array,System.Int32)">
             <summary>
             Copy the list to an array,
             </summary>
-            <param name="array">Target array.</param>
-            <param name="index">Index.</param>
+            <original name="array">Target array.</original>
+            <original name="index">Index.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.GetEnumerator">
             <summary>
@@ -2566,26 +2566,26 @@
             <summary>
             Get the index of a value.
             </summary>
-            <param name="value">The item's value.</param>
+            <original name="value">The item's value.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.System#Collections#Generic#IList{System#Object}#RemoveAt(System.Int32)">
             <summary>
             Immutable list cannot be edited.
             </summary>
-            <param name="index">Index.</param>
+            <original name="index">Index.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.System#Collections#Generic#IList{System#Object}#Insert(System.Int32,System.Object)">
             <summary>
             Immutable list cannot be edited.
             </summary>
-            <param name="index">Index.</param>
-            <param name="item">Item.</param>
+            <original name="index">Index.</original>
+            <original name="item">Item.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.System#Collections#Generic#ICollection{System#Object}#Add(System.Object)">
             <summary>
             Immutable list cannot be edited.
             </summary>
-            <param name="item">Item.</param>
+            <original name="item">Item.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList.System#Collections#Generic#ICollection{System#Object}#Clear">
             <summary>
@@ -2596,7 +2596,7 @@
             <summary>
             Immutable list cannot be edited.
             </summary>
-            <param name="item">Item.</param>
+            <original name="item">Item.</original>
         </member>
         <member name="T:Sirenix.Utilities.ImmutableList`1">
             <summary>
@@ -2667,7 +2667,7 @@
             <summary>
             Index accessor.
             </summary>
-            <param name="index">Index.</param>
+            <original name="index">Index.</original>
         </member>
         <member name="M:Sirenix.Utilities.ImmutableList`2.Contains(`1)">
             <summary>
@@ -2703,147 +2703,147 @@
             <summary>
             Returns a smooth value between start and end based on t.
             </summary>
-            <param name="start">First point.</param>
-            <param name="end">Second point.</param>
-            <param name="t">Position between 0 and 1.</param>
+            <original name="start">First point.</original>
+            <original name="end">Second point.</original>
+            <original name="t">Position between 0 and 1.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.StackHermite(System.Single,System.Single,System.Single,System.Int32)">
             <summary>
             Returns a smooth value between start and end based on t.
             </summary>
-            <param name="start">First point.</param>
-            <param name="end">Second point.</param>
-            <param name="t">Position between 0 and 1.</param>
-            <param name="count">Number of interpolations to make.</param>
+            <original name="start">First point.</original>
+            <original name="end">Second point.</original>
+            <original name="t">Position between 0 and 1.</original>
+            <original name="count">Number of interpolations to make.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Fract(System.Single)">
             <summary>
             Returns the fractional of the value.
             </summary>
-            <param name="value">The value to get the fractional of.</param>
+            <original name="value">The value to get the fractional of.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Fract(UnityEngine.Vector2)">
             <summary>
             Returns the fractional of the value.
             </summary>
-            <param name="value">The value to get the fractional of.</param>
+            <original name="value">The value to get the fractional of.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Fract(UnityEngine.Vector3)">
             <summary>
             Returns the fractional of the value.
             </summary>
-            <param name="value">The value to get the fractional of.</param>
+            <original name="value">The value to get the fractional of.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.BounceEaseInFastOut(System.Single)">
             <summary>
             Returns a value based on t, that bounces faster and faster.
             </summary>
-            <param name="t">The value to bounce.</param>
+            <original name="t">The value to bounce.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Hermite01(System.Single)">
             <summary>
             Returns a smooth value between 0 and 1 based on t.
             </summary>
-            <param name="t">Position between 0 and 1.</param>
+            <original name="t">Position between 0 and 1.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.StackHermite01(System.Single,System.Int32)">
             <summary>
             Returns a smooth value between 0 and 1 based on t.
             </summary>
-            <param name="t">Position between 0 and 1.</param>
-            <param name="count">Number of interpolations to make.</param>
+            <original name="t">Position between 0 and 1.</original>
+            <original name="count">Number of interpolations to make.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.LerpUnclamped(UnityEngine.Vector3,UnityEngine.Vector3,System.Single)">
             <summary>
             Returns an unclamped linear interpolation of two vectors.
             </summary>
-            <param name="from">The first vector.</param>
-            <param name="to">The second vector.</param>
-            <param name="amount">The interpolation factor.</param>
+            <original name="from">The first vector.</original>
+            <original name="to">The second vector.</original>
+            <original name="amount">The interpolation factor.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.LerpUnclamped(UnityEngine.Vector2,UnityEngine.Vector2,System.Single)">
             <summary>
             Returns an unclamped linear interpolation of two vectors.
             </summary>
-            <param name="from">The first vector.</param>
-            <param name="to">The second vector.</param>
-            <param name="amount">The interpolation factor.</param>
+            <original name="from">The first vector.</original>
+            <original name="to">The second vector.</original>
+            <original name="amount">The interpolation factor.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Bounce(System.Single)">
             <summary>
             Returns a value that bounces between 0 and 1 based on value.
             </summary>
-            <param name="value">The value to bounce.</param>
+            <original name="value">The value to bounce.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.EaseInElastic(System.Single,System.Single,System.Single)">
             <summary>
             Returns a value that eases in elasticly.
             </summary>
-            <param name="value">The value to ease in elasticly.</param>
-            <param name="amplitude">The amplitude.</param>
-            <param name="length">The length.</param>
+            <original name="value">The value to ease in elasticly.</original>
+            <original name="amplitude">The amplitude.</original>
+            <original name="length">The length.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Pow(UnityEngine.Vector3,System.Single)">
             <summary>
             Pows each element of the vector.
             </summary>
-            <param name="v">The vector.</param>
-            <param name="p">The power.</param>
+            <original name="v">The vector.</original>
+            <original name="p">The power.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Abs(UnityEngine.Vector3)">
             <summary>
             Returns a Vector2 with each element set to their respective sign.
             </summary>
-            <param name="v">The vector to sign.</param>
+            <original name="v">The vector to sign.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Sign(UnityEngine.Vector3)">
             <summary>
             Returns a Vector3 with each element set to their respective sign.
             </summary>
-            <param name="v">The vector to sign.</param>
+            <original name="v">The vector to sign.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.EaseOutElastic(System.Single,System.Single,System.Single)">
             <summary>
             Returns a value that eases out elasticly.
             </summary>
-            <param name="value">The value to ease out elasticly.</param>
-            <param name="amplitude">The amplitude.</param>
-            <param name="length">The length.</param>
+            <original name="value">The value to ease out elasticly.</original>
+            <original name="amplitude">The amplitude.</original>
+            <original name="length">The length.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.EaseInOut(System.Single)">
             <summary>
             Returns a smooth value betweeen that peaks at t=0.5 and then comes back down again.
             </summary>
-            <param name="t">A value between 0 and 1.</param>
+            <original name="t">A value between 0 and 1.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Clamp(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Vector3)">
             <summary>
             Clamps the value of a Vector3.
             </summary>
-            <param name="value">The vector to clamp.</param>
-            <param name="min">The min value.</param>
-            <param name="max">The max value.</param>
+            <original name="value">The vector to clamp.</original>
+            <original name="min">The min value.</original>
+            <original name="max">The max value.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Clamp(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2)">
             <summary>
             Clamps the value of a Vector2.
             </summary>
-            <param name="value">The vector to clamp.</param>
-            <param name="min">The min value.</param>
-            <param name="max">The max value.</param>
+            <original name="value">The vector to clamp.</original>
+            <original name="min">The min value.</original>
+            <original name="max">The max value.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.ComputeByteArrayHash(System.Byte[])">
             <summary>
             Computes a hash for a byte array.
             </summary>
-            <param name="data">The byte array.</param>
+            <original name="data">The byte array.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.InterpolatePoints(UnityEngine.Vector3[],System.Single)">
             <summary>
             Gives a smooth path between a collection of points.
             </summary>
-            <param name="path">The collection of point.</param>
-            <param name="t">The current position in the path. 0 is at the start of the path, 1 is at the end of the path.</param>
+            <original name="path">The collection of point.</original>
+            <original name="t">The current position in the path. 0 is at the start of the path, 1 is at the end of the path.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.LineIntersectsLine(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2@)">
             <summary>
@@ -2852,13 +2852,13 @@
             Source: http://stackoverflow.com/questions/3746274/line-intersection-with-aabb-rectangle.
             Edited to implement Cohen-Sutherland type pruning for efficiency.
             </summary>
-            <param name="a1">Starting point of line a.</param>
-            <param name="a2">Ending point of line a.</param>
-            <param name="b1">Starting point of line b.</param>
-            <param name="b2">Ending point of line b.</param>
-            <param name="intersection">
+            <original name="a1">Starting point of line a.</original>
+            <original name="a2">Ending point of line a.</original>
+            <original name="b1">Starting point of line b.</original>
+            <original name="b2">Ending point of line b.</original>
+            <original name="intersection">
             The out parameter which contains the intersection point if there was any.
-            </param>
+            </original>
             <returns>True if the two lines intersect, otherwise false.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.InfiniteLineIntersect(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2)">
@@ -2870,88 +2870,88 @@
             <summary>
             Distance from line to plane.
             </summary>
-            <param name="planeOrigin">Position of the plane.</param>
-            <param name="planeNormal">Surface normal of the plane.</param>
-            <param name="lineOrigin">Origin of the line.</param>
-            <param name="lineDirectionNormalized">Line direction normal.</param>
+            <original name="planeOrigin">Position of the plane.</original>
+            <original name="planeNormal">Surface normal of the plane.</original>
+            <original name="lineOrigin">Origin of the line.</original>
+            <original name="lineDirectionNormalized">Line direction normal.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.RayDistToPlane(UnityEngine.Ray,UnityEngine.Plane)">
             <summary>
             Distance from ray to plane.
             </summary>
-            <param name="ray">The ray.</param>
-            <param name="plane">The plane.</param>
+            <original name="ray">The ray.</original>
+            <original name="plane">The plane.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.RotatePoint(UnityEngine.Vector2,System.Single)">
             <summary>
             Rotates a Vector2 by an angle.
             </summary>
-            <param name="point">The point to rotate.</param>
-            <param name="degrees">The angle to rotate.</param>
+            <original name="point">The point to rotate.</original>
+            <original name="degrees">The angle to rotate.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.RotatePoint(UnityEngine.Vector2,UnityEngine.Vector2,System.Single)">
             <summary>
             Rotates a Vector2 around a point by an angle..
             </summary>
-            <param name="point">The point to rotate.</param>
-            <param name="around">The point to rotate around.</param>
-            <param name="degrees">The angle to rotate.</param>
+            <original name="point">The point to rotate.</original>
+            <original name="around">The point to rotate around.</original>
+            <original name="degrees">The angle to rotate.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.SmoothStep(System.Single,System.Single,System.Single)">
             <summary>
             Interpolates t between a and b to a value between 0 and 1 using a Hermite polynomial.
             </summary>
-            <param name="a">The first value.</param>
-            <param name="b">The second value.</param>
-            <param name="t">The position value.</param>
+            <original name="a">The first value.</original>
+            <original name="b">The second value.</original>
+            <original name="t">The position value.</original>
             <returns>A smoothed value between 0 and 1.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.LinearStep(System.Single,System.Single,System.Single)">
             <summary>
             Interpolates t between a and b to a value between 0 and 1.
             </summary>
-            <param name="a">The first value.</param>
-            <param name="b">The second value.</param>
-            <param name="t">The position value.</param>
+            <original name="a">The first value.</original>
+            <original name="b">The second value.</original>
+            <original name="t">The position value.</original>
             <returns>Linear value between 0 and 1.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Wrap(System.Double,System.Double,System.Double)">
             <summary>
             Wraps a value between min and max.
             </summary>
-            <param name="value">The value to wrap.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
+            <original name="value">The value to wrap.</original>
+            <original name="min">The minimum value.</original>
+            <original name="max">The maximum value.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Wrap(System.Single,System.Single,System.Single)">
             <summary>
             Wraps a value between min and max.
             </summary>
-            <param name="value">The value to wrap.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
+            <original name="value">The value to wrap.</original>
+            <original name="min">The minimum value.</original>
+            <original name="max">The maximum value.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Wrap(System.Int32,System.Int32,System.Int32)">
             <summary>
             Wraps a value between min and max.
             </summary>
-            <param name="value">The value to wrap.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
+            <original name="value">The value to wrap.</original>
+            <original name="min">The minimum value.</original>
+            <original name="max">The maximum value.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.RoundBasedOnMinimumDifference(System.Double,System.Double)">
             <summary>
             Rounds a number based on a mininum difference.
             </summary>
-            <param name="valueToRound">The value to round.</param>
-            <param name="minDifference">The min difference.</param>
+            <original name="valueToRound">The value to round.</original>
+            <original name="minDifference">The min difference.</original>
             <returns>The rounded value.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.DiscardLeastSignificantDecimal(System.Double)">
             <summary>
             Discards the least significant demicals.
             </summary>
-            <param name="v">The value of insignificant decimals.</param>
+            <original name="v">The value of insignificant decimals.</original>
             <returns>Value with significant decimals.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.ClampWrapAngle(System.Single,System.Single,System.Single)">
@@ -2976,16 +2976,16 @@
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasFieldInfo"/> class.
             </summary>
-            <param name="field">The field to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
+            <original name="field">The field to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberAliasFieldInfo.#ctor(System.Reflection.FieldInfo,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasFieldInfo"/> class.
             </summary>
-            <param name="field">The field to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
-            <param name="separatorString">The separator string to use.</param>
+            <original name="field">The field to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
+            <original name="separatorString">The separator string to use.</original>
         </member>
         <member name="P:Sirenix.Utilities.MemberAliasFieldInfo.AliasedField">
             <summary>
@@ -3045,7 +3045,7 @@
             <summary>
             When overridden in a derived class, returns an array of all custom attributes applied to this member.
             </summary>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array that contains all the custom attributes applied to this member, or an array with zero elements if no attributes are defined.
             </returns>
@@ -3054,8 +3054,8 @@
             <summary>
             When overridden in a derived class, returns an array of custom attributes applied to this member and identified by <see cref="T:System.Type" />.
             </summary>
-            <param name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</param>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</original>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array of custom attributes applied to this member, or an array with zero elements if no attributes assignable to <paramref name="attributeType" /> have been applied.
             </returns>
@@ -3064,8 +3064,8 @@
             <summary>
             When overridden in a derived class, indicates whether one or more attributes of the specified type or of its derived types is applied to this member.
             </summary>
-            <param name="attributeType">The type of custom attribute to search for. The search includes derived types.</param>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of custom attribute to search for. The search includes derived types.</original>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             True if one or more instances of <paramref name="attributeType" /> or any of its derived types is applied to this member; otherwise, false.
             </returns>
@@ -3074,18 +3074,18 @@
             <summary>
             Gets the value of the field.
             </summary>
-            <param name="obj">The object instance to get the value from.</param>
+            <original name="obj">The object instance to get the value from.</original>
             <returns>The value of the field.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MemberAliasFieldInfo.SetValue(System.Object,System.Object,System.Reflection.BindingFlags,System.Reflection.Binder,System.Globalization.CultureInfo)">
             <summary>
             When overridden in a derived class, sets the value of the field supported by the given object.
             </summary>
-            <param name="obj">The object whose field value will be set.</param>
-            <param name="value">The value to assign to the field.</param>
-            <param name="invokeAttr">A field of Binder that specifies the type of binding that is desired (for example, Binder.CreateInstance or Binder.ExactBinding).</param>
-            <param name="binder">A set of properties that enables the binding, coercion of argument types, and invocation of members through reflection. If <paramref name="binder" /> is null, then Binder.DefaultBinding is used.</param>
-            <param name="culture">The software preferences of a particular culture.</param>
+            <original name="obj">The object whose field value will be set.</original>
+            <original name="value">The value to assign to the field.</original>
+            <original name="invokeAttr">A field of Binder that specifies the type of binding that is desired (for example, Binder.CreateInstance or Binder.ExactBinding).</original>
+            <original name="binder">A set of properties that enables the binding, coercion of argument types, and invocation of members through reflection. If <paramref name="binder" /> is null, then Binder.DefaultBinding is used.</original>
+            <original name="culture">The software preferences of a particular culture.</original>
         </member>
         <member name="T:Sirenix.Utilities.MemberAliasMethodInfo">
             <summary>
@@ -3107,16 +3107,16 @@
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasMethodInfo"/> class.
             </summary>
-            <param name="method">The method to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
+            <original name="method">The method to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberAliasMethodInfo.#ctor(System.Reflection.MethodInfo,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasMethodInfo"/> class.
             </summary>
-            <param name="method">The method to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
-            <param name="separatorString">The separator string to use.</param>
+            <original name="method">The method to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
+            <original name="separatorString">The separator string to use.</original>
         </member>
         <member name="P:Sirenix.Utilities.MemberAliasMethodInfo.AliasedMethod">
             <summary>
@@ -3168,7 +3168,7 @@
             <summary>
             When overridden in a derived class, returns an array of all custom attributes applied to this member.
             </summary>
-            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array that contains all the custom attributes applied to this member, or an array with zero elements if no attributes are defined.
             </returns>
@@ -3177,8 +3177,8 @@
             <summary>
             When overridden in a derived class, returns an array of custom attributes applied to this member and identified by <see cref="T:System.Type" />.
             </summary>
-            <param name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</param>
-            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</original>
+            <original name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array of custom attributes applied to this member, or an array with zero elements if no attributes assignable to <paramref name="attributeType" /> have been applied.
             </returns>
@@ -3203,11 +3203,11 @@
             <summary>
             When overridden in a derived class, invokes the reflected method or constructor with the given parameters.
             </summary>
-            <param name="obj">The object on which to invoke the method or constructor. If a method is static, this argument is ignored. If a constructor is static, this argument must be null or an instance of the class that defines the constructor.</param>
-            <param name="invokeAttr">A bitmask that is a combination of 0 or more bit flags from <see cref="T:System.Reflection.BindingFlags" />. If <paramref name="binder" /> is null, this parameter is assigned the value <see cref="F:System.Reflection.BindingFlags.Default" />; thus, whatever you pass in is ignored.</param>
-            <param name="binder">An object that enables the binding, coercion of argument types, invocation of members, and retrieval of MemberInfo objects via reflection. If <paramref name="binder" /> is null, the default binder is used.</param>
-            <param name="parameters">An argument list for the invoked method or constructor. This is an array of objects with the same number, order, and type as the parameters of the method or constructor to be invoked. If there are no parameters, this should be null.If the method or constructor represented by this instance takes a ByRef parameter, there is no special attribute required for that parameter in order to invoke the method or constructor using this function. Any object in this array that is not explicitly initialized with a value will contain the default value for that object type. For reference-type elements, this value is null. For value-type elements, this value is 0, 0.0, or false, depending on the specific element type.</param>
-            <param name="culture">An instance of CultureInfo used to govern the coercion of types. If this is null, the CultureInfo for the current thread is used. (This is necessary to convert a String that represents 1000 to a Double value, for example, since 1000 is represented differently by different cultures.)</param>
+            <original name="obj">The object on which to invoke the method or constructor. If a method is static, this argument is ignored. If a constructor is static, this argument must be null or an instance of the class that defines the constructor.</original>
+            <original name="invokeAttr">A bitmask that is a combination of 0 or more bit flags from <see cref="T:System.Reflection.BindingFlags" />. If <paramref name="binder" /> is null, this parameter is assigned the value <see cref="F:System.Reflection.BindingFlags.Default" />; thus, whatever you pass in is ignored.</original>
+            <original name="binder">An object that enables the binding, coercion of argument types, invocation of members, and retrieval of MemberInfo objects via reflection. If <paramref name="binder" /> is null, the default binder is used.</original>
+            <original name="parameters">An argument list for the invoked method or constructor. This is an array of objects with the same number, order, and type as the parameters of the method or constructor to be invoked. If there are no parameters, this should be null.If the method or constructor represented by this instance takes a ByRef parameter, there is no special attribute required for that parameter in order to invoke the method or constructor using this function. Any object in this array that is not explicitly initialized with a value will contain the default value for that object type. For reference-type elements, this value is null. For value-type elements, this value is 0, 0.0, or false, depending on the specific element type.</original>
+            <original name="culture">An instance of CultureInfo used to govern the coercion of types. If this is null, the CultureInfo for the current thread is used. (This is necessary to convert a String that represents 1000 to a Double value, for example, since 1000 is represented differently by different cultures.)</original>
             <returns>
             An Object containing the return value of the invoked method, or null in the case of a constructor, or null if the method's return type is void. Before calling the method or constructor, Invoke checks to see if the user has access permission and verifies that the parameters are valid.CautionElements of the <paramref name="parameters" /> array that represent parameters declared with the ref or out keyword may also be modified.
             </returns>
@@ -3216,8 +3216,8 @@
             <summary>
             When overridden in a derived class, indicates whether one or more attributes of the specified type or of its derived types is applied to this member.
             </summary>
-            <param name="attributeType">The type of custom attribute to search for. The search includes derived types.</param>
-            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of custom attribute to search for. The search includes derived types.</original>
+            <original name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             true if one or more instances of <paramref name="attributeType" /> or any of its derived types is applied to this member; otherwise, false.
             </returns>
@@ -3239,16 +3239,16 @@
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasPropertyInfo"/> class.
             </summary>
-            <param name="prop">The property to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
+            <original name="prop">The property to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
         </member>
         <member name="M:Sirenix.Utilities.MemberAliasPropertyInfo.#ctor(System.Reflection.PropertyInfo,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.Utilities.MemberAliasPropertyInfo"/> class.
             </summary>
-            <param name="prop">The property to alias.</param>
-            <param name="namePrefix">The name prefix to use.</param>
-            <param name="separatorString">The separator string to use.</param>
+            <original name="prop">The property to alias.</original>
+            <original name="namePrefix">The name prefix to use.</original>
+            <original name="separatorString">The separator string to use.</original>
         </member>
         <member name="P:Sirenix.Utilities.MemberAliasPropertyInfo.AliasedProperty">
             <summary>
@@ -3316,7 +3316,7 @@
             <summary>
             When overridden in a derived class, returns an array of all custom attributes applied to this member.
             </summary>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array that contains all the custom attributes applied to this member, or an array with zero elements if no attributes are defined.
             </returns>
@@ -3325,8 +3325,8 @@
             <summary>
             When overridden in a derived class, returns an array of custom attributes applied to this member and identified by <see cref="T:System.Type" />.
             </summary>
-            <param name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</param>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</original>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             An array of custom attributes applied to this member, or an array with zero elements if no attributes assignable to <paramref name="attributeType" /> have been applied.
             </returns>
@@ -3335,8 +3335,8 @@
             <summary>
             When overridden in a derived class, indicates whether one or more attributes of the specified type or of its derived types is applied to this member.
             </summary>
-            <param name="attributeType">The type of custom attribute to search for. The search includes derived types.</param>
-            <param name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</param>
+            <original name="attributeType">The type of custom attribute to search for. The search includes derived types.</original>
+            <original name="inherit">True to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events; see Remarks.</original>
             <returns>
             True if one or more instances of <paramref name="attributeType" /> or any of its derived types is applied to this member; otherwise, false.
             </returns>
@@ -3345,7 +3345,7 @@
             <summary>
             Returns an array whose elements reflect the public and, if specified, non-public get, set, and other accessors of the property reflected by the current instance.
             </summary>
-            <param name="nonPublic">Indicates whether non-public methods should be returned in the MethodInfo array. true if non-public methods are to be included; otherwise, false.</param>
+            <original name="nonPublic">Indicates whether non-public methods should be returned in the MethodInfo array. true if non-public methods are to be included; otherwise, false.</original>
             <returns>
             An array of <see cref="T:System.Reflection.MethodInfo" /> objects whose elements reflect the get, set, and other accessors of the property reflected by the current instance. If <paramref name="nonPublic" /> is true, this array contains public and non-public get, set, and other accessors. If <paramref name="nonPublic" /> is false, this array contains only public get, set, and other accessors. If no accessors with the specified visibility are found, this method returns an array with zero (0) elements.
             </returns>
@@ -3354,7 +3354,7 @@
             <summary>
             When overridden in a derived class, returns the public or non-public get accessor for this property.
             </summary>
-            <param name="nonPublic">Indicates whether a non-public get accessor should be returned. true if a non-public accessor is to be returned; otherwise, false.</param>
+            <original name="nonPublic">Indicates whether a non-public get accessor should be returned. true if a non-public accessor is to be returned; otherwise, false.</original>
             <returns>
             A MethodInfo object representing the get accessor for this property, if <paramref name="nonPublic" /> is true. Returns null if <paramref name="nonPublic" /> is false and the get accessor is non-public, or if <paramref name="nonPublic" /> is true but no get accessors exist.
             </returns>
@@ -3369,7 +3369,7 @@
             <summary>
             When overridden in a derived class, returns the set accessor for this property.
             </summary>
-            <param name="nonPublic">Indicates whether the accessor should be returned if it is non-public. true if a non-public accessor is to be returned; otherwise, false.</param>
+            <original name="nonPublic">Indicates whether the accessor should be returned if it is non-public. true if a non-public accessor is to be returned; otherwise, false.</original>
             <returns>
             Value Condition A <see cref="T:System.Reflection.MethodInfo" /> object representing the Set method for this property. The set accessor is public.-or- <paramref name="nonPublic" /> is true and the set accessor is non-public. null<paramref name="nonPublic" /> is true, but the property is read-only.-or- <paramref name="nonPublic" /> is false and the set accessor is non-public.-or- There is no set accessor.
             </returns>
@@ -3378,23 +3378,23 @@
             <summary>
             Gets the value of the property on the given instance.
             </summary>
-            <param name="obj">The object to invoke the getter on.</param>
-            <param name="invokeAttr">The <see cref="T:System.Reflection.BindingFlags"/> to invoke with.</param>
-            <param name="binder">The binder to use.</param>
-            <param name="index">The indices to use.</param>
-            <param name="culture">The culture to use.</param>
+            <original name="obj">The object to invoke the getter on.</original>
+            <original name="invokeAttr">The <see cref="T:System.Reflection.BindingFlags"/> to invoke with.</original>
+            <original name="binder">The binder to use.</original>
+            <original name="index">The indices to use.</original>
+            <original name="culture">The culture to use.</original>
             <returns>The value of the property on the given instance.</returns>
         </member>
         <member name="M:Sirenix.Utilities.MemberAliasPropertyInfo.SetValue(System.Object,System.Object,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo)">
             <summary>
             Sets the value of the property on the given instance.
             </summary>
-            <param name="obj">The object to set the value on.</param>
-            <param name="value">The value to set.</param>
-            <param name="invokeAttr">The <see cref="T:System.Reflection.BindingFlags"/> to invoke with.</param>
-            <param name="binder">The binder to use.</param>
-            <param name="index">The indices to use.</param>
-            <param name="culture">The culture to use.</param>
+            <original name="obj">The object to set the value on.</original>
+            <original name="value">The value to set.</original>
+            <original name="invokeAttr">The <see cref="T:System.Reflection.BindingFlags"/> to invoke with.</original>
+            <original name="binder">The binder to use.</original>
+            <original name="index">The indices to use.</original>
+            <original name="culture">The culture to use.</original>
         </member>
         <member name="T:Sirenix.Utilities.MultiDimArrayUtilities">
             <summary>
@@ -3406,82 +3406,82 @@
             Inserts one column left of the specified column index.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="columnIndex">Index of the column.</param>
-            <param name="array">The array.</param>
+            <original name="columnIndex">Index of the column.</original>
+            <original name="array">The array.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.InsertOneColumnRight``1(``0[0:,0:],System.Int32)">
             <summary>
             Inserts one column right of the specified column index.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="columnIndex">Index of the column.</param>
-            <param name="arr">The arr.</param>
+            <original name="columnIndex">Index of the column.</original>
+            <original name="arr">The arr.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.InsertOneRowAbove``1(``0[0:,0:],System.Int32)">
             <summary>
             Inserts one row above the specified row index.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="rowIndex">The row index.</param>
+            <original name="array">The array.</original>
+            <original name="rowIndex">The row index.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.InsertOneRowBelow``1(``0[0:,0:],System.Int32)">
             <summary>
             Inserts one row below the specified row index.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="rowIndex">Index of the row.</param>
+            <original name="array">The array.</original>
+            <original name="rowIndex">Index of the row.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.DuplicateColumn``1(``0[0:,0:],System.Int32)">
             <summary>
             Duplicates the column.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="columnIndex">Index of the column.</param>
-            <param name="array">The array.</param>
+            <original name="columnIndex">Index of the column.</original>
+            <original name="array">The array.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.DuplicateRow``1(``0[0:,0:],System.Int32)">
             <summary>
             Duplicates the row.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="rowIndex">Index of the row.</param>
+            <original name="array">The array.</original>
+            <original name="rowIndex">Index of the row.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.MoveColumn``1(``0[0:,0:],System.Int32,System.Int32)">
             <summary>
             Moves a column.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="fromColumn">From column.</param>
-            <param name="toColumn">To column.</param>
+            <original name="array">The array.</original>
+            <original name="fromColumn">From column.</original>
+            <original name="toColumn">To column.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.MoveRow``1(``0[0:,0:],System.Int32,System.Int32)">
             <summary>
             Moves a row.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="fromRow">From row.</param>
-            <param name="toRow">To row.</param>
+            <original name="array">The array.</original>
+            <original name="fromRow">From row.</original>
+            <original name="toRow">To row.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.DeleteColumn``1(``0[0:,0:],System.Int32)">
             <summary>
             Deletes a column.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="columnIndex">Index of the column.</param>
+            <original name="array">The array.</original>
+            <original name="columnIndex">Index of the column.</original>
         </member>
         <member name="M:Sirenix.Utilities.MultiDimArrayUtilities.DeleteRow``1(``0[0:,0:],System.Int32)">
             <summary>
             Deletes the row.
             </summary>
             <typeparam name="TElement">The type of the element.</typeparam>
-            <param name="array">The array.</param>
-            <param name="rowIndex">Index of the row.</param>
+            <original name="array">The array.</original>
+            <original name="rowIndex">Index of the row.</original>
         </member>
         <member name="T:Sirenix.Utilities.PersistentAssemblyAttribute">
             <summary>
@@ -3588,8 +3588,8 @@
             <summary>
             Not yet documented.
             </summary>
-            <param name="bytes">Not yet documented.</param>
-            <param name="decimals">Not yet documented.</param>
+            <original name="bytes">Not yet documented.</original>
+            <original name="decimals">Not yet documented.</original>
             <returns>Not yet documented.</returns>
         </member>
         <member name="M:Sirenix.Utilities.StringUtilities.NumberAwareStringCompare(System.String,System.String,System.Boolean,System.Boolean,System.Boolean)">
@@ -3606,8 +3606,8 @@
             <summary>
             Tests current Unity version is equal or greater.
             </summary>
-            <param name="major">Minimum major version.</param>
-            <param name="minor">Minimum minor version.</param>
+            <original name="major">Minimum major version.</original>
+            <original name="minor">Minimum minor version.</original>
             <returns><c>true</c> if the current Unity version is greater. Otherwise <c>false</c>.</returns>
         </member>
         <member name="F:Sirenix.Utilities.UnityVersion.Major">

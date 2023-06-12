@@ -9,7 +9,7 @@ public class PCSceneSystemsInstaller : MonoInstaller
     {
         PCParallaxSystemsInstaller.Install(Container);
         PCInteractionSystemsInstaller.Install(Container);
-        PCRoomCameraInstaller.Install(Container);
+        //PCRoomCameraInstaller.Install(Container);
         PCToolSystemsInstaller.Install(Container);
     }
 }
