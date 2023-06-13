@@ -122,7 +122,7 @@ public class GlobalInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<PauseMenuSetInactiveOnStart>().FromNew().AsSingle().NonLazy();
         Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
         Container.Bind<GlobalGameState>().FromNew().AsSingle();
-
+        Container.Bind<GameState>().AsSingle();
         TimeInstaller.Install(Container);
 
     }

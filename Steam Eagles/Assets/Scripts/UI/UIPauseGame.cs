@@ -33,11 +33,13 @@ namespace UI
         private GlobalSaveLoader saveLoader;
         private GlobalSavePath savePath;
         private EntitySaveHandler entitySaveHandler;
+        private GameState _gameState;
 
 
         [Inject]
-        public void InjectMe(GlobalSaveLoader saveLoader, GlobalSavePath savePath, EntitySaveHandler entitySaveHandler)
+        public void InjectMe(GlobalSaveLoader saveLoader, GlobalSavePath savePath, EntitySaveHandler entitySaveHandler, GameState gameState)
         {
+            this._gameState = gameState;
             this.entitySaveHandler = entitySaveHandler;
             this. saveLoader = saveLoader;
             this.savePath = savePath;
@@ -47,12 +49,14 @@ namespace UI
         {
             base.Open();
             pauseAnimator.SetBool(IsOpen, true);
+            _gameState.IsPaused = true;
         }
         
         public override void Close()
         {
             base.Close();
             pauseAnimator.SetBool(IsOpen, false);
+            _gameState.IsPaused = false;
         }
 
         private void Awake()

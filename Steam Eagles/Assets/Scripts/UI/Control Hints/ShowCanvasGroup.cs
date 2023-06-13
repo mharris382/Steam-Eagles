@@ -10,6 +10,11 @@ namespace UI.Control_Hints
     {
         protected override void OnExecute()
         {
+            if (agent == null)
+            {
+                EndAction(false);
+                return;
+            }
             var cg = agent.GetComponent<CanvasGroup>();
             if (cg == null)
             {

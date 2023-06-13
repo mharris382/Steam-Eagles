@@ -81,6 +81,13 @@ namespace Buildables
         public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement, ref string reason)
         {
             if(_config.debugCells) _debugger.Debug(GetAllValidCells(machine, placement));
+            var allValidCells = GetAllValidCells(machine, placement).ToArray();
+            var neededSpace = machine.MachineGridSize.x * machine.MachineGridSize.y;
+            if (allValidCells.Length != neededSpace)
+            {
+                reason = "Placement is not valid.";
+                return false;
+            }
             foreach (var cell in GetMachineCells(machine, placement))
             {
                 if (IsCellOverlappingMachine(cell))
