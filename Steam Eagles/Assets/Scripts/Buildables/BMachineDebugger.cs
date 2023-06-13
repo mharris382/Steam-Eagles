@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Buildings;
 using UnityEngine;
 using UniRx;
@@ -15,15 +16,33 @@ namespace Buildables
         private BMachineMap _bMachineMap;
         private BMachines _bMachines;
         private Building _building;
-        
+        private CompositeDisposable _cd;
         
         private Dictionary<Vector2Int, SpriteRenderer> _usedRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
 
         [Inject] void InjectMe(BMachineMap bMachineMap)
         {
             _bMachineMap = bMachineMap;
-            _bMachineMap.OnMachinePlaced.Subscribe(OnMachinePlaced).AddTo(this);
-            _bMachineMap.OnMachineRemoved.Subscribe(OnMachineRemoved).AddTo(this);
+            if(enabled)
+                OnEnable();
+        }
+
+        
+        private void OnEnable()
+        {
+            if (_bMachineMap == null) return;
+            _cd = new();
+            _bMachineMap.OnMachinePlaced.Subscribe(OnMachinePlaced).AddTo(_cd);
+            _bMachineMap.OnMachineRemoved.Subscribe(OnMachineRemoved).AddTo(_cd);
+        }
+
+        private void OnDisable()
+        {
+            _cd?.Dispose();
+            foreach (var sr in _usedRenderers.Values)
+            {
+                sr.enabled = false;
+            }
         }
 
         void OnMachineRemoved(BMachine machine)
