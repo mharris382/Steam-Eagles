@@ -17,6 +17,7 @@ public class GlobalSaveLoader : IInitializable
 {
     private readonly PersistenceConfig _config;
     private readonly CoroutineCaller _coroutineCaller;
+    private readonly PersistenceState _persistenceState;
     private readonly GlobalSavePath _savePath;
     private readonly List<ISaveLoaderSystem> _saveLoadSystems;
 
@@ -81,11 +82,13 @@ public class GlobalSaveLoader : IInitializable
     public GlobalSaveLoader(
         PersistenceConfig config,
         CoroutineCaller coroutineCaller,
+        PersistenceState persistenceState,
         GlobalSavePath savePath, 
         List<ISaveLoaderSystem> saveLoadSystems)
     {
         _config = config;
         _coroutineCaller = coroutineCaller;
+        _persistenceState = persistenceState;
         _savePath = savePath;
         _saveLoadSystems = saveLoadSystems;
     }
@@ -135,8 +138,9 @@ public class GlobalSaveLoader : IInitializable
     }
     public async UniTask<bool> SaveGameAsync()
     {
-        if (CheckIfSavingOrLoading(null))
+        if (_persistenceState.CurrentAction != PersistenceState.Action.NONE)
             return false;
+        _persistenceState.CurrentAction = PersistenceState.Action.SAVING;
         List<bool> results = new List<bool>();
         string savePathRoot = _savePath.FullSaveDirectoryPath;
         foreach (var loadGroup in _loadOrderAttributes)
@@ -168,6 +172,7 @@ public class GlobalSaveLoader : IInitializable
             var groupResult = await UniTask.WhenAll(groupLoadTasks);
             results.Add(groupResult.All(t => t));
         }
+        _persistenceState.CurrentAction = PersistenceState.Action.NONE;
         return results.All(t => t);
     }
 
@@ -177,8 +182,7 @@ public class GlobalSaveLoader : IInitializable
 
     public async UniTask<bool> LoadGameAsync(string loadPath)
     {
-        if (CheckIfSavingOrLoading(null))
-            return false;
+       
         if (!_savePath.TrySetSavePath(ref loadPath))
             return false;
         return await LoadGameAsync();
@@ -186,6 +190,14 @@ public class GlobalSaveLoader : IInitializable
 
     public async UniTask<bool> LoadGameAsync()
     {
+
+        if (_persistenceState.CurrentAction != PersistenceState.Action.NONE)
+        {
+            Debug.LogWarning($"Cannot load because already {_persistenceState.ToString()}");
+            return false;
+        }
+
+        _persistenceState.CurrentAction = PersistenceState.Action.LOADING;
         List<bool> results = new List<bool>();
         string savePathRoot = _savePath.FullSaveDirectoryPath;
         
@@ -210,7 +222,7 @@ public class GlobalSaveLoader : IInitializable
             LogGroupResults("Load", loadGroup, loaders, groupResult);
             results.Add(groupResult.All(t => t));
         }
-        
+        _persistenceState.CurrentAction = PersistenceState.Action.NONE;
         return results.All(t => t);
 
         UniTask<bool> SkipLoaderOnDirectoryNotFound(ISaveLoaderSystem saveLoaderSystem) => UniTask.FromResult(saveLoaderSystem.IsSystemOptional());
