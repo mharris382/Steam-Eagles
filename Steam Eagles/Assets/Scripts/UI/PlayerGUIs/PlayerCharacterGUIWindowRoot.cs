@@ -9,6 +9,7 @@ using UI.PlayerGUIs.CharacterWindows;
 
 namespace UI.PlayerGUIs
 {
+    [System.Obsolete]
     [RequireComponent(typeof(UIWindowPanel))]
     public partial class PlayerCharacterGUIWindowRoot : Window
     {
@@ -33,7 +34,7 @@ namespace UI.PlayerGUIs
             CHARACTER_WINDOW
         }
 
-        StateMachine _stateMachine;
+        private StateMachine _stateMachine;
         private PlayerInput _input;
         private Entity _entity;
         private GameObject _characterGameObject;

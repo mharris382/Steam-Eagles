@@ -15,32 +15,47 @@ using PlayerInput = UnityEngine.InputSystem.PlayerInput;
 
 namespace UI.PlayerGUIs
 {
+    public enum PCGUIState
+    {
+        WAITING_FOR_CHARACTER,
+        LOADING,
+        SAVING,
+        PAUSE_MENU,
+        CHARACTER_MENU,
+        CUTSCENE,
+        PILOTING,
+        DEFAULT
+    }
     public class PlayerCharacterGUIController : MonoBehaviour
     {
         [OnValueChanged(nameof(OnPlayerIDChanged)), Range(0, 1), SerializeField] private int playerID;
-        [SerializeField, ChildGameObjectsOnly, Required, Tooltip("Root window of the player GUI. Holds all other windows")] private PlayerCharacterGUIWindowRoot rootWindow;
+        
+        [Obsolete]
+        [SerializeField, ChildGameObjectsOnly, Required, Tooltip("Root window of the player GUI. Holds all other windows")]
+        private PlayerCharacterGUIWindowRoot rootWindow;
 
         [Obsolete] private IDisposable _entityListener;
         [Obsolete] private ReactiveProperty<bool> _isGuiActive = new ReactiveProperty<bool>(false);
         [Obsolete] private ReactiveProperty<Entity> __pcEntity = new ReactiveProperty<Entity>();
         [Obsolete] private ReactiveProperty<PlayerInput> __playerInput = new ReactiveProperty<PlayerInput>();
-        
+        [Obsolete]
+        private Coroutine _initialization;
+        private PCRegistry _pcRegistry;
+
         private ReadOnlyReactiveProperty<GameObject> _characterGameObject;
         private ReadOnlyReactiveProperty<PlayerInput> _pInput;
         private ReadOnlyReactiveProperty<Camera> _playerCamera;
 
+        private PCGUIState _guiState;
 
 
-        [Obsolete("Should not be managed at root level")][SerializeField] private BoolReactiveProperty showRecipeHUD = new BoolReactiveProperty(true);
-        [Obsolete("Should not be managed at root level")] public IReadOnlyReactiveProperty<bool> ShowRecipeHUD => showRecipeHUD;
-
-  
+        #region [Debugging Properties]
 
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")] public PlayerInput playerInput => _pInput?.Value;
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")] public Camera PlayerCamera => _playerCamera?.Value;
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")]public GameObject PlayerCharacter => _characterGameObject?.Value;
-  
-        [Obsolete] public Entity pcEntity => null;
+
+        #endregion
 
         public IReadOnlyReactiveProperty<PlayerInput> PlayerInputProperty => _pInput;
         
@@ -48,9 +63,22 @@ namespace UI.PlayerGUIs
         
         public IReadOnlyReactiveProperty<GameObject> PlayerCharacterProperty => _characterGameObject;
 
+
+        public PCGUIState GUIState
+        {
+            get => IsWaitingForCharacter() ? PCGUIState.WAITING_FOR_CHARACTER : _guiState;
+            set => _guiState = value;
+        }
+        
+        #region [Obsolete Properties]
+
         [Obsolete] public IReadOnlyReactiveProperty<Entity> PcEntityProperty => __pcEntity ??= new ReactiveProperty<Entity>();
 
-        
+        [Obsolete("Should not be managed at root level")][SerializeField] private BoolReactiveProperty showRecipeHUD = new BoolReactiveProperty(true);
+        [Obsolete("Should not be managed at root level")] public IReadOnlyReactiveProperty<bool> ShowRecipeHUD => showRecipeHUD;
+        [Obsolete] public Entity pcEntity => null;
+
+        #endregion
 
 
         [Inject]
@@ -75,10 +103,7 @@ namespace UI.PlayerGUIs
         }
 
 
-        [Obsolete]
-        private Coroutine _initialization;
-        private PCRegistry _pcRegistry;
-
+   
         private IEnumerator Start()
         {
             yield return UniTask.ToCoroutine(async () =>
@@ -94,12 +119,12 @@ namespace UI.PlayerGUIs
 
         public bool HasAllResources() => _pcRegistry != null && _pcRegistry.HasPc(this.playerID);
 
-        private void OnDestroy()
+        public bool IsWaitingForCharacter()
         {
-       
+            if (_pcRegistry == null)
+                return true;
+            return !_pcRegistry.HasPc(playerID);
         }
-
-        private void UpdateGUIActiveState() => _isGuiActive.Value = HasAllResources();
 
 
         void Log(string msg) => Debug.Log($"P{playerInput} UI: {msg}", this);
