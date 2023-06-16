@@ -7,7 +7,7 @@ namespace Characters.Animations
 {
     public class ToolStateBuildTool : ToolAnimationStateBase
     {
-        public ToolStateBuildTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget, b)
+        public ToolStateBuildTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, StateMachine defaultFSM, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget,defaultFSM, b)
         {
         }
 

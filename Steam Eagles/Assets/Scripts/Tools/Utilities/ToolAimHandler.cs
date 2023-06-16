@@ -111,14 +111,20 @@ namespace Tools.BuildTool
             HandleGridAiming(targetLayer);
             HandleDirectionAiming();
         }
-        
-        
 
-        private void HandleDirectionAiming()
+
+        public void UpdateAimDirection()
+        {
+            HandleMousePosition();
+            HandleDirectionAiming();
+        }
+
+        public void HandleDirectionAiming()
         {
             if (UseMousePosition)
             {
                 Cursor.visible = true;
+                _mousePosition = Camera.ScreenToWorldPoint(Input.mousePosition);
                 var aimOrigin = (Vector2)_toolState.transform.position + _toolState.aimOriginOffset;
                 var aim = (_mousePosition - aimOrigin);
                 if (aim.sqrMagnitude > 0) AimDirection = aim.normalized;

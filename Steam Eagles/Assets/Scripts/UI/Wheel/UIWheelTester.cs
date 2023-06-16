@@ -5,6 +5,11 @@ using UnityEngine;
 
 namespace UI.Wheel
 {
+    public abstract class UIWheelBase
+    {
+        
+    }
+
     public class UIWheelTester : MonoBehaviour
     {
         public TestItem[] testItems;

@@ -9,6 +9,8 @@ using Zenject;
 
 namespace Buildables
 {
+    
+   
     [RequireComponent(typeof(BuildableMachine))]
     public class HypergasGenerator : MonoBehaviour, IMachineCustomSaveData
     {
@@ -50,17 +52,13 @@ namespace Buildables
             get;// => _amountStored.Value;
             set;// => _amountStored.Value = value;
         }
-        public bool IsProducing
-        {
-            get => _isProducing.Value;
-            set => _isProducing.Value = value;
-        }
+
 
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public bool HasStartedUp
         {
-            get;
-            set;
+            get => _isProducing.Value;
+            set => _isProducing.Value = value;
         }
         
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
@@ -118,6 +116,8 @@ namespace Buildables
             else
             {
                 _controller.LoadFromJson(json);
+                events.AmountStoredChanged.Invoke(_amountStored.Value);
+                events.ProductionStateChanged.Invoke(_isProducing.Value);
             }
         }
 
@@ -134,6 +134,7 @@ namespace Buildables
             Container.BindFactory<ExhaustVent, ExhaustVentController, ExhaustVentController.Factory>().AsSingle().NonLazy();
         }
     }
+    
 
     [Serializable]
     public class HypergasEngineConfig

@@ -28,6 +28,9 @@ namespace Characters.Animations
         private SkinController _skinController;
         private Fsm _stateMachine;
 
+        public Fsm DefaultFSM { get; private set; }
+        public Fsm AerialFSM { get; private set; }
+        public Fsm GroundedFMS { get; private set; }
         void Awake()
         {
             _characterState = GetComponentInParent<CharacterState>();
@@ -47,16 +50,16 @@ namespace Characters.Animations
             Debug.Assert(aimTarget != null, $"Spine Animation Controller with skeleton({_skeletonAnimation.skeletonDataAsset.name}) has no aim target transform specified, add one in prefab ({_characterState.name})!", this);
             
             AddToolStateFromStateObject(ToolStates.Repair, 
-                new ToolStateRepairTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateRepairTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, DefaultFSM, false));
             
             AddToolStateFromStateObject(ToolStates.Build,
-                new ToolStateBuildTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateBuildTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, DefaultFSM, false));
             
             AddToolStateFromStateObject(ToolStates.Destruct,
-                new ToolStateDestructTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateDestructTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, DefaultFSM, false));
             
             AddToolStateFromStateObject(ToolStates.Recipe, 
-                new ToolStateRecipeBookTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, false));
+                new ToolStateRecipeBookTool(_characterState, _characterToolState, _skeletonAnimation, _skinController, aimTarget, DefaultFSM, false));
             
             toolFsm.SetStartState(ToolStates.Build.ToString());
             toolFsm.Init();
@@ -98,6 +101,7 @@ namespace Characters.Animations
             
             stateMachine.SetStartState("Grounded");
             stateMachine.Init();
+            DefaultFSM = stateMachine;
             return stateMachine;
         }
 
@@ -128,6 +132,7 @@ namespace Characters.Animations
             groundedFsm.AddTransition("Run", "Idle", t => !IsMoving());
             groundedFsm.SetStartState("Idle");
             groundedFsm.Init();
+            GroundedFMS = groundedFsm;
             return groundedFsm;
         }
 
@@ -165,6 +170,7 @@ namespace Characters.Animations
             aerialFsm.AddTransition("Falling", "Jump", t => _characterState.IsJumping);
             aerialFsm.SetStartState("Fall");
             aerialFsm.Init();
+            AerialFSM = aerialFsm;
             return aerialFsm;
         }
 

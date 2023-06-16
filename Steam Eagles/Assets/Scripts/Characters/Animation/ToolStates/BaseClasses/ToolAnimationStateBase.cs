@@ -12,6 +12,7 @@ namespace Characters.Animations
         private readonly SkeletonAnimation _skeletonAnimation;
         private readonly SkinController _skinController;
         private readonly Transform _aimTarget;
+        private readonly StateMachine _defaultMachine;
 
         public SkinController SkinController => _skinController;
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
@@ -23,7 +24,7 @@ namespace Characters.Animations
             ToolState characterToolState, 
             SkeletonAnimation skeletonAnimation, 
             SkinController skinController,
-            Transform aimTarget,
+            Transform aimTarget, StateMachine defaultMachine,
             bool b) : base(b)
         {
             _characterState = characterState;
@@ -31,23 +32,27 @@ namespace Characters.Animations
             _skeletonAnimation = skeletonAnimation;
             _skinController = skinController;
             _aimTarget = aimTarget;
+            _defaultMachine = defaultMachine;
         }
 
         public sealed override void OnEnter()
         {
             OnEquipTool();
+            _defaultMachine.OnEnter();
             base.OnEnter();
         }
 
         public sealed override void OnLogic()
         {
             OnToolUpdate();
+            _defaultMachine.OnLogic();
             base.OnLogic();
         }
 
         public sealed override void OnExit()
         {
             OnUnEquipTool();
+            _defaultMachine.OnExit();
             base.OnExit();
         }
 

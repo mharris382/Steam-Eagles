@@ -54,6 +54,7 @@ namespace Tools.BuildTool
         private RecipeSelector _recipe;
         private ToolAimHandler _aimHandler;
         private ToolModeListener _modeListener;
+        
 
         public ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
         protected CharacterState CharacterState => _characterState;
@@ -86,13 +87,12 @@ namespace Tools.BuildTool
             }
         }
 
+        public bool IsUseHeld => ToolState.Inputs.UseHeld;
         public bool HasRoom
         {
             get => _hasRoom.Value;
             protected set => _hasRoom.Value = value;
         }
-
-        
 
         public void SetActive(bool isActive)
         {
@@ -176,6 +176,10 @@ namespace Tools.BuildTool
         }
 
 
+        public virtual void SetPreviewVisible(bool visible)
+        {
+            
+        }
         public void Activate(Tool tool)
         {
             this._toolData.AddTool(tool);
@@ -303,7 +307,7 @@ namespace Tools.BuildTool
         /// </summary>
         /// <param name="modes"></param>
         /// <returns>true if tool has modes, otherwise false</returns>
-        protected virtual bool ToolUsesModes(out List<string> modes)
+        public virtual bool ToolUsesModes(out List<string> modes)
         {
             modes = null;
             return false;

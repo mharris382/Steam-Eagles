@@ -114,7 +114,7 @@ namespace Tools.BuildTool
         }
 
 
-        protected override bool ToolUsesModes(out List<string> modes)
+        public override bool ToolUsesModes(out List<string> modes)
         {
             modes = _modeNames;
             return true;

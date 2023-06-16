@@ -108,12 +108,13 @@ namespace Buildings.Rooms.Tracking
             var lastSeenRoom = _entityRoomMap[trackedEntity];
             var currentPositionWs = trackedEntity.transform.position;
             var currentPositionRs = Building.transform.InverseTransformPoint(currentPositionWs);
+            
             //Entity is still in the same room
-            if (lastSeenRoom.RoomBounds.Contains(currentPositionRs))
+            if (lastSeenRoom!= null && lastSeenRoom.RoomBounds.Contains(currentPositionRs))
                 return;
             
             //Entity has most likely moved to a new room that is adjacent to the last seen room
-            if (Building.Map.RoomGraph.Graph.TryGetOutEdges(lastSeenRoom, out var neighbors))
+            if (lastSeenRoom!= null && Building.Map.RoomGraph.Graph.TryGetOutEdges(lastSeenRoom, out var neighbors))
             {
                 foreach (var r in neighbors.Select(t => t.Target))
                 {
@@ -127,13 +128,14 @@ namespace Buildings.Rooms.Tracking
             //Entity has moved to a room that is not adjacent to the last seen room, need to perform a full search to re-locate the entity
             
             var room = SearchForEntityInBuilding(trackedEntity);
-            if (room == null)
-            {
-                throw new NotImplementedException(
-                    $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
-                    $"a room that is not adjacent to the last seen room, and could not be found in the building");
-            }
-            UpdateEntityRoom(trackedEntity, room);
+            // if (room == null)
+            // {
+            //     throw new NotImplementedException(
+            //         $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
+            //         $"a room that is not adjacent to the last seen room, and could not be found in the building");
+            // }
+            if(room != lastSeenRoom)
+                UpdateEntityRoom(trackedEntity, room);
         
     }
 
@@ -144,12 +146,17 @@ namespace Buildings.Rooms.Tracking
             if (_entityRoomMap.ContainsKey(trackedEntity))
             {
                 var previous = _entityRoomMap[trackedEntity];
-                Debug.Log($"Entity {trackedEntity.name.Bolded()} has moved from {previous.name.InItalics()} to {room.name.Bolded().InItalics()}");
+                if(room != null && previous != null)
+                    Debug.Log($"Entity {trackedEntity.name.Bolded()} has moved from {previous.name.InItalics()} to {room.name.Bolded().InItalics()}");
+                else if(room == null && previous != null) Debug.Log($"Entity {trackedEntity.name.Bolded()} has moved from {previous.name.InItalics()} to outside the building");
+                else if(room != null && previous == null) Debug.Log($"Entity {trackedEntity.name.Bolded()} has moved from outside the building to {room.name.InItalics()}");
                 _entityRoomMap[trackedEntity] = room;
             }
             else
             {
-                Debug.Log($"Found Entity {trackedEntity.name.Bolded()} in room {room.name.Bolded()}");
+                if(room != null)
+                    Debug.Log($"Found Entity {trackedEntity.name.Bolded()} in room {room.name.Bolded()}");
+                else Debug.Log($"Found Entity {trackedEntity.name.Bolded()} outside the building");
                 _entityRoomMap.Add(trackedEntity, room);
             }
             MessageBroker.Default.Publish(new EntityChangedRoomMessage(trackedEntity, room));

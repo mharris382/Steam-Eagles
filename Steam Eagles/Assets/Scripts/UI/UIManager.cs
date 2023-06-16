@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI
 {
@@ -17,11 +18,9 @@ namespace UI
         
         private QuitAction _quitToMainMenuAction;
         private QuitAction _quitToDesktopAction;
-
-
-
         private Selectable _lastSelectable;
-        
+        private WindowLoader _windowLoader;
+
         private class QuitAction
         {
             private readonly string _message;
@@ -56,6 +55,10 @@ namespace UI
             }
         }
 
+        [Inject] private void InjectMe(WindowLoader windowLoader)
+        {
+            _windowLoader = windowLoader;
+        }
 
         private void CreateQuitActions()
         {
@@ -76,7 +79,7 @@ namespace UI
         
         private ConfirmationWindow GetConfirmationWindow()
         {
-            var confirmationWindow = WindowLoader.GetWindow<ConfirmationWindow>();
+            var confirmationWindow = _windowLoader.GetWindow<ConfirmationWindow>();
             confirmationWindow.transform.SetParent(canvas);
             confirmationWindow.RectTransform.anchoredPosition = Vector2.zero;
             return confirmationWindow;
@@ -89,7 +92,7 @@ namespace UI
         
         public void OnQuitToMainMenu()
         {
-            if (WindowLoader.Instance.IsFinishedLoading())
+            if (_windowLoader.IsFinishedLoading())
             {
                 if(_quitToMainMenuAction == null)
                     CreateQuitActions();
@@ -103,7 +106,7 @@ namespace UI
         
         public void OnQuitButton()
         {
-            if (WindowLoader.Instance.IsFinishedLoading())
+            if (_windowLoader.IsFinishedLoading())
             {
                 if(_quitToDesktopAction == null)
                     CreateQuitActions();

@@ -3,12 +3,14 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.Wheel
 {
     [RequireComponent(typeof(Image))]
     public class UIWheelSegment : MonoBehaviour
     {
+        public class Factory : PlaceholderFactory<UIWheelSelectable, UIWheelSegment>, IWheelSegmentFactory { }
         private Image _image;
         private RectTransform _rectTransform;
         private List<Image> filledImages = new List<Image>();
