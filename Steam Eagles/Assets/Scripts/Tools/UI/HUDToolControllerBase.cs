@@ -11,7 +11,7 @@ namespace Tools.UI
     {
         protected PlayerCharacterGUIController _guiController;
         protected ToolControllerSharedData _toolControllerSharedData;
-        private CharacterTools _characterTools;
+        
         public PlayerCharacterGUIController GUIController
         {
             get
@@ -25,7 +25,7 @@ namespace Tools.UI
         }
 
         public ToolControllerSharedData SharedToolData => _toolControllerSharedData;
-        public CharacterTools CharacterTools => _characterTools;
+        
         private IEnumerator Start()
         {
             while (!GUIController.HasAllResources())
@@ -35,13 +35,17 @@ namespace Tools.UI
             }
 
             _toolControllerSharedData = GUIController.PlayerCharacter.GetComponentInChildren<ToolControllerSharedData>();
-            _characterTools = GUIController.PlayerCharacter.GetComponentInChildren<CharacterTools>();
+            var toolStream = _toolControllerSharedData.activeTool.StartWith(_toolControllerSharedData.ActiveToolValue).ToReadOnlyReactiveProperty();
+            var emptyToolStream = Observable.Return<ToolControllerBase>(null).ToReadOnlyReactiveProperty();
+            var toolsHiddenStream = _toolControllerSharedData.ToolsHiddenStream;
+            var toolStream2 = toolsHiddenStream.Select(t => t ? emptyToolStream.StartWith(emptyToolStream.Value) : toolStream.StartWith(toolStream.Value)).Switch().ToReadOnlyReactiveProperty();
+            toolStream2.Where(t => t == null).Subscribe(_ => HideToolHUD()).AddTo(this);
+            toolStream2.Where(t => t != null).Subscribe(ShowToolHUD).AddTo(this);
            // Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
            // Debug.Assert((bool)(GUIController.PlayerCharacter != null), (string)"GUI Controller is missing Player Character", (Object)GUIController);
            // Debug.Assert(_toolControllerSharedData != null, $"Missing Tool Controller Shared Data on {GUIController.PlayerCharacter.name}", this);
             
-            _characterTools.OnToolEquipped.Where(t => t == null).Subscribe(_ => HideToolHUD()).AddTo(this);
-            _characterTools.OnToolEquipped.Where(_ => _ != null).Select(_ => _.GetComponent<ToolControllerBase>()).Subscribe(ShowToolHUD).AddTo(this);
+            
             OnFullyInitialized();
         }
         

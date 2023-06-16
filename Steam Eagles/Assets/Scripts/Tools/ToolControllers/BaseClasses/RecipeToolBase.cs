@@ -170,7 +170,7 @@ namespace Tools.BuildTool
         public abstract void UpdatePreview(Building building, bool isFlipped, T previewResource);
 
         protected abstract IEnumerable<Recipe> GetRecipes();
-        public abstract void SetPreviewVisible(bool visible);
+        public abstract override void SetPreviewVisible(bool visible);
         
         
         public abstract bool IsPlacementInvalid( ref string errorMessage);

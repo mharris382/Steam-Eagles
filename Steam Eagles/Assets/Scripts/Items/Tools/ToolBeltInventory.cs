@@ -19,17 +19,19 @@ namespace Items
         ToolBelt _toolBelt;
 
 
-        public IEnumerable<Tool> GetTools()
+        public IEnumerable<IObservable<Tool>> GetTools()
         {
-            yield return craftToolSlot.tool;
-            yield return buildToolSlot.tool;
-            yield return destructToolSlot.tool;
-            yield return repairToolSlot.tool;
+            yield return craftToolSlot.OnToolChanged;
+            yield return buildToolSlot.OnToolChanged;
+            yield return destructToolSlot.OnToolChanged;
+            yield return repairToolSlot.OnToolChanged;
         }
+        
+        
 
         public void Awake()
         {
-            
+                
         }
     }
 }

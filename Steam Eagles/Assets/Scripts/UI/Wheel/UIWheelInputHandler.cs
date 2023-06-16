@@ -1,4 +1,7 @@
-﻿using Players;
+﻿using System;
+using CoreLib;
+using Players;
+using UI.PlayerGUIs;
 using UniRx;
 using UnityEngine;
 
@@ -7,7 +10,8 @@ namespace UI.Wheel
     public class UIWheelInputHandler : MonoBehaviour
     {
         public UIWheelData wheel;
-        public Player player;
+        [Obsolete("uae gui controller instead")] public Player player;
+        public PlayerCharacterGUIController guiController;
         private Vector2 _selectedPosition;
         private bool _selectionMade;
         UIWheelSegment _lastSelectedSegment;
@@ -39,14 +43,15 @@ namespace UI.Wheel
             if(isOpen)OnWheelOpened();
             else OnWheelClosed();
         }
-        void OnWheelOpened()
+
+        private void OnWheelOpened()
         {
             _selectionMade = false;
             _selectedPosition = Vector2.zero;
             _selectedSegment.Value = null;
         }
 
-        void OnWheelClosed()
+        private void OnWheelClosed()
         {
             if (_selectionMade)
             {
@@ -64,9 +69,12 @@ namespace UI.Wheel
 
         void UpdateWheel()
         {
-            Debug.Assert(player.InputWrapper != null, "Missing character input");
-            Debug.Assert(player.InputWrapper.PlayerInput != null, "Missing player input");
-            var playerInput = player.InputWrapper.PlayerInput;
+            //Debug.Assert(player.InputWrapper != null, "Missing character input");
+            //Debug.Assert(player.InputWrapper.PlayerInput != null, "Missing player input");
+            var playerInput = guiController.playerInput;// player.InputWrapper.PlayerInput;
+            if(playerInput == null) 
+                return;
+            
             Vector2 aimDirection;
             if (playerInput.currentControlScheme.Contains("Keyboard"))
             {

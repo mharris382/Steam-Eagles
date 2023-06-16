@@ -7,26 +7,34 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI
 {
-    public class UIPromptBuilder : Singleton<UIPromptBuilder>
+    public class UIPromptBuilder : IInitializable
     {
+        private readonly CoroutineCaller _coroutineCaller;
         ConfirmationWindow _window;
-        public override bool DestroyOnLoad => false;
+        
 
+        
         private List<UIPrompt> _prompts = new List<UIPrompt>();
+        private UIPrompt _currentPrompt;
+
+
+        public UIPromptBuilder(CoroutineCaller coroutineCaller)
+        {
+            _coroutineCaller = coroutineCaller;
+        }
 
         private IEnumerator Start()
         {
-            while (!WindowLoader.Instance.IsFinishedLoading())
+            while (!WindowUtil.IsFinishedLoading())
                 yield return null;
-            _window = WindowLoader.GetWindow<ConfirmationWindow>();
+            _window = WindowUtil.GetWindow<ConfirmationWindow>();
         }
-        
-        private UIPrompt _currentPrompt;
-        
-       
+
+
         public class UIPrompt
         {
             private readonly Transform _parent;
@@ -117,7 +125,7 @@ namespace UI
 
         ConfirmationWindow Show(Transform  promptParent)
         {
-            _window = WindowLoader.GetWindow<ConfirmationWindow>();
+            _window = WindowUtil.GetWindow<ConfirmationWindow>();
             _window.transform.SetParent(promptParent);
             _window.RectTransform.anchoredPosition = Vector2.zero;
             _window.SetWindowVisible(true);
@@ -156,6 +164,8 @@ namespace UI
             var prompt = _prompts[id.id];
             return Observable.FromCoroutine<bool>(prompt.DisplayPromptStream);
         }
+
+        public void Initialize() => _coroutineCaller.StartCoroutine(Start());
     }
     
     

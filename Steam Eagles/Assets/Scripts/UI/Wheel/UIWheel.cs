@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,10 +15,7 @@ namespace UI.Wheel
         public float imageSize = 400;
         public int maxCount = 7;
         
-        [FoldoutGroup("Animation"), OnValueChanged(nameof(MarkDirty))]public float openCloseDuration = 0.5f;
-        [FoldoutGroup("Animation"), OnValueChanged(nameof(MarkDirty))]public Vector2 openCloseScale = new Vector2(0.1f, 1);
-        [FoldoutGroup("Animation"), OnValueChanged(nameof(MarkDirty))]public Ease openCloseEase = Ease.OutBack;
-        [FoldoutGroup("Animation"), OnValueChanged(nameof(MarkDirty))]public float openCloseDelay = 0.1f;
+
         [TableList,SerializeField]
          private AngleOffset[] offsets;
 
@@ -34,11 +30,9 @@ namespace UI.Wheel
         }
 
         private AngleOffset[] _offsets;
-        private Sequence _openSequence;
 
         private bool _dirty;
-        private Vector3 CloseScale => new Vector3(openCloseScale.x, openCloseScale.x, openCloseScale.x);
-        private Vector3 OpenScale => new Vector3(openCloseScale.y, openCloseScale.y, openCloseScale.y);
+
         private void Awake()
         {
             _offsets = new AngleOffset[maxCount];
@@ -64,45 +58,25 @@ namespace UI.Wheel
             CloseWheel();
         }
 
-        void CreateOpenCloseWheelAnimation()
-        {
-            _openSequence = DOTween.Sequence();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var child = transform.GetChild(i);
-                child.localScale = CloseScale;
-                _openSequence.Insert(openCloseDelay* (i+1), child.DOScale(OpenScale, openCloseDuration));
-            }
-            transform.localScale = CloseScale;
-            _openSequence.Insert(0, transform.DOScale(OpenScale, openCloseDuration));
-            _openSequence.SetEase(openCloseEase);
-            _openSequence.SetAutoKill(false);
-            _openSequence.SetRecyclable(true);
-        }
+    
 
-        void OpenWheel()
-        {
-           UpdateSequence();
-            _openSequence.PlayForward();
-        }
-
-        void CloseWheel()
+        protected virtual void OpenWheel()
         {
             UpdateSequence();
-            _openSequence.PlayBackwards();
+            gameObject.SetActive(true);
         }
 
-        void UpdateSequence()
+        protected virtual  void CloseWheel()
         {
-            if (_openSequence == null || _dirty)
-            {
-                if(_openSequence != null) _openSequence.Kill();
-                _dirty = false;
-                CreateOpenCloseWheelAnimation();
-            }
+            UpdateSequence();
+            gameObject.SetActive(false);
         }
 
-        void MarkDirty()
+        protected virtual void UpdateSequence()
+        {
+        }
+
+        protected void MarkDirty()
         {
             _dirty = true;
         }
@@ -118,6 +92,14 @@ namespace UI.Wheel
             {
                 try
                 {
+                    _offsets = new AngleOffset[maxCount];
+                    foreach (var angleOffset in offsets)
+                    {
+                        if (angleOffset.number < maxCount)
+                        {
+                            _offsets[angleOffset.number] = angleOffset;
+                        }
+                    }
                     anglePerSegment += _offsets[segments-1].angle;
                 }
                 catch (IndexOutOfRangeException e)
@@ -160,9 +142,5 @@ namespace UI.Wheel
                 _segments.Add(wheelSegment);
             }
         }
-
-        
-        
-        
     }
 }

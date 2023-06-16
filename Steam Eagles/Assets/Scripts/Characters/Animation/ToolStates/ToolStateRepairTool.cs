@@ -1,4 +1,5 @@
-﻿using Spine.Unity;
+﻿using FSM;
+using Spine.Unity;
 using SteamEagles.Characters;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Characters.Animations
 {
     public class ToolStateRepairTool : ToolAnimationStateBase
     {
-        public ToolStateRepairTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget, b)
+        public ToolStateRepairTool(CharacterState characterState, ToolState characterToolState, SkeletonAnimation skeletonAnimation, SkinController skinController, Transform aimTarget, StateMachine defaultFSM, bool b) : base(characterState, characterToolState, skeletonAnimation, skinController, aimTarget,defaultFSM, b)
         {
         }
 
