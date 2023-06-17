@@ -60,7 +60,7 @@ namespace Characters
         public FixedJoint2D BuildingJoint => _buildingJoint;
         
         private CharacterState State => _state ??= GetComponent<CharacterState>();
-
+        public float MoveSpeed => State.SprintHeld ? State.config.moveSpeed * State.config.sprintMultiplier : State.config.moveSpeed;
         [ShowInInspector]
         public Rigidbody2D BuildingRigidbody
         {
@@ -222,9 +222,9 @@ namespace Characters
                 //get the building's velocity and apply it to the character
                 var buildingVelocity = BuildingRigidbody.velocity;
                 var characterVelocity = State.Rigidbody.velocity;
-                var desiredVelocity = new Vector2(State.MoveX * State.config.moveSpeed, characterVelocity.y);
-                var normalVelocityMin = -State.config.moveSpeed;
-                var normalVelocityMax = State.config.moveSpeed;
+                var desiredVelocity = new Vector2(State.MoveX * MoveSpeed, characterVelocity.y);
+                var normalVelocityMin = -MoveSpeed;
+                var normalVelocityMax = MoveSpeed;
                 var newVelocityMin = normalVelocityMin + buildingVelocity.x;
                 var newVelocityMax = normalVelocityMax + buildingVelocity.x;
                 var velocityResult= Mathf.Lerp(newVelocityMin, newVelocityMax,

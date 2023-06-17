@@ -76,7 +76,7 @@ namespace Characters.MyInput
                 _inputState.JumpHeld = jumpHeld;
             }
 
-
+            _inputState.SprintHeld = inputPlayer.actions["Sprint"].IsPressed();
             _inputState.MoveInput = moveInput;
             _inputState.AimInput = aimInput;
             return inputPlayer;
