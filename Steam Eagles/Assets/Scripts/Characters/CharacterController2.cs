@@ -199,7 +199,7 @@ namespace Characters
         public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
         public float yInput => State.MoveY;
         public LayerMask whatIsGround => Config.GetGroundLayers();
-        public float MoveSpeed => Config.moveSpeed;
+        public float MoveSpeed => State.SprintHeld ? Config.moveSpeed * Config.sprintMultiplier : Config.moveSpeed;
         public float JumpForce => Config.jumpForce;
 
         public Vector2 colliderSize => _capsuleCollider.size;
