@@ -48,13 +48,23 @@ namespace CoreLib.Entities.Buildings
             if(!result) Debug.LogError("Failed to Load Building Save Data", building);
             if (!result2) Debug.LogError("Tilemaps Save Data Failed to load in building", building);
             building.IsFullyLoaded = true;
-            
-            if (!result || !result2) Debug.LogError("Failed to load building", building);
+
+            if (!result || !result2)
+            {
+                Debug.LogError("Failed to load building", building);
+                entityHandle.LinkedGameObject.GetComponent<EntityInitializer>().Initialize();
+            }
             Debug.Log($"Finished Loading building {building.name}", entityHandle.LinkedGameObject);
             
             return result;
         }
-        
+
+        protected override void OnLoadFailure(EntityHandle entityHandle)
+        {
+            var building = entityHandle.LinkedGameObject.GetComponent<Building>();
+            building.IsFullyLoaded = true;
+        }
+
         protected void LoadFromSaveData(Entity entity, BuildingSaveData data)
         {
             Debug.Assert(entity.LinkedGameObject != null, "Entity has no linked game object", entity);

@@ -204,6 +204,11 @@ namespace Tools.DestructTool
             HasRoom = room != null && room.buildLevel == BuildLevel.FULL;
         }
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return false;
+        }
+
         public override ToolStates GetToolState()
         {
             return ToolStates.Destruct;

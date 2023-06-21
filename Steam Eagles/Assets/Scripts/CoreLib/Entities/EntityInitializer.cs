@@ -8,6 +8,36 @@ using Zenject;
 
 namespace CoreLib.Entities
 {
+    public class EntityTrackingInfo
+    {
+        private readonly EntityInitializer _initializer;
+        private readonly ReactiveProperty<Component> _lastSeenBuilding;
+        private readonly ReactiveProperty<Component> _lastSeenRoom;
+
+
+        public Component LastSeenBuilding
+        {
+            get => _lastSeenBuilding.Value;
+            set => _lastSeenBuilding.Value = value;
+        }
+        
+        public Component LastSeenRoom
+        {
+            get => _lastSeenRoom.Value;
+            set => _lastSeenRoom.Value = value;
+        }
+        
+        public IReadOnlyReactiveProperty<Component> LastSeenBuildingProperty => _lastSeenBuilding;
+        public IReadOnlyReactiveProperty<Component> LastSeenRoomProperty => _lastSeenRoom;
+        
+
+        public EntityTrackingInfo(EntityInitializer initializer)
+        {
+            _initializer = initializer;
+            _lastSeenBuilding = new ReactiveProperty<Component>();
+            _lastSeenRoom = new ReactiveProperty<Component>();
+        }
+    }
     public abstract class EntityInitializer : MonoBehaviour
     {
         public abstract string GetEntityGUID();
@@ -20,10 +50,15 @@ namespace CoreLib.Entities
 
         public bool isDoneInitializing;
         private EntityLinkRegistry linkRegistry;
+        private EntityTrackingInfo _trackingInfo;
         private CoroutineCaller coroutineCaller;
         private EntityConfig logger;
 
         public UnityEvent<GameObject> onEntityLoaded;
+
+        public EntityTrackingInfo TrackingInfo => _trackingInfo ??= new EntityTrackingInfo(this);
+        
+        
 
         [Inject]
         void Inject(EntityLinkRegistry linkRegistry, CoroutineCaller coroutineCaller, EntityConfig globalConfig)

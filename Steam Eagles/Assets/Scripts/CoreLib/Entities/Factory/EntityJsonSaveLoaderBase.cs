@@ -49,6 +49,7 @@ namespace CoreLib.Entities.Factory
             if (!File.Exists(jsonFilePath))
             {
                 Debug.LogError($"Failed to load entity. No save file found at {jsonFilePath}");
+                OnLoadFailure(handle);
                 return false;
             }
             var json = await File.ReadAllTextAsync(jsonFilePath);
@@ -58,16 +59,29 @@ namespace CoreLib.Entities.Factory
                 if (data == null)
                 {
                     Debug.LogError($"Failed to load entity from JSON. Entity: {guid}\nJSON: {json}\n{jsonFilePath}");
+                    OnLoadFailure(handle);
                     return false;
                 }
-                return await LoadDataIntoEntity(handle, data);
+                var result = await LoadDataIntoEntity(handle, data);
+                if (!result)
+                {
+                    OnLoadFailure(handle);
+                }
+
+                return result;
             }
             catch (Exception e)
             {
                 Debug.LogError($"Failed to load entity from JSON. Entity: {guid}\nJSON: {json}\n{jsonFilePath}");
+                OnLoadFailure(handle);
                 return false;
             }
             return true;
+        }
+
+        protected virtual void OnLoadFailure(EntityHandle entityHandle)
+        {
+            
         }
         
         public abstract UniTask<T> GetDataFromEntity(EntityHandle entityHandle);

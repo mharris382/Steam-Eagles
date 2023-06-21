@@ -9,7 +9,10 @@ namespace CoreLib.Entities
         private readonly Dictionary<string, EntityV2> _entityLookup = new();
         private readonly Dictionary<EntityType, HashSet<string>> _entityTypeLookup = new();
 
-
+        public bool Contains(EntityInitializer value)
+        {
+            return _entityLookup.ContainsKey(value.GetEntityGUID());
+        }
         public EntityLinkRegistry(EntityV2.Factory entityFactory)
         {
             _entityFactory = entityFactory;

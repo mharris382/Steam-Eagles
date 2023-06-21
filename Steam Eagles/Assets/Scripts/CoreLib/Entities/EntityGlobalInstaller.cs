@@ -53,4 +53,7 @@ namespace CoreLib.Entities
             return results.All(t => t);
         }
     }
+
+
+    
 }

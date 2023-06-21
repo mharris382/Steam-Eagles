@@ -38,8 +38,12 @@ namespace Buildings
 
         public int orderInLayer;
 
-        public Rect sizeWorldSpace;
+        
+        [SerializeField] Rect _sizeWorldSpace;
 
+        
+        public bool useBoxColliderSize = true;
+        
         #endregion
 
         #region [Private Fields]
@@ -70,6 +74,11 @@ namespace Buildings
 
         #region [Properties]
 
+        public Rect sizeWorldSpace
+        {
+            get => _sizeWorldSpace;
+        }
+        
         public Bounds WorldSpaceBounds
         {
             get
@@ -93,6 +102,8 @@ namespace Buildings
 
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
+        
+        private BoxCollider2D Box => _box ? _box : _box = GetComponent<BoxCollider2D>();
 
         public IObservable<BuildingTilemapChangedInfo> TilemapChanged => tilemapChangedSubject;
 
@@ -296,7 +307,7 @@ namespace Buildings
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            this.sizeWorldSpace.DrawGizmos();
+            this.WorldSpaceBounds.ToRect().DrawGizmos();
         }
 #endif
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CoreLib;
 using CoreLib.Interfaces;
 using CoreLib.Signals;
+using CoreLib.Structures;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// keeps a record of all PCs in the game
 /// </summary>
-public class PCRegistry : IPCIdentifier, IRegistry<PCInfo>
+public class PCRegistry : IPCIdentifier, IRegistry<PCInfo>, ITargetProvider
 {
     private CompositeDisposable _cd;
     
@@ -138,6 +139,13 @@ public class PCRegistry : IPCIdentifier, IRegistry<PCInfo>
     public IObservable<PCInfo> OnValueAdded => OnPCAdded.Select(t => _pcs[t]);
     public IObservable<PCInfo> OnValueRemoved => OnPCRemoved.Select(t => _pcs[t]);
     public IReadOnlyReactiveProperty<int> ValueCount => _pcCount;
-    
-    
+
+
+    public IEnumerable<Target> GetTargets()
+    {
+        foreach (var value in Values)
+        {
+            yield return new Target(value.PC.character.transform);
+        }
+    }
 }

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Characters;
 using CoreLib;
@@ -20,7 +21,15 @@ namespace Tools.BuildTool
             _toolData = toolData;
             _toolState = toolState;
         }
-        protected override bool IsValid(int index, ToolControllerBase value) => value.tool != null;
+        protected override bool IsValid(int index, ToolControllerBase value)
+        {
+            if(value == null)return false;
+            if (!value.CanBeUsedOutsideBuilding() && value.Building == null)
+            {
+                return false;
+            }
+            return value.tool != null;
+        }
 
         protected override void ValueActivated(ToolControllerBase value)
         {
@@ -91,6 +100,16 @@ namespace Tools.BuildTool
             //foreach (var tool in tools) _toolSwitchboard.Add(tool);
             _toolsHidden.Subscribe(t => toolData.ToolsHidden = t).AddTo(this);
             // _toolsHidden.Subscribe(AllTools.SetHidden).AddTo(this);
+            StartCoroutine(SlowTick());
+        }
+
+        IEnumerator SlowTick()
+        {
+            while (enabled)
+            {
+                yield return new WaitForSeconds(0.125f);
+                _toolSwitchboard.SlowTick(0.125f);
+            }
         }
 
         public void AddTool(ToolControllerBase controllerBase)
