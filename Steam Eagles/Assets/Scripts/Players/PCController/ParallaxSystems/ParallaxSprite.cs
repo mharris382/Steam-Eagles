@@ -6,16 +6,16 @@ using Zenject;
 
 namespace Players.PCController.ParallaxSystems
 {
-    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(Renderer))]
     public class ParallaxSprite : MonoBehaviour
     {
-        private SpriteRenderer _spriteRenderer;
+        private Renderer _spriteRenderer;
         public bool includeChildren = true;
         private ParallaxSprites _parallaxSprites;
 
-        public SpriteRenderer SpriteRenderer => _spriteRenderer ??= GetComponent<SpriteRenderer>();
+        public Renderer SpriteRenderer => _spriteRenderer ??= GetComponent<Renderer>();
 
-        private SpriteRenderer[] _spriteRenderers;
+        private Renderer[] _spriteRenderers;
         
         [Inject] public void InjectMe(ParallaxSprites parallaxSprites)
         {
@@ -25,8 +25,8 @@ namespace Players.PCController.ParallaxSystems
         
         private void Awake()
         {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
-            _spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+            _spriteRenderer = GetComponent<Renderer>();
+            _spriteRenderers = GetComponentsInChildren<Renderer>();
             var l = _spriteRenderers.ToList();
             l.Remove(_spriteRenderer);
             _spriteRenderers = l.ToArray();
@@ -48,15 +48,13 @@ namespace Players.PCController.ParallaxSystems
                 Debug.Log("ParallaxSprites is null");
         }
 
-        
-        
-        public IEnumerable<SpriteRenderer> GetSpriteRenderers()
+        public IEnumerable<Renderer> GetRenderers()
         {
             if (includeChildren)
             {
                 if (_spriteRenderers == null)
                 {
-                    _spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+                    _spriteRenderers = GetComponentsInChildren<Renderer>();
                 }
 
                 foreach (var sr in _spriteRenderers)
@@ -66,6 +64,15 @@ namespace Players.PCController.ParallaxSystems
             }
             else
                 yield return SpriteRenderer;
+        }
+        
+        public IEnumerable<SpriteRenderer> GetSpriteRenderers()
+        {
+            foreach (var renderer in GetRenderers())
+            {
+                if(renderer is SpriteRenderer sr)
+                    yield return sr;
+            }
         }
     }
 }

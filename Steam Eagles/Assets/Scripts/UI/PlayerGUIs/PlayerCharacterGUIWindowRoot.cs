@@ -109,7 +109,6 @@ namespace UI.PlayerGUIs
             this._characterGameObject = characterEntityGameObject;
             
             playerCharacterHUD.LinkHUDToEntity(characterEntity, characterEntityGameObject);
-            characterWindowController.SetCharacter(playerInput, characterEntity, characterEntityGameObject);
             
             Open();
             _guiState.Value = GUIState.NORMAL_GAMEPLAY_HUD;

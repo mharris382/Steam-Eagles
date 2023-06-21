@@ -63,7 +63,6 @@ namespace Buildings
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
         Rooms.Rooms _rooms;
-        private BuildingMap.Factory _buildingMapFactory;
 
         internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
@@ -85,7 +84,7 @@ namespace Buildings
 
         public bool IsFullyLoaded { get; set; }
 
-        public BuildingMap Map => _buildingMap ??= _buildingMapFactory.Create(this);
+        public BuildingMap Map => _buildingMap ??= new BuildingMap(this);
         public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
 
@@ -181,11 +180,7 @@ namespace Buildings
             this.OnDestroyAsObservable().Subscribe(_ => buildingRegistry.RemoveBuilding(this));
         }
 
-        [Inject]
-        public void InjectBuildingMapFactory(BuildingMap.Factory buildingMapFactory)
-        {
-            _buildingMapFactory = buildingMapFactory;
-        }
+    
 
 
 

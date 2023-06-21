@@ -20,7 +20,7 @@ namespace Buildings.SaveLoad
             _machineSaves = building.GetComponentsInChildren<BuildableMachineBase>().Select(t => new MachineSaveData(t))
                 .Where(t => t.IsValid()).ToList();
             Debug.Log($"Saving {_machineSaves.Count} machines inside building: {building.ID}.");
-            _tilemapSaveData = new TilemapSaveData(building);
+            //_tilemapSaveData = new TilemapSaveData(building);
         }
 
         

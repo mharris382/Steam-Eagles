@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using CoreLib;
 using CoreLib.Entities;
@@ -70,6 +70,7 @@ namespace UI.PlayerGUIs
             set => _guiState = value;
         }
         
+        
         #region [Obsolete Properties]
 
         [Obsolete] public IReadOnlyReactiveProperty<Entity> PcEntityProperty => __pcEntity ??= new ReactiveProperty<Entity>();
@@ -112,6 +113,13 @@ namespace UI.PlayerGUIs
                 await UniTask.WaitUntil(() => _pcRegistry != null);
                 Log("Waiting for all UI resources...");
                 await UniTask.WaitUntil(HasAllResources);
+                Log("Waiting for all character to finish loading...");
+                var entityInitializer = this.PlayerCharacter.GetComponent<EntityInitializer>();
+                await UniTask.WaitUntil(() => entityInitializer.isDoneInitializing);
+                var guiControllers = GetComponentsInChildren<IPCGUIController>(true);
+                Debug.Assert(guiControllers.Length > 0, $"No GUI Controllers found on {name}", this);
+                foreach (var pcGuiController in guiControllers)
+                    pcGuiController.SetCharacter(this.playerInput, this.PlayerCharacter);
             });
         }
 
@@ -148,5 +156,24 @@ namespace UI.PlayerGUIs
         }
         
         #endregion
+        
+        
+        
+        public void CharacterWindowOpened()
+        {
+            GUIState = PCGUIState.CHARACTER_MENU;
+        }
+
+        
+        public void CharacterWindowClosed()
+        {
+            GUIState = PCGUIState.DEFAULT;
+        }
+    }
+
+
+    public interface IPCGUIController
+    {
+        void SetCharacter(PlayerInput input, GameObject characterGo);
     }
 }

@@ -13,6 +13,8 @@ using Buildings.Tiles;
 using CoreLib;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Tilemaps;
 using Zenject;
 using Debug = UnityEngine.Debug;
@@ -356,7 +358,7 @@ public class RoomTilemapTextures
     private RoomTexture solidTexture;
     private RoomTexture pipeTexture;
     private RoomTexture wallTexture;
-    private RoomTexture wireTexture;
+    // private RoomTexture wireTexture;
 
     public RoomTilemapTextures(Room room, GlobalSavePath savePath, RoomTexture.Factory roomTextureFactory)
     {
@@ -368,7 +370,7 @@ public class RoomTilemapTextures
         solidTexture =_roomTextureFactory.Create(room, BuildingLayers.SOLID);
         pipeTexture = _roomTextureFactory.Create(room, BuildingLayers.PIPE);
         wallTexture = _roomTextureFactory.Create(room, BuildingLayers.WALL);
-        wireTexture = _roomTextureFactory.Create(room, BuildingLayers.WIRES);
+        // wireTexture = _roomTextureFactory.Create(room, BuildingLayers.WIRES);
     }
 
     IEnumerable<RoomTexture> RoomTextures()
@@ -376,7 +378,7 @@ public class RoomTilemapTextures
         yield return solidTexture;
         yield return pipeTexture;
         yield return wallTexture;
-        yield return wireTexture;
+        // yield return wireTexture;
     }
 
     public async UniTask<bool> LoadRoom(Room room)
@@ -405,6 +407,7 @@ public class RoomTilemapTextures
         [SerializeField] private BuildingLayers _layer;
         [SerializeField] private BoundsInt _bounds;
         [SerializeField] private List<TileBase> _tiles;
+        
         private readonly IRoomTilemapTextureSaveLoader _saveLoader;
 
         //used for debugging load times
@@ -430,12 +433,14 @@ public class RoomTilemapTextures
             var texture = GetTextureSaveData(room, out _tiles);
             var pngData = texture.EncodeToPNG();
             var jsonData = new JsonData() { tiles = _tiles };
+            await jsonData.SaveTilesAsync(_tiles);
 
             string filePath, jsonFilePath;
             GetFilePaths(saveDirectory, room.name, out filePath, out jsonFilePath, false);
 
+            var json = JsonUtility.ToJson(jsonData);
             var task1 = File.WriteAllBytesAsync(filePath, pngData);
-            var task2 = File.WriteAllTextAsync(jsonFilePath, JsonUtility.ToJson(jsonData));
+            var task2 = File.WriteAllTextAsync(jsonFilePath, json);
 
             await task1;
             await task2;
@@ -646,7 +651,8 @@ public class RoomTilemapTextures
         {
             string jsonString = await File.ReadAllTextAsync(jsonFilePath);
             var jsonData = JsonUtility.FromJson<JsonData>(jsonString);
-            this._tiles = jsonData.tiles;
+            var tiles = await jsonData.LoadTilesAsync();
+            _tiles = tiles;
         }
 
         private async UniTask<Texture2D> LoadTextureFromPath(string imageFilePath)
@@ -684,6 +690,85 @@ public class RoomTilemapTextures
         public class JsonData
         {
             [SerializeField] public List<TileBase> tiles;
+            [SerializeField] public List<string> tileAddresses = new();
+
+            public async UniTask<List<TileBase>> LoadTilesAsync()
+            {
+                var result = new List<TileBase>();
+                if (tileAddresses.Count != tiles.Count)
+                {
+                    Debug.LogError("Tile addresses and tiles count do not match");
+                    return tiles;
+                }
+                Dictionary<string, AsyncOperationHandle<TileBase>> loadOps = new Dictionary<string, AsyncOperationHandle<TileBase>>();
+
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    var address = tileAddresses[i];
+                    if (string.IsNullOrEmpty(address))
+                    {
+                        continue;
+                    }
+
+                    if (!loadOps.ContainsKey(address))
+                    {
+                        var loadOp = Addressables.LoadAssetAsync<TileBase>(address);
+                        loadOps.Add(address, loadOp);
+                    }
+                }
+                await UniTask.WhenAll(loadOps.Values.Select(op => op.ToUniTask()));
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    var address = tileAddresses[i];
+                    if (string.IsNullOrEmpty(address))
+                    {
+                        result.Add(tiles[i]);
+                        continue;
+                    }
+                    var tile = loadOps[address].Status== AsyncOperationStatus.Succeeded ? loadOps[address].Result : tiles[i];
+                    result.Add(tile);
+                }
+                return result;
+            }
+
+            public async UniTask SaveTilesAsync(List<TileBase> tiles)
+            {
+                this.tiles = tiles;
+                tileAddresses = new List<string>(tiles.Count);
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    var tile = tiles[i];
+                    if (tile is PuzzleTile puzzleTile)
+                    {
+                        if (!string.IsNullOrEmpty(puzzleTile.addressablesKey))
+                        {
+                            var loadOp = Addressables.LoadAssetAsync<TileBase>(puzzleTile.addressablesKey);
+                            await loadOp.ToUniTask();
+                            if (loadOp.Status == AsyncOperationStatus.Succeeded)
+                            {
+                                tileAddresses.Add(puzzleTile.addressablesKey);
+                                Debug.Log("Saved tile address: " + puzzleTile.addressablesKey);
+                            }
+                            else
+                            {
+                                Debug.LogError($"Failed to save tile address: {puzzleTile.addressablesKey}", tile);
+                                tileAddresses.Add("");
+                            }
+                        }
+                        else
+                        {
+                            tileAddresses.Add("");
+                        }
+                    }
+                    else
+                    {
+                        tileAddresses.Add("");
+                    }
+                }
+                Debug.Assert(tileAddresses.Count == tiles.Count);
+            }
+
+            
         }
     }
 

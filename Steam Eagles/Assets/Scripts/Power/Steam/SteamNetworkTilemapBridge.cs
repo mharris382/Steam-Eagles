@@ -39,10 +39,11 @@ public class SteamNetworkTilemapBridge : IInitializable
             Debug.Log("Starting state load");
             await UniTask.WhenAll(rooms.Select(t => (t.Item1, t.Item2.GetComponent<RoomTextures>())).Select(t => LoadRoomFromTexture(t.Item1, t.Item2)));
             Debug.Log("Finished state load");
+            map.OnTileCleared2D(BuildingLayers.PIPE).Where(_network.HasPosition).Subscribe(_network.RemoveNode).AddTo(_building);
+            map.OnTileSet2D(BuildingLayers.PIPE).Where(t => !_network.HasPosition(t.cell)).Subscribe(t => _network.AddNode(t.cell, NodeType.PIPE)).AddTo(_building);
         }));
             
-        map.OnTileCleared2D(BuildingLayers.PIPE).Where(_network.HasPosition).Subscribe(_network.RemoveNode).AddTo(_building);
-        map.OnTileSet2D(BuildingLayers.PIPE).Where(t => !_network.HasPosition(t.cell)).Subscribe(t => _network.AddNode(t.cell, NodeType.PIPE)).AddTo(_building);
+      
     }
 
     private async UniTask LoadRoomFromTexture(BoundsInt boundsInt, RoomTextures roomTextures)

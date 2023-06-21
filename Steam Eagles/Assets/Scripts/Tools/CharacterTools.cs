@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreLib.Entities;
 using Cysharp.Threading.Tasks;
@@ -104,11 +104,13 @@ namespace Tools.BuildTool
 
             if (!_controllers.TryGetValue(tool, out var controller) || controller == null)
             {
-                if(_controllers.ContainsKey(tool))_controllers.Remove(tool);
+                
                 var controllerPrefab =await tool.GetControllerPrefab();
                 controller = Instantiate(controllerPrefab, toolParent);
                 _onToolControllerInstantiated.OnNext(controller);
-                _controllers.Add(tool, controller.GetComponent<GameObject>());
+                if(_controllers.ContainsKey(tool))_controllers.Remove(tool);
+                Debug.Assert(_controllers.ContainsKey(tool) == false, "_controllers.ContainsKey(tool) == false", controller);
+                _controllers.Add(tool, controller.gameObject);
             }
             controller.SetActive(true);
             var controllerBase = controller.GetComponent<ToolControllerBase>();

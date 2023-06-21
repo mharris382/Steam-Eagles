@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Characters;
 using CoreLib;
+using CoreLib.Interfaces;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace Tools.BuildTool
     }
 
 
-    public class ToolSwapController : MonoBehaviour
+    public class ToolSwapController : MonoBehaviour, IHideTools
     {
         [SerializeField] private float toolSwitchRate = .2f;
         [SerializeField] private Transform toolContainer;
@@ -78,7 +79,14 @@ namespace Tools.BuildTool
             _toolSwitchboard = new ToolSwitchboard(toolData, this.GetComponent<ToolState>());
             var containerGo = toolContainer.gameObject;
             _toolsHidden.Select(t => !t).Subscribe(containerGo.SetActive).AddTo(this);
-            
+            _toolsHidden.Select(t => (t, _toolSwitchboard.Current)).Where(t => t.Current != null).Subscribe(t =>
+            {
+                var value = t.Current;
+                value.gameObject.SetActive(t.t);
+                value.SetActive(t.t);
+                value.SetToolEquipped(t.t);
+                value.SetPreviewVisible(t.t);
+            }).AddTo(this);
             
             //foreach (var tool in tools) _toolSwitchboard.Add(tool);
             _toolsHidden.Subscribe(t => toolData.ToolsHidden = t).AddTo(this);
@@ -98,7 +106,7 @@ namespace Tools.BuildTool
 
         private void Update()
         {
-            
+            if(ToolsHidden) return;
             if (Time.realtimeSinceStartup - _lastToolSwapTime > toolSwitchRate
                 && ToolState.Inputs.SelectTool != 0)
             {
