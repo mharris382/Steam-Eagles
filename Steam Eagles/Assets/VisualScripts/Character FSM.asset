@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f945e777233a59f4aba40aeca29093a6, type: 3}
   m_Name: Character FSM
   m_EditorClassIdentifier: 
-  _serializedGraph: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[]},"_position":{"x":953.0,"y":329.8571},"$type":"NodeCanvas.StateMachines.ActionState"}],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
+  _serializedGraph: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[]},"_position":{"x":446.0,"y":275.8571},"$type":"NodeCanvas.StateMachines.ActionState"},{"_position":{"x":1257.0,"y":281.8571},"$type":"NodeCanvas.StateMachines.AnyState","$id":"1"},{"_actionList":{"executionMode":1,"actions":[]},"_name":"Pilot","_position":{"x":1053.0,"y":361.8571},"$type":"NodeCanvas.StateMachines.ActionState","$id":"2"},{"_position":{"x":896.0,"y":457.8571},"$type":"NodeCanvas.StateMachines.EmptyState","$id":"3"}],"connections":[{"_condition":{"valueA":{"_name":"IsPilot","_targetVariableID":"e46c6776-fdc6-4e39-b88c-36a3d4478d35"},"valueB":{"_value":true},"$type":"NodeCanvas.Tasks.Conditions.CheckBoolean"},"_sourceNode":{"$ref":"1"},"_targetNode":{"$ref":"2"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_name":"IsPilot","_targetVariableID":"e46c6776-fdc6-4e39-b88c-36a3d4478d35"},"valueB":{},"$type":"NodeCanvas.Tasks.Conditions.CheckBoolean"},"_sourceNode":{"$ref":"2"},"_targetNode":{"$ref":"3"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
   _objectReferences: []
   _graphSource:
     _version: 3.26
     _category: 
     _comments: 
-    _translation: {x: 0, y: 0}
+    _translation: {x: 161, y: -14}
     _zoomFactor: 1
   _haltSerialization: 0

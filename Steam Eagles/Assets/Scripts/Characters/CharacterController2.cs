@@ -183,7 +183,7 @@ namespace Characters
         
         public Collider2D BalloonCollider
         {
-            get => _wasOnBalloon ?  BalloonCollider : null;
+            get => _wasOnBalloon ?  __balloonCollider : null;
             set
             {
                 if (value != null)
