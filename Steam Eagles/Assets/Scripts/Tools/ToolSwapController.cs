@@ -1,13 +1,68 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Characters;
+using CoreLib;
+using CoreLib.Interfaces;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
 namespace Tools.BuildTool
 {
-    [System.Obsolete("Use CharacterTools instead")]
-    public class ToolSwapController : MonoBehaviour
+    public class ToolSwitchboard : SmartSwitchboard<ToolControllerBase>
+    {
+        private readonly ToolControllerSharedData _toolData;
+        private readonly ToolState _toolState;
+
+
+        public ToolSwitchboard(ToolControllerSharedData toolData, ToolState toolState)
+        {
+            _toolData = toolData;
+            _toolState = toolState;
+        }
+        protected override bool IsValid(int index, ToolControllerBase value)
+        {
+            if(value == null)return false;
+            if (!value.CanBeUsedOutsideBuilding() && value.Building == null)
+            {
+                return false;
+            }
+            return value.tool != null;
+        }
+
+        protected override void ValueActivated(ToolControllerBase value)
+        {
+            if (value != null)
+            {
+                value.gameObject.SetActive(true);
+                value.SetActive(true);
+                value.SetPreviewVisible(true);
+                value.SetToolEquipped(true);
+               _toolState.toolState.Value = value.tool.toolState;
+            }
+            else
+            {
+               _toolState.toolState.Value = ToolStates.None;
+            }
+            _toolData.activeTool.Value = value;
+        }
+
+        protected override void ValueDeactivated(ToolControllerBase value)
+        {
+            if(value!=null)
+            {
+                value.gameObject.SetActive(false);
+                value.SetActive(false);
+                value.SetToolEquipped(false);
+                value.SetPreviewVisible(false);
+            }
+            
+        }
+    }
+
+
+    public class ToolSwapController : MonoBehaviour, IHideTools
     {
         [SerializeField] private float toolSwitchRate = .2f;
         [SerializeField] private Transform toolContainer;
@@ -15,11 +70,11 @@ namespace Tools.BuildTool
 
         private BoolReactiveProperty _toolsHidden = new BoolReactiveProperty(false);
 
+        private ToolSwitchboard _toolSwitchboard;
         private ToolState _toolState;
         private ToolState ToolState => _toolState != null ? _toolState : _toolState = GetComponentInParent<ToolState>();
 
-        private ToolList _toolList;
-        public ToolList AllTools => _toolList ??= new ToolList(this);
+        
 
         public bool ToolsHidden
         {
@@ -27,146 +82,62 @@ namespace Tools.BuildTool
             set => _toolsHidden.Value = value;
         }
 
-        public class ToolList : IDisposable
-        {
-            ToolControllerBase _lastTool;
-            private bool toolsUnEquipped = false;
-            private List<ToolControllerBase> _controllers;
-            private readonly ToolControllerSharedData _sharedData;
-            private ReactiveProperty<int> _activeTool;
-            private readonly CompositeDisposable cd;
-
-            private ReactiveProperty<ToolControllerBase> _activeToolController;
-            public IReadOnlyReactiveProperty<ToolControllerBase> ActiveToolController => _activeToolController;
-
-            public ToolList(ToolSwapController controller)
-            {
-                cd = new CompositeDisposable();
-                this._sharedData = controller.GetComponent<ToolControllerSharedData>();
-                _controllers = new List<ToolControllerBase>(controller.GetComponentsInChildren<ToolControllerBase>());
-                _activeTool = new ReactiveProperty<int>();
-                _activeToolController = new ReactiveProperty<ToolControllerBase>(_controllers[0]);
-                for (int i = 0; i < controller.toolContainer.childCount; i++)
-                {
-                    var child = controller.toolContainer.GetChild(i).GetComponent<ToolControllerBase>();
-                    if (child != null && !_controllers.Contains(child))
-                    {
-                        _controllers.Add(child);
-                    }
-                }
-
-                _activeToolController.Subscribe(t => _lastTool = t).AddTo(cd);
-                Debug.Assert(_controllers.Count > 0, "_controllers.Count > 0");
-
-
-                if (_controllers.Contains(_sharedData.ActiveToolValue))
-                {
-                    _activeTool.Value = _controllers.IndexOf(_sharedData.ActiveToolValue);
-                }
-
-                _activeTool.Select(t => t == -1 ? null : _controllers[t % _controllers.Count])
-                    .Subscribe(x =>
-                    {
-
-
-                        var prevTool = _activeToolController.Value;
-                        if (prevTool != null)
-                        {
-                            prevTool.gameObject.SetActive(false);
-                            prevTool.SetToolEquipped(false);
-                        }
-
-                        _activeToolController.Value = x;
-                        _sharedData.activeTool.Value = x;
-                        if (x != null)
-                        {
-                            x.gameObject.SetActive(true);
-                            x.SetToolEquipped(true);
-                        }
-
-                        Debug.Log($"Switched tools from {prevTool} to {x}");
-                    })
-                    .AddTo(cd);
-
-                var toolState = controller.GetComponent<ToolState>();
-                Debug.Assert(toolState != null, "toolState != null");
-                _activeTool.Select(t => _controllers[t % _controllers.Count].tool)
-                    .Subscribe(x => toolState.EquippedTool = x)
-                    .AddTo(cd);
-
-                _activeTool.AddTo(cd);
-            }
-
-            public void Next()
-            {
-                if (toolsUnEquipped) return;
-                var index = _activeTool.Value;
-                index++;
-                if (index >= _controllers.Count)
-                    index = 0;
-                _activeTool.Value = index;
-
-            }
-
-            public void Prev()
-            {
-                if (toolsUnEquipped) return;
-                var index = _activeTool.Value;
-                index--;
-                if (index < 0)
-                    index = _controllers.Count - 1;
-                _activeTool.Value = index;
-            }
-
-            public void UnEquipTool()
-            {
-                _activeToolController.Value = null;
-                toolsUnEquipped = true;
-                foreach (var toolControllerBase in _controllers)
-                {
-                    toolControllerBase.gameObject.SetActive(false);
-                }
-            }
-
-            public void EquipTool()
-            {
-                toolsUnEquipped = false;
-                _activeToolController.Value = _lastTool ? _lastTool : _controllers[0];
-            }
-
-            public void Dispose()
-            {
-                cd.Dispose();
-            }
-
-            public void SetHidden(bool hidden)
-            {
-                _sharedData.ToolsEquipped = !hidden;
-            }
-    }
-
         private void Awake()
         {
-            _toolsHidden.Subscribe(hidden => {
-                if (hidden) AllTools.UnEquipTool();
-                else AllTools.EquipTool();
+            var toolData = this.GetComponent<ToolControllerSharedData>();
+            _toolSwitchboard = new ToolSwitchboard(toolData, this.GetComponent<ToolState>());
+            var containerGo = toolContainer.gameObject;
+            _toolsHidden.Select(t => !t).Subscribe(containerGo.SetActive).AddTo(this);
+            _toolsHidden.Select(t => (t, _toolSwitchboard.Current)).Where(t => t.Current != null).Subscribe(t =>
+            {
+                var value = t.Current;
+                value.gameObject.SetActive(t.t);
+                value.SetActive(t.t);
+                value.SetToolEquipped(t.t);
+                value.SetPreviewVisible(t.t);
             }).AddTo(this);
-            _toolsHidden.Subscribe(AllTools.SetHidden).AddTo(this);
+            
+            //foreach (var tool in tools) _toolSwitchboard.Add(tool);
+            _toolsHidden.Subscribe(t => toolData.ToolsHidden = t).AddTo(this);
+            // _toolsHidden.Subscribe(AllTools.SetHidden).AddTo(this);
+            StartCoroutine(SlowTick());
+        }
+
+        IEnumerator SlowTick()
+        {
+            while (enabled)
+            {
+                yield return new WaitForSeconds(0.125f);
+                _toolSwitchboard.SlowTick(0.125f);
+            }
+        }
+
+        public void AddTool(ToolControllerBase controllerBase)
+        {
+            controllerBase.gameObject.SetActive(false);
+            _toolSwitchboard.Add(controllerBase);
+        }
+
+        public void RemoveTool(ToolControllerBase controllerBase)
+        {
+            _toolSwitchboard.Remove(controllerBase);
         }
 
         private void Update()
         {
+            if(ToolsHidden) return;
             if (Time.realtimeSinceStartup - _lastToolSwapTime > toolSwitchRate
                 && ToolState.Inputs.SelectTool != 0)
             {
                 _lastToolSwapTime = Time.realtimeSinceStartup;
                 if (ToolState.Inputs.SelectTool > 0)
                 {
-                    AllTools.Next();
+                    _toolSwitchboard.Next();
+                    //AllTools.Next();
                 }
                 else
                 {
-                    AllTools.Prev();
+                    _toolSwitchboard.Prev();
                 }
             }
         }
@@ -174,7 +145,7 @@ namespace Tools.BuildTool
 
         private void OnDestroy()
         {
-            AllTools.Dispose();
+            
         }
     }
 }

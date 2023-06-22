@@ -5,6 +5,7 @@ using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
 using Characters;
 using CoreLib;
+using CoreLib.Entities;
 using Items;
 using Sirenix.OdinInspector;
 using SteamEagles.Characters;
@@ -38,13 +39,14 @@ namespace Tools.BuildTool
             return true;
         }
         
-        
+        [System.Obsolete]
         public Building targetBuilding;
         private CharacterState _characterState;
         private Inventory _inventory;
         private EntityRoomState _roomState;
         private BoolReactiveProperty _hasRoom = new BoolReactiveProperty(false);
         private ToolControllerSharedData _toolData;
+        private EntityInitializer _entity;
         private bool _isActive;
 
         public Tool tool;
@@ -54,6 +56,7 @@ namespace Tools.BuildTool
         private RecipeSelector _recipe;
         private ToolAimHandler _aimHandler;
         private ToolModeListener _modeListener;
+        
 
         public ToolAimHandler AimHandler => _aimHandler ??= new ToolAimHandler(this, ToolState);
         protected CharacterState CharacterState => _characterState;
@@ -65,7 +68,7 @@ namespace Tools.BuildTool
 
         public ToolActivator Activator => _activator ??= new ToolActivator(this);
 
-        public Building Building => targetBuilding;
+        public Building Building => RoomState.CurrentRoom.Value != null ? RoomState.CurrentRoom.Value.Building : null;
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
         public virtual string ToolMode { get; set; }
@@ -86,13 +89,12 @@ namespace Tools.BuildTool
             }
         }
 
+        public bool IsUseHeld => ToolState.Inputs.UseHeld;
         public bool HasRoom
         {
             get => _hasRoom.Value;
             protected set => _hasRoom.Value = value;
         }
-
-        
 
         public void SetActive(bool isActive)
         {
@@ -106,6 +108,7 @@ namespace Tools.BuildTool
         private void Awake()
         {
             _isActive = false;
+            _entity = GetComponentInParent<EntityInitializer>();
             _characterState = GetComponentInParent<CharacterState>();
             var inputState = _characterState.GetComponentInChildren<CharacterInputState>();
             _toolData = GetComponentInParent<ToolControllerSharedData>();
@@ -134,13 +137,14 @@ namespace Tools.BuildTool
 
         public bool HasResources()
         {
-            if (targetBuilding == null)
+            if (!CanBeUsedOutsideBuilding() && Building == null)
             {
-                targetBuilding = GetComponentInParent<Building>();
-                if (targetBuilding == null) targetBuilding = FindObjectOfType<Building>();
+                return false;
             }
             return _inventory != null && _characterState != null && _roomState != null;
         }
+        
+        public abstract bool CanBeUsedOutsideBuilding();
 
         private IEnumerator Start()
         {
@@ -176,6 +180,10 @@ namespace Tools.BuildTool
         }
 
 
+        public virtual void SetPreviewVisible(bool visible)
+        {
+            
+        }
         public void Activate(Tool tool)
         {
             this._toolData.AddTool(tool);
@@ -303,7 +311,7 @@ namespace Tools.BuildTool
         /// </summary>
         /// <param name="modes"></param>
         /// <returns>true if tool has modes, otherwise false</returns>
-        protected virtual bool ToolUsesModes(out List<string> modes)
+        public virtual bool ToolUsesModes(out List<string> modes)
         {
             modes = null;
             return false;

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UniRx;
 
@@ -58,14 +60,19 @@ namespace CoreLib
             if (count >= Count)
                 return false;
             var i = _values.IndexOf(_currentSelected.Value)-1;
-            if (i < 0) i = _values.Count-1;
-            if (i >= Count) i = 0;
-            if (IsValid(i, _values[i]))
+            for (int j = 0; j < Count-1; j++)
             {
-                _currentSelected.Set(_values[i]);
-                return true;
+                var index = (i - j) ;
+                if(index < 0)
+                    index = _values.Count + index;
+                var value = _values[index];
+                if (IsValid(index, value))
+                {
+                    _currentSelected.Set(value);
+                    return true;
+                }
             }
-            return Next(count+1);
+            return false;
         }
         private bool Next(int count)
         {
@@ -87,7 +94,7 @@ namespace CoreLib
         }
 
     }
-     public class Switchboard<T> : IDisposable
+     public class Switchboard<T> : IDisposable, IEnumerable<T>
     {
         internal ReactiveCollection<T> _values = new();
         internal DynamicReactiveProperty<T> _currentSelected = new();
@@ -98,7 +105,7 @@ namespace CoreLib
         public bool HasValue => Current != null;
         public bool Contains(T value) => _values.Contains(value);
 
-        
+        public IObservable<T> SelectedValueStream => _currentSelected.OnSwitched.Select(t => t.next).StartWith(_currentSelected.Value);
 
         public int Count => _values.Count;
         public Switchboard()
@@ -206,6 +213,18 @@ namespace CoreLib
         protected virtual void ValueDeactivated(T value)
         {
             
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            int cnt = 0;
+            return _values.Where(t => IsValid(cnt++, t)).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            int cnt = 0;
+            return ((IEnumerable)(_values.Where(t => IsValid(cnt++, t)))).GetEnumerator();
         }
     }
 

@@ -61,6 +61,11 @@ namespace Tools.RecipeTool
 
         protected override IEnumerable<Recipe> GetRecipes() => tool.Recipes;
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return true;
+        }
+
         public override void SetPreviewVisible(bool visible) => CurrentPreviewer?.SetVisible(visible);
 
         public override bool IsPlacementInvalid(ref string errorMessage)

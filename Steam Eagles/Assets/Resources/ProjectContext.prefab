@@ -17,6 +17,9 @@ GameObject:
   - component: {fileID: 3739961169467093338}
   - component: {fileID: 9182714198033100156}
   - component: {fileID: -8107959291497868363}
+  - component: {fileID: -1162935138879859321}
+  - component: {fileID: -2738400731420417072}
+  - component: {fileID: 3442141259886482204}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -55,6 +58,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5ef2cec35e660ed49b0bb3d30de09667, type: 2}
   - {fileID: 11400000, guid: 14fa3beae7ac4eb4e8bcb26e4ccef022, type: 2}
   _monoInstallers:
+  - {fileID: 3442141259886482204}
+  - {fileID: -2738400731420417072}
   - {fileID: -3447698543339511176}
   - {fileID: -4638653384416121935}
   - {fileID: -983858895646106333}
@@ -180,7 +185,7 @@ MonoBehaviour:
     hypergasStorageCapacity: 15
     hypergasConsumptionRate: 1
     timeWithoutOutputBeforeGasDeterioration: 5
-    gasDeterateRate: 1
+    gasDeterateRate: 0.1
     deteriorationInterval: 1
     pumpProductionRate: 100
     pumpStorageCapacity: 10
@@ -202,3 +207,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config:
     logLevel: 1
+--- !u!114 &-1162935138879859321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083542159830508101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2bd20d6cff4254b4359a90ce185ac3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  confirmationWindowAssetAddress: Confirmation Window
+  infoBoxWindowAssetAddress: Info Box Window
+  tooltipWindowAssetAddress: Tooltip Window
+--- !u!114 &-2738400731420417072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083542159830508101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7a2ce0ba664f9eaef5d0159c29e120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3442141259886482204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083542159830508101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7af25b58924e978b6958ad0da84f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

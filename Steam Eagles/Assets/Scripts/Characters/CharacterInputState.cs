@@ -111,6 +111,11 @@ namespace Characters
             set => CharacterState.MoveInput = value;
         }
 
+        public bool SprintHeld
+        {
+            get => CharacterState.SprintHeld;
+            set => CharacterState.SprintHeld = value;
+        }
 
         public bool DropHeldItem { get; set; }
 

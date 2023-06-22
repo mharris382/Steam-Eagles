@@ -1,5 +1,4 @@
-﻿using System;
-using Tools.BuildTool;
+﻿using Tools.BuildTool;
 using UI.Extensions;
 using UniRx;
 using UnityEngine;
@@ -7,6 +6,7 @@ using UnityEngine.UI;
 
 namespace Tools.UI
 {
+    
     public class HUDToolController : HUDToolControllerBase
     {
         public CanvasGroup _canvasGroup;
@@ -14,8 +14,6 @@ namespace Tools.UI
 
         public override void OnFullyInitialized()
         {
-            SharedToolData.ActiveTool.StartWith(SharedToolData.ActiveToolValue).Subscribe(t => t.ApplyIcon(image)).AddTo(this);
-            SharedToolData.ToolsEquippedProperty.Subscribe(SetHUDVisible).AddTo(this);
         }
 
         public override void HideToolHUD()
@@ -26,6 +24,7 @@ namespace Tools.UI
         public override void ShowToolHUD(ToolControllerBase controllerBase)
         {
             _canvasGroup.alpha = 1;
+            controllerBase.ApplyIcon(image);
             Debug.Log($"Showing HUD for {controllerBase.name}");
         }
 

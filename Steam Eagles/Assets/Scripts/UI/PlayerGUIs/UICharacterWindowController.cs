@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using Characters;
 using CoreLib.Entities;
 using UnityEngine;
 using FSM;
 using Sirenix.OdinInspector;
 using UniRx;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI.PlayerGUIs.CharacterWindows
 {
-    public class UICharacterWindowController : MonoBehaviour
+    public class UICharacterWindowController : MonoBehaviour, IPCGUIController
     {
         private const string Inventory = "Inventory";
         private const string Codex = "Codex";
@@ -24,21 +26,24 @@ namespace UI.PlayerGUIs.CharacterWindows
             [Required,ChildGameObjectsOnly] public UICharacterWindowBase window;
             [Required,ChildGameObjectsOnly] public Button guiButton;
         }
-
-        [TableList]
-        [SerializeField] private CharacterWindowPanel[] windowPanels;
+        [Serializable]
+        public class WindowEvents
+        {
+            public UnityEvent<UICharacterWindowBase> onEnter;
+            public UnityEvent<UICharacterWindowBase> onLogic;
+            public UnityEvent<UICharacterWindowBase> onExit;
+        }
+        
+        [TableList,SerializeField] private CharacterWindowPanel[] windowPanels;
 
         public bool debug;
+        private Dictionary<CharacterWindowState, UICharacterWindowBase> _windowPanels = new();
         private CharacterWindowState _characterWindowState = CharacterWindowState.CLOSED;
         public ReactiveProperty<CharacterWindowState> _onCharacterWindowStateChange = new ReactiveProperty<CharacterWindowState>();
-
         private PlayerInput _playerInput;
-
-        private Entity _entity;
-
         private GameObject _characterGameObject;
-
-
+        private StateMachine _stateMachineRoot;
+        private StateMachine _characterStateMachine;
 
         public CharacterWindowState WindowState
         {
@@ -76,28 +81,62 @@ namespace UI.PlayerGUIs.CharacterWindows
             _characterGameObject.GetComponent<CharacterInteractionState>();
 
         bool HasRequirements() => _playerInput != null && 
-                                  _entity != null &&
                                   _characterGameObject != null && 
-                                  _characterInteractionState != null;
+                                  characterInteractionState != null;
 
-        public void SetCharacter(PlayerInput playerInput, Entity entity, GameObject characterGameObject)
+        public void SetCharacter(PlayerInput playerInput, GameObject characterGameObject)
         {
             _playerInput = playerInput;
-            _entity = entity;
             _characterGameObject = characterGameObject;
             if (WindowState != CharacterWindowState.CLOSED && !HasRequirements())
                 WindowState = CharacterWindowState.CLOSED;
+        }
+
+        private void Awake()
+        {
+            foreach (var windowPanel in windowPanels)
+            {
+                _windowPanels.Add(windowPanel.window.GetWindowState(), windowPanel.window);
+                windowPanel.guiButton.onClick.AsObservable().Subscribe(_ => ChangeToWindowState(windowPanel.window.GetWindowState())).AddTo(this);
+            }
+
+            _characterStateMachine = CreateWindowStateMachine();
+            var fsm = new StateMachine();
+            fsm.AddState("Character Window", OnCharacterWindowEnter, OnCharacterWindowLogic, OnCharacterWindowExit);
+            fsm.AddState("Closed");
+            fsm.AddTransitionFromAny("Character Window", _ => WindowState != CharacterWindowState.CLOSED);
+            fsm.AddTransitionFromAny("Closed", _ => WindowState == CharacterWindowState.CLOSED);
+            WindowState = CharacterWindowState.CLOSED;
+            _stateMachineRoot = fsm;
+            _stateMachineRoot.Init();
+        }
+
+       
+        [FoldoutGroup("Events")]  public UnityEvent onCharacterWindowEnter;
+       [FoldoutGroup("Events")]  public UnityEvent onCharacterWindowLogic;
+       [FoldoutGroup("Events")]  public UnityEvent onCharacterWindowExit;
+
+        public void OnCharacterWindowEnter(State<string, string> t)
+        {
+            _characterStateMachine.OnEnter();
+            onCharacterWindowEnter.Invoke();
+        }
+        public void OnCharacterWindowLogic(State<string, string> t)
+        {
+            _characterStateMachine.OnLogic();
+            onCharacterWindowLogic.Invoke();
+        }
+        public void OnCharacterWindowExit(State<string, string> t)
+        {
+            _characterStateMachine.OnExit();
+            onCharacterWindowExit.Invoke();
         }
 
         private void Update()
         {
             if(!HasRequirements())
                 return;
-            if(characterInteractionState.IsInteracting)
-            {
-                //TODO: make sure that all windows are closed
-                return;
-            }
+            _stateMachineRoot.OnLogic();
             foreach (var windowPanel in windowPanels)
             {
                 var state = windowPanel.window.GetWindowState();
@@ -136,16 +175,20 @@ namespace UI.PlayerGUIs.CharacterWindows
 
         #region [Inventory]
 
+        [SerializeField, FoldoutGroup("Events")] private WindowEvents inventoryEvents;
         private void OnEnterInventory(State<string, string> t)
         {
+            inventoryEvents.onEnter.Invoke(_windowPanels[CharacterWindowState.INVENTORY]);
             DebugStateEnter(CharacterWindowState.INVENTORY);
         }
         private void OnLogicInventory(State<string, string> t)
         {
+            inventoryEvents.onLogic.Invoke(_windowPanels[CharacterWindowState.INVENTORY]);
             DebugStateLogic(CharacterWindowState.INVENTORY);
         }
         private void OnExitInventory(State<string, string> t)
         {
+            inventoryEvents.onExit.Invoke(_windowPanels[CharacterWindowState.INVENTORY]);
             DebugStateExit(CharacterWindowState.INVENTORY);
         }
 
@@ -154,17 +197,21 @@ namespace UI.PlayerGUIs.CharacterWindows
         
         #region [Map]
 
+        [SerializeField, FoldoutGroup("Events")] private WindowEvents mapEvents;
         private void OnEnterMap(State<string, string> t)
         {
             DebugStateEnter(CharacterWindowState.MAP);
+            mapEvents.onEnter.Invoke(_windowPanels[CharacterWindowState.MAP]);
         }
         private void OnLogicMap(State<string, string> t)
         {
             DebugStateLogic(CharacterWindowState.MAP);
+            mapEvents.onLogic.Invoke(_windowPanels[CharacterWindowState.MAP]);
         }
         private void OnExitMap(State<string, string> t)
         {
             DebugStateExit(CharacterWindowState.MAP);
+            mapEvents.onExit.Invoke(_windowPanels[CharacterWindowState.MAP]);
         }
 
         #endregion
@@ -172,16 +219,20 @@ namespace UI.PlayerGUIs.CharacterWindows
         
         #region [Character]
 
+        [SerializeField, FoldoutGroup("Events")] private WindowEvents characterEvents;
         private void OnEnterCharacters(State<string, string> t)
         {
+            characterEvents.onEnter.Invoke(_windowPanels[CharacterWindowState.CHARACTERS]);
             DebugStateEnter(CharacterWindowState.CHARACTERS);
         }
         private void OnLogicCharacters(State<string, string> t)
         {
+            characterEvents.onLogic.Invoke(_windowPanels[CharacterWindowState.CHARACTERS]);
             DebugStateLogic(CharacterWindowState.CHARACTERS);
         }
         private void OnExitCharacters(State<string, string> t)
         {
+            characterEvents.onExit.Invoke(_windowPanels[CharacterWindowState.CHARACTERS]);
             DebugStateExit(CharacterWindowState.CHARACTERS);
         }
 
@@ -189,17 +240,20 @@ namespace UI.PlayerGUIs.CharacterWindows
 
 
         #region [Codex]
-
+        [SerializeField, FoldoutGroup("Events")] private WindowEvents codexEvents;
         private void OnEnterCodex(State<string, string> t)
         {
+            codexEvents.onEnter.Invoke(_windowPanels[CharacterWindowState.CODEX]);
             DebugStateEnter(CharacterWindowState.CODEX);
         }
         private void OnLogicCodex(State<string, string> t)
         {
+            codexEvents.onLogic.Invoke(_windowPanels[CharacterWindowState.CODEX]);
             DebugStateLogic(CharacterWindowState.CODEX);
         }
         private void OnExitCodex(State<string, string> t)
         {
+            codexEvents.onExit.Invoke(_windowPanels[CharacterWindowState.CODEX]);
             DebugStateExit(CharacterWindowState.CODEX);
         }
 

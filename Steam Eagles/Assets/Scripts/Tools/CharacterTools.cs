@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreLib.Entities;
 using Cysharp.Threading.Tasks;
@@ -17,6 +17,7 @@ namespace Tools.BuildTool
         private readonly EntityInitializer _entityInitializer;
         private readonly CoroutineCaller _coroutineCaller;
         private Coroutine _coroutine;
+        private CompositeDisposable _cd;
 
         public ToolBeltToCharacterTools(
             ToolBeltInventory toolBeltInventory,
@@ -32,6 +33,7 @@ namespace Tools.BuildTool
 
         public void Initialize()
         {
+            _cd = new CompositeDisposable();
             _coroutine = _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
             {
                 await UniTask.WaitUntil(() => _entityInitializer.isDoneInitializing);
@@ -39,12 +41,22 @@ namespace Tools.BuildTool
                 foreach (var tool in _toolBeltInventory.GetTools())
                 {
                     Debug.Log($"Setting tool {tool} to slot {cnt}");
-                    await _tools.SetTool(tool, cnt);
+                    var cnt1 = cnt;
+                    tool.Select(t => (t, cnt1)).Subscribe(t => SetTool(t.Item1, t.Item2)).AddTo(_cd);
                     cnt++;
                 }
             }));
         }
 
+        void SetTool(Tool tool, int slot)
+        {
+            _coroutineCaller.StartCoroutine(UniTask.ToCoroutine(async () =>
+            {
+                await UniTask.WaitUntil(() => _entityInitializer.isDoneInitializing);
+                await _tools.SetTool(tool, slot);
+            }));
+        }
+        
         public void Dispose()
         {
             if (_coroutineCaller != null && _coroutine != null)
@@ -70,17 +82,9 @@ namespace Tools.BuildTool
         private ReactiveProperty<LinkedListNode<Tool>> _currentTool = new();
 
         private Subject<GameObject> _onToolControllerInstantiated = new();
+        private ToolSwapController _toolSwapper;
 
         public IObservable<GameObject> OnToolControllerInstantiated => _onToolControllerInstantiated;
-        private LinkedListNode<Tool> currentTool
-        {
-            get => _currentTool.Value;
-            set => _currentTool.Value = value;
-        }
-        private LinkedList<Tool> _usableTools = new LinkedList<Tool>();
-
-        private ReadOnlyReactiveProperty<GameObject> _currentToolController;
-        public IObservable<GameObject> OnToolEquipped => _currentToolController;
 
         public async UniTask SetTool(Tool tool, int slot)
         {
@@ -90,61 +94,40 @@ namespace Tools.BuildTool
             {
                 var prevTool = _tools[slot];
                 
-                if (prevTool != null && _controllers.ContainsKey(prevTool))
+                if (prevTool != null && _controllers.ContainsKey(prevTool) && _controllers[prevTool] != null)
                 {
                     var prevControllerBase = _controllers[prevTool].gameObject.GetComponent<ToolControllerBase>();
+                    _toolSwapper.RemoveTool(prevControllerBase);
                     prevControllerBase.SetActive(false);
-                    _controllers[prevTool].gameObject.SetActive(false);
                 }
             }
 
-            if (!_controllers.TryGetValue(tool, out var controller))
+            if (!_controllers.TryGetValue(tool, out var controller) || controller == null)
             {
+                
                 var controllerPrefab =await tool.GetControllerPrefab();
                 controller = Instantiate(controllerPrefab, toolParent);
                 _onToolControllerInstantiated.OnNext(controller);
-                _controllers.Add(tool, controller.GetComponent<GameObject>());
+                if(_controllers.ContainsKey(tool))_controllers.Remove(tool);
+                Debug.Assert(_controllers.ContainsKey(tool) == false, "_controllers.ContainsKey(tool) == false", controller);
+                _controllers.Add(tool, controller.gameObject);
             }
             controller.SetActive(true);
             var controllerBase = controller.GetComponent<ToolControllerBase>();
             Debug.Assert(controllerBase != null, "controllerBase != null", controller);
             controllerBase?.SetActive(true);
             _tools[slot] = tool;
+            _toolSwapper.AddTool(controllerBase);
             _canSwitchTools.Value = true;
         }
 
         private void Awake()
         {
             _tools = new Tool[maxToolSlots];
-
+            _toolSwapper = GetComponent<ToolSwapController>();
+            
             Tool lastTool = null;
             
-            _currentToolController = _currentTool.Where(t => t != null).Select(t => t.Value).Select(t => _controllers[t]?.gameObject)
-                .Merge(_canSwitchTools.Where(t => !t).Select(_ => (GameObject)null)).ToReadOnlyReactiveProperty();
-            _canSwitchTools.Where(t => !t).Subscribe(_ => lastTool = currentTool?.Value).AddTo(this);
-            _canSwitchTools.Where(t => t).Subscribe(_ =>
-            {
-                _usableTools.Clear();
-                foreach (var tool in _tools)
-                {
-                    if (tool != null)
-                    {
-                        _usableTools.AddLast(tool);
-                    }
-                }
-                if (lastTool != null && _usableTools.Contains(lastTool))
-                {
-                    currentTool = _usableTools.Find(lastTool);
-                }
-                else if(_usableTools.Count > 0)
-                {
-                    currentTool = _usableTools.First;
-                }
-                else
-                {
-                    currentTool = null;
-                }
-            });
             
         }
 

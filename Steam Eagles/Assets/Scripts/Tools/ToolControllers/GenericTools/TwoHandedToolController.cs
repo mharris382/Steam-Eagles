@@ -32,6 +32,11 @@ namespace Tools.GenericTools
             Debug.LogWarning($"{nameof(TwoHandedToolController)} throw new System.NotImplementedException();");
         }
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return true;
+        }
+
         public override ToolStates GetToolState()
         {
             return ToolStates.HAND_BOTH;

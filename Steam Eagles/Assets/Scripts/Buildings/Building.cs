@@ -38,8 +38,12 @@ namespace Buildings
 
         public int orderInLayer;
 
-        public Rect sizeWorldSpace;
+        
+        [SerializeField] Rect _sizeWorldSpace;
 
+        
+        public bool useBoxColliderSize = true;
+        
         #endregion
 
         #region [Private Fields]
@@ -63,7 +67,6 @@ namespace Buildings
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
         Rooms.Rooms _rooms;
-        private BuildingMap.Factory _buildingMapFactory;
 
         internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
@@ -71,6 +74,11 @@ namespace Buildings
 
         #region [Properties]
 
+        public Rect sizeWorldSpace
+        {
+            get => _sizeWorldSpace;
+        }
+        
         public Bounds WorldSpaceBounds
         {
             get
@@ -85,7 +93,7 @@ namespace Buildings
 
         public bool IsFullyLoaded { get; set; }
 
-        public BuildingMap Map => _buildingMap ??= _buildingMapFactory.Create(this);
+        public BuildingMap Map => _buildingMap ??= new BuildingMap(this);
         public BuildingTiles Tiles => _buildingTiles ??= new BuildingTiles(this);
         public string ID => string.IsNullOrEmpty(buildingName) ? name : buildingName;
 
@@ -94,6 +102,8 @@ namespace Buildings
 
         public Grid Grid => _grid ? _grid : _grid = GetComponent<Grid>();
         public Rigidbody2D Rb => _rb ? _rb : _rb = GetComponent<Rigidbody2D>();
+        
+        private BoxCollider2D Box => _box ? _box : _box = GetComponent<BoxCollider2D>();
 
         public IObservable<BuildingTilemapChangedInfo> TilemapChanged => tilemapChangedSubject;
 
@@ -181,11 +191,7 @@ namespace Buildings
             this.OnDestroyAsObservable().Subscribe(_ => buildingRegistry.RemoveBuilding(this));
         }
 
-        [Inject]
-        public void InjectBuildingMapFactory(BuildingMap.Factory buildingMapFactory)
-        {
-            _buildingMapFactory = buildingMapFactory;
-        }
+    
 
 
 
@@ -301,7 +307,7 @@ namespace Buildings
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            this.sizeWorldSpace.DrawGizmos();
+            this.WorldSpaceBounds.ToRect().DrawGizmos();
         }
 #endif
 

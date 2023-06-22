@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections;
 using CoreLib;
+using CoreLib.Interfaces;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -41,6 +42,7 @@ namespace UI.PlayerGUIs
                         if (_gameState.IsPaused)
                         {
                             _controller.GUIState = PCGUIState.PAUSE_MENU;
+                            SetToolsHidden(true);
                             continue;
                         }
                         
@@ -53,12 +55,15 @@ namespace UI.PlayerGUIs
                                 break;
                             case PCGUIState.PAUSE_MENU:
                                 _controller.GUIState = PCGUIState.DEFAULT;
+                                SetToolsHidden(true);
                                 break;
                             case PCGUIState.CHARACTER_MENU:
                             case PCGUIState.CUTSCENE:
-                                
                             case PCGUIState.PILOTING:
+                                SetToolsHidden(true);
+                                break;
                             case PCGUIState.DEFAULT:
+                                SetToolsHidden(false);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -75,6 +80,18 @@ namespace UI.PlayerGUIs
               
             }
         }
+
+        private void SetToolsHidden(bool hidden)
+        {
+            if (_controller.PlayerCharacter == null)
+            {
+                return;
+            }
+            var tools = _controller.PlayerCharacter.GetComponent<IHideTools>();
+            Debug.Assert(tools != null, "BS tools not found poo", _controller.PlayerCharacter);
+            tools.ToolsHidden = hidden;
+        }
+
         public void Dispose()
         {
             if (_coroutineCaller != null&& _coroutine != null)

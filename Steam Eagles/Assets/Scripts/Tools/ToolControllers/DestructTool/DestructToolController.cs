@@ -100,7 +100,7 @@ namespace Tools.DestructTool
         private List<string> _modes;
         
         
-        protected override bool ToolUsesModes(out List<string> modes)
+        public override bool ToolUsesModes(out List<string> modes)
         {
             if (_modes != null)
             {
@@ -202,6 +202,11 @@ namespace Tools.DestructTool
         protected override void OnRoomChanged(Room room)
         {
             HasRoom = room != null && room.buildLevel == BuildLevel.FULL;
+        }
+
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return false;
         }
 
         public override ToolStates GetToolState()

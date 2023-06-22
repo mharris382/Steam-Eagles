@@ -1,11 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace UI.Wheel
 {
+    public interface IWheelable<T>
+    {
+        IWheelConverter<T> Converter { get; }
+        IEnumerable<T> GetItems();
+    }
+    
+    
     public class UIWheelBuilder : MonoBehaviour
     {
         public UIWheel wheel;
@@ -23,6 +33,8 @@ namespace UI.Wheel
 
         private Queue<UIWheelSegment> _segments = new Queue<UIWheelSegment>();
         private List<UIWheelSegment> _activeSegments = new List<UIWheelSegment>();
+
+
         private void Awake()
         {
             _inactiveSegmentsParent = new GameObject("Inactive Segments").transform;
@@ -33,8 +45,14 @@ namespace UI.Wheel
             _activeSegments = new List<UIWheelSegment>();
             for (int i = 0; i < 7; i++)
             {
-                _segments.Enqueue(Instantiate(segmentPrefab, _inactiveSegmentsParent));
+                var inst = Instantiate(segmentPrefab, _inactiveSegmentsParent);
+                _segments.Enqueue(inst);
             }
+        }
+
+        public IDisposable CreateWheel<T>(IEnumerable<T> items, IWheelConverter<T> converter)
+        {
+            return CreateWheel(items.Select(converter.GetSelectableFor).ToList());
         }
 
         public IDisposable CreateWheel(List<UIWheelSelectable> selectables)
@@ -55,8 +73,7 @@ namespace UI.Wheel
             var wheelData =   wheel.GetComponent<UIWheelData>();
             wheelData.SetWheelData(_activeSegments);
             wheelData.IsWheelOpen = true;
-            _lastWheelSubscription = Disposable.Create(() =>
-            {
+            _lastWheelSubscription = Disposable.Create(() => {
                 if(_lastWheelSubscription == null)return;
                 ClearActiveSegments();
                 wheelData.IsWheelOpen = false;

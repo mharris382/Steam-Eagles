@@ -67,7 +67,7 @@ namespace Players.PCController.ParallaxSystems
             _onSpriteAdded.OnNext(_spriteCount);
         }
 
-        void Recount() => _spriteCount = _sprites.Sum(t => t.GetSpriteRenderers().Count());
+        void Recount() => _spriteCount = _sprites.Sum(t => t.GetRenderers().Count());
 
 
         private void SetSpriteVisibleToPlayer(ParallaxSprite sprite, int player)
@@ -76,14 +76,14 @@ namespace Players.PCController.ParallaxSystems
             {
                 case 0:
                 case 1:
-                    foreach (var spriteRenderer in sprite.GetSpriteRenderers())
+                    foreach (var spriteRenderer in sprite.GetRenderers())
                     {
                         spriteRenderer.gameObject.layer = _layers[player];
                     }
 
                     break;
                 default:
-                    foreach (var spriteRenderer in sprite.GetSpriteRenderers())
+                    foreach (var spriteRenderer in sprite.GetRenderers())
                     {
                         spriteRenderer.gameObject.layer = LayerMask.NameToLayer("TransparentFX");
                     }
@@ -127,15 +127,15 @@ namespace Players.PCController.ParallaxSystems
             }
         }
 
-        public IEnumerable<SpriteRenderer> GetSpriteRendererForPlayer(int playerNumber) =>
-            GetSpritesForPlayer(playerNumber).SelectMany(t => t.GetSpriteRenderers());
+        public IEnumerable<Renderer> GetSpriteRendererForPlayer(int playerNumber) =>
+            GetSpritesForPlayer(playerNumber).SelectMany(t => t.GetRenderers());
 
 
         public IEnumerable<Transform> GetOriginals() =>
-            _sprites.SelectMany(t => t.GetSpriteRenderers()).Select(t => t.transform);
+            _sprites.SelectMany(t => t.GetRenderers()).Select(t => t.transform);
 
         public IEnumerable<Transform> GetCopies(int player) => GetSpritesForPlayer(player)
-            .SelectMany(t => t.GetSpriteRenderers()).Select(t => t.transform);
+            .SelectMany(t => t.GetRenderers()).Select(t => t.transform);
 
         public Dictionary<ParallaxSprite, ParallaxSprite> GetPlayerCopies(int playerNumber) =>
             _playerSpriteCopies[playerNumber];

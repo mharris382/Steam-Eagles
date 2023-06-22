@@ -37,7 +37,8 @@ namespace SteamEagles.Characters
         public CapsuleCollider2D Collider => _capsuleCollider;
    
         public bool SprintHeld {get; set; }
-    
+
+        public bool IsSprinting => SprintHeld;
         public Vector2 MoveInput
         {
             get => _moveInput;

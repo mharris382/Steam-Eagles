@@ -10,6 +10,7 @@ namespace DefaultNamespace
         public float moveSpeed = 600;
         public float jumpForce = 15f;
         public float jumpTime = 0.3f;
+        public float sprintMultiplier = 1.5f;
         
         public AnimationCurve jumpCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         

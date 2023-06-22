@@ -2,6 +2,7 @@
 {
     public enum NodeType
     {
+        NONE,
         PIPE,
         INPUT,
         OUTPUT,

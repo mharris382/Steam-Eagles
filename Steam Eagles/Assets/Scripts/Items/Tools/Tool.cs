@@ -4,6 +4,7 @@ using CoreLib;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Items
 {
@@ -49,13 +50,24 @@ namespace Items
 
 
         private GameObject _controllerPrefab;
+        private AsyncOperationHandle<GameObject> _controllerPrefabLoadOp;
+        private bool _loaded;
         public bool IsControllerPrefabLoaded() => _controllerPrefab != null;
 
         public async UniTask<GameObject> GetControllerPrefab()
         {
-            if (_controllerPrefab == null)
+            if (_controllerPrefab == null && !_loaded)
             {
-                _controllerPrefab = await controllerPrefab.LoadAssetAsync<GameObject>();
+                _loaded = true;
+                _controllerPrefabLoadOp =controllerPrefab.LoadAssetAsync<GameObject>();
+                _controllerPrefab = await _controllerPrefabLoadOp;
+            } else if(_controllerPrefab == null && _loaded)
+            {
+                if (!_controllerPrefabLoadOp.IsDone)
+                {
+                    await _controllerPrefabLoadOp;
+                }
+                _controllerPrefab = _controllerPrefabLoadOp.Result;
             }
             return _controllerPrefab;
         }

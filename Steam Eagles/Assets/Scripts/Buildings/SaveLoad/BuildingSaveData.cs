@@ -20,7 +20,7 @@ namespace Buildings.SaveLoad
             _machineSaves = building.GetComponentsInChildren<BuildableMachineBase>().Select(t => new MachineSaveData(t))
                 .Where(t => t.IsValid()).ToList();
             Debug.Log($"Saving {_machineSaves.Count} machines inside building: {building.ID}.");
-            _tilemapSaveData = new TilemapSaveData(building);
+            //_tilemapSaveData = new TilemapSaveData(building);
         }
 
         
@@ -30,7 +30,7 @@ namespace Buildings.SaveLoad
             {
                 Debug.Log($"Loading all data for building: {target.ID}...", target);
                 var loadMachines = LoadAllMachines(target);
-                LoadTilemapData(target);
+                //LoadTilemapData(target);
                 await loadMachines;
                 onCompleted?.Invoke();
             }));
@@ -39,7 +39,7 @@ namespace Buildings.SaveLoad
         public async UniTask<bool> LoadAsync(Building target)
         {
             var loadMachines = LoadAllMachines(target);
-            LoadTilemapData(target);
+            // LoadTilemapData(target);
             await loadMachines;
             return true;
         }

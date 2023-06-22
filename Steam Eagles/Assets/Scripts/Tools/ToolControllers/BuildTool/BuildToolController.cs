@@ -61,6 +61,8 @@ namespace Tools.BuildTool
             //HasRoom = room.buildLevel == BuildLevel.FULL;
         }
 
+        public override bool CanBeUsedOutsideBuilding() => false;
+
         public override void SetPreviewVisible(bool visible)
         {
             PathBuilder.SetPreviewVisible(visible);
@@ -69,7 +71,7 @@ namespace Tools.BuildTool
 
         public override bool IsPlacementInvalid(ref string errorMessage)
         {
-            if (this.targetBuilding.IsCellOverlappingMachine(AimHandler.HoveredPosition.Value))
+            if (this.Building.IsCellOverlappingMachine(AimHandler.HoveredPosition.Value))
             {
                 errorMessage = "Cannot build on top of a machine";
                 return true;
@@ -114,7 +116,7 @@ namespace Tools.BuildTool
         }
 
 
-        protected override bool ToolUsesModes(out List<string> modes)
+        public override bool ToolUsesModes(out List<string> modes)
         {
             modes = _modeNames;
             return true;

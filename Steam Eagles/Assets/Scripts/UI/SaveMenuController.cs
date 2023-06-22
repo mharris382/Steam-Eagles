@@ -11,22 +11,40 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UniRx;
 using UnityEngine.Events;
+using Zenject;
 
 namespace UI
 {
     public class SaveMenuController : MonoBehaviour
     {
         [Required] public EventSystem eventSystem;
-        [Required]public Transform promptCanvas;
-        [Required]public LoadMenuController loadDisplays;
-           
+        [Required] public Transform promptCanvas;
+        [Required] public LoadMenuController loadDisplays;
+
         [Required] public Button saveButton;
         [Required] public TMP_InputField saveNameInput;
         private CanvasGroup _loadDisplayCanvasGroup;
+
+        public bool promptForOverwrite = true;
+        public bool useDefaultSaveName = true;
+        public string defaultSaveName = "New Save";
+     
+        
+        public UIDisplayGameTime timeDisplay;
+        public UIDisplayGameDate dateDisplay;
+        private WindowLoader _windowLoader;
         
         private ConfirmationPromptID _overwriteSavePromptID;
         public UnityEvent onFinishedSaving;
-        
+        private UIPromptBuilder _promptBuilder;
+
+
+        [Inject] void InjectMe(WindowLoader windowLoader, UIPromptBuilder promptBuilder)
+        {
+            _windowLoader = windowLoader;
+            _promptBuilder = promptBuilder;
+        }
+
         private void Awake()
         {
             if (!loadDisplays.gameObject.TryGetComponent<CanvasGroup>(out var cg))
@@ -38,12 +56,12 @@ namespace UI
 
         private IEnumerator Start()
         {
-            while (WindowLoader.Instance.IsFinishedLoading() == false)
+            while (_windowLoader.IsFinishedLoading() == false)
             {
                 yield return null;
             }
 
-            _overwriteSavePromptID = UIPromptBuilder.Instance.CreatePrompt(promptCanvas, eventSystem,
+            _overwriteSavePromptID = _promptBuilder.CreatePrompt(promptCanvas, eventSystem,
                 () => saveNameInput,
                 "Are you sure you want to overwrite this save?");
             
@@ -62,22 +80,15 @@ namespace UI
             dateDisplay.Display(TimeManager.Instance.CurrentGameDate);
             TimeManager.Instance.isGameTimePaused = true;
         }
+
         private void OnDisable()
         {
             _loadDisplayCanvasGroup.alpha = 0;
             _loadDisplayCanvasGroup.enabled = false;
             TimeManager.Instance.isGameTimePaused = false;
         }
-        
-        public bool promptForOverwrite = true;
-        public bool useDefaultSaveName = true;
-        public string defaultSaveName = "New Save";
-     
-        
-        public UIDisplayGameTime timeDisplay;
-        public UIDisplayGameDate dateDisplay;
-        
-        
+
+
         private string CurrentSaveName => saveNameInput.text;
         
         public string GetPathForSaveName(string saveName)
@@ -120,7 +131,7 @@ namespace UI
         public IEnumerator PromptForOverwrite(Action confirmOverwrite)
         {
             bool waiting = true;
-            UIPromptBuilder.Instance.ShowPrompt(_overwriteSavePromptID)
+            _promptBuilder.ShowPrompt(_overwriteSavePromptID)
                 .Subscribe(
                     res =>
                     {
