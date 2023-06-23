@@ -79,6 +79,7 @@ namespace Tools.BuildTool
 
         void ShowPath(List<Vector3Int> path)
         {
+            return;
             if (_activeSprites.Count < path.Count)
             {
                 //add new sprites
@@ -125,7 +126,7 @@ namespace Tools.BuildTool
             _selectedTilePath = selectedTilePath;
             if(_building) _buildingMap = _building.Map;
             var cd = new CompositeDisposable();
-            
+            return cd;
             building.Subscribe(b => {
                 if (b != null) {
                     _building = b;

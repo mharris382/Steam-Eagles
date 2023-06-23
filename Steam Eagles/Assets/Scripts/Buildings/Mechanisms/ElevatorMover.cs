@@ -25,7 +25,6 @@ namespace Buildings.Mechanisms
             }
             _coroutineCaller.StartCoroutine(MoveElevatorToFloor(floor));
             return true;
-            throw new System.NotImplementedException();
         }
 
         IEnumerator SlowElevatorToStop(int floor)

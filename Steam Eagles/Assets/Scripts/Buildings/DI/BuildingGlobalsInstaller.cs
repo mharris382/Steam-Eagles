@@ -80,6 +80,7 @@ public class EntityRoomTrackerV2 : IInitializable, ITickable, IDisposable
 
         foreach (var entity in _dynamicEntities.Keys)
         {
+            if (entity == null) continue;
             if (!_entityLinkRegistry.Contains(entity))
             {
                 _removalQueue.Enqueue(entity);

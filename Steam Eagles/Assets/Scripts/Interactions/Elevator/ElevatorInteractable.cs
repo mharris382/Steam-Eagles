@@ -20,7 +20,7 @@ namespace Interactions
         public override async UniTask<bool> Interact(InteractionAgent agent)
         {
             _currentInteractionHandle ??= _interactionFactory.Create(agent);
-            await UniTask.WaitUntil(() => _currentInteractionHandle.WasInteractionCompleted);
+            await UniTask.WaitUntil(() => _currentInteractionHandle.WasInteractionCompleted || _currentInteractionHandle.WasInteractionCancelled);
             var result = !_currentInteractionHandle.WasInteractionCancelled;
             if (result)
             {

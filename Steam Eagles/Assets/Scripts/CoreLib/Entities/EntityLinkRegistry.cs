@@ -11,6 +11,8 @@ namespace CoreLib.Entities
 
         public bool Contains(EntityInitializer value)
         {
+            if (value == null)
+                return false;
             return _entityLookup.ContainsKey(value.GetEntityGUID());
         }
         public EntityLinkRegistry(EntityV2.Factory entityFactory)
