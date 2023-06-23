@@ -11,7 +11,7 @@ namespace CoreLib.Structures
             this.transform = transform;
         }
 
-        public override string ToString() => $"{transform.name} (Target)";
+        public override string ToString() => transform == null ? "NULL TARGET" : $"{transform.name} (Target)";
         public override int GetHashCode() => transform.GetHashCode();
     }
 }

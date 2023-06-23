@@ -26,7 +26,7 @@ public class Health : MonoBehaviour
         }).AddTo(this);
     }
 
-    public bool IsDead => _isDeadProperty.Value;
+    public bool IsDead => _isDeadProperty == null ? true : _isDeadProperty.Value;
     public int MaxHealth => maxHealth;
     public int CurrentHealth
     {
