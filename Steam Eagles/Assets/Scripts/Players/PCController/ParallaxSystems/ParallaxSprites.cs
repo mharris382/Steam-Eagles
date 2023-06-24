@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace Players.PCController.ParallaxSystems
 {
-    public class ParallaxSprites
+    public class ParallaxSprites : IDisposable
     {
 
         private int _spriteCount;
@@ -67,23 +67,24 @@ namespace Players.PCController.ParallaxSystems
             _onSpriteAdded.OnNext(_spriteCount);
         }
 
-        void Recount() => _spriteCount = _sprites.Sum(t => t.GetRenderers().Count());
+        private void Recount() => _spriteCount = _sprites.Sum(t => t.GetRenderers().Count());
 
 
         private void SetSpriteVisibleToPlayer(ParallaxSprite sprite, int player)
         {
+            if (sprite == null) return;
             switch (player)
             {
                 case 0:
                 case 1:
-                    foreach (var spriteRenderer in sprite.GetRenderers())
+                    foreach (var spriteRenderer in sprite.GetRenderers().Where(t => t != null))
                     {
                         spriteRenderer.gameObject.layer = _layers[player];
                     }
 
                     break;
                 default:
-                    foreach (var spriteRenderer in sprite.GetRenderers())
+                    foreach (var spriteRenderer in sprite.GetRenderers().Where(t => t != null))
                     {
                         spriteRenderer.gameObject.layer = LayerMask.NameToLayer("TransparentFX");
                     }
@@ -121,10 +122,18 @@ namespace Players.PCController.ParallaxSystems
         public IEnumerable<ParallaxSprite> GetSpritesForPlayer(int playerNumber)
         {
             var lookup = _playerSpriteCopies[playerNumber];
+            int nullCount = 0;
             foreach (var parallaxSprite in _sprites)
             {
+                if (parallaxSprite == null)
+                {
+                    nullCount++;
+                    continue;
+                }
                 yield return lookup[parallaxSprite];
             }
+
+            if (nullCount > 0) _sprites.RemoveAll(t => t == null);
         }
 
         public IEnumerable<Renderer> GetSpriteRendererForPlayer(int playerNumber) =>
@@ -132,12 +141,26 @@ namespace Players.PCController.ParallaxSystems
 
 
         public IEnumerable<Transform> GetOriginals() =>
-            _sprites.SelectMany(t => t.GetRenderers()).Select(t => t.transform);
+            _sprites.Where(t => t != null).SelectMany(t => t.GetRenderers()).Select(t => t.transform);
 
-        public IEnumerable<Transform> GetCopies(int player) => GetSpritesForPlayer(player)
+        public IEnumerable<Transform> GetCopies(int player) => GetSpritesForPlayer(player).Where(t => t != null)
             .SelectMany(t => t.GetRenderers()).Select(t => t.transform);
 
         public Dictionary<ParallaxSprite, ParallaxSprite> GetPlayerCopies(int playerNumber) =>
             _playerSpriteCopies[playerNumber];
+
+        public void Dispose()
+        {
+            _onSpriteAdded?.Dispose();
+            _onSpriteRemoved?.Dispose();
+            _sprites.RemoveAll(t => t == null);
+            foreach (var playerSpriteCopy in _playerSpriteCopies)
+            {
+                foreach (var parallaxSprite in playerSpriteCopy)
+                    if (parallaxSprite.Value != null)
+                        Object.Destroy(parallaxSprite.Value.gameObject);
+                playerSpriteCopy.Clear();
+            }
+        }
     }
 }
