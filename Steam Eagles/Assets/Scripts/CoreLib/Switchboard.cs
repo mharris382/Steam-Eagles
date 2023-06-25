@@ -152,14 +152,14 @@ namespace CoreLib
             _currentSelected.Set(_values[i]);
             return true;
         }
-        public bool Add(T value)
+        public virtual bool Add(T value)
         {
             if (_isDisposed || Contains(value)) return false;
             _values.Add(value);
             return true;
         }
 
-        public bool Remove(T value)
+        public virtual bool Remove(T value)
         {
             if (_isDisposed || !Contains(value)) return false;
             bool reselect = _currentSelected.Value.Equals(value);

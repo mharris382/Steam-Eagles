@@ -90,8 +90,8 @@ namespace CoreLib.Entities
 
         private void OnDestroy()
         {
-            
-            linkRegistry.Unregister(this);
+            if(linkRegistry != null)
+                linkRegistry.Unregister(this);
         }
 
         public void Initialize()

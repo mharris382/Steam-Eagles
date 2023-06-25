@@ -52,10 +52,14 @@ namespace Items
         private GameObject _controllerPrefab;
         private AsyncOperationHandle<GameObject> _controllerPrefabLoadOp;
         private bool _loaded;
-        public bool IsControllerPrefabLoaded() => _controllerPrefab != null;
+        public bool IsControllerPrefabLoaded() => _controllerPrefabLoadOp.IsValid() && _controllerPrefabLoadOp.IsDone;
+        public AsyncOperationHandle<GameObject> GetControllerPrefabLoadOp() => _controllerPrefabLoadOp;
 
         public async UniTask<GameObject> GetControllerPrefab()
         {
+            if (!_controllerPrefabLoadOp.IsValid()) _controllerPrefabLoadOp = controllerPrefab.LoadAssetAsync<GameObject>();
+            if (_controllerPrefabLoadOp.IsDone == false) await _controllerPrefabLoadOp.ToUniTask();
+            return _controllerPrefabLoadOp.Result;
             if (_controllerPrefab == null && !_loaded)
             {
                 _loaded = true;
