@@ -50,10 +50,11 @@ MonoBehaviour:
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
-  Parameters: []
+  Parameters:
+  - {fileID: 4496208037811881943}
   MinDistance: 1
   MaxDistance: 20
-  Length: 600
+  Length: 0
 --- !u!114 &-7716088488309096815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,6 +82,89 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-7451102562266537849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Tile Deconstruction
+  m_EditorClassIdentifier: 
+  Path: event:/Tile Deconstruction
+  Guid:
+    Data1: -848980247
+    Data2: 1206441053
+    Data3: -375839817
+    Data4: -1508996906
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -7382144268574667121}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 702
+--- !u!114 &-7382144268574667121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Tile Deconstruction/block type
+  m_EditorClassIdentifier: 
+  Name: block type
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 2197600615
+    data2: 820470920
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Solid
+  - Pipe
+  - Ladder
+  - Wall
+  Exists: 1
+--- !u!114 &-6610765567987018692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Item Pickup/Item Type
+  m_EditorClassIdentifier: 
+  Name: Item Type
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 1863607716
+    data2: 797142901
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Hyperglass
+  - Basic Resource
+  - Key Item
+  Exists: 1
 --- !u!114 &-6602069084922840246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,7 +180,7 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638231386258897319
+  lastModified: 638233262090229369
   FileSizes:
   - Name: Desktop
     Value: 2446432
@@ -128,6 +212,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 178912
+--- !u!114 &-2332712013049670873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Item Pickup
+  m_EditorClassIdentifier: 
+  Path: event:/Item Pickup
+  Guid:
+    Data1: 930572299
+    Data2: 1256451320
+    Data3: -81419347
+    Data4: 1136899135
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -6610765567987018692}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,12 +264,14 @@ MonoBehaviour:
   - {fileID: 2813908003119881036}
   - {fileID: -4447536127489348248}
   - {fileID: -8541659772659667331}
+  - {fileID: -2332712013049670873}
+  - {fileID: -7451102562266537849}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6806358472309568043}
   StringsBanks:
   - {fileID: 301517338111838257}
-  cacheTime: 638231386258897319
+  cacheTime: 638233262091478535
   cacheVersion: 131603
 --- !u!114 &301517338111838257
 MonoBehaviour:
@@ -174,10 +288,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638231386258678590
+  lastModified: 638233262063080679
   FileSizes:
   - Name: Desktop
-    Value: 1088
+    Value: 1332
   Exists: 1
 --- !u!114 &1674415375344157029
 MonoBehaviour:
@@ -194,7 +308,7 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Ambience.bank
   Name: Ambience
   StudioPath: bank:/Ambience
-  lastModified: 638231386258566595
+  lastModified: 638233262062878499
   FileSizes:
   - Name: Desktop
     Value: 250016
@@ -241,10 +355,39 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638231386258658381
+  lastModified: 638233262091478535
   FileSizes:
   - Name: Desktop
-    Value: 40512
+    Value: 275136
+  Exists: 1
+--- !u!114 &4496208037811881943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Footstep/Surface
+  m_EditorClassIdentifier: 
+  Name: Surface
+  StudioPath: 
+  Min: 0
+  Max: 4
+  Default: 0
+  ID:
+    data1: 191631008
+    data2: 4201995956
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Solid
+  - Grass
+  - Pipe
+  - Foundation
+  - Dirt
   Exists: 1
 --- !u!114 &6806358472309568043
 MonoBehaviour:
@@ -261,7 +404,7 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638231386258678590
+  lastModified: 638233262063070682
   FileSizes:
   - Name: Desktop
     Value: 2076

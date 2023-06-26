@@ -17,7 +17,7 @@ namespace Buildings.BuildingTilemaps
         private Building _building;
 
         public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
-        
+        public GridLayout GridLayout => Tilemap.layoutGrid;
         public abstract BuildingLayers Layer { get; }
 
         public abstract string GetSaveID();

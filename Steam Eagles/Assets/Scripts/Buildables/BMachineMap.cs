@@ -33,15 +33,18 @@ namespace Buildables
         }
 
         
-        public void RemoveMachineAt(Vector2Int position)
+        public bool  RemoveMachineAt(Vector2Int position)
         {
             if(IsCellOverlappingMachine( position)==false)
-                return;
+                return false;
             var bMachine = _usedCells[position];
             foreach (var bMachineCell in bMachine.Cells) _usedCells.Remove(bMachineCell);
             _onMachineRemoved.OnNext(bMachine);
             bMachine.Dispose();
+            return true;
         }
+
+      
 
         public bool PlaceMachine(BuildableMachineBase machine, Vector2Int position)
         {

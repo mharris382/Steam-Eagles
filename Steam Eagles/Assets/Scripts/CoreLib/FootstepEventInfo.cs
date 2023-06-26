@@ -15,6 +15,15 @@ namespace CoreLib
         {
             _footstepType = footstepType;
             Position = position;
+            Label = null;
         }
+        public FootstepEventInfo(Vector2 position, int footstepType, string label)
+        {
+            _footstepType = footstepType;
+            Position = position;
+            Label = label;
+        }
+        
+        public string Label { get; set; }
     }
 }

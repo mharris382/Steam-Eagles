@@ -372,6 +372,15 @@ namespace Buildables
         {
             throw new NotImplementedException();
         }
+        
+        
+        public virtual Vector2 GetDropperSpawnPosition()
+        {
+            var pos = buildingTarget.transform.position;
+            pos += new Vector3(0, 0.5f, 0);
+            
+            return pos;
+        }
 
         #region [Editor]
 

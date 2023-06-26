@@ -14,6 +14,8 @@ public class Health : MonoBehaviour
     private IntReactiveProperty _currentHealth = new();
     private ReadOnlyReactiveProperty<bool> _isDeadProperty;
     private Transform _deathPoint;
+
+    
     private void Awake()
     {
         _currentHealth.Value = maxHealth;
@@ -27,7 +29,12 @@ public class Health : MonoBehaviour
     }
 
     public bool IsDead => _isDeadProperty == null ? true : _isDeadProperty.Value;
-    public int MaxHealth => maxHealth;
+    public int MaxHealth
+    {
+        get { return maxHealth; }
+        set { maxHealth = value; }
+    }
+
     public int CurrentHealth
     {
         get => _currentHealth.Value;

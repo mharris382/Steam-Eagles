@@ -8,6 +8,7 @@ using CoreLib.Interfaces;
 using Items;
 using Sirenix.OdinInspector;
 using Tools.BuildTool;
+using Tools.DestructTool.Helpers;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -30,7 +31,7 @@ namespace Tools.DestructTool
       //  [FoldoutGroup("Aiming Settings"), Range(-1, 1)] [SerializeField] private float aimSnapThreshold = 0.1f;
         
         [SerializeField] private DestructionConfig config;
-        [SerializeField] private DestructionToolFeedbacks feedbacks;
+        [SerializeField] private DestructionController controller;
 
         private Subject<DestructParams> _onDestruct = new Subject<DestructParams>();
         public IObservable<DestructParams> OnDestruct => _onDestruct;
@@ -228,7 +229,7 @@ namespace Tools.DestructTool
                 return;
             }
        
-            UpdateAim(Time.deltaTime);
+            
             if (ToolState.Inputs.SamplePressed)
             {
                if(TrySample())
@@ -236,11 +237,16 @@ namespace Tools.DestructTool
             }
             
             Activator.IsInUse = ToolState.Inputs.UseHeld;
+            AimHandler.UpdateAimDirection();
+            controller.UpdateAim(AimHandler.AimDirection);
+            controller.enabled = ToolState.Inputs.UseHeld;
+            if(Building != null) controller.HandleBuildingDestruction(Building.Map);
             
-            if (ToolState.Inputs.UseHeld && _currentDestructable != null)
-            {
-                NotifyHitDestructable(_currentDestructable, _currentDestructParams, Time.deltaTime);
-            }
+            
+            //if (ToolState.Inputs.UseHeld && _currentDestructable != null)
+            //{
+            //    NotifyHitDestructable(_currentDestructable, _currentDestructParams, Time.deltaTime);
+            //}
         }
 
         /// <summary>

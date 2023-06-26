@@ -1,4 +1,6 @@
-﻿using CoreLib;
+﻿using System;
+using CoreLib;
+using ObjectLabelMapping;
 using Sirenix.OdinInspector;
 using Spine;
 using UniRx;
@@ -15,8 +17,31 @@ public class SpineFootstepEventListener : SpineEventListenerBase
     [Required] public Transform backFoot;
     public UnityEvent onFrontFootstep;
     public UnityEvent onBackFootstep;
+
+    public string surfaceParameterName = "Surface";
+    [SerializeField] private float castDistance = 0.5f;
+    [SerializeField] private float castOffset = 0.5f;
+    [SerializeField] private LayerMask castLayerMask;
+    
+    
+    
+    
+    LayerMask _footstepLayerMask;
+    private void Awake()
+    {
+        _footstepLayerMask = castLayerMask;
+    }
+
     public override void OnSpineEvent(TrackEntry trackEntry, Event e)
     {
+        void CheckPositionForSurface(Vector3 vector3, int value)
+        {
+            if (TryGetSurfaceParameterFromCast(vector3, out var label2))
+                MessageBroker.Default.Publish(new FootstepEventInfo(vector3, value, label2));
+            else
+                MessageBroker.Default.Publish(new FootstepEventInfo(vector3, value));
+        }
+
         Debug.Log("Implement footstep event");
         var frontFootPosition = frontFoot.position;
         var backFootPosition = backFoot.position;
@@ -24,20 +49,40 @@ public class SpineFootstepEventListener : SpineEventListenerBase
         {
             case 1:
                 onFrontFootstep?.Invoke();
-                MessageBroker.Default.Publish(new FootstepEventInfo(frontFootPosition, FRONT_FOOT));
+                CheckPositionForSurface(frontFootPosition, FRONT_FOOT);
                 break;
             case 2:
                 onBackFootstep?.Invoke();
-                MessageBroker.Default.Publish(new FootstepEventInfo(backFootPosition, BACK_FOOT));
+               CheckPositionForSurface(backFootPosition, BACK_FOOT);
                 break;
             case 3:
                 onFrontFootstep?.Invoke();
                 onBackFootstep?.Invoke();
-                MessageBroker.Default.Publish(new FootstepEventInfo((frontFootPosition + backFootPosition)/2f, BOTH_FEET));
+                CheckPositionForSurface((frontFootPosition + backFootPosition)/2f, BOTH_FEET);
                 break;
             default:
                 Debug.LogError("Invalid footstep event");
                 break;
         }
+    }
+
+    bool TryGetSurfaceParameterFromCast(Vector3 origin, out string label)
+    {
+        var offset = Vector3.up * castOffset;
+        label = null;
+        var hit = Physics2D.Raycast(origin + offset, Vector2.down, castDistance, _footstepLayerMask);
+        Debug.DrawRay(origin +offset, Vector3.down * castDistance, Color.red, 1f);
+        if (!hit)
+            return false;
+
+        if (hit.collider.TryGetLabel(surfaceParameterName, out label))
+            return true;
+        
+        var sr = hit.collider.GetComponent<SpriteRenderer>();
+        if (sr != null && sr.TryGetLabel(surfaceParameterName, out label))
+        {
+            return true;
+        }
+        return false;
     }
 }

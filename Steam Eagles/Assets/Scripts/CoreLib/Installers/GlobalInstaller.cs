@@ -6,6 +6,7 @@ using System.Text;
 using CoreLib;
 using CoreLib.GameTime;
 using CoreLib.SharedVariables;
+using ObjectLabelMapping;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -126,8 +127,13 @@ public class GlobalInstaller : MonoInstaller
         Container.Bind<SpawnPoints>().AsSingle().NonLazy();
         TimeInstaller.Install(Container);
 
+  
+         ParameterMapInstaller.Install(Container);
+
     }
     
+
+  
     private class TestSlowTickables : ISlowTickable, IExtraSlowTickable
     {
         private readonly SlowTickConfig _config;
