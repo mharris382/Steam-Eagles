@@ -10,7 +10,7 @@ public class Health : MonoBehaviour
     public UnityEvent<Transform> onDeath;
     public UnityEvent onRespawn;
     
-    [SerializeField] int maxHealth = 100;
+    [SerializeField] IntReactiveProperty maxHealth = new IntReactiveProperty(100);
     private IntReactiveProperty _currentHealth = new();
     private ReadOnlyReactiveProperty<bool> _isDeadProperty;
     private Transform _deathPoint;
@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     
     private void Awake()
     {
-        _currentHealth.Value = maxHealth;
+        _currentHealth.Value = maxHealth.Value;
         _isDeadProperty = _currentHealth.Select(t => t == 0).ToReadOnlyReactiveProperty();
         _isDeadProperty.Where(t => t).Subscribe(_ =>
         {
@@ -31,8 +31,14 @@ public class Health : MonoBehaviour
     public bool IsDead => _isDeadProperty == null ? true : _isDeadProperty.Value;
     public int MaxHealth
     {
-        get { return maxHealth; }
-        set { maxHealth = value; }
+        get
+        {
+            return maxHealth.Value;
+        }
+        set
+        {
+            maxHealth.Value = value;
+        }
     }
 
     public int CurrentHealth
@@ -40,6 +46,10 @@ public class Health : MonoBehaviour
         get => _currentHealth.Value;
         set => _currentHealth.Value = Mathf.Clamp(value, 0, MaxHealth);
     }
+
+
+    public IReadOnlyReactiveProperty<int> CurrentHealthStream => _currentHealth;
+    public IReadOnlyReactiveProperty<int> MaxHealthStream => maxHealth;
 
     public void Respawn()
     {
