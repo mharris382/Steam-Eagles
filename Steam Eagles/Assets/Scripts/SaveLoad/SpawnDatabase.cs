@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SaveLoad
 {
-    [CreateAssetMenu(menuName = "Spawn DB")]
+    
     public class SpawnDatabase : ScriptableObject
 {
     private static SpawnDatabase _instance;
