@@ -129,7 +129,7 @@ public class GlobalInstaller : MonoInstaller
 
   
          ParameterMapInstaller.Install(Container);
-
+         Container.Bind<StatsTypeLookup>().AsSingle().NonLazy();
     }
     
 

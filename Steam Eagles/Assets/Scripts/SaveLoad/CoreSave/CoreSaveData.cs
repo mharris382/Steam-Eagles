@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace SaveLoad.CoreSave
 {
@@ -9,12 +10,13 @@ namespace SaveLoad.CoreSave
         [SerializeField] private int _scene;
         
         public int Scene => _scene;
-        public string[] PlayerCharacterNames => _playerCharacterNames;
+        public string[] PlayerCharacterNames => _playerCharacterNames.Where(t => !string.IsNullOrEmpty(t)).ToArray();
         public CoreSaveData(int scene, params string[] playerCharacterNames)
         {
             _scene = scene;
             _playerCharacterNames = playerCharacterNames;
         }
-        
+
+   
     }
 }

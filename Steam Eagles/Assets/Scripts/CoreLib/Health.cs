@@ -1,25 +1,101 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Health : MonoBehaviour
+
+public abstract class StatBase : MonoBehaviour
 {
-    public UnityEvent<Transform> onDeath;
-    public UnityEvent onRespawn;
+    [SerializeField] private IntReactiveProperty maxValue = new IntReactiveProperty(10);
     
-    [SerializeField] IntReactiveProperty maxHealth = new IntReactiveProperty(100);
-    private IntReactiveProperty _currentHealth = new();
+    private IntReactiveProperty _currentValue = new IntReactiveProperty(10);
+    private StatManager _statManager;
+
+    public virtual int MaxValue
+    {
+        get => maxValue.Value;
+        set => Mathf.Max(value, 1);
+    }
+
+    public virtual int CurrentValue
+    {
+        get => _currentValue.Value;
+        set => _currentValue.Value = Mathf.Clamp(value, 0, MaxValue);
+    }
+
+    public IObservable<int> CurrentValueStream => CurrentValueProperty.StartWith(CurrentValue);
+    public IObservable<int> MaxValueStream => MaxValueProperty.StartWith(MaxValue);
+
+    public virtual IReadOnlyReactiveProperty<int> MaxValueProperty => maxValue;
+    public virtual IReadOnlyReactiveProperty<int> CurrentValueProperty => _currentValue;
+    
+    protected virtual void Awake()
+    {
+        _currentValue.Value = maxValue.Value;
+        if(!gameObject.TryGetComponent(out _statManager))
+            _statManager = gameObject.AddComponent<StatManager>();
+        _statManager.AddStat(this);
+    }
+
+    protected void OnDestroy()
+    {
+        if(_statManager)
+            _statManager.RemoveStat(this);
+    }
+
+    public StatValues GetValues()
+    {
+        return new StatValues()
+        {
+            id = GetStatID(),
+            maxValue = MaxValue,
+            currentValue = CurrentValue
+        };
+    }
+    public void SetValues(StatValues values)
+    {
+        if (values.id != GetStatID())
+        {
+            Debug.LogError($"Stat ID mismatch: {values.id} != {GetStatID()}",this);
+            return;
+        }
+        MaxValue = values.maxValue;
+        CurrentValue = values.currentValue;
+    }
+    public abstract string GetStatID();
+}
+
+[DisallowMultipleComponent]
+public class Health : StatBase
+{
+     [FoldoutGroup("Events",false)] public UnityEvent<Transform> onDeath;
+     [FoldoutGroup("Events",false)] public UnityEvent onRespawn;
+    
     private ReadOnlyReactiveProperty<bool> _isDeadProperty;
     private Transform _deathPoint;
-
     
-    private void Awake()
+    public bool IsDead => _isDeadProperty == null ? true : _isDeadProperty.Value;
+    
+    public int MaxHealth
     {
-        _currentHealth.Value = maxHealth.Value;
-        _isDeadProperty = _currentHealth.Select(t => t == 0).ToReadOnlyReactiveProperty();
+        get => MaxValue;
+        set => MaxValue = value;
+    }
+
+    public int CurrentHealth
+    {
+        get => CurrentValue;
+        set => CurrentValue = value;
+    }
+    public IReadOnlyReactiveProperty<int> CurrentHealthStream => CurrentValueProperty;
+    public IReadOnlyReactiveProperty<int> MaxHealthStream => MaxValueProperty;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _isDeadProperty = CurrentHealthStream.Select(t => t == 0).ToReadOnlyReactiveProperty();
         _isDeadProperty.Where(t => t).Subscribe(_ =>
         {
             _deathPoint = new GameObject("DeathPoint").transform;
@@ -28,32 +104,11 @@ public class Health : MonoBehaviour
         }).AddTo(this);
     }
 
-    public bool IsDead => _isDeadProperty == null ? true : _isDeadProperty.Value;
-    public int MaxHealth
-    {
-        get
-        {
-            return maxHealth.Value;
-        }
-        set
-        {
-            maxHealth.Value = value;
-        }
-    }
-
-    public int CurrentHealth
-    {
-        get => _currentHealth.Value;
-        set => _currentHealth.Value = Mathf.Clamp(value, 0, MaxHealth);
-    }
-
-
-    public IReadOnlyReactiveProperty<int> CurrentHealthStream => _currentHealth;
-    public IReadOnlyReactiveProperty<int> MaxHealthStream => maxHealth;
-
     public void Respawn()
     {
-        _currentHealth.Value = MaxHealth;
+        CurrentHealth = MaxHealth;
         onRespawn?.Invoke();
     }
+
+    public override string GetStatID() => "Health";
 }

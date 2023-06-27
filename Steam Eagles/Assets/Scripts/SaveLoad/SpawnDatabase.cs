@@ -216,6 +216,36 @@ namespace SaveLoad
         Debug.Log($"Saved spawn point for {characterName} at path {filepath}");
     }
 
+    public async UniTask SaveSpawnPointAsync(string characterName, string dirPath, Vector3 spawnPoint)
+    {
+        string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
+        var sp = await LoadSpawnPointsAsync(filepath);
+        sp.CreateOrUpdate(characterName, spawnPoint);
+        var json = JsonUtility.ToJson(sp);
+        await File.WriteAllTextAsync(filepath, json);
+        Debug.Log($"Saved spawn point for {characterName} at path {filepath}");
+    }
+    public async UniTask SaveSpawnPointsAsync(string dirPath, IEnumerable<(string, Vector3)> spawnPoints)
+    {
+        string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
+        var sp = await LoadSpawnPointsAsync(filepath);
+        foreach (var spawnPoint in spawnPoints)
+        {
+            sp.CreateOrUpdate(spawnPoint.Item1, spawnPoint.Item2);
+        }
+        var json = JsonUtility.ToJson(sp);
+        await File.WriteAllTextAsync(filepath, json);
+    }
+    public async UniTask<SavedSpawnPoints> LoadSpawnPointsAsync(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"No File exists at {path}");
+            return new SavedSpawnPoints();
+        }
+        string json = await File.ReadAllTextAsync(path);
+        return JsonUtility.FromJson<SavedSpawnPoints>(json);
+    }
     SavedSpawnPoints LoadSpawnPoints(string path)
     {
         if (!File.Exists(path))

@@ -84,26 +84,45 @@ namespace SaveLoad.CoreSave
             LoadedCharacterPrefabs.LoadPrefabs();
         }
 
-        public UniTask<bool> SaveGameAsync(string savePath)
+        public override async UniTask<CoreSaveData> GetSaveData(string savePath)
         {
+            List<(string, Vector3)> spawnPoints = new();
+            var sceneIndex = SceneManager.GetActiveScene().buildIndex;
+            string[] playerCharacterNames = new string[_pcRegistry.PCCount];
             for (int i = 0; i < _pcRegistry.PCCount; i++)
             {
                 var instance = _pcRegistry.GetInstance(i);
-                if (instance == null)
-                {
-                    continue;
-                }
+                if (instance == null) continue;
                 var character = instance.character;
-                if (character == null)
-                {
-                    continue;
-                }
-                SpawnDatabase.Instance.SaveSpawnPoint(character.tag, savePath, character.transform.localPosition);
+                if (character == null) continue;
+                spawnPoints.Add((character.tag, character.transform.localPosition));
+                playerCharacterNames[i] = character.tag;
             }
-            return UniTask.FromResult(true);
+            var coreSaveData = new CoreSaveData(sceneIndex, playerCharacterNames);
+            await SpawnDatabase.Instance.SaveSpawnPointsAsync(savePath, spawnPoints);
+            return coreSaveData;
         }
 
-        public IEnumerable<(string, string)> GetSaveFileNames()
+        // public UniTask<bool> SaveGameAsync(string savePath)
+        // {
+        //     for (int i = 0; i < _pcRegistry.PCCount; i++)
+        //     {
+        //         var instance = _pcRegistry.GetInstance(i);
+        //         if (instance == null)
+        //         {
+        //             continue;
+        //         }
+        //         var character = instance.character;
+        //         if (character == null)
+        //         {
+        //             continue;
+        //         }
+        //         SpawnDatabase.Instance.SaveSpawnPoint(character.tag, savePath, character.transform.localPosition);
+        //     }
+        //     return UniTask.FromResult(true);
+        // }
+
+        public override IEnumerable<(string, string)> GetSaveFileNames()
         {
             yield return (GetJsonFileName(), "json");
         }
@@ -119,7 +138,9 @@ namespace SaveLoad.CoreSave
         }
     }
 
+   
 
+        
     public static class LoadedCharacterPrefabs
     {
         public static GameObject LoadedTransporterPrefab;
