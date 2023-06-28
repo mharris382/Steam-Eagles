@@ -20,7 +20,7 @@ namespace CoreLib.Entities
                 Container.Bind<IEntityTypeSaveLoader>().To(entityTypeSaveLoaderType).AsSingle().NonLazy();
             }
 
-            Container.BindFactory<EntityCoreSaveData, EntityCoreSaveData.Factory>().AsSingle().NonLazy();
+            Container.BindFactory<DynamicEntityCoreSaveData, DynamicEntityCoreSaveData.Factory>().AsSingle().NonLazy();
         }
 
      

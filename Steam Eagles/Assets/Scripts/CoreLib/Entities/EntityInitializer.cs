@@ -38,6 +38,8 @@ namespace CoreLib.Entities
             _lastSeenRoom = new ReactiveProperty<Component>();
         }
     }
+    
+    [RequireComponent(typeof(StatManager))]
     public abstract class EntityInitializer : MonoBehaviour
     {
         public abstract string GetEntityGUID();

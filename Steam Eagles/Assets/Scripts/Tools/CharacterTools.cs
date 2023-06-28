@@ -87,10 +87,8 @@ namespace Tools.BuildTool
         private BoolReactiveProperty _canSwitchTools = new();
         
          private Tool[] _tools;
-         private Dictionary<Tool, GameObject> _controllers = new Dictionary<Tool, GameObject>();
-         private Subject<GameObject> _onToolControllerInstantiated = new();
 
-        private ToolSwapController _toolSwapper;
+         private ToolSwapController _toolSwapper;
         private ToolControllerLoader _toolLoader;
 
         private void Awake()

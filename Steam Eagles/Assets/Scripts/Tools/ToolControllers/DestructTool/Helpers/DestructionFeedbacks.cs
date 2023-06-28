@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Tools.DestructTool.Helpers
 {
     
-    [InfoBox("Parameters: InUse {bool}\tHit Count {int}\tOn Hit {trigger}")]
+    [InfoBox("Parameters: Tool In Use {bool}\tHit Count {int}\tOn Hit {trigger}")]
     [RequireComponent(typeof(Animator))]
     public class DestructionFeedbacks : MonoBehaviour
     {

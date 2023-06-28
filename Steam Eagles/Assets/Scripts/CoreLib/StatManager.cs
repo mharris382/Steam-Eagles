@@ -38,7 +38,7 @@ public class StatManager : MonoBehaviour
     
     public List<StatValues> GetStatValues() => Stats.Select(t => t.GetValues()).ToList();
 
-    public void LoadStats(List<StatValues> statValues)
+    public void SetStatValues(List<StatValues> statValues)
     {
         foreach (var statValue in statValues)
         {

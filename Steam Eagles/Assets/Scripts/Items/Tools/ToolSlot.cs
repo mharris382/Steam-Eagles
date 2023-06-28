@@ -25,7 +25,7 @@ namespace Items
         private Subject<(Tool, GameObject)> _onToolChanged = new();
 
         [InjectOptional] private Transform _toolParent;
-        private ToolPrefabHelper _prefabLoader;
+        private ToolManager _prefabLoader;
 
         [ShowInInspector, ReadOnly] public Tool Tool
         {
@@ -59,9 +59,9 @@ namespace Items
         public IObservable<GameObject> ControllerEquippedToSlot =>  _controllerInstance.OnSwitched.Select(t => t.next);
         
         
-        public void InjectMe(ToolPrefabHelper prefabHelper)
+        public void InjectMe(ToolManager loader)
         {
-            _prefabLoader = prefabHelper;
+            _prefabLoader = loader;
         }
 
         private void Awake()
@@ -71,7 +71,6 @@ namespace Items
             Debug.Assert(_toolControllerSlots != null, "missing IToolControllerSlots", this);
             var tool = _slot.ItemStack.item as Tool;
             _tool = new ReactiveProperty<Tool>(tool);
-            
         }
 
         void SetTool(Tool t)
@@ -83,7 +82,7 @@ namespace Items
             }
             StartCoroutine(UniTask.ToCoroutine(async () =>
             {
-                var controllerGo = await _prefabLoader.GetInstance(t, ControllerParent);
+                var controllerGo = await _prefabLoader.GetController(tool);
                 _onToolChanged.OnNext((t, controllerGo));
             }));
         }

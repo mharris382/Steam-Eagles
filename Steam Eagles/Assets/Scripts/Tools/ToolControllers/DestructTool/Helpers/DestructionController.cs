@@ -68,7 +68,7 @@ namespace Tools.DestructTool.Helpers
             Vector3 centerPosition = destructionPivot.position;
             float a = ellipseRadius.x;
             float b = ellipseRadius.y;
-            Vector3 ellipsePosition = centerPosition + new Vector3(direction.x * a, 0f, direction.y * b);
+            Vector3 ellipsePosition = centerPosition + new Vector3(direction.x * a, direction.y * b);
             Vector3 targetPosition = ellipsePosition;
             RaycastHit2D hit= Physics2D.Linecast(centerPosition, ellipsePosition, blockingLayer);
             if (hit)

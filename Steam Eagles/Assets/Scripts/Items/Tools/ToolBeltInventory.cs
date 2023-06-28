@@ -18,9 +18,9 @@ namespace Items
         public ToolSlot destructToolSlot;
         public ToolSlot repairToolSlot;
         ToolBelt _toolBelt;
-        [Inject] void InjectMe(ToolPrefabHelper.Factory prefabHelper)
+        [Inject] void InjectMe(ToolManager.Factory prefabHelper)
         {
-            var prefabLoader = prefabHelper.Create();
+            var prefabLoader = prefabHelper.Create(transform);
             foreach (var slot in GetToolSlots())
             {
                 slot.InjectMe(prefabLoader);

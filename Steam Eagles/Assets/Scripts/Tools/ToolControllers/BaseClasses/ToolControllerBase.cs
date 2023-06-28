@@ -39,7 +39,7 @@ namespace Tools.BuildTool
             return true;
         }
         
-        [System.Obsolete]
+        [System.Obsolete,HideInInspector]
         public Building targetBuilding;
         private CharacterState _characterState;
         private Inventory _inventory;
