@@ -23,7 +23,8 @@ namespace Tools.DestructTool.Helpers
         private Subject<(BuildingMap map, IEnumerable<BuildingCell>)> _cellsHit = new();
         
         private Vector3 _velocity;
-        
+        DestructionFeedbacks Feedbacks => _feedbacks ??= GetComponentInChildren<DestructionFeedbacks>();
+        DestructionCollider Collider => _collider ??= GetComponentInChildren<DestructionCollider>();
         private void Awake()
         {
             _collider = GetComponentInChildren<DestructionCollider>();
@@ -48,14 +49,14 @@ namespace Tools.DestructTool.Helpers
 
         private void OnEnable()
         {
-            _collider.enabled = true;
-            _feedbacks.SetToolInUseState(true);
-            _collider.gameObject.SetActive(true);
+            Collider.enabled = true;
+            Feedbacks.SetToolInUseState(true);
+            Collider.gameObject.SetActive(true);
         }
         private void OnDisable()
         {
-            _collider.enabled = false;
-            _feedbacks.SetToolInUseState(false);
+            Collider.enabled = false;
+            Feedbacks.SetToolInUseState(false);
             if(_destructCoroutine != null)StopCoroutine(_destructCoroutine);
         }
 

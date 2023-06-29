@@ -30,6 +30,7 @@ namespace AI.Enemies
         private static readonly int VelocityY = Animator.StringToHash("Velocity Y");
         private static readonly int Grounded = Animator.StringToHash("Grounded");
 
+        public bool invertDirection;
         private BoolReactiveProperty _isFacingRight = new();
         public UnityEvent<bool> setIsFacingRight;
         
@@ -39,7 +40,7 @@ namespace AI.Enemies
             _anim = GetComponent<Animator>();
             _controller.OnAttack().Subscribe(_ => _anim.SetTrigger(Attack)).AddTo(this);
             _controller.OnJump().Subscribe(_ => _anim.SetTrigger(Jump)).AddTo(this);
-            _isFacingRight.Subscribe(t => setIsFacingRight?.Invoke(t)).AddTo(this);
+            _isFacingRight.Subscribe(t => setIsFacingRight?.Invoke(invertDirection ? !t : t)).AddTo(this);
         }
 
         bool HasResources() => _controller != null;

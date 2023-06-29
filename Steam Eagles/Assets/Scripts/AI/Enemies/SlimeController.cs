@@ -27,6 +27,23 @@ namespace AI.Enemies
         }
     }
 
+
+    [Serializable]
+    public class LedgeCheckConfig : GroundCheckConfig
+    {
+        [MinValue("groundCheckDistance")]
+        public float maxDroppableLedgeHeight = 2;
+
+        
+        public bool CheckForDroppableLedge()
+        {
+            if (CheckGrounded()) return false;
+            var hit = Physics2D.Raycast(groundCheck.position, -groundCheck.up, maxDroppableLedgeHeight, groundLayer);
+            if (debug && hit) Debug.DrawLine(groundCheck.position, hit.point, Color.cyan);
+            return hit;
+        }
+    }
+
     [Serializable]
     public class JumpConfig
     {
