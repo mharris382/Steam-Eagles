@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Damage
 {
+    [Debugger]
     public class StormTester : MonoBehaviour
     {
         private StormInstance _handle;

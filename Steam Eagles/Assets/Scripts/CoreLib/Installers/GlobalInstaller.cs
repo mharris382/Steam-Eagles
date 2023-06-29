@@ -12,6 +12,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
+#if UNITY_EDITOR
+using UnityEditor;
+using Sirenix.OdinInspector.Editor;
+#endif
 public class TimeInstaller : Installer<TimeInstaller>
 {
     public override void InstallBindings()
@@ -22,7 +26,9 @@ public class TimeInstaller : Installer<TimeInstaller>
     }
 }
 
+#if UNITY_EDITOR
 
+#endif
 public class TimeDebug : MonoBehaviour
 {
     private GameTimeState _state;
@@ -104,10 +110,6 @@ public class GlobalInstaller : MonoInstaller
     public GameTimeConfig timeConfig
     {
         get => GameTimeConfig.Instance;
-        set
-        {
-            
-        }
     }
     
     

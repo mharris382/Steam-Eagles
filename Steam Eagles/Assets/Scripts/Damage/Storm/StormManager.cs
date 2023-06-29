@@ -5,6 +5,7 @@ using UnityEngine;
 using UniRx;
 namespace Damage
 {
+    [Obsolete("Use Storm View System")]
     public class StormManager : Singleton<StormManager>
     {
         private DamageController _damageController;
@@ -24,8 +25,7 @@ namespace Damage
         
         public StormInstance StartStorm(int intensity)
         {
-            var storm = StormDatabase.Instance.GetStorm(intensity);
-            return StartStorm(storm);
+            throw new NotImplementedException();
         }
 
         public StormInstance StartStorm(Storm storm)
@@ -38,8 +38,8 @@ namespace Damage
             
             _activeStorm.CreateStorm();
             _disposable = new CompositeDisposable();
-            var damageSystem = new StormDamageSystem(storm, _damageController , damageableBuildingLayer.GetDamageableLayer(BuildingLayers.WALL));
-            damageSystem.Start(_activeStorm, _disposable);
+            
+            
             return _activeStorm;
         }
 
