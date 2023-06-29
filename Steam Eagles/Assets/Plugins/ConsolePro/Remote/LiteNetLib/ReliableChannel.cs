@@ -156,7 +156,7 @@ namespace FlyingWormConsole3.LiteNetLib
 
                     if (pendingSeq == _localWindowStart)
                     {
-                        //Move window                
+                        //SetMovement window                
                         _localWindowStart = (_localWindowStart + 1) % NetConstants.MaxSequence;
                     }
 
