@@ -15,7 +15,7 @@ using Object = UnityEngine.Object;
 
 namespace Buildings.BuildingTilemaps
 {
-    public abstract class DestructableTilemap : EditableTilemap, IDestruct
+    public abstract class DestructableTilemap : EditableTilemap, IDestruct, IDestructableTilemap
     {
         public virtual bool IsFullyDestroyed => false;
         public bool debug = true;

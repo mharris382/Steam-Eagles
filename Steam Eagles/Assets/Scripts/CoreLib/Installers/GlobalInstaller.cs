@@ -6,6 +6,7 @@ using System.Text;
 using CoreLib;
 using CoreLib.GameTime;
 using CoreLib.SharedVariables;
+using ObjectLabelMapping;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -123,10 +124,16 @@ public class GlobalInstaller : MonoInstaller
         Container.Bind<List<SharedTransform>>().FromInstance(new List<SharedTransform>(new []{p1Character, p2Character})).AsSingle().NonLazy();
         Container.Bind<GlobalGameState>().FromNew().AsSingle();
         Container.Bind<GameState>().AsSingle();
+        Container.Bind<SpawnPoints>().AsSingle().NonLazy();
         TimeInstaller.Install(Container);
 
+  
+         ParameterMapInstaller.Install(Container);
+         Container.Bind<StatsTypeLookup>().AsSingle().NonLazy();
     }
     
+
+  
     private class TestSlowTickables : ISlowTickable, IExtraSlowTickable
     {
         private readonly SlowTickConfig _config;

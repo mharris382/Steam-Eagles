@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CoreLib;
 using UnityEngine;
+using Zenject;
 
 namespace Items
 {
@@ -17,7 +18,14 @@ namespace Items
         public ToolSlot destructToolSlot;
         public ToolSlot repairToolSlot;
         ToolBelt _toolBelt;
-
+        [Inject] void InjectMe(ToolManager.Factory prefabHelper)
+        {
+            var prefabLoader = prefabHelper.Create(transform);
+            foreach (var slot in GetToolSlots())
+            {
+                slot.InjectMe(prefabLoader);
+            }
+        }
 
         public IEnumerable<IObservable<Tool>> GetTools()
         {
@@ -26,8 +34,14 @@ namespace Items
             yield return destructToolSlot.OnToolChanged;
             yield return repairToolSlot.OnToolChanged;
         }
-        
-        
+
+        public IEnumerable<ToolSlot> GetToolSlots()
+        {
+            yield return craftToolSlot;
+            yield return buildToolSlot;
+            yield return destructToolSlot;
+            yield return repairToolSlot;
+        }
 
         public void Awake()
         {

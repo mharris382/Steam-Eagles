@@ -9,6 +9,16 @@ namespace CoreLib.Interfaces
 
         bool TryToDestruct(Vector2 position, Vector2 direction) => TryToDestruct(new DestructParams(position, direction));
     }
+
+    public interface IDestructableObject
+    {
+        
+    }
+
+    public interface IDestructableTilemap
+    {
+        GridLayout GridLayout { get; }
+    }
     
     public struct DestructParams
     {

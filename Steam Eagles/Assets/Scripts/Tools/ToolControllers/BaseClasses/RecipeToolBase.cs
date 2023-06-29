@@ -36,7 +36,7 @@ namespace Tools.BuildTool
         protected void Update()
         {
             if (!HasResources()) return;
-            if(!this.targetBuilding.IsFullyLoaded)return;
+            if(this.Building == null || !this.Building.IsFullyLoaded)return;
             if (base.Recipe == null) Debug.Assert(_recipeSelector != null, "_recipeSelector != null", this);
             if (_recipeSelector == null) throw new NullReferenceException();
             if(_previewResourceHandler ==null)throw new NullReferenceException();
@@ -68,9 +68,9 @@ namespace Tools.BuildTool
             
             
             //NOTE: update preview before checking if action is valid (because preview is used to check if action is valid)
-            UpdatePreview(targetBuilding,  isFlipped, _previewResourceHandler.Preview);
+            UpdatePreview(Building,  isFlipped, _previewResourceHandler.Preview);
             
-            OnUpdate(targetBuilding, isFlipped);
+            OnUpdate(Building, isFlipped);
 
             if (!CheckIfActionIsValid(ref errorMessage))
             {

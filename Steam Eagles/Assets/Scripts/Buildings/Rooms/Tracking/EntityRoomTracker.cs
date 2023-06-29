@@ -76,6 +76,7 @@ namespace Buildings.Rooms.Tracking
 
         private void Update()
         {
+            return;
             foreach (var trackedEntity in _trackedEntities)
             {
                 if (!_entityRoomMap.ContainsKey(trackedEntity))

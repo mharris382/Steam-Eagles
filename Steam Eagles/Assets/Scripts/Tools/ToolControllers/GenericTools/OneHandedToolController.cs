@@ -17,6 +17,11 @@ namespace Tools.GenericTools
             Debug.LogWarning($"{nameof(OneHandedToolController)} throw new System.NotImplementedException();");
         }
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return true;
+        }
+
         public override ToolStates GetToolState()
         {
             return isLeftHand ? ToolStates.HAND_LEFT : ToolStates.HAND_RIGHT;

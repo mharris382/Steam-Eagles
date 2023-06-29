@@ -174,20 +174,20 @@ namespace Characters
         
         private void SubscribeEnableObserver()
         {
-            _enableJointDisposable = _buildingRigidbody.Merge(_platformRigidbody)
-                .Select(_ => ConnectedBody).Subscribe(body =>
-                {
-                    if (body != null)
-                    {
-                        _buildingJoint.connectedBody = body;
-                        _buildingJoint.connectedAnchor = body.transform.InverseTransformPoint(transform.position);
-                        _isJointEnabled.Value = true;
-                    }
-                    else
-                    {
-                        _buildingJoint.enabled = false;
-                    }
-                });
+            // _enableJointDisposable = _buildingRigidbody.Merge(_platformRigidbody)
+            //     .Select(_ => ConnectedBody).Subscribe(body =>
+            //     {
+            //         if (body != null)
+            //         {
+            //             _buildingJoint.connectedBody = body;
+            //            // _buildingJoint.connectedAnchor = body.transform.InverseTransformPoint(transform.position);
+            //             _isJointEnabled.Value = true;
+            //         }
+            //         else
+            //         {
+            //             _buildingJoint.enabled = false;
+            //         }
+            //     });
             _autoJointCoroutine = StartCoroutine(EnableJointMode());
         }
 

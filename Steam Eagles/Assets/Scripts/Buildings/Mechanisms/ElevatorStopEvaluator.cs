@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Buildings.Mechanisms
 {
-    public class ElevatorStopEvaluator : ITickable
+    public class ElevatorStopEvaluator 
     {
         private readonly ElevatorMechanism _elevatorMechanism;
         private readonly List<ElevatorMechanism.ElevatorStop> _stops;
@@ -26,15 +26,6 @@ namespace Buildings.Mechanisms
             var stop = _stops[stopIndex];
             return Vector3.Lerp(_elevatorLocalPositionStart, _elevatorLocalPositionEnd, stop.percent);
         }
-
-
-        public void Tick()
-        {
-            if (_elevatorMechanism.debug)
-            {
-                var parentPos = _elevatorMechanism.transform.parent.position;
-                Debug.DrawLine(parentPos + _elevatorLocalPositionEnd, parentPos + _elevatorLocalPositionStart, Color.red);
-            }
-        }
+        
     }
 }

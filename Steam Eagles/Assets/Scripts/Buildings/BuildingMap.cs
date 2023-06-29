@@ -273,7 +273,7 @@ namespace Buildings
             return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
 
-        private void SetTile(BuildingCell cell, TileBase tile)
+        public void SetTile(BuildingCell cell, TileBase tile)
         {
             var tm = GetTilemap(cell.layers);
             tm.SetTile(cell.cell, tile);
@@ -299,6 +299,12 @@ namespace Buildings
             
         }
 
+        public bool DestructTile(BuildingCell cell)
+        {
+            if (HasCell(cell) == false) return false;
+            SetTile(cell, null);
+            return true;
+        }
 
         public bool IsCellBlocked(Vector3Int cell, BuildingLayers layer) => IsCellBlocked((Vector2Int)cell, layer);
         public bool IsCellBlocked(BuildingCell cell) => IsCellBlocked(cell.cell2D, cell.layers);

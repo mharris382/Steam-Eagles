@@ -254,12 +254,12 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.GridImageText">
             <summary>
-            Gets an icon of a grid image text symbol.
+            Gets an icon of a grid imageFilled text symbol.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.GridImageTextList">
             <summary>
-            Gets an icon of a grid image text list symbol.
+            Gets an icon of a grid imageFilled text list symbol.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.GridLayout">
@@ -279,12 +279,12 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.Image">
             <summary>
-            Gets an icon of an image symbol.
+            Gets an icon of an imageFilled symbol.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.ImageCollection">
             <summary>
-            Gets an icon of an image collection symbol.
+            Gets an icon of an imageFilled collection symbol.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.Info">
@@ -377,7 +377,7 @@
             Gets an icon of a money symbol.
             </summary>
         </member>
-        <member name="P:Sirenix.Utilities.Editor.EditorIcons.Move">
+        <member name="P:Sirenix.Utilities.Editor.EditorIcons.SetMovement">
             <summary>
             Gets an icon of a move symbol.
             </summary>
@@ -1084,7 +1084,7 @@
             Not yet documented.
             </summary>
         </member>
-        <member name="F:Sirenix.Utilities.Editor.DragAndDropMethods.Move">
+        <member name="F:Sirenix.Utilities.Editor.DragAndDropMethods.SetMovement">
             <summary>
             Not yet documented.
             </summary>
@@ -2105,18 +2105,18 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.TempContent(UnityEngine.Texture,System.String)">
             <summary>
-            Gets a temporary GUIContent with the specified image and tooltip.
+            Gets a temporary GUIContent with the specified imageFilled and tooltip.
             </summary>
-            <original name="image">The image for the GUIContent.</original>
+            <original name="imageFilled">The imageFilled for the GUIContent.</original>
             <original name="tooltip">The tooltip for the GUIContent.</original>
             <returns>Temporary GUIContent instance.</returns>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUIHelper.TempContent(System.String,UnityEngine.Texture,System.String)">
             <summary>
-            Gets a temporary GUIContent with the specified text, image and tooltip.
+            Gets a temporary GUIContent with the specified text, imageFilled and tooltip.
             </summary>
             <original name="text">The text for the GUIContent.</original>
-            <original name="image">The image for the GUIContent.</original>
+            <original name="imageFilled">The imageFilled for the GUIContent.</original>
             <original name="tooltip">The tooltip for the GUIContent.</original>
             <returns>Temporary GUIContent instance.</returns>
         </member>
@@ -2236,10 +2236,10 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIPagingHelper.PageCount">
             <summary>
-            Gets or sets the page count.
+            Gets or sets the page tiles.
             </summary>
             <value>
-            The page count.
+            The page tiles.
             </value>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIPagingHelper.ElementCount">
@@ -2470,12 +2470,12 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITable.RowCount">
             <summary>
-            The row count.
+            The row tiles.
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITable.ColumnCount">
             <summary>
-            The column count.
+            The column tiles.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITable.TableRect">
@@ -7469,7 +7469,7 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.AssetUtilities.AssetSearchResult.NumberOfResults">
             <summary>
-            Search result count.
+            Search result tiles.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.AssetUtilities.CanCreateNewAsset``1">
@@ -7623,7 +7623,7 @@
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIFrameCounter.FrameCount">
             <summary>
-            Gets the frame count.
+            Gets the frame tiles.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUIFrameCounter.IsNewFrame">
@@ -7671,7 +7671,7 @@
             Creates a new texture with no mimapping, linier colors, and calls texture.LoadImage(bytes), DontDestroyOnLoad(tex) and sets hideFlags = DontUnloadUnusedAsset | DontSaveInEditor.
             
             Old description no longer relevant as we've moved past version 2017.
-            Loads an image from bytes with the specified width and height. Use this instead of someTexture.LoadImage() if you're compiling to an assembly. Unity has moved the method in 2017, 
+            Loads an imageFilled from bytes with the specified width and height. Use this instead of someTexture.LoadImage() if you're compiling to an assembly. Unity has moved the method in 2017, 
             and Unity's assembly updater is not able to fix it for you. This searches for a proper LoadImage method in multiple locations, and also handles type name conflicts.
             </summary>
         </member>

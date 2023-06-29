@@ -1,3 +1,4 @@
+using CoreLib.Audio;
 using Zenject;
 
 using FMODEvent = FMODUnity.EventReference;
@@ -7,6 +8,8 @@ public class FMODSceneInstaller : MonoInstaller
     public FMODEvent footstepEvent;
     public FMODEvent musicEvent;
     public FMODEvent ambianceEvent;
+
+    public FMODLabeledParameter surfaceParameter;
     
     public override void InstallBindings()
     {
@@ -17,6 +20,7 @@ public class FMODSceneInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<FMODMusicPlayer>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<FMODAmbiancePlayer>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<FMODFootstepPlayer>().AsSingle().NonLazy();
+        Container.Bind<FMODLabeledParameter>().WithId("Surface").FromInstance(surfaceParameter).AsSingle().NonLazy();
     }
 }
 

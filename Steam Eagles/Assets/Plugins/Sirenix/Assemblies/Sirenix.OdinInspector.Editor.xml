@@ -361,12 +361,12 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.ShowItemCount">
             <summary>
-            Specify whether or not lists should show item count.
+            Specify whether or not lists should show item tiles.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.ShowIndexLabels">
             <summary>
-            Specify whether or not lists should show item count.
+            Specify whether or not lists should show item tiles.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.GeneralDrawerConfig.ListItemColorEvenDarkSkin">
@@ -1227,7 +1227,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.InspectorProperty.State">
             <summary>
-            The PropertyState of the property at the current draw count index.
+            The PropertyState of the property at the current draw tiles index.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.InspectorProperty.GetComponent``1">
@@ -1537,7 +1537,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyChildren.GetExistingChildren">
             <summary>
-            Gets the property's already created children. If the child count is less than or equal to 10000, children are returned in order. If the count is larger than 10000, they are returned in no particular order.
+            Gets the property's already created children. If the child tiles is less than or equal to 10000, children are returned in order. If the tiles is larger than 10000, they are returned in no particular order.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.PropertyChildren.GetEnumerator">
@@ -2695,7 +2695,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.ValueCount">
             <summary>
-            The number of parallel values this entry represents. This will always be exactly equal to the count of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets"/>.
+            The number of parallel values this entry represents. This will always be exactly equal to the tiles of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets"/>.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.IPropertyValueEntry.IsEditable">
@@ -3293,7 +3293,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.ValueCount">
             <summary>
-            The number of parallel values this entry represents. This will always be exactly equal to the count of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
+            The number of parallel values this entry represents. This will always be exactly equal to the tiles of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntry.IsEditable">
@@ -3624,7 +3624,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.ValueCount">
             <summary>
-            The number of parallel values this entry represents. This will always be exactly equal to the count of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
+            The number of parallel values this entry represents. This will always be exactly equal to the tiles of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias.IsEditable">
@@ -3783,7 +3783,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.ValueCount">
             <summary>
-            The number of parallel values this entry represents. This will always be exactly equal to the count of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
+            The number of parallel values this entry represents. This will always be exactly equal to the tiles of <see cref="P:Sirenix.OdinInspector.Editor.PropertyTree.WeakTargets" />.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.PropertyValueEntryAlias`2.IsEditable">
@@ -8093,14 +8093,14 @@
             </summary>
             <original name="fieldName">Name of the field to emit.</original>
             <original name="valueType">Type of the value to create a property for.</original>
-            <original name="targetCount">The target count of the tree to create a property for.</original>
+            <original name="targetCount">The target tiles of the tree to create a property for.</original>
             <original name="gameObject">The game object that the MonoBehaviour of the property is located on.</original>
             <exception cref="T:System.ArgumentNullException">
             fieldName is null
             or
             valueType is null
             </exception>
-            <exception cref="T:System.ArgumentException">Target count must be equal to or higher than 1.</exception>
+            <exception cref="T:System.ArgumentException">Target tiles must be equal to or higher than 1.</exception>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.UnityPropertyEmitter.CreateEmittedScriptableObjectProperty(System.String,System.Type,System.Int32)">
             <summary>
@@ -8108,13 +8108,13 @@
             </summary>
             <original name="fieldName">Name of the field to emit.</original>
             <original name="valueType">Type of the value to create a property for.</original>
-            <original name="targetCount">The target count of the tree to create a property for.</original>
+            <original name="targetCount">The target tiles of the tree to create a property for.</original>
             <exception cref="T:System.ArgumentNullException">
             fieldName is null
             or
             valueType is null
             </exception>
-            <exception cref="T:System.ArgumentException">Target count must be equal to or higher than 1.</exception>
+            <exception cref="T:System.ArgumentException">Target tiles must be equal to or higher than 1.</exception>
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.OdinEditorWindow">
              <summary>
@@ -9434,7 +9434,7 @@
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.OdinMenuTreeSelection.Count">
             <summary>
-            Gets the count.
+            Gets the tiles.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.Editor.OdinMenuTreeSelection.SelectedValue">

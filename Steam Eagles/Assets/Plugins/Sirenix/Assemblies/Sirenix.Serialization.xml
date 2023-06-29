@@ -32,7 +32,7 @@
         </member>
         <member name="P:Sirenix.Serialization.BaseDataReader.CurrentNodeDepth">
             <summary>
-            Gets the current node depth. In other words, the current count of the node stack.
+            Gets the current node depth. In other words, the current tiles of the node stack.
             </summary>
             <value>
             The current node depth.
@@ -384,7 +384,7 @@
         </member>
         <member name="P:Sirenix.Serialization.BaseDataReaderWriter.NodeDepth">
             <summary>
-            Gets the current node depth. In other words, the current count of the node stack.
+            Gets the current node depth. In other words, the current tiles of the node stack.
             </summary>
             <value>
             The current node depth.
@@ -1553,7 +1553,7 @@
         </member>
         <member name="P:Sirenix.Serialization.IDataReader.CurrentNodeDepth">
             <summary>
-            Gets the current node depth. In other words, the current count of the node stack.
+            Gets the current node depth. In other words, the current tiles of the node stack.
             </summary>
             <value>
             The current node depth.
@@ -4539,10 +4539,10 @@
         </member>
         <member name="P:Sirenix.Serialization.Buffer`1.Count">
             <summary>
-            Gets the total element count of the buffered array. This will always be a power of two.
+            Gets the total element tiles of the buffered array. This will always be a power of two.
             </summary>
             <value>
-            The total element count of the buffered array.
+            The total element tiles of the buffered array.
             </value>
             <exception cref="T:System.InvalidOperationException">Cannot access a buffer while it is freed.</exception>
         </member>

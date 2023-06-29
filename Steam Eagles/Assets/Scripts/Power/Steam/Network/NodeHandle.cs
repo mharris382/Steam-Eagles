@@ -40,7 +40,7 @@ namespace Power.Steam.Network
 
         public override string ToString()
         {
-            return $"{Position2D} {NodeType} {ID}\nPressure: {Pressure}Pa\nTemperature: {Temperature}K";
+            return $"{Position2D} {NodeType} \nPressure: {Pressure}Pa\nTemperature: {Temperature}K";
         }
     }
 }

@@ -17,7 +17,7 @@ namespace CoreLib.Entities
         private readonly EntityLinkRegistry _entityLinkRegistry;
         private readonly EntityHandle.Factory _entityHandleFactory;
 
-        public EntitySaveLoadSystem(EntityLinkRegistry entityLinkRegistry, EntityHandle.Factory entityHandleFactory, EntityCoreSaveData.Factory entityCoreSaveDataFactory)
+        public EntitySaveLoadSystem(EntityLinkRegistry entityLinkRegistry, EntityHandle.Factory entityHandleFactory, DynamicEntityCoreSaveData.Factory entityCoreSaveDataFactory)
         {
             _entityLinkRegistry = entityLinkRegistry;
             _entityHandleFactory = entityHandleFactory;
@@ -46,7 +46,7 @@ namespace CoreLib.Entities
         public IEnumerable<(string name, string ext)> GetSaveFileNames()
         {
             yield break;
-            //yield return (nameof(EntityCoreSaveData), "json");
+            //yield return (nameof(DynamicEntityCoreSaveData), "json");
         }
     }
 }

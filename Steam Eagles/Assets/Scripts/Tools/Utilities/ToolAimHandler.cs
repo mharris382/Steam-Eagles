@@ -50,7 +50,6 @@ namespace Tools.BuildTool
         private Camera _camera;
         private readonly MonoBehaviour _owner;
         private ToolState _toolState;
-        private Building _building;
         private ReactiveProperty<Vector3Int> _hoveredPosition = new ReactiveProperty<Vector3Int>();
         private Subject<BuildingToolAimInfo> _toolAimInfoSubject = new Subject<BuildingToolAimInfo>();
         private Vector2 _mousePosition;
@@ -84,8 +83,8 @@ namespace Tools.BuildTool
                 return _camera;
             }
         }
-        
-        private Building Building => _building != null ? _building : (_building = _owner.GetComponentInParent<Building>());
+
+        private Building Building => (_owner as ToolControllerBase)?.Building;
         private bool UseMousePosition => _toolState.Inputs.CurrentInputMode == InputMode.KeyboardMouse;
         
         public IObservable<BuildingToolAimInfo> ToolAimInfo => _toolAimInfoSubject;
@@ -152,7 +151,7 @@ namespace Tools.BuildTool
                 UpdateAimForController(targetLayer);
             }
 
-            UpdateAimVisual(_hoveredPosition.Value, targetLayer, _building);
+            UpdateAimVisual(_hoveredPosition.Value, targetLayer, Building);
         }
 
         private void HandleMousePosition()

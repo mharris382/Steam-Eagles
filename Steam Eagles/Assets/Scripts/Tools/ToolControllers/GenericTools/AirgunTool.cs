@@ -28,6 +28,11 @@ namespace Tools.GenericTools
                 }, emissionCount));
         }
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return true;
+        }
+
         public override ToolStates GetToolState()
         {
             return ToolStates.HAND_BOTH;

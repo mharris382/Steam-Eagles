@@ -15,6 +15,11 @@ namespace Tools.RepairTool
             Debug.LogWarning($"{nameof(RepairToolController)} throw new System.NotImplementedException();");
         }
 
+        public override bool CanBeUsedOutsideBuilding()
+        {
+            return true;
+        }
+
         public override ToolStates GetToolState()
         {
             return ToolStates.Repair;

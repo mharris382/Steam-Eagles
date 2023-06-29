@@ -7,6 +7,7 @@ using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 namespace Characters
 {
@@ -25,6 +26,7 @@ namespace Characters
         private CharacterState _state;
         private StructureState _structureState;
         private CharacterInteractionState _interactionState;
+        private Health _health;
         
         private IPilot _pilot;
         public CharacterInteractionState InteractionState => _interactionState;
@@ -33,8 +35,9 @@ namespace Characters
         public CharacterState State => _state;
         
         public StructureState StructureState => _structureState != null ? _structureState : _structureState = GetComponent<StructureState>();
-        
 
+
+        
         private bool _jumped;
         private float _jumpTime;
         private CharacterClimbCheck _climbCheck;
@@ -76,6 +79,7 @@ namespace Characters
             }
         }
 
+        private SpawnPoints _spawnPoints;
         private NullPilot _nullPilot;
         
         private IPilot Pilot => _pilot ?? _nullPilot;
@@ -85,6 +89,7 @@ namespace Characters
             _controller = GetComponent<CharacterController2>();
             _state = GetComponent<CharacterState>();
             _input = GetComponent<CharacterInputState>();
+            _health = GetComponent<Health>();
             _structureState = GetComponent<StructureState>();
             _interactionState = GetComponent<CharacterInteractionState>();
             _nullPilot = new NullPilot(gameObject);
@@ -119,7 +124,10 @@ namespace Characters
         }
         
      
-        
+        [Inject] void Inject(SpawnPoints spawnPoints)
+        {
+            _spawnPoints = spawnPoints;
+        }
             
        
 
@@ -164,13 +172,15 @@ namespace Characters
             _defaultStateMachine.AddState("Default", physicsFSM);
             _defaultStateMachine.AddState("Interacting", OnInteractEnter, OnInteractLogic, OnInteractExit);
             _defaultStateMachine.AddState("Pilot", OnPilotEnter, OnPilotLogic, OnPilotExit);
+            _defaultStateMachine.AddState("Dead", new DeadState(_health, _spawnPoints));
             
             _defaultStateMachine.AddTransition("Default", "Pilot", _ => State.IsPilot);
             _defaultStateMachine.AddTransition("Pilot", "Default", _ => !State.IsPilot);
             
             _defaultStateMachine.AddTransition("Interacting", "Default", _ => !InteractionState.IsInteracting);
             _defaultStateMachine.AddTransition("Default", "Interacting", _ => InteractionState.IsInteracting);
-            
+            _defaultStateMachine.AddTransitionFromAny("Dead", _ => _health.IsDead);
+            _defaultStateMachine.AddTransition("Dead", "Default", _ => !_health.IsDead);
             _defaultStateMachine.SetStartState("Default");
             _defaultStateMachine.Init();
         }
@@ -401,5 +411,46 @@ namespace Characters
         }
 
         #endregion
+
+
+        class DeadState : State
+        {
+            private readonly Health _health;
+            private readonly SpawnPoints _spawnPoints;
+            private readonly float _respawnDelay;
+            private float _timestamp;
+
+
+            public DeadState(Health health, SpawnPoints spawnPoints, float respawnDelay = 2) : base(needsExitTime:false)
+            {
+                _health = health;
+                _spawnPoints = spawnPoints;
+                _respawnDelay = respawnDelay;
+            }
+
+            public override void OnEnter()
+            {
+                _timestamp = Time.time;
+                base.OnEnter();
+            }
+
+            public override void OnLogic()
+            {
+                if (Time.time - _timestamp > _respawnDelay)
+                {
+                    HandleRespawn();
+                }
+                base.OnLogic();
+            }
+
+            private void HandleRespawn()
+            {
+                _health.Respawn();
+                var point = _spawnPoints.GetRespawnPoint(_health.transform.position);
+                Debug.Assert(point != null, "Cannot respawn no spawn points", _health);
+                if(point != null)
+                    _health.transform.position = point.transform.position;
+            }
+        }
     }
 }

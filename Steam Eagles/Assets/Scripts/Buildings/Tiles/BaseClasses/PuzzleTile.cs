@@ -17,7 +17,7 @@ namespace Buildings.Tiles
 
         [ToggleGroup(nameof(isVariant))] public bool isVariant;
         [ToggleGroup(nameof(isVariant))] public string tileRoot;
-        
+        public string addressablesKey;
        
         
         public bool debug;

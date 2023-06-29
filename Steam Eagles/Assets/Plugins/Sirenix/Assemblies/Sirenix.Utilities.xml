@@ -486,14 +486,14 @@
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0}@,System.Int32)">
             <summary>
-            Increases or decrease the number of items in the list to the specified count.
+            Increases or decrease the number of items in the list to the specified tiles.
             </summary>
             <original name="list">The list.</original>
             <original name="length">The new length.</original>
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0}@,System.Int32,System.Func{``0})">
             <summary>
-            Increases or decrease the number of items in the list to the specified count.
+            Increases or decrease the number of items in the list to the specified tiles.
             </summary>
             <original name="list">The list.</original>
             <original name="length">The new length.</original>
@@ -501,14 +501,14 @@
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0},System.Int32)">
             <summary>
-            Increases or decrease the number of items in the list to the specified count.
+            Increases or decrease the number of items in the list to the specified tiles.
             </summary>
             <original name="list">The list.</original>
             <original name="length">The new length.</original>
         </member>
         <member name="M:Sirenix.Utilities.ListExtensions.SetLength``1(System.Collections.Generic.IList{``0},System.Int32,System.Func{``0})">
             <summary>
-            Increases or decrease the number of items in the list to the specified count.
+            Increases or decrease the number of items in the list to the specified tiles.
             </summary>
             <original name="list">The list.</original>
             <original name="length">The new length.</original>
@@ -1041,16 +1041,16 @@
             Splits a Rect horizontally into the specified number of sub-rects, and returns a sub-bounds for the specified index.
             </summary>
             <original name="bounds">The original Rect.</original>
-            <original name="index">The index for the subrect. Includes 0, and excludes count.</original>
-            <original name="count">The amount of subrects the Rect should be split into.</original>
+            <original name="index">The index for the subrect. Includes 0, and excludes tiles.</original>
+            <original name="tiles">The amount of subrects the Rect should be split into.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SplitVertical(UnityEngine.Rect,System.Int32,System.Int32)">
             <summary>
             Splits a Rect vertically into the specified number of sub-rects, and returns a sub-bounds for the specified index.
             </summary>
             <original name="bounds">The original Rect.</original>
-            <original name="index">The index for the subrect. Includes 0, and excludes count.</original>
-            <original name="count">The amount of subrects the Rect should be split into.</original>
+            <original name="index">The index for the subrect. Includes 0, and excludes tiles.</original>
+            <original name="tiles">The amount of subrects the Rect should be split into.</original>
         </member>
         <member name="M:Sirenix.Utilities.RectExtensions.SplitGrid(UnityEngine.Rect,System.Single,System.Single,System.Int32)">
             <summary>
@@ -2714,7 +2714,7 @@
             <original name="start">First point.</original>
             <original name="end">Second point.</original>
             <original name="t">Position between 0 and 1.</original>
-            <original name="count">Number of interpolations to make.</original>
+            <original name="tiles">Number of interpolations to make.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.Fract(System.Single)">
             <summary>
@@ -2751,7 +2751,7 @@
             Returns a smooth value between 0 and 1 based on t.
             </summary>
             <original name="t">Position between 0 and 1.</original>
-            <original name="count">Number of interpolations to make.</original>
+            <original name="tiles">Number of interpolations to make.</original>
         </member>
         <member name="M:Sirenix.Utilities.MathUtilities.LerpUnclamped(UnityEngine.Vector3,UnityEngine.Vector3,System.Single)">
             <summary>

@@ -6,7 +6,6 @@ using CoreLib;
 using CoreLib.Entities;
 using Cysharp.Threading.Tasks;
 using Game;
-using Sirenix.OdinInspector;
 using SteamEagles.Characters;
 using UI.PlayerGUIs;
 using UniRx;
@@ -16,19 +15,11 @@ namespace Items.UI.HUDScrollView
 {
     public class PlayerRecipeHUDController : ToolRecipeHUDController
     {
-        const float UpdateInterval = 0.25f;
-
-        [Required]
-        public Tool testTool;
-
-
-        private IDisposable _toolListener;
         private ToolState _toolState;
         private PlayerCharacterGUIController _guiController;
         private Inventory _backpack;
         private Coroutine _waitForEntitySetup;
 
-        public bool invertSelection;
         private bool _initialized = false;
         private float _timeLastUpdated;
 
@@ -159,7 +150,7 @@ namespace Items.UI.HUDScrollView
             var backpack = GetBackpack();
             var toolState = ToolState;
             Debug.Assert(backpack != null && toolState != null, "Backpack or tool state is null",this);
-            _toolListener = new ToolListener(this, toolState, backpack);
+            new ToolListener(this, toolState, backpack);
         }
 
 

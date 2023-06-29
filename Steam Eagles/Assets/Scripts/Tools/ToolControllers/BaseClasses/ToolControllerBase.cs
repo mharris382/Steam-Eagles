@@ -5,6 +5,7 @@ using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
 using Characters;
 using CoreLib;
+using CoreLib.Entities;
 using Items;
 using Sirenix.OdinInspector;
 using SteamEagles.Characters;
@@ -38,13 +39,14 @@ namespace Tools.BuildTool
             return true;
         }
         
-        
+        [System.Obsolete,HideInInspector]
         public Building targetBuilding;
         private CharacterState _characterState;
         private Inventory _inventory;
         private EntityRoomState _roomState;
         private BoolReactiveProperty _hasRoom = new BoolReactiveProperty(false);
         private ToolControllerSharedData _toolData;
+        private EntityInitializer _entity;
         private bool _isActive;
 
         public Tool tool;
@@ -66,7 +68,7 @@ namespace Tools.BuildTool
 
         public ToolActivator Activator => _activator ??= new ToolActivator(this);
 
-        public Building Building => targetBuilding;
+        public Building Building => RoomState.CurrentRoom.Value != null ? RoomState.CurrentRoom.Value.Building : null;
 
         [ShowInInspector, ReadOnly, PropertyOrder(-1)]
         public virtual string ToolMode { get; set; }
@@ -106,6 +108,7 @@ namespace Tools.BuildTool
         private void Awake()
         {
             _isActive = false;
+            _entity = GetComponentInParent<EntityInitializer>();
             _characterState = GetComponentInParent<CharacterState>();
             var inputState = _characterState.GetComponentInChildren<CharacterInputState>();
             _toolData = GetComponentInParent<ToolControllerSharedData>();
@@ -134,13 +137,14 @@ namespace Tools.BuildTool
 
         public bool HasResources()
         {
-            if (targetBuilding == null)
+            if (!CanBeUsedOutsideBuilding() && Building == null)
             {
-                targetBuilding = GetComponentInParent<Building>();
-                if (targetBuilding == null) targetBuilding = FindObjectOfType<Building>();
+                return false;
             }
             return _inventory != null && _characterState != null && _roomState != null;
         }
+        
+        public abstract bool CanBeUsedOutsideBuilding();
 
         private IEnumerator Start()
         {

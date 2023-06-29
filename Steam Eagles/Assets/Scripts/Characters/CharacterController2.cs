@@ -69,10 +69,10 @@ namespace Characters
         private Collider2D[] _oneWayColliders = new Collider2D[10];
         private Collider2D[] _triggerColliders = new Collider2D[10];
         private Collider2D[] _droppingColliders = new Collider2D[10];
-        
+        private RaycastHit2D[] _oneWayHits = new RaycastHit2D[10];
+        private RaycastHit2D[] _triggerHits = new RaycastHit2D[10];
         
 
-        private DynamicBodyState _dynamicBody;
 
         public bool IsBalloonJumping => _isBalloonJumping;
 
@@ -183,7 +183,7 @@ namespace Characters
         
         public Collider2D BalloonCollider
         {
-            get => _wasOnBalloon ?  BalloonCollider : null;
+            get => _wasOnBalloon ?  __balloonCollider : null;
             set
             {
                 if (value != null)
@@ -227,7 +227,6 @@ namespace Characters
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _capsuleCollider = GetComponent<CapsuleCollider2D>();
-            _dynamicBody = GetComponent<DynamicBodyState>();
             Debug.Assert(State.config != null, "NO CHARACTER CONFIG", this);
             _fullFriction = State.config.GetFullFrictionMaterial();
             _noFriction = State.config.GetNoFrictionMaterial();
@@ -246,12 +245,10 @@ namespace Characters
             if (IsGrounded && !_isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * xInput, 0.0f);
-                _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
             else if (IsGrounded && _isOnSlope && !_isJumping)
             {
                 _newVelocity.Set(MoveSpeed * _slopeNormalPerp.x * -xInput, MoveSpeed * _slopeNormalPerp.y * -xInput);
-               _newVelocity += _dynamicBody.MovingObjectVelocity;
             }
             else if(!IsGrounded)
             {
@@ -268,14 +265,6 @@ namespace Characters
                 return;
             }
             rb.velocity = _newVelocity;
-        }
-
-        private void ApplyClimbingMovement(float dt)
-        {
-            _newVelocity = new Vector2(0, Config.GetClimbSpeed(yInput, State.SprintHeld));
-            var connectedAnchor = buildingJoint.connectedAnchor;
-            connectedAnchor += (_newVelocity / dt);
-            buildingJoint.connectedAnchor = connectedAnchor;
         }
 
         public void ApplyHorizontalMovement(float dt, float multiplier = 1)
@@ -306,10 +295,6 @@ namespace Characters
                     float t = _jumpTimeCounter / Config.jumpTime;
                     
                     var x = rb.velocity.x;
-                    //if (_buildingRigidbody != null)
-                    //{
-                    //    x += _buildingRigidbody.velocity.x;
-                    //}
                     rb.velocity = new Vector2(x, jumpForce);
                 }
             }
@@ -327,15 +312,19 @@ namespace Characters
             var radius = Config.groundCheckRadius;
             
             Physics2D.queriesHitTriggers = false;
-            var onGround = Physics2D.OverlapCircle(pos, radius, groundLayers);
-            
-            var onBalloon = Physics2D.OverlapCircle(pos, radius, balloonLayers);
+            Physics2D.queriesStartInColliders = false;
+            var groundHit = Physics2D.Raycast(pos, Vector2.down, radius, groundLayers);
+            var balloonHit = Physics2D.Raycast(pos, Vector2.down, radius, balloonLayers);
+            var onGround = groundHit ? groundHit.collider : null; // Physics2D.OverlapCircle(pos, radius, groundLayers);
+            var onBalloon = balloonHit ? balloonHit.collider : null;//Physics2D.OverlapCircle(pos, radius, balloonLayers);
             this.OnBalloon = onBalloon != null;
             BalloonCollider = onBalloon;
+
+
+            var oneWayHit = Physics2D.Raycast(pos, Vector2.down, radius, oneWayLayer);
+            _onOneWay = oneWayHit ? oneWayHit.collider : null;
             
             
-            
-            _onOneWay = Physics2D.OverlapCircle(pos, radius, oneWayLayer);
             var cnt = Physics2D.OverlapCircleNonAlloc(pos, radius, _oneWayColliders, oneWayLayer);
             _onOneWayPlatform = cnt > 0;
             
@@ -626,18 +615,7 @@ namespace Characters
         public void CheckParent()
         {
             return;
-            if (_dynamicBody.RoomBody != null)
-            {
-                transform.SetParent(_dynamicBody.RoomBody.transform);
-            }
-            else if (_dynamicBody.BuildingBody != null)
-            {
-                transform.SetParent(_dynamicBody.BuildingBody.transform);
-            }
-            else
-            {
-                transform.SetParent(null);
-            }
+            
         }
     }
 }
