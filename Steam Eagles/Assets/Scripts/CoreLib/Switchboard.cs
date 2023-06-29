@@ -7,13 +7,19 @@ using UniRx;
 
 namespace CoreLib
 {
-    public class DynamicReactiveProperty<T> : IDisposable
+    public class DynamicReactiveProperty<T> : IDisposable, IReadOnlyReactiveProperty<T>
     {
         private Subject<T> _changeValue;
         private ReplaySubject<(T previous, T next)> _onSwitched = new(); 
         private ReadOnlyReactiveProperty<T> _current;
 
-        public T Value => _current.Value;
+        public T Value
+        {
+            get => _current.Value;
+            set => Set(value);
+        }
+
+        public bool HasValue => _current.HasValue;
 
         public IObservable<(T previous, T next)> OnSwitched => _onSwitched;
 
@@ -32,6 +38,11 @@ namespace CoreLib
         {
             _changeValue?.Dispose();
             _current?.Dispose();
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            return _current.Subscribe(observer);
         }
     }
 

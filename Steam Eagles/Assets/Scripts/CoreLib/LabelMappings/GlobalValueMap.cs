@@ -33,21 +33,22 @@ namespace ObjectLabelMapping
             ObjectLabelMapExtensions.valueMap = this;
         }
         
+        
         public bool TryGetLabel(GameObject value, string parameter, out string label)
         {
-            if (TryGetLabel(value.layer, parameter, out label))
+            if(TryGetLabelFromTag(value.tag, parameter, out label))
                 return true;
-            if(TryGetLabel(value.tag, parameter, out label))
+            if (TryGetLabelFromLayer(value.layer, parameter, out label))
                 return true;
             return false;
         }
-        public bool TryGetLabel(int value, string parameter, out string label)
+        public bool TryGetLabelFromLayer(int value, string parameter, out string label)
         {
             if (_layerMap.TryGetLabel(value, parameter, out label)) 
                 return true;
             return false;
         }
-        public bool TryGetLabel(string value, string parameter, out string label)
+        public bool TryGetLabelFromTag(string value, string parameter, out string label)
         {
             if (_tagMap.TryGetLabel(value, parameter, out label)) 
                 return true;

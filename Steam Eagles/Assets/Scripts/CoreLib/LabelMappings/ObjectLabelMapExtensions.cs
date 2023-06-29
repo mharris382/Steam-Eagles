@@ -42,7 +42,7 @@ namespace ObjectLabelMapping
 
         public static void RegisterFuncToType<T>(GetPossibleMappedObjects<T> possibleMappedObjects) where  T : class => _mappedObjectsMap.Add(typeof(T), o => possibleMappedObjects(o as T));
 
-        public static bool TryGetLabel<T>(this T component, string parameter, Func<T, IEnumerable<Object>> possibleMappedObjects, out string label) where  T: Component
+        public static bool TryGetLabel<T>(this T component, string parameter, Func<T, IEnumerable<Object>> possibleMappedObjects, out string label, bool skipGameObjectCheck = true) where  T: Component
         {
             label = null;
             if (component == null) return false;
@@ -57,9 +57,9 @@ namespace ObjectLabelMapping
             
             return component.gameObject.TryGetLabel(parameter, out label);
         }
-        public static bool TryGetLabel(this SpriteRenderer spriteRenderer, string parameter, out string label) => TryGetLabel<SpriteRenderer>(spriteRenderer, parameter, GetPossibleLabeledObjects, out label);
-        public static bool TryGetLabel(this Collider2D collider2D, string parameter, out string label) => TryGetLabel(collider2D, parameter, GetPossibleLabeledObjects, out label);
-        public static bool TryGetLabel(this Rigidbody2D collider2D, string parameter, out string label) => TryGetLabel(collider2D, parameter, GetPossibleLabeledObjects, out label);
+        public static bool TryGetLabel(this SpriteRenderer spriteRenderer, string parameter, out string label, bool skipGameObjectCheck = true) => TryGetLabel<SpriteRenderer>(spriteRenderer, parameter, GetPossibleLabeledObjects, out label);
+        public static bool TryGetLabel(this Collider2D collider2D, string parameter, out string label, bool skipGameObjectCheck = true) => TryGetLabel(collider2D, parameter, GetPossibleLabeledObjects, out label);
+        public static bool TryGetLabel(this Rigidbody2D collider2D, string parameter, out string label, bool skipGameObjectCheck = true) => TryGetLabel(collider2D, parameter, GetPossibleLabeledObjects, out label);
 
         public static bool TryGetLabel(this GameObject gameObject, string parameter, out string label)
         {
