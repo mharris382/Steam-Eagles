@@ -11,7 +11,7 @@ using UnityEngine;
 
 using UnityEngine.TextCore.Text;
 
-namespace Editor
+namespace MyEditor
 {
     public class CharacterInputDebugger : OdinEditorWindow
     {

@@ -135,11 +135,9 @@ GameObject:
   - component: {fileID: 1869736276068514364}
   - component: {fileID: 1869736276068514365}
   - component: {fileID: 1869736276068514338}
-  - component: {fileID: 1869736276068514366}
   - component: {fileID: 1869736276068514367}
   - component: {fileID: 1869736276068514363}
   - component: {fileID: 1869736276068514361}
-  - component: {fileID: 1869736276068514360}
   - component: {fileID: 7796845978079655148}
   - component: {fileID: 7983783954350712944}
   - component: {fileID: 6661290386722291500}
@@ -192,6 +190,12 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 8
   m_Material: {fileID: 6200000, guid: 94d722d3554f9844288e8776e4e69da5, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 1
   m_SleepingMode: 0
   m_CollisionDetection: 1
@@ -206,41 +210,31 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.27252197, y: -0.104501724}
   m_Size: {x: 0.9795227, y: 2.2090034}
   m_Direction: 0
---- !u!114 &1869736276068514366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869736276068514339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5493fba352c478d42bd1d11bdb43d4ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onGroundedStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  groundCheckParent: {fileID: 1869736275885109221}
-  verticalVelocityThreshold: -1.1
-  _points:
-  - {fileID: 1869736275674776384}
-  - {fileID: 7016309155016969737}
-  - {fileID: 6604837706548304456}
-  - {fileID: 4043279704081202884}
-  - {fileID: 3800488669220030191}
-  - {fileID: 1869736276093685710}
-  - {fileID: 3020272773830499284}
-  - {fileID: 85460147362843767}
-  - {fileID: 4981491960926065415}
-  - {fileID: 7275343302617176744}
-  - {fileID: 1869736277301167943}
 --- !u!114 &1869736276068514367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,50 +284,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be7bf5a73d318d45bc223fb7e1669fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxValue:
+    value: 10
   onDeath:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1869736276068514360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869736276068514339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50683243b6618e4c8f023a0f4bb5f82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugMovement: 1
-  jumpForce: 26
-  jumpTime: 0.4
-  moveSpeed: 600
-  jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  threshold: 25
+  onRespawn:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7796845978079655148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,6 +378,7 @@ FixedJoint2D:
   m_ConnectedRigidBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
+  m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: -90.8, y: 7.8}
@@ -437,7 +396,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8c2fe6a96a4b33809035a3e87daecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentToolState: 0
+  maxToolRange: 5
+  aimOriginOffset: {x: 0, y: 1}
+  toolState:
+    value: 0
 --- !u!114 &5070824008259107557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020,7 +982,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 59377860792319817}
     m_Modifications:
     - target: {fileID: 4658013625800602833, guid: 907efa12b3446b3428ecf0c02ade73fb, type: 3}
@@ -1076,7 +1038,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907efa12b3446b3428ecf0c02ade73fb, type: 3}
 --- !u!4 &8220008082719106140 stripped
 Transform:
@@ -1088,7 +1052,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 59377860792319817}
     m_Modifications:
     - target: {fileID: 3413434371445799031, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
@@ -1144,7 +1108,9 @@ PrefabInstance:
       value: Jump Particle Effect TP
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe1b2e040ea279e47b3d234d3f884778, type: 3}
 --- !u!198 &4896563393837124681 stripped
 ParticleSystem:
@@ -1161,7 +1127,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 1869736276068514364}
     m_Modifications:
     - target: {fileID: 306040371081765820, guid: 5c5e339199b032f48b79f1a3d765429d, type: 3}
@@ -1217,7 +1183,9 @@ PrefabInstance:
       value: Transporter Spine Skeleton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c5e339199b032f48b79f1a3d765429d, type: 3}
 --- !u!4 &4274054685391485357 stripped
 Transform:
@@ -1229,7 +1197,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 1869736276068514364}
     m_Modifications:
     - target: {fileID: 5707614140888106971, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
@@ -1281,7 +1249,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e030b017eef98e41b98f81ad0087970, type: 3}
 --- !u!4 &932609386762478040 stripped
 Transform:
