@@ -37,6 +37,8 @@ namespace CoreLib.Audio
         [Tooltip("Comma Separated List of Labels")]
         [SerializeField, LabelText("Labels List"), DelayedProperty] private string labelsString;
 
+        [BoxGroup("Parameter Declaration"), TextArea(3, 10)]
+        [SerializeField] private string usageDescription;
 
         private string[] GetLabels()
         {
@@ -63,7 +65,7 @@ namespace CoreLib.Audio
 
             private bool multipleObjects => linkedObjects != null && linkedObjects.Length > 0;
             
-            [VerticalGroup("Label/Label/Details")]
+            [HorizontalGroup("Label/Label/Details")]
             [SerializeField, PreviewField,HideLabel, ListDrawerSettings(NumberOfItemsPerPage = 4)]
             private UnityEngine.Object[] linkedObjects;
             
