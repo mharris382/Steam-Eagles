@@ -63,7 +63,7 @@ namespace CoreLib.Audio
 
             private bool multipleObjects => linkedObjects != null && linkedObjects.Length > 0;
             
-            [VerticalGroup("Label/Label/Details/Details")]
+            [VerticalGroup("Label/Label/Details")]
             [SerializeField, PreviewField,HideLabel, ListDrawerSettings(NumberOfItemsPerPage = 4)]
             private UnityEngine.Object[] linkedObjects;
             
