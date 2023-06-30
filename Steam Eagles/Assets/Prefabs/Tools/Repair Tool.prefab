@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1226331078767172258}
   - component: {fileID: 8830199698628810230}
-  - component: {fileID: 3807297807317281830}
+  - component: {fileID: 4251192180856261113}
+  - component: {fileID: 624534108928932705}
+  - component: {fileID: 4331660801800095978}
   m_Layer: 10
   m_Name: Repair Tool
   m_TagString: Untagged
@@ -45,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc94522dba2647a08a8795ff70c6886e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3807297807317281830
+--- !u!114 &4251192180856261113
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,7 +56,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4326127638692255211}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e022ca35f70642db81d3da73b31c859c, type: 3}
+  m_Script: {fileID: 11500000, guid: e99aa01c60504707be14515e4db1e06c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   activationEvents:
@@ -68,6 +70,44 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   modeDisplayUI: {fileID: 0}
-  emptyIcon: {fileID: -399999793, guid: b77d1b8b0e774ca45a338eb3f5767652, type: 3}
+  emptyIcon: {fileID: 2038899389, guid: b77d1b8b0e774ca45a338eb3f5767652, type: 3}
   targetBuilding: {fileID: 0}
-  tool: {fileID: 11400000, guid: c525a0e9f4b92774b9ca853abaabf1e5, type: 2}
+  tool: {fileID: 11400000, guid: 9ff7e3672c0b5d3419d156180a045f55, type: 2}
+  recipeSwitchRate: 0.2
+  faceDirectionOfCharacter: 1
+  allowPartiallyValidPath: 1
+  defaultBuildTool: {fileID: 11400000, guid: 9ff7e3672c0b5d3419d156180a045f55, type: 2}
+  gui: {fileID: 624534108928932705}
+  config:
+    timePerTile: 0.1
+--- !u!114 &624534108928932705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4326127638692255211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f15d7e43414d4a418d643ab2ebdfa3e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 5988153089255836609, guid: a55c9dbf908681d4fb96cfee84418241, type: 3}
+  hoveredPrefab: {fileID: 0}
+  validColor: {r: 0, g: 1, b: 0, a: 1}
+  invalidColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &4331660801800095978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4326127638692255211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b37b3bcd7c4f72b01a9ef825000569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxPathLength: 25
+  tile: {fileID: 11400000, guid: 9f9c0ed02b270a44d9029a7fb830b85c, type: 2}
+  mode: 1
