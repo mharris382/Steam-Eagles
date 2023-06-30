@@ -70,7 +70,7 @@ namespace CoreLib.Audio
             
             [HideLabel, InfoBox("Usage Description"), Tooltip("Explain how these objects will are related to the parameter and how they will be used in the game.")]
             [HorizontalGroup("Label/Label/Details")]
-            [ToggleGroup("Label/Label")] [SerializeField, MultiLineProperty(4)]
+            [SerializeField, MultiLineProperty(4)]
             private string usageDescription;
            
 
