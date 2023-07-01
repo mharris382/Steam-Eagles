@@ -21,26 +21,23 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  fmodEvent:
-    Guid:
-      Data1: -798141793
-      Data2: 1216466225
-      Data3: 445973643
-      Data4: -625494026
-    Path: event:/Footstep
   parameterName: Surface
-  labels:
-  - Solid
-  - Pipe
-  - Grass
-  - Foundation
-  - Dirt
   mappedObjects:
   - labeledParameter: {fileID: 11400000}
     linkedObject: {fileID: -3661817410987756718, guid: ed76d70421a981d49b8a86e808fa936f, type: 3}
     label: Dirt
-    multipleObjects: 1
     linkedObjects:
     - {fileID: 2984434392344967824, guid: ed76d70421a981d49b8a86e808fa936f, type: 3}
     - {fileID: 2984434392344967824, guid: ed76d70421a981d49b8a86e808fa936f, type: 3}
     - {fileID: -8045803042719647111, guid: ed76d70421a981d49b8a86e808fa936f, type: 3}
+    usageDescription: can walk on this in the airship greenhouse
+  labelsString: Solid, Pipe, Foundation, Dirt, Grass
+  usageDescription: 'I did a proof of concept test with this on the player footsteps,
+    but this could potentially be expanded for other uses such as playing unique
+    tile breakage sounds depending on the surface that was destructed (or in the
+    case of foundation blocks, if the player tries to destruct indestructable foundation
+    blocks).  It''s worth mentioning that currently the surfaces are largely mapped
+    using tags not mapped objects as tags work better for tilemaps
+
+
+'

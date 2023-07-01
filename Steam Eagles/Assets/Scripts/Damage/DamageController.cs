@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Damage
 {
+    public class DamageHitInfo
+    {
+        
+    }
     public class DamageController : MonoBehaviour
     {
         public DamageCalculator calculator;

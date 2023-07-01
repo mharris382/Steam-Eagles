@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    [CreateAssetMenu(fileName = "Character Config", menuName = "New Character Config", order = 0)]
+    [CreateAssetMenu(fileName = "Character Config", menuName = "Steam Eagles/" +
+                                                               "New Character Config", order = 0)]
     public class CharacterConfig : ScriptableObject
     {
         public float moveSpeed = 600;
