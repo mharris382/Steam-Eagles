@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Tools.BuildTool
 {
+    [System.Obsolete]
     public class PathBuilder : IDisposable
     {
         private IDisposable _disposable;
@@ -44,11 +45,11 @@ namespace Tools.BuildTool
         
         
         
-        public PathBuilder(BuildToolController toolController, TilePathPreviewerGUI previewerGUI)
+        public PathBuilder(BuildToolController toolController)
         {
             _path = new List<Vector3Int>();
             _toolController = toolController;
-            _previewerGUI = previewerGUI;
+            
             _pathSubject = new Subject<List<Vector3Int>>();
             _pathStart = new ReactiveProperty<Vector3Int?>();
             _hoveredPosition = new ReactiveProperty<Vector3Int>();
@@ -60,6 +61,7 @@ namespace Tools.BuildTool
 
         public void Update(Building building, IEditableTile tile, ref Vector3Int position, ref bool isValid, ref string errorMessage)
         {
+            return;
             if (building == null)
             {
                 SetVisible(false);
@@ -181,7 +183,7 @@ namespace Tools.BuildTool
 
         public BuildActionHandle GetBuildPathAction(out Subject<Vector3Int> onPathPointBuilt)
         {
-            var buildHandle = new BuildActionHandle(_toolController, duration: _toolController.config.timePerTile * _path.Count,
+            var buildHandle = new BuildActionHandle(_toolController, duration: .1f * _path.Count,
                 _path.Count);
             var subject = new Subject<Vector3Int>();
             buildHandle.onBuildActionCompleted += () => subject.OnCompleted();

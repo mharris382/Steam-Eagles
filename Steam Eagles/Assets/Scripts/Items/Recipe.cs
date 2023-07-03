@@ -35,6 +35,7 @@ namespace Items
 
         [ShowIf(nameof(UseTileReference)),SerializeField] private TileReference tileReference;
 
+        public string category = "Misc";
 
         private PrefabLoader _prefabLoader;
         private TileLoader _tileLoader;

@@ -80,36 +80,53 @@ namespace Buildings
         private readonly Building _building;
         private class CellToRoomLookup
         {
+            private readonly GridLayout _grid;
             public readonly Vector2 cellSize;
             private Dictionary<Vector3Int, Room> _cellToRoomLookup = new Dictionary<Vector3Int, Room>();
             private Dictionary<Room, BoundsInt> _roomToCellBounds = new Dictionary<Room, BoundsInt>();
             public CellToRoomLookup(GridLayout grid, Room[] rooms)
             {
+                _grid = grid;
                 this.cellSize = grid.cellSize;
                 foreach (var room in rooms)
                 {
-                    var roomBounds = room.GetCells(grid);
-                    _roomToCellBounds.Add(room, roomBounds);
-                    for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
+                    AddRoomToSet(grid, room);
+                }
+            }
+
+            private void AddRoomToSet(GridLayout grid, Room room)
+            {
+                var roomBounds = room.GetCells(grid);
+                _roomToCellBounds.Add(room, roomBounds);
+                for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
+                {
+                    for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
                     {
-                        for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
+                        var cell = new Vector3Int(x, y, 0);
+                        if (!_cellToRoomLookup.ContainsKey(cell))
                         {
-                            var cell = new Vector3Int(x, y, 0);
-                            if (!_cellToRoomLookup.ContainsKey(cell))
-                            {
-                                _cellToRoomLookup.Add(cell, room);
-                            }
-                            else
-                            {
-                                Debug.LogError($"Cell {cell} is already registered to {_cellToRoomLookup[cell].name} but also found in {room.name}");
-                            }
+                            _cellToRoomLookup.Add(cell, room);
+                        }
+                        else
+                        {
+                            Debug.LogError(
+                                $"Cell {cell} is already registered to {_cellToRoomLookup[cell].name} but also found in {room.name}");
                         }
                     }
                 }
             }
+
             public Room GetRoom(Vector3Int cell) => _cellToRoomLookup.ContainsKey(cell) ? _cellToRoomLookup[cell] : null;
 
-            public BoundsInt GetCells(Room room) => _roomToCellBounds[room];
+            public BoundsInt GetCells(Room room)
+            {
+                if (!_roomToCellBounds.ContainsKey(room))
+                {
+                    AddRoomToSet(_grid, room);
+                }
+                return _roomToCellBounds[room];
+            }
+
             public IEnumerable<(Room room, Vector3Int cell)> GetAllCells() => _cellToRoomLookup.Select(kvp => (kvp.Value, kvp.Key));
             public IEnumerable<(Room room, BoundsInt bounds)> GetAllBounds() => _roomToCellBounds.Select(kvp => (kvp.Key, kvp.Value));
             

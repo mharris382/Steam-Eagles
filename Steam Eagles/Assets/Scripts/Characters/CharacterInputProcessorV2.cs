@@ -75,6 +75,7 @@ namespace Characters
             _characterState.MoveInput = moveInput;
             toolState.Inputs.AimInputRaw = aimInput;
             toolState.Inputs.UsePressed = playerInput.actions["Use"].WasPressedThisFrame();
+            toolState.Inputs.CancelHeld = playerInput.actions["Cancel"].IsPressed();
             toolState.Inputs.CancelPressed = playerInput.actions["Cancel"].WasPressedThisFrame();
 
         }

@@ -58,7 +58,7 @@ namespace ModestTree
             Console.WriteLine(e.ToString());
 #else
             UnityEngine.Debug.LogException(e);
-#endif
+#endif  
         }
 
         public static void ErrorException(string message, Exception e)

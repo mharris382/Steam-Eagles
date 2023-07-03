@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Buildings.Tiles
 {
-    [CreateAssetMenu(menuName="SteamEagles/Tiles/Damaged WallTile")]
+    [CreateAssetMenu(menuName="Steam Eagles/Tiles/Damaged WallTile")]
     public class DamagedWallTile : RepairableTile
     {
         [Required]

@@ -100,7 +100,8 @@ namespace Buildables
                 _gridLayout = FindGridOnTarget();
                 if (!HasResources())
                 {
-                    Debug.LogError("No grid found on building target or building not set", this);
+                    if(Application.isPlaying)
+                        Debug.LogError("No grid found on building target or building not set", this);
                     return null;
                 }
 
@@ -344,6 +345,8 @@ namespace Buildables
             if (buildingTarget == null)
             {
                 var b = GetComponentInParent<Building>();
+                if (b == null)
+                    return null;
                 buildingTarget = b.gameObject;
             }
             var grid = buildingTarget.GetComponent<Grid>();

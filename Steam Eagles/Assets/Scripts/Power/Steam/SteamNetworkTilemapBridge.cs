@@ -26,6 +26,8 @@ public class SteamNetworkTilemapBridge : IInitializable
     }
     public void Initialize()
     {
+        if(_building == null)
+            return;
         var map = _building.Map;
         _coroutineCaller.StartCoroutine((IEnumerator)UniTask.ToCoroutine(async () =>
         {

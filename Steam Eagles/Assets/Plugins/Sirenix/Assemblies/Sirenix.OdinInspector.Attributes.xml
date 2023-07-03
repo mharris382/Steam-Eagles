@@ -974,8 +974,8 @@
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInEditorModeAttribute">
             <summary>
-            <para>DisableInEditorMode is used on any property, and disables the property when not in play mode.</para>
-            <para>Use this when you only want a property to be editable when in play mode.</para>
+            <para>DisableInEditorMode is used on any property, and disables the property when not in play status.</para>
+            <para>Use this when you only want a property to be editable when in play status.</para>
             </summary>
             <example>
             <para>The following example shows how DisableInEditorMode is used to disable a property when in the editor.</para>
@@ -1003,11 +1003,11 @@
         </member>
         <member name="T:Sirenix.OdinInspector.DisableInPlayModeAttribute">
             <summary>
-            <para>DisableInPlayMode is used on any property, and disables the property when in play mode.</para>
-            <para>Use this to prevent users from editing a property when in play mode.</para>
+            <para>DisableInPlayMode is used on any property, and disables the property when in play status.</para>
+            <para>Use this to prevent users from editing a property when in play status.</para>
             </summary>
             <example>
-            <para>The following example shows how DisableInPlayMode is used to disable a property when in play mode.</para>
+            <para>The following example shows how DisableInPlayMode is used to disable a property when in play status.</para>
             <code>
             public class MyComponent : MonoBehaviour
             {
@@ -1597,7 +1597,7 @@
             
             		private bool MyVisibleFunction()
             		{
-            			return !this.gameObject.activeInHierarchy;
+            			return !this.entity.activeInHierarchy;
             		}
              }
              </code>
@@ -1701,8 +1701,8 @@
         </member>
         <member name="T:Sirenix.OdinInspector.HideInEditorModeAttribute">
             <summary>
-            <para>HideInEditorMode is used on any property, and hides the property when not in play mode.</para>
-            <para>Use this when you only want a property to only be visible play mode.</para>
+            <para>HideInEditorMode is used on any property, and hides the property when not in play status.</para>
+            <para>Use this when you only want a property to only be visible play status.</para>
             </summary>
             <example>
             <para>The following example shows how HideInEditorMode is used to hide a property when in the editor.</para>
@@ -1731,11 +1731,11 @@
         </member>
         <member name="T:Sirenix.OdinInspector.HideInPlayModeAttribute">
             <summary>
-            <para>HideInPlayMode is used on any property, and hides the property when not in editor mode.</para>
+            <para>HideInPlayMode is used on any property, and hides the property when not in editor status.</para>
             <para>Use this when you only want a property to only be visible the editor.</para>
             </summary>
             <example>
-            <para>The following example shows how HideInPlayMode is used to hide a property when in play mode.</para>
+            <para>The following example shows how HideInPlayMode is used to hide a property when in play status.</para>
             <code>
             public class MyComponent : MonoBehaviour
             {
@@ -2341,7 +2341,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:Sirenix.OdinInspector.InlineEditorAttribute" /> class.
             </summary>
-            <original name="inlineEditorMode">The inline editor mode.</original>
+            <original name="inlineEditorMode">The inline editor status.</original>
             <original name="objectFieldMode">How the object field should be drawn.</original>
         </member>
         <member name="M:Sirenix.OdinInspector.InlineEditorAttribute.#ctor(Sirenix.OdinInspector.InlineEditorObjectFieldModes)">
@@ -3327,7 +3327,7 @@
             Draws a square object field which renders a preview for UnityEngine.Object type objects.
             </summary>
             <original name="previewGetter">A resolved value that should resolve to the desired preview texture.</original>
-            <original name="filterMode">The filter mode to be used for the preview texture.</original>
+            <original name="filterMode">The filter status to be used for the preview texture.</original>
         </member>
         <member name="M:Sirenix.OdinInspector.PreviewFieldAttribute.#ctor(System.String,System.Single,UnityEngine.FilterMode)">
             <summary>
@@ -3335,7 +3335,7 @@
             </summary>
             <original name="previewGetter">A resolved value that should resolve to the desired preview texture.</original>
             <original name="height">The height of the preview field.</original>
-            <original name="filterMode">The filter mode to be used for the preview texture.</original>
+            <original name="filterMode">The filter status to be used for the preview texture.</original>
         </member>
         <member name="M:Sirenix.OdinInspector.PreviewFieldAttribute.#ctor(System.Single,Sirenix.OdinInspector.ObjectFieldAlignment)">
             <summary>
@@ -3350,7 +3350,7 @@
             </summary>
             <original name="previewGetter">A resolved value that should resolve to the desired preview texture.</original>
             <original name="alignment">The alignment of the preview field.</original>
-            <original name="filterMode">The filter mode to be used for the preview texture.</original>
+            <original name="filterMode">The filter status to be used for the preview texture.</original>
         </member>
         <member name="M:Sirenix.OdinInspector.PreviewFieldAttribute.#ctor(System.String,System.Single,Sirenix.OdinInspector.ObjectFieldAlignment,UnityEngine.FilterMode)">
             <summary>
@@ -3359,7 +3359,7 @@
             <original name="previewGetter">A resolved value that should resolve to the desired preview texture.</original>
             <original name="height">The height of the preview field.</original>
             <original name="alignment">The alignment of the preview field.</original>
-            <original name="filterMode">The filter mode to be used for the preview texture.</original>
+            <original name="filterMode">The filter status to be used for the preview texture.</original>
         </member>
         <member name="M:Sirenix.OdinInspector.PreviewFieldAttribute.#ctor(Sirenix.OdinInspector.ObjectFieldAlignment)">
             <summary>
@@ -4352,7 +4352,7 @@
             
             		private bool MyVisibleFunction()
             		{
-            			return this.gameObject.activeInHierarchy;
+            			return this.entity.activeInHierarchy;
             		}
              }
              </code>

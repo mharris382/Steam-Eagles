@@ -10,11 +10,38 @@ using UnityEngine;
 
 namespace Items.UI.HUDScrollView
 {
-    public class HUDFancyScrollView : FancyScrollView<Recipe, HUDToolRecipeContext>
+    public abstract class RecipeCellGUI : MonoBehaviour
+    {
+        public void Assign(Inventory inventory)
+        {
+            
+        }
+    }
+    public interface ICellGUI
+    {   
+        void SetContextInfo(Inventory inventory);
+        void SetSelected(IObservable<Recipe> selectionStream);
+    }
+
+
+    public interface IValidityChecker
+    {
+        public bool IsRecipeValid(Recipe recipe, Inventory inventory);
+    }
+
+    public class HasIngredientsForRecipe : IValidityChecker
+    {
+        public bool IsRecipeValid(Recipe recipe, Inventory inventory) => recipe.IsAffordable(inventory);
+    }
+
+public class HUDFancyScrollView : FancyScrollView<Recipe, HUDToolRecipeContext>
     {
         [SerializeField] private Scroller scroller;
         [SerializeField, Required, AssetsOnly]
         private GameObject prefab;
+
+        private IValidityChecker _validity;
+        private Dictionary<GameObject, List<ICellGUI>> _cellGUIs = new Dictionary<GameObject, List<ICellGUI>>();
 
         protected override GameObject CellPrefab => prefab;
 
@@ -58,7 +85,6 @@ namespace Items.UI.HUDScrollView
             }
             
             UpdateSelection(index);
-            scroller.ScrollTo(index, 0.34f, FancyEase.OutCubic);
         }
 
         void UpdateSelection(int index)
@@ -69,6 +95,7 @@ namespace Items.UI.HUDScrollView
             }
 
             Context.SelectedIndex = index;
+            scroller.ScrollTo(index, 0.34f, FancyEase.OutCubic);
             Refresh();
             _onSelectionChanged.OnNext(index);
         }
@@ -83,11 +110,30 @@ namespace Items.UI.HUDScrollView
             SelectCell(Context.SelectedIndex - 1);
         }
         
-        public void UpdateData(IList<Recipe> items)
+        public void UpdateData(IList<Recipe> items, Inventory inventory, IObservable<Recipe> selectedRecipeStream)
         {
+            _validity = new HasIngredientsForRecipe();
+            
+            scroller.SetTotalCount(items.Count);
             UpdateContents(items);
             scroller.SetTotalCount(items.Count);
+            
         }
-
+        public void UpdateData(IList<Recipe> items)
+        {
+            scroller.SetTotalCount(items.Count);
+            UpdateContents(items);
+            scroller.SetTotalCount(items.Count);
+            
+        }
+        
+        public void Select(Recipe recipe)
+        {
+            int index = ItemsSource.IndexOf(recipe);
+            SelectCell(index);
+        }
     }
+
+
+
 }

@@ -65,6 +65,13 @@ namespace Items
                 }
             }
 
+            [ShowInInspector, TableColumnWidth(250, true)]
+            public string category
+            {
+                get => _recipe.category;
+                set => _recipe.category = value;
+            }
+
             public RecipeWrapper(Recipe recipe, RecipeEditor recipeEditor)
             {
                 _recipe = recipe;

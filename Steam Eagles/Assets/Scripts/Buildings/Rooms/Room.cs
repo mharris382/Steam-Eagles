@@ -88,6 +88,18 @@ using Sirenix.OdinInspector;
                 roomBounds = value;
             }
         }
+        
+        public RectInt RoomRect
+        {
+            get
+            {
+                var min = RoomBounds.min;
+                var max = RoomBounds.max;
+                var minInt = new Vector2Int(Mathf.FloorToInt(min.x), Mathf.FloorToInt(min.y));
+                var maxInt = new Vector2Int(Mathf.CeilToInt(max.x), Mathf.CeilToInt(max.y));
+                return new RectInt(minInt, maxInt - minInt);
+            }
+        }
 
         public Bounds Bounds
         {

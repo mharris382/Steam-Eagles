@@ -47,13 +47,21 @@ namespace Tools.BuildTool
     /// </summary>
     public class ToolAimHandler
     {
+        public enum Mode
+        {
+            CONTINUOUS,
+            DISCRETE
+        }
         private Camera _camera;
         private readonly MonoBehaviour _owner;
         private ToolState _toolState;
+        private ReactiveProperty<Mode> _mode = new();
         private ReactiveProperty<Vector3Int> _hoveredPosition = new ReactiveProperty<Vector3Int>();
         private Subject<BuildingToolAimInfo> _toolAimInfoSubject = new Subject<BuildingToolAimInfo>();
         private Vector2 _mousePosition;
         
+        public IReadOnlyReactiveProperty<Mode> ModeProperty => _mode;
+
         private IToolAimDecorator _aimDecorator;
         private IToolAimDecorator _nullAimDecorator = new NullAimDecorator();
         

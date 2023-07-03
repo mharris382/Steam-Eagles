@@ -67,6 +67,9 @@ namespace Buildings
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
         Rooms.Rooms _rooms;
+        
+        [SerializeField]
+        RectInt _sizeGridSpace;
 
         internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
@@ -74,6 +77,26 @@ namespace Buildings
 
         #region [Properties]
 
+        public Transform TilemapParent
+        {
+            get
+            {
+                if (tilemapParent == null)
+                {
+                    tilemapParent = new GameObject("[TILEMAPS]").transform;
+                    tilemapParent.SetParent(transform);
+                    tilemapParent.localPosition = Vector3.zero;
+                }
+                return tilemapParent;
+            }
+        }
+
+
+        public RectInt SizeGridSpace
+        {
+            get => _sizeGridSpace;
+            set => _sizeGridSpace = value;
+        }
         public Rect sizeWorldSpace
         {
             get => _sizeWorldSpace;

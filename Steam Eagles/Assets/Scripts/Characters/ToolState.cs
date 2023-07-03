@@ -21,6 +21,24 @@ namespace Characters
         private ToolInputs _inputs = new();
         private ReactiveProperty<ITool> _equippedTool = new();
 
+        public string RecipeCategory
+        {
+            get;
+            set;
+        }
+
+        public string RecipeName
+        {
+            get;
+            set;
+        }
+        
+        public ScriptableObject Recipe
+        {
+            get;
+            set;
+        }
+
         public ToolStates currentToolState
         {
             get => toolState.Value;
@@ -61,13 +79,20 @@ namespace Characters
                 set;
             }
 
-          
+     
+            public bool ToggleToolMode
+            {
+                get;
+                set;
+            }
             
             public InputMode CurrentInputMode
             {
                 get;
                 set;
             }
+            
+            
             
             public bool UsePressed
             {
@@ -86,6 +111,11 @@ namespace Characters
                 set;
             }
             
+            public bool CancelHeld
+            {
+                get;
+                set;
+            }
             
             public int CurrentToolIndex
             {
