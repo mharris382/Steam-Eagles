@@ -308,6 +308,20 @@ namespace Buildings
 
         public TileBase GetTile(BuildingCell cell) => GetTile(cell.cell, cell.layers);
 
+        public IEnumerable<BuildingCell> GetTileAnyLayer(BuildingCell cell, params BuildingLayers[] layers)
+        {
+            var t = GetTile(cell);
+            if (t) yield return cell;
+            foreach (var layer in layers)
+            {
+                if (layer == cell.layers) continue;
+                foreach (var buildingCell in ConvertBetweenLayers(cell, layer))
+                {
+                    t = GetTile(buildingCell);
+                    if (t) yield return buildingCell;
+                }
+            }
+        }
         public bool HasCell(BuildingCell cell) => GetTile(cell) != null;
         public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
         {

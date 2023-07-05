@@ -193,6 +193,96 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Next Recipe",
+                    "type": "Button",
+                    "id": "23330846-0f4f-4d30-abda-17def9a33b87",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous Recipe",
+                    "type": "Button",
+                    "id": "1188fdf9-860c-4634-9f51-ff8c3cde7c0f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Next Category",
+                    "type": "Button",
+                    "id": "bcef86f9-4442-4729-b962-16e6e98e334a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous Category",
+                    "type": "Button",
+                    "id": "c77defe6-96d4-479f-969e-0e6ba39bc518",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Category 1",
+                    "type": "Button",
+                    "id": "051e21d2-34b6-4cfc-8f1f-a7508102009e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Category 2",
+                    "type": "Button",
+                    "id": "c66d2910-9137-4e29-8422-ad69d81b9896",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Category 3",
+                    "type": "Button",
+                    "id": "78328938-bc62-4304-84db-0fe0749197e7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Category 4",
+                    "type": "Button",
+                    "id": "b575b764-d8d0-42a2-8dcd-49df97118642",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Crafting Destroy Mode",
+                    "type": "Button",
+                    "id": "72c4b997-8251-44bf-a1e4-da07f8e9331d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Crafting Sample",
+                    "type": "Button",
+                    "id": "7d415b30-ee41-4be1-a9ae-1b0030badb6d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -787,6 +877,160 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7df3a636-a479-4e5f-90ab-e5ed1cd0842b",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Next Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0859c1f-dc24-4a5b-8fdf-771979cecb0e",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 1;Controller 2",
+                    "action": "Next Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7165c4e-fdbb-4383-b6cf-1f95c2e0f4cd",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Next Category",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8299d7a5-4138-4a0d-8bab-a7fe2082cdc6",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Next Category",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3cc4065-78fb-4b7b-857d-1a7bd53c2562",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Previous Category",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8d5abe0b-1a0e-4ef5-99bb-3e70f68d25c6",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Previous Category",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "908214cb-62ff-4dfe-b177-cc02ac39702a",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Previous Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c6e81c92-31dc-4daa-808c-075a1d5454e6",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller 2;Controller 1",
+                    "action": "Previous Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "35f16838-2499-47c9-ba14-3fd021f78220",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Category 1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7a74a40e-b18a-4b36-ab63-fee3c23e3cb0",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Category 2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "193a68b9-c470-44fb-95cc-8957610b062e",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Category 3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b37eee9b-0cb9-4a16-a6e0-baf8b4253578",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crafting Destroy Mode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af285e17-38b2-49dc-8fa5-613522e23696",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard;Keyboard 2",
+                    "action": "Category 4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49c06eeb-1008-4a68-8e33-1120f35d3007",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crafting Sample",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
