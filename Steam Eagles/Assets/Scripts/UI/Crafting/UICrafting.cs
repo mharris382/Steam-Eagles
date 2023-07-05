@@ -164,7 +164,7 @@ public class UICrafting : UIPlayerSystemBase
         
             if (_placementValidity.IsValid)
             {
-                if (_playerInput.actions["Ability Primary"].WasPerformedThisFrame())
+                if (_playerInput.actions["Ability Primary"].IsPressed())
                 {
                     _previewController.BuildFromPreview( building, gridPosition);
                 }
