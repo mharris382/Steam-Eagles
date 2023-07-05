@@ -274,7 +274,7 @@ namespace Damage.Traps
 
         public virtual BuildingLayers GetTargetLayer() => BuildingLayers.SOLID;
         
-       [Inject] public void SetBuilding(Building building)
+        public void SetBuilding(Building building)
         {
             _building = building;
            

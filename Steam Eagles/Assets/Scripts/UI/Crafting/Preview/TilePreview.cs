@@ -3,12 +3,14 @@ using Buildings;
 using Items;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 using Object = UnityEngine.Object;
 
 namespace UI.Crafting
 {
     public class TilePreview : RecipePreview<TileBase>
     {
+        public class Factory : PlaceholderFactory<Recipe, TileBase, TilePreview> {}
         public TilePreview(Recipe recipe, TileBase loadedObject) : base(recipe, loadedObject) { }
 
 
@@ -28,14 +30,15 @@ namespace UI.Crafting
             return go;
         }
 
-        protected override void UpdatePreviewInternal(Building building, BuildingCell aimedPosition, bool isValid)
+        protected override void UpdatePreviewInternal(Building building, BuildingCell aimedPosition, bool isValid,
+            bool flipped)
         {
             var go = PreviewObject;
             _spriteRenderer.color = isValid ? Resources.validColor : Resources.invalidColor;
             go.transform.position = building.Map.CellToWorldCentered(aimedPosition.cell, aimedPosition.layers);
         }
 
-        public override void BuildFromPreview(Building building, BuildingCell gridPosition)
+        public override void BuildFromPreview(Building building, BuildingCell gridPosition, bool isFlipped)
         {
             var tile = LoadedObject;
             building.Map.SetTile(gridPosition.cell, gridPosition.layers, tile);

@@ -160,7 +160,7 @@ public class UICrafting : UIPlayerSystemBase
         else
         {
             _placementValidity.UpdateValidity(recipe, loadedObject, _character, building, gridPosition);
-            _previewController.UpdatePreview(recipe, loadedObject, building, gridPosition, _placementValidity.IsValid);
+            _previewController.UpdatePreview(recipe, loadedObject, _playerInput, building, gridPosition, _placementValidity.IsValid);
         
             if (_placementValidity.IsValid)
             {

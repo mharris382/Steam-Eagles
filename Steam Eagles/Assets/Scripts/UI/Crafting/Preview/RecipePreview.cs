@@ -36,15 +36,16 @@ namespace UI.Crafting
         }
 
 
-        public void UpdatePreview(Building building, BuildingCell aimedPosition, bool isValid)
+        public void UpdatePreview(Building building, BuildingCell aimedPosition, bool isValid, bool flipped)
         {
             if(_previewObject == null) _previewObject = CreatePreview(Recipe, LoadedObject, building, aimedPosition);
-            UpdatePreviewInternal(building, aimedPosition, isValid);
+            UpdatePreviewInternal(building, aimedPosition, isValid ,flipped);
         }
         
-        protected abstract void UpdatePreviewInternal(Building building, BuildingCell aimedPosition, bool isValid);
+        protected abstract void UpdatePreviewInternal(Building building, BuildingCell aimedPosition, bool isValid,
+            bool flipped);
 
-        public abstract void BuildFromPreview(Building building, BuildingCell gridPosition);
+        public abstract void BuildFromPreview(Building building, BuildingCell gridPosition, bool isFlipped);
     }
 
     public abstract class RecipePreview<T> : RecipePreview where T : Object

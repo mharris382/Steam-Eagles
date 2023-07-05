@@ -2,6 +2,7 @@ using Items;
 using UI.Crafting;
 using UI.Crafting.Destruction;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Zenject;
 
 public class UICraftingInstaller : MonoInstaller
@@ -15,6 +16,9 @@ public class UICraftingInstaller : MonoInstaller
         Container.Bind<RecipePreviewController>().AsSingle();
         Container.Bind<DestructionPreviewController>().AsSingle();
         Container.Bind<CraftingAimHanding>().AsSingle().NonLazy();
+        Container.BindFactory<Recipe, TileBase, TilePreview, TilePreview.Factory>().AsSingle();
+        Container.BindFactory<Recipe, GameObject, PrefabPreview, PrefabPreview.Factory>().AsSingle();
+        Container.Bind<PrefabPreviewCache>().AsSingle().NonLazy();
     }
 
 
