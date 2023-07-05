@@ -1,0 +1,60 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel SimIO
+#pragma kernel SimTest
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float> Result;
+
+float sinkMultiplier;
+int sinkTexSize;
+Texture2D<float4> sinks;
+
+float sourceMultiplier;
+int sourceTexSize;
+Texture2D<float4> sources;
+
+
+uint2 GetSinkCord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sinkTexSize, texCoord.y / sinkTexSize);
+}
+uint2 GetSourceCord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sourceTexSize, texCoord.y / sourceTexSize);
+}
+
+[numthreads(8,8,1)]
+void SimIO (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    uint2 texCoord = uint2(id.x, id.y);
+    uint2 sinkCoord = GetSinkCord(texCoord);
+    uint2 sourceCoord = GetSourceCord(texCoord);
+    float sink = sinks[sinkCoord].x * sinkMultiplier;
+    float source = sources[sourceCoord].x * sourceMultiplier;
+    float delta = source - sink;
+    Result[texCoord] = clamp(Result[texCoord] + delta, 0, 1);
+    
+}
+
+
+RWTexture2D<float> simState;
+[numthreads(8,8,1)]
+void SimTest(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = uint2(id.x, id.y);
+    uint2 downCoord = uint2(id.x, id.y + 1);
+    uint2 upCoord = uint2(id.x, id.y - 1);
+    uint2 leftCoord = uint2(id.x - 1, id.y);
+    uint2 rightCoord = uint2(id.x + 1, id.y);
+    float cur = simState[texCoord];
+    float curDown =simState[downCoord];
+    if(cur < curDown)
+    {
+        simState[downCoord] = 0;
+        simState[texCoord] = cur + curDown;
+    }
+    float curUp = simState[upCoord];
+    float curLeft = simState[leftCoord];
+    float curRight = simState[rightCoord];
+}

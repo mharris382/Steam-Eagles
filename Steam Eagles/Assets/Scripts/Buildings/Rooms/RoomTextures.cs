@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,8 +19,10 @@ namespace Buildings.Rooms
         private Dictionary<BuildingLayers, Texture2D> _textures = new Dictionary<BuildingLayers, Texture2D>();
         private BoundsLookup _boundsLookup;
         private ITileColorPicker _tileColorPicker;
-        
-        
+        private Subject<BuildingTile> _onTileSet = new();
+
+        public IObservable<BuildingTile> OnTileSetStream => _onTileSet;
+
         [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
         public Texture2D SolidTexture
         {
@@ -83,6 +86,11 @@ namespace Buildings.Rooms
 
         void OnTileSet(Vector3Int cell, BuildingLayers layers, TileBase tile)
         {
+            _onTileSet.OnNext(new BuildingTile()
+            {
+                cell = new BuildingCell(cell, layers),
+                tile = tile
+            });
             var texture = GetTexture(layers);
             if (texture == null) return;
             if(_boundsLookup == null)_boundsLookup = new BoundsLookup(Room);

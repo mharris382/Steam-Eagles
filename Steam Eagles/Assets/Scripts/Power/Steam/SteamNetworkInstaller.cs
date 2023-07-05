@@ -32,7 +32,7 @@ public class SteamNetworkInstaller : MonoInstaller
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
         
-        Container.BindInterfacesAndSelfTo<BuildingPipeNetwork>().AsSingle().NonLazy();
+        //Container.BindInterfacesAndSelfTo<BuildingPipeNetwork>().AsSingle().NonLazy();
         
     }
     class Tester : IInitializable

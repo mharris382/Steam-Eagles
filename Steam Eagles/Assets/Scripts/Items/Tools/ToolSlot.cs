@@ -11,7 +11,6 @@ using Zenject;
 
 namespace Items
 {
-  
     [RequireComponent(typeof(InventorySlot))]
     public class ToolSlot : MonoBehaviour
     {
@@ -75,6 +74,7 @@ namespace Items
 
         void SetTool(Tool t)
         {
+            return;
             if (t == null)
             {
                 _onToolChanged.OnNext((t, null));
@@ -88,6 +88,7 @@ namespace Items
         }
         private IEnumerator Start()
         {
+            yield break;
             while (_slot.IsSlotLoading)
             {
                 yield return null;

@@ -122,17 +122,37 @@ using Sirenix.OdinInspector;
         {
             get
             {
-                var lsBounds = Bounds;
-                var wsMin = BuildingTransform.TransformPoint(lsBounds.min);
-                var wsMax = BuildingTransform.TransformPoint(lsBounds.max);
+                var solidBounds = Building.Map.GetCellsForRoom(this, BuildingLayers.SOLID);
+                var solidMin = solidBounds.min;
+                var solidMax = solidBounds.max;
+                var wsMin = Building.Map.CellToWorld(solidMin, BuildingLayers.SOLID);
+                var wsMax = Building.Map.CellToWorld(solidMax, BuildingLayers.SOLID);
+                var extent = wsMax - wsMin;
+                var center = wsMax - (extent / 2f);
                 wsMin.z = -0.5f;
                 wsMax.z = 0.5f;
-                var wsBounds = new Bounds(wsMin, Vector3.zero);
-                Bounds.SetMinMax(wsMin, wsMax);
+                var wsBounds = new Bounds(center, extent);
                 return wsBounds;
             }
         }
-
+        public Bounds LocalSpaceBounds
+        {
+            get
+            {
+                var solidBounds = Building.Map.GetCellsForRoom(this, BuildingLayers.SOLID);
+                var solidMin = solidBounds.min;
+                var solidMax = solidBounds.max;
+                var wsMin = Building.Map.CellToLocal(solidMin, BuildingLayers.SOLID);
+                var wsMax = Building.Map.CellToLocal(solidMax, BuildingLayers.SOLID);
+                var extent = wsMax - wsMin;
+                var center = wsMax - (extent / 2f);
+                wsMin.z = -0.5f;
+                wsMax.z = 0.5f;
+                var wsBounds = new Bounds(center, extent);
+                return wsBounds;
+            }
+        }
+        public Vector2 Size => WorldSpaceBounds.size;
         private Rooms _rooms;
 
 
@@ -248,6 +268,10 @@ using Sirenix.OdinInspector;
             return new BoundsInt(cellMin, size);
         }
 
+        public BoundsInt GetBounds(BuildingLayers layers)
+        {
+            return Building.Map.GetCellsForRoom(this, layers);
+        }
         public RectInt GetCellRect(Tilemap target)
         {
             var center = Bounds.center;

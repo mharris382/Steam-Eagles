@@ -164,6 +164,31 @@ namespace Buildables
                 Gizmos.color = machineCell.gizmoColor;
                 Gizmos.DrawCube(worldPos + (Vector3)offset / 2, offset);
             }*/
+            if (GridLayout == null)
+            {
+
+                var size = new Vector2(cellSize.x, cellSize.y);
+                var center = size / 2f;
+                var min = Vector2.zero;
+                var max = Vector2.one * size;
+                var points = new [] {
+                    min,
+                    new Vector2(min.x, max.y),
+                    max,
+                    new Vector2(max.x, min.y),
+                    min
+                };
+                for (int i = 1; i < points.Length; i++)
+                {
+                    var p0 = points[0];
+                    var p1 = points[1];
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawLine(p0, p1);
+                }
+                
+                return;
+            }
+            
             Vector3 offset = Vector3.one / 2f;
             foreach (var cell in GetCells())
             {

@@ -460,6 +460,27 @@ namespace Buildings
         public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
     }
 
+    public struct BuildingTile : IEquatable<BuildingTile>
+    {
+        public BuildingCell cell;
+        public TileBase tile;
+        
+        public bool IsEmpty => tile == null;
+        public BuildingTile(Vector3Int cell, BuildingLayers layer, TileBase tile)
+        {
+            this.cell = new BuildingCell(cell, layer);
+            this.tile = tile;
+        }
+        public BuildingTile(BuildingCell cell, TileBase tile)
+        {
+            this.cell = cell;
+            this.tile = tile;
+        }
+
+        public bool Equals(BuildingTile other) => cell.Equals(other.cell) && Equals(tile, other.tile);
+        public override bool Equals(object obj) => obj is BuildingTile other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine(cell, tile);
+    }
 
     public struct BuildingRect : IEquatable<BuildingRect>
     {

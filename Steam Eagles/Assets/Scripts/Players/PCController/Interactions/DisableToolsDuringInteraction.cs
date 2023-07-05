@@ -1,4 +1,5 @@
 ﻿using CoreLib;
+using CoreLib.Interfaces;
 using Interactions;
 using Tools.BuildTool;
 using UnityEngine;
@@ -7,12 +8,12 @@ namespace Players.PCController.Interactions
 {
     public class DisableToolsDuringInteraction : IPCInteractionStateListener
     {
-        private ToolSwapController _toolSwapController;
+        private IHideTools _toolSwapController;
         public PC PC
         {
             set
             {
-                _toolSwapController = value.PCInstance.character.GetComponent<ToolSwapController>();
+                _toolSwapController = value.PCInstance.character.GetComponent<IHideTools>();
                 Debug.Assert(_toolSwapController != null, value.PCInstance.character);
             }
         }
