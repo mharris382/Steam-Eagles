@@ -8,6 +8,8 @@ namespace UI.Crafting
     {
         public Color validColor = Color.green;
         public Color invalidColor = Color.red;
+        public Color destructColor = Color.yellow;
+        public Sprite destructionSprite;
         public SpriteRenderer tilePreviewSprite;
     }
 }

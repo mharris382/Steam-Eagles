@@ -371,9 +371,9 @@ namespace Buildables
         }
 
 
-        public void DestroyMachine()
+        public virtual void DestroyMachine()
         {
-            throw new NotImplementedException();
+            GameObject.Destroy(gameObject);
         }
         
         

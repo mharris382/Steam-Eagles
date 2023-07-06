@@ -61,7 +61,9 @@ namespace Buildables
         
         public BuildableMachineBase GetMachine(Vector2Int position)
         {
-             throw new NotImplementedException();
+            if (!IsCellOverlappingMachine(position)) return null;
+            var bMachine = _usedCells[position];
+            return bMachine.Machine;
         }
 
         public IEnumerable<Vector2Int> GetAllValidCells(BuildableMachineBase machine, Vector2Int placement)

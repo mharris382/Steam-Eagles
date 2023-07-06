@@ -155,7 +155,7 @@ public class UICrafting : UIPlayerSystemBase
         
         if (craftingMode.isDestructMode.Value)
         {
-            _destructionPreviewController.UpdateDestructTarget(building, gridPosition);
+            _destructionPreviewController.UpdateDestructTarget(recipe, _playerInput, building, gridPosition);
         }
         else
         {

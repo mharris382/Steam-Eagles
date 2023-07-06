@@ -19,6 +19,11 @@ public class UICraftingInstaller : MonoInstaller
         Container.BindFactory<Recipe, TileBase, TilePreview, TilePreview.Factory>().AsSingle();
         Container.BindFactory<Recipe, GameObject, PrefabPreview, PrefabPreview.Factory>().AsSingle();
         Container.Bind<PrefabPreviewCache>().AsSingle().NonLazy();
+        
+        Container.Bind<DestructionPreview>().AsSingle().NonLazy();
+        Container.BindFactory<Recipe, TileDestructionHandler, TileDestructionHandler.Factory>().AsSingle();
+        Container.BindFactory<Recipe, MachineDestructionHandler, MachineDestructionHandler.Factory>().AsSingle();
+        Container.Bind<DestructionHandlers>().AsSingle().NonLazy();
     }
 
 
