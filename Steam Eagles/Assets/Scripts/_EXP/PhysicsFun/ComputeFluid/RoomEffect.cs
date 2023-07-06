@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Buildings.Rooms;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,6 +10,9 @@ using UnityEngine.VFX;
 public class RoomEffect : MonoBehaviour
 {
     public bool useLocalSpace = true;
+    public float updateRate = 0.5f;
+    public float updateIoRate = 0.25f;
+    public float updateTilemapRate = 2;
     
     public float sinkMultiplier = 1;
     public float sourceMultiplier = 1;
@@ -182,9 +187,42 @@ public class RoomEffect : MonoBehaviour
        RunCompute();
     }
 
+    private void OnEnable()
+    {
+        GasTexture.ResetTexture();
+        SimTextures.Init();
+        StartCoroutine(UpdateSim());
+        StartCoroutine(UpdateIO());
+    }
+
+    
+    IEnumerator UpdateSim()
+    {
+        while (enabled)
+        {
+            yield return new WaitForSeconds(updateRate);
+            RunCompute();
+        }
+    }
+    IEnumerator UpdateIO()
+    {
+        while (enabled)
+        {
+            yield return new WaitForSeconds(updateIoRate);
+            RunIOCompute();
+        }
+    }
+
+    IEnumerator UpdateTilemap()
+    {
+        while (enabled)
+        {
+            yield return new WaitForSeconds(updateTilemapRate);
+            
+        }
+    }
 
     private void Update()
     {
-        FullSimCompute();
     }
 }

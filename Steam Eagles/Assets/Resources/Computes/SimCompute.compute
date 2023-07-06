@@ -38,6 +38,7 @@ void SimIO (uint3 id : SV_DispatchThreadID)
 }
 Texture2D<float> boundaryTexture;
 RWTexture2D<float> gas;
+uint2 boundaryTextureScale = uint2(1, 1);
 float laplacianCenter = -4.0f;
 float laplacianNeighbor = 1.0f;
 float laplacianDiagnal = 0.5f;
@@ -45,8 +46,9 @@ float laplacianDiagnal = 0.5f;
 void SimDiffuse (uint3 id : SV_DispatchThreadID)
 {
     int2 texCoord = int2(id.x, id.y);
+    int2 boundaryTexCoord = texCoord / boundaryTextureScale;
 // Sample the boundary texture
-float boundaryValue = boundaryTexture[texCoord];
+float boundaryValue = boundaryTexture[boundaryTexCoord];
 
 // Modify the Laplacian matrix based on the boundary value
 if (boundaryValue > 0.5f)
@@ -60,14 +62,14 @@ if (boundaryValue > 0.5f)
 float gasValue = gas[texCoord];
 float updatedGasValue = gasValue;
 
-float leftBoundary = boundaryTexture[texCoord - int2(1, 0)];
-float rightBoundary = boundaryTexture[texCoord + int2(1, 0)];
-float upBoundary = boundaryTexture[texCoord - int2(0, 1)];
-float downBoundary = boundaryTexture[texCoord + int2(0, 1)];
-float topLeftBoundary = boundaryTexture[texCoord - int2(1, 1)];
-float topRightBoundary = boundaryTexture[texCoord + int2(1, -1)];
-float bottomLeftBoundary = boundaryTexture[texCoord + int2(-1, 1)];
-float bottomRightBoundary = boundaryTexture[texCoord + int2(1, 1)];
+float leftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 0)];
+float rightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 0)];
+float upBoundary = boundaryTexture[boundaryTexCoord - int2(0, 1)];
+float downBoundary = boundaryTexture[boundaryTexCoord + int2(0, 1)];
+float topLeftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 1)];
+float topRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, -1)];
+float bottomLeftBoundary = boundaryTexture[boundaryTexCoord + int2(-1, 1)];
+float bottomRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 1)];
 // Perform multiple iterations of the diffusion process
 const int numIterations = 5;
 for (int i = 0; i < numIterations; i++)
@@ -107,14 +109,10 @@ for (int i = 0; i < numIterations; i++)
 
 
     // Update the gas texture with the updated value for the current iteration
-    if(boundaryValue < 0.5f)
-        gas[texCoord] = updatedGasValue;
-    if(upBoundary < 0.5f)
-        gas[texCoord - int2(0, 1)] = result[1][0];
-    if(downBoundary < 0.5f)
-        gas[texCoord + int2(0, 1)] = result[1][2];
-    if(leftBoundary < 0.5f)
-        gas[texCoord - int2(1, 0)] = result[0][1];
+    if(boundaryValue < 0.5f) gas[texCoord] = updatedGasValue;
+    if(upBoundary < 0.5f) gas[texCoord - int2(0, 1)] = result[1][0];
+    if(downBoundary < 0.5f) gas[texCoord + int2(0, 1)] = result[1][2];
+    if(leftBoundary < 0.5f) gas[texCoord - int2(1, 0)] = result[0][1];
     // if(rightBoundary < 0.5f)
     //     gas[texCoord + int2(1, 0)] = result[2][1];
     // if(topLeftBoundary < 0.5f)

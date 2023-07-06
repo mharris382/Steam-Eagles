@@ -38,6 +38,7 @@ public static class SimCompute
         var kernel = SimComputeShader.FindKernel("SimDiffuse");
         SimComputeShader.SetTexture(kernel, "gas", gasTexture);
         SimComputeShader.SetTexture(kernel, "boundaryTexture", boundaryTexture);
+        SimComputeShader.SetInts("boundaryTextureScale", boundaryTexture.width/gasTexture.width, boundaryTexture.height/gasTexture.height);
         SimComputeShader.SetFloat("laplacianCenter", laplacianCenter);
         SimComputeShader.SetFloat("laplacianNeighbor", laplacianNeighbor);
         SimComputeShader.SetFloat("laplacianDiagnal", laplacianDiagnal);

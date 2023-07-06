@@ -10,9 +10,17 @@ public class GasTexture : MonoBehaviour
     [SerializeField, ReadOnly, PreviewField]
     private RenderTexture _renderTexture;
     public RawImage image;
-    
-    private Vector2Int SizeActual => sizeRaw * resolution;
-
+    [ShowInInspector]
+    private Vector2Int SizeActual => sizeRaw * (resolution * resolution);
+    [ShowInInspector]
+    public Vector2Int ImageSize
+    {
+        get
+        {
+            if(HasTexture) return new Vector2Int(_renderTexture.width, _renderTexture.height);
+            return Vector2Int.zero;
+        }
+    }
     public int Resolution => resolution;
     
     public bool HasTexture => _renderTexture != null;
@@ -62,6 +70,7 @@ public class GasTexture : MonoBehaviour
 
     void CreateTexture(int w, int h)
     {
+        if (HasTexture) _renderTexture.Release();
         _renderTexture = new RenderTexture(w, h, 0);
         _renderTexture.enableRandomWrite = true;
         _renderTexture.Create();
