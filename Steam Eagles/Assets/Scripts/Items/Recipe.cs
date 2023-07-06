@@ -4,6 +4,7 @@ using System.Linq;
 using CoreLib;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -16,7 +17,7 @@ using Sirenix.OdinInspector.Editor;
 namespace Items
 {
     [CreateAssetMenu(menuName = "Steam Eagles/Items/Recipe")]
-    public class Recipe : ScriptableObject, IIconable
+    public class Recipe : SerializedScriptableObject, IIconable
     {
         public enum RecipeType
         {
@@ -29,13 +30,13 @@ namespace Items
         [HorizontalGroup("Recipe", width:0.8f),TableList(AlwaysExpanded = true)] public List<ItemStack> components;
 
 
+        [OdinSerialize, NonSerialized]   public string category = "Misc";
         [SerializeField, EnumPaging] private RecipeType recipeType;
 
         [ShowIf(nameof(UseInstanceReference)),SerializeField] private RecipeInstanceReference instanceReference;
 
         [ShowIf(nameof(UseTileReference)),SerializeField] private TileReference tileReference;
 
-        public string category = "Misc";
 
         private PrefabLoader _prefabLoader;
         private TileLoader _tileLoader;

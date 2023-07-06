@@ -88,6 +88,10 @@ public class Recipes
         }
 
         foreach (var recipe in recipes) _recipes[recipe.category].Add(recipe);
+        foreach (var recipe in _recipes)
+        {
+            Debug.Assert(recipe.Value.Count > 0, $"Empty Category Found: {recipe.Key}");
+        }
     }
     private void InitStreams()
     {
@@ -96,7 +100,8 @@ public class Recipes
        var recipeIndexStream = categoryNameStream.Select(t => _recipeIndexes[t]).Merge(_onRecipeIndexChanged.Select(_ => _recipeIndexes[CurrentCategory]));
        var recipeListStream = categoryNameStream.Select(t => _recipes[t]);
        _categoryRecipesProp = recipeListStream.ToReadOnlyReactiveProperty();
-       _currentRecipeProp = recipeIndexStream.Select(t => _categoryRecipesProp.Value[t]).ToReadOnlyReactiveProperty();
+       _categoryRecipesProp.Subscribe(t => Debug.Assert(t.Count > 0));
+       _currentRecipeProp = recipeIndexStream.Select(t => _categoryRecipesProp.Value[Mathf.Clamp(t, 0, _categoryRecipesProp.Value.Count)]).ToReadOnlyReactiveProperty();
        _currentCategoryIndex.Value = 0;
     }
 
