@@ -138,7 +138,7 @@ public class UICrafting : UIPlayerSystemBase
         inputActions.Process(_playerInput, recipes);
         shortcuts.ProcessShortcuts(_playerInput, recipes);
         craftingMode.Process(_playerInput);
-
+        if(_roomState.CurrentRoom.Value == null) return;
         ProcessCraftingUI();
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Buildables;
 using Buildings;
 using Items;
 using UnityEngine;
@@ -15,7 +16,18 @@ namespace UI.Crafting.Destruction
 
         public override bool HasDestructionTarget(Building building, BuildingCell cell)
         {
-            return building.Map.GetTile(cell) != null;
+            
+            var hasTile = building.Map.GetTile(cell) != null;
+            if (!hasTile)
+                return false;
+            var bmachines = building.GetComponent<BMachines>();
+            var bmachine = bmachines.Map.GetMachine(cell.cell2D + Vector2Int.up);
+            if (bmachine != null && bmachine.snapsToGround)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override Vector2 GetDestructionTargetSize(Building building, BuildingCell cell)

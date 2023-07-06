@@ -47,7 +47,7 @@ namespace UI.Crafting.Destruction
         {
             var handler = GetDestructionHandlerFor(recipe);
             handler.UpdateDestructionPreview(building, cell);
-            if (playerInput.actions["Ability Primary"].IsPressed())
+            if (playerInput.actions["Ability Primary"].IsPressed() && handler.HasDestructionTarget(building, cell))
             {
                 handler.Destruct(building, cell);
             }
