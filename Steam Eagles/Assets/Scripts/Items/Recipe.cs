@@ -40,7 +40,21 @@ namespace Items
 
         private PrefabLoader _prefabLoader;
         private TileLoader _tileLoader;
-        
+
+        public string friendlyName;
+        public string FriendlyName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(friendlyName))
+                {
+                    var newName = name.Replace("Recipe", "").Replace("Buildable", "").Replace("_", "").Trim();
+                    return newName;
+                }
+
+                return friendlyName;
+            }
+        }
         
         bool UseTileReference => recipeType == RecipeType.TILE;
 

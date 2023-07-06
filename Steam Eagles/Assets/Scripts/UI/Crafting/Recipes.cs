@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Items;
 using Sirenix.OdinInspector;
 using UniRx;
@@ -31,7 +32,9 @@ public class Recipes
     public IReadOnlyReactiveProperty<Recipe> CurrentRecipe => _currentRecipeProp;
     public IReadOnlyReactiveProperty<string> CurrentCategoryName => _categoryNameProp;
     
+    public IObservable<int> OnCategoryChanged => _currentCategoryIndex;
     
+    public IObservable<Recipe> OnRecipeChanged => _onRecipeIndexChanged.Select(_ => _recipes[CurrentCategory][_recipeIndexes[categories[_currentCategoryIndex.Value]]]);
 
     private List<Recipe> CurrentCategoryRecipes
     {
@@ -61,6 +64,20 @@ public class Recipes
         }
     }
     
+    public List<Recipe> GetRecipes(string category)
+    {
+        if(!Application.isPlaying)
+            InitForEditor();
+        if(_recipes.ContainsKey(category))
+            return _recipes[category];
+        return null;
+    }
+
+    public void InitForEditor()
+    {
+        FindCategories();
+        InitLookups();
+    }
     public void Init()
     {
         
