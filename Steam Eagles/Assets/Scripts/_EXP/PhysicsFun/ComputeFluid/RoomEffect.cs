@@ -24,7 +24,9 @@ public class RoomEffect : MonoBehaviour
     private RoomCamera _roomCamera;
     private RoomSimTextures _roomSimTextures;
     private GasTexture _gasTexture;
-
+  public  float laplacianCenter = -4.0f;
+  public  float laplacianNeighbor = 1.0f;
+  public float laplacianDiagnal = 0.5f;
     private ISimIOTextures _ioTexture;
     private int _textureParamId;
     private int _resolutionParamId;
@@ -34,7 +36,7 @@ public class RoomEffect : MonoBehaviour
     public RoomTextures Room => _room ? _room : _room = GetComponentInParent<RoomTextures>();
     public GasTexture GasTexture => _gasTexture ? _gasTexture : _gasTexture = GetComponentInParent<GasTexture>();
 
-    
+    public RoomSimTextures SimTextures => _simTextures ? _simTextures : _simTextures = GetComponentInParent<RoomSimTextures>();
     private void Awake()
     {
         _resolutionParamId = Shader.PropertyToID(resolutionParameter);
@@ -43,6 +45,7 @@ public class RoomEffect : MonoBehaviour
 
 
 
+    #region [Validation]
 
     bool ValidateParamNameTex(string p)
     {
@@ -96,6 +99,11 @@ public class RoomEffect : MonoBehaviour
             return false;
         }
     }
+
+    #endregion
+
+    #region [Initialization]
+
     [Button, EnableIf("@GasTexture.HasTexture")]
     void InitAll()
     {
@@ -126,7 +134,9 @@ public class RoomEffect : MonoBehaviour
         }
     }
 
-    [Button]
+    #endregion
+
+    [Button,ButtonGroup()]
     void RunIOCompute()
     {
         if (GasTexture.HasTexture == false)
@@ -144,7 +154,37 @@ public class RoomEffect : MonoBehaviour
         SimCompute.AssignIO(gasTexture, sinkTexture, sourceTexture, srcTextureSize, sinkTextureSize, sourceMultiplier, sinkMultiplier);
         SimCompute.DispatchIO(gasTexture);
     }
-    
-    
-    
+
+    [Button,ButtonGroup()]
+    void TilemapUpdateCompute()
+    {
+        GasTexture.ResetTexture();
+        SimTextures.Init();
+    }
+    [Button,ButtonGroup()]
+    void RunCompute()
+    {
+        if (GasTexture.HasTexture == false)
+        {
+            Debug.LogError("No Gas Texture", this);
+            return;
+        }
+        var gasTexture = GasTexture.RenderTexture;
+        SimCompute.AssignDiffuse(gasTexture,(RenderTexture)SimTextures.textureSet.compositeBoundariesTexture.texture, laplacianCenter,laplacianNeighbor, laplacianDiagnal);
+        SimCompute.DispatchDiffuse();
+        _textureParamId = Shader.PropertyToID(textureParameter);
+        VisualEffect.SetTexture(_textureParamId, gasTexture);
+    }
+    [Button(ButtonSizes.Large)]
+    private void FullSimCompute()
+    {
+       RunIOCompute();
+       RunCompute();
+    }
+
+
+    private void Update()
+    {
+        FullSimCompute();
+    }
 }

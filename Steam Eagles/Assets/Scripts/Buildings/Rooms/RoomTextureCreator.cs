@@ -121,7 +121,7 @@ namespace Buildings.Rooms
         }
         float GetWallTileValue(BuildingTile tile) => 0.5f;
 
-        float GetGasTileValue(BuildingTile tile) => 0.2f;
+        float GetGasTileValue(BuildingTile tile) => 1;
 
         public Texture CopyFromMultipleTilemaps(bool recreate, params BuildingLayers[] layers)
         {

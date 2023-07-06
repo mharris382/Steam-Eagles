@@ -4,9 +4,12 @@ public static class SimCompute
 {
     static ComputeShader _simCompute;
     public static ComputeShader SimComputeShader => _simCompute ? _simCompute : _simCompute = Resources.Load<ComputeShader>("Computes/SimCompute");
-    
-    
-    
+
+
+    static SimCompute()
+    {
+        
+    }
     
     public static void AssignIO(RenderTexture result, RenderTexture sinkTexture, RenderTexture sourceTexture, int sourceSize=1, int sinkSize=1, float srcMultiplier = 1, float sinkMultiplier = 1)
     {
@@ -28,5 +31,25 @@ public static class SimCompute
         Debug.Assert(threadsX > 0);
         Debug.Assert(threadsY > 0);
         SimComputeShader.Dispatch(kernel, threadsX, threadsY, 1);
+    }
+
+    public static void AssignDiffuse(RenderTexture gasTexture, RenderTexture boundaryTexture, float laplacianCenter = -4.0f,    float laplacianNeighbor = 1.0f, float laplacianDiagnal = 0.5f)
+    {
+        var kernel = SimComputeShader.FindKernel("SimDiffuse");
+        SimComputeShader.SetTexture(kernel, "gas", gasTexture);
+        SimComputeShader.SetTexture(kernel, "boundaryTexture", boundaryTexture);
+        SimComputeShader.SetFloat("laplacianCenter", laplacianCenter);
+        SimComputeShader.SetFloat("laplacianNeighbor", laplacianNeighbor);
+        SimComputeShader.SetFloat("laplacianDiagnal", laplacianDiagnal);
+        int threadsX = gasTexture.width / 8;
+        int threadsY = gasTexture.height / 8;
+        Debug.Assert(threadsX > 0);
+        Debug.Assert(threadsY > 0);
+        SimComputeShader.Dispatch(kernel, threadsX, threadsY, 1);
+    }
+
+    public static void DispatchDiffuse()
+    {
+        
     }
 }

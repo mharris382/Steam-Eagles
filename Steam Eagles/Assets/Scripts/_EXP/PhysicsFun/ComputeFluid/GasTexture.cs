@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GasTexture : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class GasTexture : MonoBehaviour
     [SerializeField, ReadOnly] private Vector2Int sizeRaw;
     [SerializeField, ReadOnly, PreviewField]
     private RenderTexture _renderTexture;
+    public RawImage image;
     
     private Vector2Int SizeActual => sizeRaw * resolution;
 
@@ -17,7 +19,8 @@ public class GasTexture : MonoBehaviour
     
     public RenderTexture RenderTexture => _renderTexture ? _renderTexture : _renderTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
 
-    private void ResetTexture()
+    [Button()]
+    public void ResetTexture()
     {
         _renderTexture = null;
     }
@@ -39,6 +42,8 @@ public class GasTexture : MonoBehaviour
             var sizeActual = SizeActual;
             CreateTexture(sizeActual.x, sizeActual.y);
         }
+        
+        if(image) image.texture = _renderTexture;
         return _renderTexture;
     }
 
@@ -48,6 +53,7 @@ public class GasTexture : MonoBehaviour
         if (HasTexture)
         {
             texture = _renderTexture;
+            if(image) image.texture = _renderTexture;
             return true;
         }
 
@@ -56,9 +62,11 @@ public class GasTexture : MonoBehaviour
 
     void CreateTexture(int w, int h)
     {
-        _renderTexture = new RenderTexture(w, h, 1);
+        _renderTexture = new RenderTexture(w, h, 0);
         _renderTexture.enableRandomWrite = true;
         _renderTexture.Create();
+        if(image) image.texture = _renderTexture;
+        
     }
     
     private bool IsTextureSizeMismatch()

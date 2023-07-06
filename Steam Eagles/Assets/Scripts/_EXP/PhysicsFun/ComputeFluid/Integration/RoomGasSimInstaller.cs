@@ -2,18 +2,44 @@
 using Buildings;
 using Buildings.Rooms;
 using CoreLib;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 using Zenject;
-
+[RequireComponent(typeof(GasTexture))]
+[RequireComponent(typeof(RoomEffect), typeof(RoomTextures), typeof(RoomSimTextures))]
+[RequireComponent(typeof(Room))]
 public class RoomGasSimInstaller : MonoInstaller
 {
-    
+    [Serializable]
+    public class GasResources
+    {
+        public VisualEffect visualEffect;
+        public string gasTextureParameterName = "GasTexture";
+       
+        
+        // public VisualEffect CreateEffectFor(Room room, RenderTexture gasTexture)
+        // {
+        //     if (!asPrefab) throw new NotImplementedException();
+        //     var effect = Instantiate(visualEffect, room.transform);
+        //     effect.SetTexture(gasTextureParameterName, gasTexture);
+        //     return effect;
+        // }
+    }
 
+    public GasResources gasResources;
     public override void InstallBindings()
     {
-        Container.Bind<SimGrid>().FromNewComponentOnNewGameObject().WithGameObjectName("Sim Grid")
-            .UnderTransform(GetSimGridTransform).AsSingle();
+        Container.Rebind<DiContainer>().FromInstance(Container).AsSingle().NonLazy();
+        
+        Container.Rebind<Room>().FromComponentOn(gameObject).AsSingle().NonLazy();
+        Container.Rebind<RoomTextures>().FromComponentOn(gameObject).AsSingle();
+        
+        Container.Bind<GasResources>().FromInstance(gasResources).AsSingle().NonLazy();
+        Container.Bind<RoomEffect>().FromComponentOn(gameObject).AsSingle();
+        Container.Bind<RoomSimTextures>().FromComponentOn(gameObject).AsSingle();
+
+        Container.Bind<SimGrid>().FromNewComponentOnNewGameObject().WithGameObjectName("Sim Grid").UnderTransform(GetSimGridTransform).AsSingle();
     }
 
     Transform GetSimGridTransform(InjectContext context)

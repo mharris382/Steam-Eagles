@@ -76,7 +76,7 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
        public RawImage gasOutputTexture;
        public void Update(TextureSet textureSet, GasTexture gasTexture)
        {
-           gridLayoutGroup.cellSize = new Vector2(textureSet.solidTexture.gridSize.x * scale, textureSet.solidTexture.gridSize.y * scale);
+          if(gridLayoutGroup) gridLayoutGroup.cellSize = new Vector2(textureSet.solidTexture.gridSize.x * scale, textureSet.solidTexture.gridSize.y * scale);
            if(solidTexture) solidTexture.texture = textureSet.solidTexture.texture;
             if(wallTexture) wallTexture.texture = textureSet.wallTexture.texture;
            if(foundationTexture) foundationTexture.texture = textureSet.foundationTexture.texture;
@@ -110,6 +110,8 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
        var gasTex = GasTexture;
        gasTex.GetGasTexture(roomSize.x, roomSize.y);
    }
+
+ 
 
    public RenderTexture SimInputTexture => textureSet.gasInputTexture.texture as RenderTexture;
    public RenderTexture SimOutputTexture => textureSet.wallTexture.texture as RenderTexture;
