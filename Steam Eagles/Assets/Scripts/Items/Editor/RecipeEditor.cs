@@ -12,6 +12,17 @@ namespace Items
         [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
         [ShowInInspector]
         public List<RecipeWrapper> r;
+
+        [Button]
+        void SortByName()
+        {
+            r = r.OrderBy(recipe => recipe.Name).ToList();
+        }
+        [Button]
+        void SortByCategory()
+        {
+            r = r.OrderBy(recipe => recipe.category).ToList();
+        }
         public RecipeEditor(IEnumerable<Recipe> recipes,IEnumerable<ItemBase> allItems)
         {
             _allItems = allItems.ToList();
@@ -21,6 +32,7 @@ namespace Items
             {
                 r.Add(new RecipeWrapper(re, this));
             }
+            
         }
         
         public class RecipeWrapper
@@ -65,11 +77,11 @@ namespace Items
                 }
             }
 
-            [ShowInInspector, TableColumnWidth(250, true)]
-            public string category
+            [ShowInInspector, TableColumnWidth(250, true), EnumToggleButtons]
+            public Recipe.RecipeCategory category
             {
-                get => _recipe.category;
-                set => _recipe.category = value;
+                get => _recipe.recipeCategory;
+                set => _recipe.recipeCategory = value;
             }
 
             public RecipeWrapper(Recipe recipe, RecipeEditor recipeEditor)

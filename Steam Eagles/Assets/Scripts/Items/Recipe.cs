@@ -24,13 +24,22 @@ namespace Items
             TILE,
             MACHINE
         }
+        public enum RecipeCategory
+        {
+            Tiles,
+            Machines,
+            Decor,
+            Security,
+        }
 
         [HorizontalGroup("Recipe", width:0.2f, marginLeft:15),HideLabel] public Sprite icon;
 
         [HorizontalGroup("Recipe", width:0.8f),TableList(AlwaysExpanded = true)] public List<ItemStack> components;
 
 
-        [OdinSerialize, NonSerialized]   public string category = "Misc";
+        
+        public RecipeCategory recipeCategory = RecipeCategory.Tiles;
+        public string category => recipeCategory.ToString();
         [SerializeField, EnumPaging] private RecipeType recipeType;
 
         [ShowIf(nameof(UseInstanceReference)),SerializeField] private RecipeInstanceReference instanceReference;
