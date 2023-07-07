@@ -268,14 +268,7 @@ namespace Buildings.SaveLoad
     
 }
 
-public class TilemapSaveDataV3Installer : Installer<TilemapSaveDataV3Installer>
-{
-    public override void InstallBindings()
-    {
-        Container.Bind<TilemapsSaveDataV3>().AsSingle().NonLazy();
-        Container.BindFactory<Room, RoomTilemapTextures, RoomTilemapTextures.Factory>().AsSingle().NonLazy();
-    }
-}
+
 
 [Serializable]
 public class TilemapsSaveDataV3

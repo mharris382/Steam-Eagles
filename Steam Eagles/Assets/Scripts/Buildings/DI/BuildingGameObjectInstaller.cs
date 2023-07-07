@@ -4,6 +4,7 @@ using Buildings.Rooms;
 using JetBrains.Annotations;
 using SaveLoad;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using Zenject;
 
 namespace Buildings.DI
@@ -17,7 +18,10 @@ namespace Buildings.DI
         public override void InstallBindings()
         {
             BuildingDamageInstaller.Install(Container);
-            Container.Bind<Building>().FromInstance(GetComponentInChildren<Building>()).AsSingle();
+            var building = GetComponentInChildren<Building>();
+            if (building == null) building = GetComponentInParent<Building>();
+            Debug.Assert(building != null, "building != null", this);
+            Container.Bind<Building>().FromInstance(building).AsCached().IfNotBound();
             
             // Container.Bind<EntityInitializer>().FromInstance(GetComponentInChildren<EntityInitializer>()).AsSingle();
             if (overrideTileAssets)
@@ -25,11 +29,12 @@ namespace Buildings.DI
                 Container.Rebind<TileAssets>().FromInstance(tileAssets).AsSingle().NonLazy();
             }
 
-            Container.BindInterfacesAndSelfTo<BuildingCoreData>().AsSingle().NonLazy();
-            TilemapSaveDataV3Installer.Install(Container);
-            
-            
+            Container.BindInterfacesAndSelfTo<BuildingCoreData>().AsCached().NonLazy();
+
+
             Container.BindFactory<BuildingLayers, IRoomTilemapTextureSaveLoader, TexSaveLoadFactory>().FromFactory<TexSaveLoadFactoryImpl>();
+            Container.Bind<TilemapsSaveDataV3>().AsSingle().NonLazy();
+            Container.BindFactory<Room, RoomTilemapTextures, RoomTilemapTextures.Factory>().AsSingle().NonLazy();
             Container.BindFactory<Room, BuildingLayers, RoomTilemapTextures.RoomTexture, RoomTilemapTextures.RoomTexture.Factory>().AsSingle().NonLazy();
             ReflectedInstaller<IRoomTilemapTextureSaveLoader>.Install(Container, ContainerLevel.GAMEOBJECT);
         }

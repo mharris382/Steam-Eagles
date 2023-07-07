@@ -1,0 +1,40 @@
+// Each #kernel tells which function to compile; you can have many kernels
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel DynamicGasIO
+
+struct IO
+{
+    int2 texCoord;
+    int2 size;
+    float valueToAdd;
+    float valueAdded;
+};
+int ioCount;
+RWStructuredBuffer<IO> ioBuffer;
+RWTexture2D<float4> gas;
+
+[numthreads(8,1,1)]
+void DynamicGasIO (uint3 id : SV_DispatchThreadID)
+{
+    IO io = ioBuffer[id.x];
+    for (int x =  0; x < io.size.x; x++)
+    {
+        for (int y = 0; y < io.size.y; y++)
+        {
+            int2 texCoord = int2(io.texCoord.x + x, io.texCoord.y + y);
+            float gasCurrent = gas[texCoord].x;
+            float gasNew = gasCurrent + io.valueToAdd;
+            float gasClamped = clamp(gasNew, 0, 1);
+            float gasDelta = gasClamped - gasCurrent;
+            gas[texCoord] = float4(gasClamped,  gas[texCoord].y,  gas[texCoord].z, gas[texCoord].w);
+            io.valueAdded += gasDelta;
+        }
+    }
+    // float gasCurrent = gas[io.texCoord].x;
+    // float gasNew = gasCurrent + io.valueToAdd;
+    // float gasClamped = clamp(gasNew, 0, 1);
+    // float gasDelta = gasClamped - gasCurrent;
+    // gas[io.texCoord] = float4(gasClamped,  gas[io.texCoord].y,  gas[io.texCoord].z, gas[io.texCoord].w);
+    // io.valueAdded = gasDelta;
+    ioBuffer[id.x] = io;
+}

@@ -38,6 +38,17 @@ namespace Buildings
 
         public int orderInLayer;
 
+        [Button]
+        void Helper()
+        {
+            Debug.Log(typeof(Building).AssemblyQualifiedName);
+            var assemblyQualifiedName = typeof(Building).AssemblyQualifiedName;
+            if (assemblyQualifiedName != null)
+            {
+                var t = Type.GetType(assemblyQualifiedName);
+                Debug.Assert(t != null);
+            }
+        }
         
         [SerializeField] Rect _sizeWorldSpace;
 
@@ -95,8 +106,17 @@ namespace Buildings
         public RectInt SizeGridSpace
         {
             get => _sizeGridSpace;
-            set => _sizeGridSpace = value;
+            set
+            {
+                _sizeGridSpace = value;
+                var minGs = (Vector3Int)_sizeGridSpace.min;
+                var maxGs = (Vector3Int)_sizeGridSpace.max;
+                var minWs = Grid.CellToWorld(minGs);
+                var maxWs = Grid.CellToWorld(maxGs);
+                _sizeWorldSpace = new Rect(minWs, maxWs - minWs);
+            }
         }
+
         public Rect sizeWorldSpace
         {
             get => _sizeWorldSpace;
@@ -247,6 +267,7 @@ namespace Buildings
             _coverTilemap = GetComponent<CoverTilemap>();
 
             SetupPhysics();
+            CalculateSizeWs();
 
             void SetupPhysics()
             {
@@ -288,6 +309,24 @@ namespace Buildings
 
         #region [Helper Methods]
 
+
+        private void CalculateSizeWs()
+        {
+            var rooms = GetComponent<Rooms.Rooms>();
+            var max = Vector2Int.zero;
+            var min = Vector2Int.zero;
+            foreach (var room in rooms.AllRooms)
+            {
+                var bounds = room.RoomRect;
+                if (bounds.xMin < min.x) min.x = bounds.xMin;
+                if (bounds.yMin < min.y) min.y = bounds.yMin;
+                if (bounds.xMax > max.x) max.x = bounds.xMax;
+                if (bounds.yMax > max.y) max.y = bounds.yMax;
+            }
+
+            var finalRect = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+            SizeGridSpace = finalRect.CastTo();
+        }
         public IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
 
         [Button, HideInEditorMode, ShowIf("@_skin != null")]

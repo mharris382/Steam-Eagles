@@ -23,6 +23,8 @@ namespace CoreLib
         public readonly GameObject characterPrefab;
         public readonly int playerCharacterIndex;
         public readonly Vector2 spawnPositionLocal;
+        
+        public GameObject Building { get; set; }
 
         public RequestPlayerCharacterSpawn(string characterName, GameObject characterPrefab, int playerCharacterIndex, Vector2 spawnPositionLocal)
         {
@@ -30,6 +32,7 @@ namespace CoreLib
             this.characterPrefab = characterPrefab;
             this.playerCharacterIndex = playerCharacterIndex;
             this.spawnPositionLocal = spawnPositionLocal;
+            Building = null;
         }
     }
 

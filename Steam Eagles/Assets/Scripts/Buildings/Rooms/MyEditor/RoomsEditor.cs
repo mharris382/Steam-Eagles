@@ -79,18 +79,6 @@ namespace Buildings.Rooms.MyEditor
             base.OnInspectorGUI();
             
             _graphEditor.OnInspectorGUI();
-            
-            var roomTrackerManager = FindObjectOfType<RoomTrackerManager>();
-            if (roomTrackerManager == null)
-            {
-                EditorGUILayout.HelpBox("RoomTrackerManager not found in scene", MessageType.Warning);
-                if(GUILayout.Button("Create RoomTrackerManager"))
-                {
-                    var go = new GameObject("[ROOM TRACKER MANAGER]");
-                    go.AddComponent<RoomTrackerManager>();
-                    Selection.activeGameObject = go;
-                }
-            }
         }
 
         private void OnPreSceneGUI()
@@ -102,7 +90,7 @@ namespace Buildings.Rooms.MyEditor
             _graphEditor.OnPreSceneGUI(size);
         }
 
-        private void OnSceneGUI()
+        public void OnSceneGUI()
         {
             Rooms rooms = (Rooms)target;
             if (rooms == null) return;
@@ -158,6 +146,9 @@ namespace Buildings.Rooms.MyEditor
             var center = buildingTransform.InverseTransformPoint(centerWs);
             roomArea = new Rect(center, roomArea.size);
             var roomGo = new GameObject("New Room");
+            targetRooms.CreateRoomParent();
+            roomGo.transform.parent = targetRooms.roomParent;
+            roomGo.transform.position = centerWs;
             Undo.RegisterCreatedObjectUndo(roomGo, "Created New Room");
             var boxCollider = roomGo.AddComponent<BoxCollider2D>();
             boxCollider.isTrigger = true;

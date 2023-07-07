@@ -7,7 +7,7 @@ namespace Buildings.Damage
     {
         public override void InstallBindings()
         {
-            Container.Bind<BuildingDamageResources>().AsSingle().NonLazy();
+            
             
         }
     }

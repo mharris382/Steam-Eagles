@@ -4,6 +4,7 @@ using Buildables;
 using Buildings;
 using Buildings.Rooms.Tracking;
 using Buildings.Tiles;
+using CoreLib;
 using Items;
 using Sirenix.OdinInspector;
 using UI;
@@ -121,6 +122,8 @@ public class UICrafting : UIPlayerSystemBase
 
     private void Awake()
     {
+        MessageBroker.Default.Receive<CharacterAssignedPlayerInputInfo>().Subscribe(OnCharacterAssignedPlayerInput)
+            .AddTo(this);
         recipes.Init();
        //_recipeLoader = new LoadHelper(recipes, this);
        //_aimHanding = new CraftingAimHanding();
@@ -129,6 +132,13 @@ public class UICrafting : UIPlayerSystemBase
        //_destructionPreviewController = new DestructionPreviewController();
     }
 
+    void OnCharacterAssignedPlayerInput(CharacterAssignedPlayerInputInfo info)
+    {
+        var camera = info.camera.GetComponent<Camera>();
+        var input = info.inputGo.GetComponent<PlayerInput>();
+        var character = info.characterState.gameObject;
+        OnGameStarted(input, character, camera);
+    }
     void Update()
     {
         if(!IsReady) return;

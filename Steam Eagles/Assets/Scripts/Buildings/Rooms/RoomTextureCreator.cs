@@ -14,7 +14,7 @@ namespace Buildings.Rooms
     public class RoomTextureCreator
     {
         /// <summary> structure used to pass data to compute shader </summary>
-        struct TilemapData
+        public struct TilemapData
         {
             public Vector2Int position;
             public float value;
@@ -230,7 +230,7 @@ namespace Buildings.Rooms
         }
 
 
-        static void WriteTilemapDataToTexture(RenderTexture texture, TilemapData[] data)
+        public static void WriteTilemapDataToTexture(RenderTexture texture, TilemapData[] data)
         {
             var computeShader = BufferToTexCompute.BufferToTexComputeShader;
             var stride = TilemapData.Stride();

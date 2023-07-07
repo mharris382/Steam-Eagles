@@ -32,8 +32,40 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
    [ShowInInspector, BoxGroup("Areas")] public Vector2Int SolidTextureSize => (Vector2Int)BoundsLookup.GetBounds(BuildingLayers.SOLID).size;
    [ShowInInspector, BoxGroup("Areas")] public Vector2Int WallTextureSize => (Vector2Int)BoundsLookup.GetBounds(BuildingLayers.WALL).size;
    [ShowInInspector, BoxGroup("Areas")] public Vector2Int FoundationTextureSize => (Vector2Int)BoundsLookup.GetBounds(BuildingLayers.FOUNDATION).size;
-   public Texture SolidTexture => textureSet.solidTexture.texture;
+   public RenderTexture SolidTexture
+   {
+       get
+       {
+           if (textureSet.solidTexture.texture == null)
+           {
+               Init();
+           }
+           return (RenderTexture)textureSet.compositeBoundariesTexture.texture;
+       }
+   }
+   public RenderTexture WallTexture
+   {
+       get
+       {
+           if (textureSet.wallTexture.texture == null)
+           {
+               Init();
+           }
+           return (RenderTexture)textureSet.wallTexture.texture;
+       }
+   }
 
+   public RenderTexture GasInputTexture
+   {
+       get
+       {
+           if (textureSet.gasInputTexture.texture == null)
+           {
+               Init();
+           }
+           return (RenderTexture)textureSet.wallTexture.texture;
+       }
+   }
 
 
    [Serializable]
