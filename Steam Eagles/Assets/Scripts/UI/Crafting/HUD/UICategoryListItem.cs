@@ -2,7 +2,9 @@
 using Items;
 using Sirenix.OdinInspector;
 using TMPro;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UICategoryListItem : MonoBehaviour
@@ -15,7 +17,7 @@ public class UICategoryListItem : MonoBehaviour
     public Recipes recipes => crafting.recipes;
 
     private Recipe _recipe;
-
+    public UnityEvent<bool> Selected;
     [Serializable]
     public class BasicGUIElements
     {
@@ -30,7 +32,7 @@ public class UICategoryListItem : MonoBehaviour
     }
 
     [Button]
-   public void GetRecipe()
+   public void SetupForRecipe()
     {
         try
         {
@@ -46,6 +48,18 @@ public class UICategoryListItem : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+
+   public IDisposable SubscribeTo(Recipes recipes)
+   {
+       return recipes.CurrentRecipe.Select(t => _recipe == t).Subscribe(OnSelected);
+   }
+
+   void OnSelected(bool selected)
+   {
+         Selected?.Invoke(selected);   
+   }
+   
 
     protected virtual void SetupUI(Recipe recipe)
     {

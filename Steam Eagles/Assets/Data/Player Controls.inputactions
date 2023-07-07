@@ -283,6 +283,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Zoom",
+                    "type": "Value",
+                    "id": "e257226e-ca9f-4690-9747-b0ec8025f3e9",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1042,6 +1051,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Crafting Sample",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7193039c-8213-4405-b247-2efbe1dc518f",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "Invert,Scale(factor=15)",
+                    "groups": "Keyboard",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

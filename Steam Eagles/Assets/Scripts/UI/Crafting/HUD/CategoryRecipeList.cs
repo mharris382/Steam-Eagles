@@ -10,20 +10,97 @@ public class CategoryRecipeList : MonoBehaviour
 {
     private UICrafting _uiCrafting;
     public UICrafting crafting => _uiCrafting ? _uiCrafting : _uiCrafting = GetComponentInParent<UICrafting>();
-    
-    
-    
-    private void Awake()
+
+    public UICategoryListItem recipePrefab;
+
+
+    private string _category;
+    [Button(ButtonSizes.Medium)]
+    void CreateRecipeList()
     {
-        _uiCrafting = GetComponentInParent<UICrafting>();
+        ClearChildren();
+        try
+        {
+            var category = crafting.recipes.categories[transform.GetSiblingIndex()];
+            var recipes = crafting.recipes.GetRecipes(category);
+            foreach (var recipe in recipes)
+            {
+                var recipeItem = Instantiate(recipePrefab, transform);
+                recipeItem.SetupForRecipe();
+                
+            }
+        }
+        catch (Exception e)
+        {
+          gameObject.SetActive(false);
+        }
     }
 
+    void ClearChildren()
+    {
+        List<Transform> children = new List<Transform>();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            children.Add(transform.GetChild(i));
+        
+        }
+
+        foreach (var child in children)
+        {
+            if (Application.isPlaying)
+            {
+                Destroy(child.gameObject);
+            }
+            else
+            {
+                DestroyImmediate(child.gameObject);
+            }
+        }
+    }
+    private void Awake()
+    {
+      
+    }
+
+    void SetupListeners()
+    {
+        crafting.recipes.CurrentCategoryName.Subscribe(OnCategoryChanged).AddTo(this);
+    }
+    void SetCategoryActive(bool active)
+    {
+        gameObject.SetActive(active);
+    }
+    void OnCategoryChanged(string category)
+    {
+        gameObject.SetActive(category == _category);
+    }
     public void Start()
     {
-        crafting.recipes.OnCategoryChanged
-            .Select(t => t == transform.GetSiblingIndex())
-            .StartWith(0 == transform.GetSiblingIndex())
-            .Subscribe(gameObject.SetActive).AddTo(this);
+        try
+        {
+            var category = crafting.recipes.categories[transform.GetSiblingIndex()];
+            _category = category;
+            CreateRecipeList();
+            var items = GetComponentsInChildren<UICategoryListItem>();
+            foreach (var uiCategoryListItem in items)
+            {
+                uiCategoryListItem.SetupForRecipe();
+                uiCategoryListItem.SubscribeTo(crafting.recipes).AddTo(this);
+            }
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        _uiCrafting = GetComponentInParent<UICrafting>();
+        _uiCrafting.recipes.OnCategoryChanged.Select(t => t == transform.GetSiblingIndex()).Subscribe(SetCategoryActive).AddTo(this);
+
+        if (!gameObject.activeSelf) return;
+         crafting.recipes.OnCategoryChanged
+             .Select(t => t == transform.GetSiblingIndex())
+             .StartWith(0 == transform.GetSiblingIndex())
+             .Subscribe(gameObject.SetActive).AddTo(this);
     }
 
     [Button]
@@ -52,7 +129,7 @@ public class CategoryRecipeList : MonoBehaviour
     {
         foreach (var uiCategoryListItem in GetComponentsInChildren<UICategoryListItem>()    )
         {
-            uiCategoryListItem.GetRecipe();
+            uiCategoryListItem.SetupForRecipe();
         }
     }
 }

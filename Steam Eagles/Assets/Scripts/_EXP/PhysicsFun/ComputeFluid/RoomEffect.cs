@@ -9,7 +9,7 @@ using UnityEngine.VFX;
 [RequireComponent(typeof(VisualEffect))]
 public class RoomEffect : MonoBehaviour
 {
-    public bool useLocalSpace = true;
+    public bool useBoundaryTexture = true;
     public float updateRate = 0.5f;
     public float updateIoRate = 0.25f;
     public float updateTilemapRate = 2;
@@ -35,6 +35,10 @@ public class RoomEffect : MonoBehaviour
     private ISimIOTextures _ioTexture;
     private int _textureParamId;
     private int _resolutionParamId;
+    private int _useBoundaryParamId;
+    private int _boundaryTexParamId;
+    const string BOUNDARY_TEX_NAME = "BoundaryTexture";
+    const string USE_BOUNDARY_TEX_NAME = "use boundary";
     public ISimIOTextures IOTexture => _ioTexture!=null ? _ioTexture : _ioTexture = GetComponentInParent<ISimIOTextures>();
     
     public VisualEffect VisualEffect => _visualEffect ? _visualEffect : _visualEffect = GetComponent<VisualEffect>();
@@ -46,6 +50,8 @@ public class RoomEffect : MonoBehaviour
     {
         _resolutionParamId = Shader.PropertyToID(resolutionParameter);
         _textureParamId = Shader.PropertyToID(textureParameter);
+        _useBoundaryParamId = Shader.PropertyToID(USE_BOUNDARY_TEX_NAME);
+        _boundaryTexParamId = Shader.PropertyToID(BOUNDARY_TEX_NAME);
     }
 
 
@@ -133,9 +139,18 @@ public class RoomEffect : MonoBehaviour
         if (GasTexture.TryGetTexture(out var tex))
         {
             if (Application.isPlaying)
+            {
                 VisualEffect.SetTexture(_textureParamId, tex);
+                VisualEffect.SetTexture(_boundaryTexParamId, SimTextures.textureSet.compositeBoundariesTexture.texture);
+                VisualEffect.SetBool(_useBoundaryParamId, useBoundaryTexture);
+            }
             else
+            {
+                
                 VisualEffect.SetTexture(textureParameter, tex);
+                VisualEffect.SetTexture(BOUNDARY_TEX_NAME, SimTextures.textureSet.compositeBoundariesTexture.texture);
+                VisualEffect.SetBool(USE_BOUNDARY_TEX_NAME, useBoundaryTexture);
+            }
         }
     }
 

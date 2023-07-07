@@ -388,6 +388,7 @@ namespace Buildings
 
         public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile) => SetTile(new BuildingCell(cell, layer), tile);
 
+        [Obsolete("Use SetTile(BuildingCell, EditableTile) instead")]
         public void SetTile(Vector3Int cell, EditableTile tile)
         {
             var layer = tile.GetLayer();

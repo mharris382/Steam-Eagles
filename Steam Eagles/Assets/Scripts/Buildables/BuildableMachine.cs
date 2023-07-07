@@ -12,8 +12,15 @@ namespace Buildables
 {
     public class BuildableMachine : BuildableMachineBase
     {
-       
-        [SerializeField]
+       public ActAsSolidModule solidModule;
+
+       private bool ActAsSolid
+       {
+           set { solidModule.actAsSolid = value;}
+           get { return solidModule.actAsSolid; }
+       }
+
+       [SerializeField]
         private Vector2Int cellSize = Vector2Int.one * new Vector2Int(3, 2);
 
         #region [obsolete]
@@ -206,6 +213,11 @@ namespace Buildables
             }
         }
 
+        public override void DestroyMachine()
+        {
+            solidModule.CleanUp(this);
+            base.DestroyMachine();
+        }
 
         protected override void OnMachineBuilt(Vector3Int cell, Building building)
         {
@@ -213,10 +225,43 @@ namespace Buildables
             {
                 mc.OnMachineBuilt((Vector2Int)cell, building);
             }
+
+            solidModule.Build(building, this);
             /*foreach (var machineCell in machineCells)
             {
                 machineCell.OnMachineBuilt(cell, building);
             }*/
+        }
+    }
+
+
+
+    [Serializable]
+    public class ActAsSolidModule
+    {
+        public bool actAsSolid = false;
+        
+        public void CleanUp(BuildableMachine buildableMachine)
+        {
+            if(actAsSolid == false) return;
+            var cells = buildableMachine.GetCells();
+            var map = buildableMachine.Building.Map;
+            foreach (var cell in cells)
+            {
+                map.SetTile(new BuildingCell(cell, BuildingLayers.SOLID), null);
+            }
+        }
+
+        public void Build(Building building, BuildableMachine buildableMachine)
+        {
+            if(actAsSolid == false) return;
+            var cells = buildableMachine.GetCells();
+            var map = buildableMachine.Building.Map;
+            var tile = building.Tiles.SolidTile;
+            foreach (var cell in cells)
+            {
+                map.SetTile(new BuildingCell(cell, BuildingLayers.SOLID), tile);
+            }
         }
     }
 }

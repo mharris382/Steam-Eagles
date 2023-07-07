@@ -93,9 +93,13 @@ public class UICrafting : UIPlayerSystemBase
     
     public bool IsCurrentRecipeLoaded { get; set; }
     
+    private Subject<Unit> _onGameStarted = new Subject<Unit>();
+
     [ShowInInspector, BoxGroup("Debug")] public string CurrentCategory => recipes.CurrentCategoryName?.Value;
     [ShowInInspector, BoxGroup("Debug")] public Recipe CurrentRecipe => recipes.CurrentRecipe?.Value;
     [ShowInInspector, BoxGroup("Debug")] public List<Recipe> CurrentRecipes => recipes.CurrentRecipes?.Value;
+    
+    public IObservable<Unit> GameStarted => _onGameStarted;
     protected override void OnPlayerJoined(PlayerInput playerInput)
     {
         _playerInput = playerInput;
@@ -107,6 +111,7 @@ public class UICrafting : UIPlayerSystemBase
         this._roomState = _character.GetComponent<EntityRoomState>();
         _camera = camera;
         _playerInput = playerInput;
+        _onGameStarted.OnNext(Unit.Default);
     }
 
 
@@ -165,6 +170,7 @@ public class UICrafting : UIPlayerSystemBase
         
         if (craftingMode.isDestructMode.Value)
         {
+            if(_destructionPreviewController == null) return;
             _destructionPreviewController.UpdateDestructTarget(recipe, _playerInput, building, gridPosition);
         }
         else
