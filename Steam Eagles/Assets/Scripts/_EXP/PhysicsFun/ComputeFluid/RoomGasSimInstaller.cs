@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Buildings;
@@ -63,24 +64,108 @@ namespace _EXP.PhysicsFun.ComputeFluid
             
             Container.Bind<RoomGasSimConfig>().FromInstance(config).AsSingle().NonLazy();
             Container.BindInterfacesTo<TilemapTextureSync>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<DeleteGasInsideSolids>().AsSingle().NonLazy();
         }
     }
 
-    
+    public class DeleteGasInsideSolids : IInitializable, IDisposable
+    {
+        private readonly RoomGasSimConfig _config;
+        private readonly Room _room;
+        private readonly RoomSimTextures _simTextures;
+        private readonly BoundsLookup _boundsLookup;
+        private readonly RoomTextureCreator _roomTextureCreator;
+        private readonly GasTexture _gasTexture;
+        private readonly CoroutineCaller _coroutineCaller;
+        private CompositeDisposable _cd = new();
+        private Coroutine _coroutine;
+
+        private float _timeLastUpdate;
+        private RenderTexture CompositeTexture => _simTextures.SolidTexture;
+        private RenderTexture GasTexture => _gasTexture.RenderTexture;
+   
+        public DeleteGasInsideSolids(
+            RoomGasSimConfig config,
+            Room room, 
+            RoomSimTextures simTextures,
+            BoundsLookup boundsLookup,
+            RoomTextureCreator roomTextureCreator,
+            GasTexture gasTexture, CoroutineCaller _coroutineCaller)
+        {
+            _config = config;
+            _room = room;
+            _simTextures = simTextures;
+            _boundsLookup = boundsLookup;
+            _roomTextureCreator = roomTextureCreator;
+            _gasTexture = gasTexture;
+            this._coroutineCaller = _coroutineCaller;
+            _timeLastUpdate = Time.time;
+        }
+
+        public void Tick()
+        {
+            if (Time.time - _timeLastUpdate > _config.deleteGasInSolidRate)
+            {
+                _timeLastUpdate = Time.time;
+                DoUpdate();
+            }
+        }
+
+        private void DoUpdate()
+        {
+            if(GasTexture == null || CompositeTexture == null) return;
+            var gasTexture = _gasTexture.RenderTexture;
+            var compositeTexture = _simTextures.SolidTexture;
+            DynamicGasIOCompute.ExecuteDeleteGasInBoundary(gasTexture, compositeTexture);
+        }
+
+        public void Initialize()
+        {
+            _coroutine = _coroutineCaller.StartCoroutine(DoUpdateRoutine());
+        }
+
+        IEnumerator DoUpdateRoutine()
+        {
+            
+            while (true)
+            {
+                if (GasTexture != null && CompositeTexture != null)
+                {
+                    var gasTexture = _gasTexture.RenderTexture;
+                    var compositeTexture = _simTextures.SolidTexture;
+                    DynamicGasIOCompute.ExecuteDeleteGasInBoundary(gasTexture, compositeTexture);
+                }
+                yield return new WaitForSeconds(_config.deleteGasInSolidRate);
+            }
+        }
+        public void Dispose()
+        {
+            if (_coroutineCaller != null && _coroutine != null)
+            {
+                _coroutineCaller.StopCoroutine(_coroutine);
+            }
+        }
+    }
 
     public class TilemapTextureSync : IInitializable, IDisposable
     {
         private readonly RoomGasSimConfig _config;
         private readonly Room _room;
         private readonly RoomSimTextures _simTextures;
+        private readonly BoundsLookup _boundsLookup;
+        private readonly RoomTextureCreator _roomTextureCreator;
+        private readonly GasTexture _gasTexture;
         private CompositeDisposable _cd = new();
         
    
-        public TilemapTextureSync(RoomGasSimConfig config, Room room, RoomSimTextures simTextures)
+        public TilemapTextureSync(RoomGasSimConfig config, Room room, RoomSimTextures simTextures, BoundsLookup boundsLookup, RoomTextureCreator roomTextureCreator, GasTexture gasTexture)
         {
             _config = config;
             _room = room;
             _simTextures = simTextures;
+            _boundsLookup = boundsLookup;
+            _roomTextureCreator = roomTextureCreator;
+            _gasTexture = gasTexture;
         }
 
         private RenderTexture CompositeTexture => _simTextures.SolidTexture;
@@ -134,11 +219,18 @@ namespace _EXP.PhysicsFun.ComputeFluid
 
         void Update(IEnumerable<(BuildingCell, float)> changes, BuildingLayers layers)
         {
-            var data = changes.Select(t => new TilemapData(t.Item1.cell2D, t.Item2)).ToArray();
-            if(data.Length == 0) return;
+            var valueTuples = changes as (BuildingCell, float)[] ?? changes.ToArray();
             var rt = GetTextureFor(layers);
-            RoomTextureCreator.WriteTilemapDataToTexture(rt, data);
+            _roomTextureCreator.WriteArbitraryData(rt, valueTuples.Select(t => t.Item1), layers);
+
         }
-        
+
+
+        Vector2Int GetTexel(BuildingCell cell)
+        {
+            var bounds = _boundsLookup.GetBounds(cell.layers);
+            var pos = cell.cell2D - (Vector2Int) bounds.min;
+            return pos;
+        }
     }
 }

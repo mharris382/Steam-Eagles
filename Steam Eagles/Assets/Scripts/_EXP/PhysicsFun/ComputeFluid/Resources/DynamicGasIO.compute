@@ -1,7 +1,7 @@
 // Each #kernel tells which function to compile; you can have many kernels
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel DynamicGasIO
-
+#pragma kernel DeleteGasOnBoundaries
 struct IO
 {
     int2 texCoord;
@@ -37,4 +37,37 @@ void DynamicGasIO (uint3 id : SV_DispatchThreadID)
     // gas[io.texCoord] = float4(gasClamped,  gas[io.texCoord].y,  gas[io.texCoord].z, gas[io.texCoord].w);
     // io.valueAdded = gasDelta;
     ioBuffer[id.x] = io;
+}
+
+uint2 boundaryScale = uint2(1,1);
+Texture2D<float> boundary;
+RWTexture2D<float4> gasState;
+
+
+uint2 BoundaryToGasTextureCoord(uint2 boundaryCoord)
+{
+    return boundaryCoord * boundaryScale;
+}
+uint2 GasToBoundaryTextureCoord(uint2 gasCoord)
+{
+    return gasCoord / boundaryScale;
+}
+
+
+
+[numthreads(8,8,1)]
+void DeleteGasOnBoundaries(uint3 id : SV_DispatchThreadID)
+{
+    uint2 boundaryTexCoord = id.xy;
+    float boundaryValue = boundary[boundaryTexCoord];
+    if(boundaryValue == 0)
+        return;
+    uint2 gasTexCoord = BoundaryToGasTextureCoord(boundaryTexCoord);
+    for (int x = 0; x < boundaryScale.x; x ++)
+    {
+        for (int y = 0; y < boundaryScale.y; y ++)
+        {
+            gasState[gasTexCoord + uint2(x,y)] = float4(0,0,0,0);
+        }   
+    }
 }

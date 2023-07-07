@@ -80,7 +80,28 @@ namespace Buildings.Rooms
                 }
             }
         }
-        
+        public  IEnumerable<TilemapData> GetTilemapData_Arbitrary(
+            IEnumerable<BuildingCell> buildingCells, BuildingLayers layer, 
+            Func<BuildingCell, BuildingTile> tileGetter, 
+            Predicate<BuildingTile> useTile,
+            Func<BuildingTile, float> valueGetter)
+        {
+
+            foreach (var buildingCell in buildingCells)
+            {
+                var bounds = BoundsLookup.GetBounds(buildingCell.layers);
+                var cellPos = buildingCell.cell2D;
+                var texel = new Vector2Int(cellPos.x - bounds.xMin, cellPos.y - bounds.yMin);
+         
+                var cell = new BuildingCell(cellPos, layer);
+                var tile = tileGetter(cell);
+              
+                var value = valueGetter(tile);
+                yield return new TilemapData(texel, value);
+                
+            }
+        }
+
         static IEnumerable<TilemapData> GetTilemapDataMultipleLayer(
             BoundsInt bounds, BuildingLayers[] layers, 
             Func<BuildingCell, BuildingTile> tileGetter, 
@@ -108,10 +129,35 @@ namespace Buildings.Rooms
                 }
             }
         }
+         public  IEnumerable<TilemapData> GetTilemapDataMultipleLayer_Arbitrary(
+             IEnumerable<BuildingCell> buildingCells, BuildingLayers[] layers, 
+             Func<BuildingCell, BuildingTile> tileGetter, 
+             Predicate<BuildingTile> useTile,
+             Func<BuildingTile, float> valueGetter)
+         {
+
+             foreach (var buildingCell in buildingCells)
+             {
+                 var bounds = BoundsLookup.GetBounds(buildingCell.layers);
+                 var cellPos = buildingCell.cell2D;
+                 var texel = new Vector2Int(cellPos.x - bounds.xMin, cellPos.y - bounds.yMin);
+                 foreach (var layer in layers)
+                 {
+                     var cell = new BuildingCell(cellPos, layer);
+                     var tile = tileGetter(cell);
+                     if (useTile(tile))
+                     {
+                         var value = valueGetter(tile);
+                         yield return new TilemapData(texel, value);
+                         break;
+                     }
+                 }
+             }
+         }
 
         private Func<BuildingCell, BuildingTile> TileGetter => _roomState.Room.Building.Map.GetBuildingTile;
         private Predicate<BuildingTile> UseTileDefault => tile => tile.tile != null;
-        private Func<BuildingTile, float> ValueGetterDefault => tile => 1f;
+        private Func<BuildingTile, float> ValueGetterDefault => tile => (tile.tile == null ? 0 : 1f);
 
         bool UseWallTile(BuildingTile tile)
         {
@@ -147,6 +193,32 @@ namespace Buildings.Rooms
             return texture;
         }
 
+        (Func<BuildingCell, BuildingTile>, Predicate<BuildingTile>, Func<BuildingTile, float>) getTileGetter(BuildingLayers layers)
+        {
+            switch (layers)
+            {
+                case BuildingLayers.WALL:
+                   return (TileGetter,  UseWallTile, GetWallTileValue);
+                    break;
+                case BuildingLayers.GAS:
+                    return (TileGetter, UseTileDefault, GetGasTileValue);
+                    break;
+                case BuildingLayers.FOUNDATION:
+                case BuildingLayers.SOLID:
+                case BuildingLayers.PIPE:
+                case BuildingLayers.WIRES:
+                case BuildingLayers.PLATFORM:
+                case BuildingLayers.LADDERS:
+                case BuildingLayers.COVER:
+                case BuildingLayers.DECOR:
+                    return (TileGetter, UseTileDefault, ValueGetterDefault);
+                    break;
+                case BuildingLayers.NONE:
+                case BuildingLayers.REQUIRED:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(layers), layers, null);
+            }
+        }
         public Texture CopyFromTilemap(BuildingLayers layers, bool recreate= false)
         {
             if (recreate && _textureCache.ContainsKey(layers))
@@ -158,29 +230,8 @@ namespace Buildings.Rooms
             var map = _roomState.Room.Building.Map;
 
             List<TilemapData> tilemapData = new List<TilemapData>();
-            switch (layers)
-            {
-                case BuildingLayers.WALL:
-                    tilemapData.AddRange(GetTilemapData(bounds, layers, TileGetter,  UseWallTile, GetWallTileValue));
-                    break;
-                case BuildingLayers.GAS:
-                    tilemapData.AddRange(GetTilemapData(bounds, layers, TileGetter, UseTileDefault, GetGasTileValue));
-                    break;
-                case BuildingLayers.FOUNDATION:
-                case BuildingLayers.SOLID:
-                case BuildingLayers.PIPE:
-                case BuildingLayers.WIRES:
-                case BuildingLayers.PLATFORM:
-                case BuildingLayers.LADDERS:
-                case BuildingLayers.COVER:
-                case BuildingLayers.DECOR:
-                    tilemapData.AddRange(GetTilemapData(bounds, layers, TileGetter, UseTileDefault, ValueGetterDefault));
-                    break;
-                case BuildingLayers.NONE:
-                case BuildingLayers.REQUIRED:
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(layers), layers, null);
-            }
+            var (tileGetter, useTile, valueGetter) = getTileGetter(layers);
+            tilemapData.AddRange(GetTilemapData(bounds, layers, tileGetter, useTile, valueGetter));
 
             var texture = (RenderTexture) CreateTextureFor(layers);
             if (tilemapData.Count == 0) return texture;
@@ -229,6 +280,40 @@ namespace Buildings.Rooms
             return texture;
         }
 
+        public void WriteArbitraryData(IEnumerable<BuildingCell> buildingCells, BuildingLayers layers)
+        {
+            BuildingLayers combinedLayers = layers;
+            var texture = (RenderTexture) CreateTextureFor(combinedLayers);
+            WriteArbitraryData(texture, buildingCells, layers);
+        }
+        
+        public void WriteArbitraryData(RenderTexture texture, IEnumerable<BuildingCell> buildingCells, BuildingLayers layers)
+        {
+            BuildingLayers combinedLayers = layers;
+            
+            var (tileGetter, useTile, valueGetter) = getTileGetter(layers);
+            
+            List<TilemapData> tilemapData = new List<TilemapData>();
+            tilemapData.AddRange(GetTilemapData_Arbitrary(buildingCells, layers, tileGetter, useTile, valueGetter));
+            
+            if (tilemapData.Count == 0) return;
+            var tile0 = tilemapData[0];
+            tilemapData.Add(tile0);
+            WriteTilemapDataToTexture(texture, tilemapData.ToArray());
+        }
+
+        public RenderTexture WriteArbitraryData(IEnumerable<BuildingCell> buildingCells, BuildingLayers[] layers)
+        {
+            BuildingLayers combinedLayers = 0;
+            foreach (var layer in layers) combinedLayers |= layer;
+            var texture = (RenderTexture) CreateTextureFor(combinedLayers);
+            var data = GetTilemapDataMultipleLayer_Arbitrary(buildingCells, layers, TileGetter, UseTileDefault, ValueGetterDefault).ToList();
+            if (data.Count == 0)
+                return texture;
+            data.Add(data[0]);
+            WriteTilemapDataToTexture(texture, data.ToArray());
+            return texture;
+        }
 
         public static void WriteTilemapDataToTexture(RenderTexture texture, TilemapData[] data)
         {

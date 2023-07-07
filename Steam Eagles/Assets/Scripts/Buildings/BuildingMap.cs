@@ -152,13 +152,24 @@ namespace Buildings
             private CompositeDisposable _cd = new();
 
 
-            public BuildingMapEvents(BuildingLayers layer, IObserver<BuildingTile> onTileSet)
+            public BuildingMapEvents(BuildingLayers layer, IObservable<BuildingTile> onTileSet, Func<BuildingCell, Room> getRoom)
             {
                 _layer = layer;
-                _disposable= onTileChanged.Select(t => new BuildingTile() {
-                    cell = new BuildingCell(t.cell, _layer),
-                    tile = t.tile
-                }).Subscribe(onTileSet);
+                _disposable = onTileSet.Select(t => (t, getRoom(t.cell))).Where(t =>
+                {
+                    var room = getRoom(t.t.cell);
+                    return room != null && 
+                           _filteredByRoomEvents.ContainsKey(room) &&
+                           _filteredByRoomEvents[room] != null;
+                })
+                    .Subscribe(t =>
+                {
+                    _filteredByRoomEvents[t.Item2].OnNext((t.t.cell.cell, t.t.tile));
+                });
+                // _disposable= onTileChanged.Select(t => new BuildingTile() {
+                //     cell = new BuildingCell(t.cell, _layer),
+                //     tile = t.tile
+                // }).Subscribe(onTileSet);
             }
 
             public IObservable<(Vector3Int cell, TileBase tile)> OnTileSet => onTileChanged.Where(t => t.tile != null);
@@ -171,6 +182,7 @@ namespace Buildings
                     roomEvent = new Subject<(Vector3Int cell, TileBase tile)>();
                     var bounds = getBounds(room);
                     onTileChanged.Where(t => bounds.Contains(t.cell)).Subscribe(roomEvent).AddTo(_cd);
+                    _filteredByRoomEvents.Add(room, roomEvent);
                 }
                 return roomEvent;
             }
@@ -369,6 +381,7 @@ namespace Buildings
             var roomEvents = room.GetComponent<RoomEvents>();
             Debug.Assert(roomEvents != null, room);
             roomEvents.OnTileSet(cell.cell, cell.layers, tile);
+            _onTileSet.OnNext(new BuildingTile(cell, tile));
         }
         
         public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);
@@ -443,7 +456,7 @@ namespace Buildings
         {
             if (!_layerToEvents.TryGetValue(layers, out var bme))
             {
-                _layerToEvents.Add(layers, bme = new BuildingMapEvents(layers, _onTileSet));
+                _layerToEvents.Add(layers, bme = new BuildingMapEvents(layers, _onTileSet, cell => GetRoom(cell.cell, cell.layers)));
             }
             return bme;
         }
