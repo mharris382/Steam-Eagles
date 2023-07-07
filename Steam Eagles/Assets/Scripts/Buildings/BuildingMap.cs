@@ -372,12 +372,12 @@ namespace Buildings
         {
             var tm = GetTilemap(cell.layers);
             tm.SetTile(cell.cell, tile);
-            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
             var room = GetRoom(cell.cell, cell.layers);
+            if (room == null) return;
+            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
             
             var buildingEvents = GetBuildingMapEvents(cell.layers);
             buildingEvents.onTileChanged.OnNext((cell.cell, tile));
-            
             var roomEvents = room.GetComponent<RoomEvents>();
             Debug.Assert(roomEvents != null, room);
             roomEvents.OnTileSet(cell.cell, cell.layers, tile);
