@@ -12,22 +12,43 @@ struct IO
 int ioCount;
 RWStructuredBuffer<IO> ioBuffer;
 RWTexture2D<float4> gas;
-
+float AddToCell(uint2 cell, float delta)
+{
+    float gasCurrent = gas[cell].x;
+    float gasNew = clamp(gasCurrent + delta, 0, 1);
+    gas[cell] = float4(gasNew,  gasNew,  gasNew, gasNew);
+    return gasNew - gasCurrent;
+    
+}
 [numthreads(8,1,1)]
 void DynamicGasIO (uint3 id : SV_DispatchThreadID)
 {
     IO io = ioBuffer[id.x];
+    
     for (int x =  0; x < io.size.x; x++)
     {
         for (int y = 0; y < io.size.y; y++)
         {
+            if(io.valueToAdd == 0)return;
             int2 texCoord = int2(io.texCoord.x + x, io.texCoord.y + y);
-            float gasCurrent = gas[texCoord].x;
-            float gasNew = gasCurrent + io.valueToAdd;
-            float gasClamped = clamp(gasNew, 0, 1);
-            float gasDelta = gasClamped - gasCurrent;
-            gas[texCoord] = float4(gasClamped,  gas[texCoord].y,  gas[texCoord].z, gas[texCoord].w);
+            float gasDelta = AddToCell(texCoord, io.valueToAdd);
             io.valueAdded += gasDelta;
+            io.valueToAdd -= gasDelta;
+            ioBuffer[id.x] = io;
+            // int2 upCoord = int2(texCoord.x, texCoord.y + 1);
+            // int2 downCoord = int2(texCoord.x, texCoord.y - 1);
+            // int2 leftCoord = int2(texCoord.x - 1, texCoord.y);
+            // int2 rightCoord = int2(texCoord.x + 1, texCoord.y);
+            //
+            //
+            //
+            // float gasUp = gas[upCoord].x;
+            // float gasDown = gas[downCoord].x;
+            // float gasLeft = gas[leftCoord].x;
+            // float gasRight = gas[rightCoord].x;
+            //
+            // //gas[texCoord] = float4(gasClamped,  gas[texCoord].y,  gas[texCoord].z, gas[texCoord].w);
+            // io.valueAdded += gasDelta;
         }
     }
     // float gasCurrent = gas[io.texCoord].x;

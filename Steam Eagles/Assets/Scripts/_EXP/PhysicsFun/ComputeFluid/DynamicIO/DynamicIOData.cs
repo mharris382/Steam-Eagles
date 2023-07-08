@@ -19,15 +19,5 @@ namespace _EXP.PhysicsFun.ComputeFluid
             this.deltaIn = deltaIn;
             this.deltaOut = deltaOut;
         }
-
-        public DynamicIOData(DynamicIOObject ioObject)
-        {
-            size = ioObject.size;
-            deltaIn = ioObject.GetTargetGasIOValue();
-            deltaOut = 0;
-            int resolution = ioObject.GasTexture.Resolution;
-            var gridPos = ioObject.Building.Map.WorldToCell(ioObject.transform.position, BuildingLayers.SOLID);
-            position = new Vector2Int(gridPos.x * resolution, gridPos.y * resolution);
-        }
     }
 }

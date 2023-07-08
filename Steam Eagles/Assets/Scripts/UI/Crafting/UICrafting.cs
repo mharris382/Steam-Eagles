@@ -146,6 +146,11 @@ public class UICrafting : UIPlayerSystemBase
     }
     void Update()
     {
+        
+    }
+
+    public void UpdateCrafting()
+    {
         if(!IsReady) return;
         
         
@@ -156,7 +161,6 @@ public class UICrafting : UIPlayerSystemBase
         if(_roomState.CurrentRoom.Value == null) return;
         ProcessCraftingUI();
     }
-
 
     private void ProcessCraftingUI()
     {

@@ -46,7 +46,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
                 for (int i = 0; i < cnt; i++)
                 {
                     _ioObjects[i] = dynamicIOObject[i];
-                    _data[i] = new DynamicIOData(_ioObjects[i]);
+                    _data[i] = dynamicIOObject[i].GetDynamicIOData();
                 }
             }   
         }
@@ -56,7 +56,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
             ValidateArrays();
             for (int i = 0; i < _ioObjects.Length; i++)
             {
-                _data[i] = new DynamicIOData(_ioObjects[i]);
+                _data[i] = _ioObjects[i].GetDynamicIOData();
             }
         }
 
@@ -66,7 +66,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
             for (int i = 0; i < _ioObjects.Length; i++)
             {
                 var data = _data[i];
-                if(data.deltaOut != 0) _ioObjects[i].OnGasIO(data.deltaOut);
+                if(data.deltaOut != 0) _ioObjects[i].SetDynamicIOData(data);
             }
         }
 

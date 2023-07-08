@@ -64,6 +64,9 @@ namespace _EXP.PhysicsFun.ComputeFluid
             Container.Bind<SamplePoints>().AsSingle();
             Container.BindInterfacesAndSelfTo<SamplePointsCompute>().AsSingle().NonLazy();
             Container.Bind<TextureMap>().AsSingle();
+
+            Container.Bind<DynamicIObjects>().AsSingle();
+            Container.BindInterfacesAndSelfTo<DynamicGasIO>().AsSingle().NonLazy();
         }
     }
 }

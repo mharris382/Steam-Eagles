@@ -1,10 +1,17 @@
 ﻿using System;
+using _EXP.PhysicsFun.ComputeFluid.Utilities;
 using Buildings;
+using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Zenject;
 
 namespace _EXP.PhysicsFun.ComputeFluid
 {
+    public class DynamicIObjects : Registry<DynamicIOObject>
+    {
+        
+    }
     public class DynamicIOObject : MonoBehaviour
     {
         private static Color sinkColor = new Color(0.8f, 0.1f, 0.2f);
@@ -16,6 +23,37 @@ namespace _EXP.PhysicsFun.ComputeFluid
         [OnValueChanged(nameof(ClampSize))]
         public Vector2Int size = new Vector2Int(1, 1);
 
+
+        #region [Debug]
+
+        [ShowInInspector, BoxGroup("Debug"), ReadOnly]
+        public Vector2Int Position
+        {
+            get;
+            set;
+        }
+
+        [ShowInInspector, BoxGroup("Debug"), ReadOnly]
+        public Vector2Int Size
+        {
+            get;
+            set;
+        }
+        [ShowInInspector, BoxGroup("Debug"), ReadOnly]
+        public float DeltaIn
+        {
+            get;
+            set;
+        }
+
+        [ShowInInspector, BoxGroup("Debug"), ReadOnly]
+        public float DeltaOut
+        {
+            get;
+            set;
+        }
+
+        #endregion
         
         void ClampSize()
         {
@@ -29,30 +67,53 @@ namespace _EXP.PhysicsFun.ComputeFluid
         private Building _building;
         public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
 
-        private GasTexture _gasTexture;
-        public GasTexture GasTexture => _gasTexture ? _gasTexture : _gasTexture = GetComponentInParent<GasTexture>();
+        private TextureMap _textureMap;
+        private DynamicIObjects _dynamicIO;
 
-
-        bool HasResources => GasTexture != null && Building != null;
-        private Vector2Int GetGridPosition()
+        [Inject] public void Install(DynamicIObjects dynamicIO, TextureMap textureMap)
         {
-            if(Building == null) return Vector2Int.zero;
-            var cell = Building.Map.WorldToCell(transform.position, BuildingLayers.SOLID);
-            return new Vector2Int(cell.x * GasTexture.Resolution, cell.y * GasTexture.Resolution);
+            _textureMap = textureMap;
+            _dynamicIO = dynamicIO;
+            if(enabled)
+                dynamicIO.Register(this);
+           
         }
+
+
+        private void OnEnable()
+        {
+            if (_dynamicIO != null) _dynamicIO.Register(this);
+        }
+
+        private void OnDisable()
+        {
+            if(_dynamicIO != null) _dynamicIO.Unregister(this);
+        }
+
+        public DynamicIOData GetDynamicIOData()
+        {
+            this.Position = _textureMap.GetTextureCoord(transform.position);
+            this.DeltaIn = GetTargetGasIOValue();
+            this.Size = new Vector2Int(Mathf.Max(1, this.size.x), Mathf.Max(1, this.size.y));
+            return new DynamicIOData()
+            {
+                deltaIn =DeltaIn,
+                position = Position,
+                size = Size
+            };
+        }
+        public void SetDynamicIOData(DynamicIOData data)
+        {
+            OnGasIO(data.deltaOut);
+            DeltaOut = data.deltaOut;
+        }
+        bool HasResources => Building != null;
 
         public virtual float GetTargetGasIOValue() => value;
 
         public virtual void OnGasIO(float gasDelta)
         {
             
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!HasResources) return;
-            var gridPos = GetGridPosition();
-            var gridSize = new Vector2Int(GasTexture.Resolution, GasTexture.Resolution);
         }
     }
 }
