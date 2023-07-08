@@ -16,4 +16,4 @@
             this.vents = vents;
         }
     }
-'
+}
