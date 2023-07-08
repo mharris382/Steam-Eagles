@@ -84,4 +84,22 @@ public class GasTexture : MonoBehaviour
         if (HasTexture == false) return false;
         return _renderTexture.width != sizeActual.x || _renderTexture.height != sizeActual.y;
     }
+    
+    
+    public Vector2Int GetTexelFromWorldPos(Vector3 worldPos)
+    {
+        var size = new Vector2(1/(float)resolution, 1/(float)resolution);
+        var pos = worldPos - transform.position;
+        var x = Mathf.FloorToInt(pos.x / size.x);
+        var y = Mathf.FloorToInt(pos.y / size.y);
+        
+        return new Vector2Int(x, y);
+    }
+
+    public Vector3 GetWorldPosFromTexel(Vector2Int dataTexel)
+    {
+        var size = new Vector2(1/(float)resolution, 1/(float)resolution);
+        var pos = new Vector3(dataTexel.x * size.x, dataTexel.y * size.y, 0);
+        return pos + transform.position;
+    }
 }

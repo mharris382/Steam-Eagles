@@ -23,6 +23,7 @@ namespace CoreLib
         private Subject<T> _onValueRemoved;
         private readonly CompositeDisposable _cd;
 
+        public int ListCount => _values.Count;
 
         private ReactiveProperty<int> Count => _count??=new ReactiveProperty<int>(_values.Count);
         public IObservable<T> OnValueAdded => _onValueAdded;

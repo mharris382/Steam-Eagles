@@ -1,6 +1,7 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel SimIO
 #pragma kernel SimDiffuse
+#pragma kernel SampleSimPoints
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
 RWTexture2D<float> Result;
@@ -134,4 +135,45 @@ for (int i = 0; i < numIterations; i++)
 }
     //requirement: conservation of pressure, any pressure lost here must be gained elsewhere
     
+}
+
+struct SamplePoint
+{
+    uint2 texelCoord;
+    float value;
+    float3x3 gradient;
+};
+
+
+RWStructuredBuffer<SamplePoint> samplePoints;
+Texture2D<float4> sampleTarget;
+
+[numthreads(8,1,1)]
+void SampleSimPoints(uint3 id : SV_DispatchThreadID)
+{
+    SamplePoint sample_point = samplePoints[id.x];
+    uint2 texelCoord = sample_point.texelCoord;
+    uint2 upCoord = texelCoord + uint2(0, 1);
+    uint2 downCoord = texelCoord - uint2(0, 1);
+    uint2 leftCoord = texelCoord - uint2(1, 0);
+    uint2 rightCoord = texelCoord + uint2(1, 0);
+    
+    float up = sampleTarget[upCoord].x;
+    float down = sampleTarget[downCoord].x;
+    float left = sampleTarget[leftCoord].x;
+    float right = sampleTarget[rightCoord].x;
+    float center = sampleTarget[texelCoord].x;
+    float upLeft = sampleTarget[upCoord - uint2(1, 0)].x;
+    float upRight = sampleTarget[upCoord + uint2(1, 0)].x;
+    float downLeft = sampleTarget[downCoord - uint2(1, 0)].x;
+    float downRight = sampleTarget[downCoord + uint2(1, 0)].x;
+  
+    float sum = up + down + left + right + center + upLeft + upRight + downLeft + downRight;
+    float average = sum / 9.0;
+
+    float3x3 gradient = float3x3(left, up, right, upLeft, center, upRight, downLeft, down, downRight);
+    sample_point.gradient = gradient;
+    
+    sample_point.value = average;
+    samplePoints[id.x] = sample_point;
 }

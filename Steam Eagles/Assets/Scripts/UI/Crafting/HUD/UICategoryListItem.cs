@@ -32,15 +32,23 @@ public class UICategoryListItem : MonoBehaviour
     }
 
     [Button]
-   public void SetupForRecipe()
+   public void SetupForRecipe(CategoryRecipeList list)
     {
         try
         {
             recipes.InitForEditor();
-            categoryRecipeList.Init();
-            var category = categoryRecipeList.Category;
+            list.Init();
+            var category = list.Category;
             var recipeList = recipes.GetRecipes(category);
-            _recipe = recipeList[transform.GetSiblingIndex()];
+            try
+            {
+                _recipe = recipeList[transform.GetSiblingIndex()];
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
             SetupUI(_recipe);
         }
         catch (IndexOutOfRangeException e)

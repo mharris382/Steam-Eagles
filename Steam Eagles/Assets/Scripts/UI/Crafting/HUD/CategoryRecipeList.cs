@@ -26,7 +26,7 @@ public class CategoryRecipeList : MonoBehaviour
             foreach (var recipe in recipes)
             {
                 var recipeItem = Instantiate(recipePrefab, transform);
-                recipeItem.SetupForRecipe();
+                recipeItem.SetupForRecipe(this);
                 
             }
         }
@@ -84,7 +84,7 @@ public class CategoryRecipeList : MonoBehaviour
             var items = GetComponentsInChildren<UICategoryListItem>();
             foreach (var uiCategoryListItem in items)
             {
-                uiCategoryListItem.SetupForRecipe();
+                uiCategoryListItem.SetupForRecipe(this);
                 uiCategoryListItem.SubscribeTo(crafting.recipes).AddTo(this);
             }
         }
@@ -129,7 +129,7 @@ public class CategoryRecipeList : MonoBehaviour
     {
         foreach (var uiCategoryListItem in GetComponentsInChildren<UICategoryListItem>()    )
         {
-            uiCategoryListItem.SetupForRecipe();
+            uiCategoryListItem.SetupForRecipe(this);
         }
     }
 }
