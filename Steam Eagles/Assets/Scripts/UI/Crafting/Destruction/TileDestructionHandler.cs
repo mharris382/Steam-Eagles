@@ -12,13 +12,14 @@ namespace UI.Crafting.Destruction
     {
         public class Factory : PlaceholderFactory<Recipe, TileDestructionHandler> { }
         BuildingCell lastCell;
+        float timeLastDestruction = 0;
         public TileDestructionHandler(Recipe recipe, DestructionPreview destructionPreview) : base(recipe, destructionPreview)
         {
         }
 
         public override bool HasDestructionTarget(Building building, BuildingCell cell)
         {
-            if (cell == lastCell) return false;
+            if (cell == lastCell) return (Time.time - timeLastDestruction > 1);
             
             var hasTile = building.Map.GetTile(cell) != null;
             if (!hasTile)
@@ -40,6 +41,7 @@ namespace UI.Crafting.Destruction
 
         public override void Destruct(Building building, BuildingCell cell)
         {
+            timeLastDestruction = Time.time;
             lastCell = cell;
             var tile = building.Map.GetTile<DamageableTile>(cell);
             if (tile != null)

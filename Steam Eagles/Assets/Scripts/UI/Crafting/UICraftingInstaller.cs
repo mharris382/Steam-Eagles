@@ -1,16 +1,24 @@
 using System;
 using CoreLib.SharedVariables;
 using Items;
-using Sirenix.OdinInspector;
 using UI.Crafting;
 using UI.Crafting.Destruction;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
 using UniRx;
+using UnityEngine.Serialization;
+
+[Serializable]
+public class CraftingConfig
+{
+    [FormerlySerializedAs("overlapValidityChecks")] public OverlapValidityChecksConfig overlapValidityChecksConfig;
+   
+}
 
 public class UICraftingInstaller : MonoInstaller
 {
+    public CraftingConfig config;
     public HoverPosition hoverPosition;
     public override void InstallBindings()
     {
@@ -31,7 +39,13 @@ public class UICraftingInstaller : MonoInstaller
         Container.Bind<DestructionHandlers>().AsSingle().NonLazy();
         
         
+        
         Container.Bind<HoverPosition>().FromInstance(hoverPosition).AsSingle();
+
+        Container.Bind<TilePlacementValidityChecks>().AsSingle();
+        Container.Bind<PrefabPlacementValidityChecks>().AsSingle();
+        Container.Bind<OverlapValidityChecksConfig>().FromInstance(config.overlapValidityChecksConfig).AsSingle().NonLazy();
+        Container.Bind<CraftingConfig>().FromInstance(config).AsSingle();
     }
 
 

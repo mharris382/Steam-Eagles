@@ -11,11 +11,25 @@ namespace UI.Crafting
 {
     public class TilePlacementValidityChecks : PlacementValidityChecks<TileBase>
     {
+        private readonly OverlapValidityChecksConfig _config;
         private static List<Collider2D> _cache = new List<Collider2D>(10);
-        
+
+        public TilePlacementValidityChecks(OverlapValidityChecksConfig config)
+        {
+            _config = config;
+        }
         public override bool IsPlacementValid(Recipe recipe, TileBase loadedObject, GameObject character, Building building, BuildingCell cell,
             ref string invalidReason)
         {
+            if (_config.CheckOverlapForLayer(cell.layers))
+            {
+                bool overlapping = CheckIsOverlapping(building, cell, _config.GetContactFilterForOverlaps());
+                if (overlapping)
+                {
+                    invalidReason = $"{_cache[0].name} is in the way";
+                    return false;
+                }
+            }
             var bmachines = building.GetComponent<BMachines>();
             var bmachine = bmachines.Map.GetMachine(cell.cell2D);
             if (bmachine != null)

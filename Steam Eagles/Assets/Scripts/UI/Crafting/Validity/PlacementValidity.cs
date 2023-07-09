@@ -14,12 +14,11 @@ namespace UI.Crafting
         private readonly PlacementValidityChecks _prefabValidityChecks;
         private string _errorMsg;
         
-        public PlacementValidity(UICrafting crafting)
+        public PlacementValidity(UICrafting crafting , TilePlacementValidityChecks tileValidityChecks, PrefabPlacementValidityChecks prefabValidityChecks)
         {
             _crafting = crafting;
-
-            _tileValidityChecks = new TilePlacementValidityChecks();
-            _prefabValidityChecks = new PrefabPlacementValidityChecks();
+            _tileValidityChecks = tileValidityChecks;
+            _prefabValidityChecks = prefabValidityChecks;
         }
 
         public void UpdateValidity(Recipe recipe, Object loadedObject, GameObject character, Building building, BuildingCell cell)
