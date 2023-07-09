@@ -8,9 +8,9 @@ public class GasTexture : MonoBehaviour
 {
     [SerializeField, Range(1, 5)] private int resolution = 1;
     [SerializeField, ReadOnly] private Vector2Int sizeRaw;
-    [FormerlySerializedAs("_renderTexture")] [SerializeField, ReadOnly, PreviewField] private RenderTexture _pressureTexture;
-   [SerializeField, ReadOnly, PreviewField]  private RenderTexture _dyeTexture;
-   [SerializeField, ReadOnly, PreviewField]private RenderTexture _velocityTexture;
+    [BoxGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _pressureTexture;
+    [BoxGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _dyeTexture;
+    [BoxGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _velocityTexture;
     
     public DebugImages debugImages;
     public RawImage image;
