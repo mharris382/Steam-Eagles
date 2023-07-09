@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Buildables;
+using Buildables.Interfaces;
 using Buildings;
 using UniRx;
 using UnityEngine;
@@ -39,6 +40,11 @@ namespace Buildables
                 return false;
             var bMachine = _usedCells[position];
             foreach (var bMachineCell in bMachine.Cells) _usedCells.Remove(bMachineCell);
+            
+            var machine = bMachine.Machine;
+            var listeners = machine.GetComponentsInChildren<IMachineListener>();
+            foreach (var machineListener in listeners) machineListener.OnMachineRemoved(machine);
+
             _onMachineRemoved.OnNext(bMachine);
             bMachine.Dispose();
             return true;
@@ -54,8 +60,15 @@ namespace Buildables
             }
             var bMachine = _machineFactory.Create(machine, position);
             foreach (var cell in GetMachineCells(machine, position)) _usedCells.Add(cell, bMachine);
+            
+            var listeners = machine.GetComponentsInChildren<IMachineListener>();
+            foreach (var machineListener in listeners)
+            {
+                machineListener.OnMachineBuilt(machine);
+            }
+            
             _onMachinePlaced.OnNext(bMachine);
-            //machine.Build((Vector3Int)position, building);
+            
             return true;
         }
         

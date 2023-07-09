@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Buildables.Interfaces;
 using Buildings;
 using UniRx;
 using UnityEngine;
@@ -30,11 +31,13 @@ namespace Buildables
             var machine = prefab.Build((Vector3Int)position, Building);
             _bMachineMap.PlaceMachine(machine, position);
             _machineInstances.TryAdd(machine, position);
+           
             return machine;
         }
         
         public void RemoveMachine(BuildableMachineBase machineBase)
         {
+            var machine = _bMachineMap.GetMachine(machineBase.CellPosition);
             _bMachineMap.RemoveMachineAt(machineBase.CellPosition);
         }
     }

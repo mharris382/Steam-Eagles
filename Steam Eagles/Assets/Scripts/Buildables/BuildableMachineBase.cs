@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Buildables.Interfaces;
 using Buildings;
 using Buildings.Rooms;
 using CoreLib;
@@ -381,6 +382,12 @@ namespace Buildables
 
         public virtual void DestroyMachine()
         {
+            var listeners = this.GetComponentsInChildren<IMachineListener>();
+            foreach (var machineListener in listeners)
+            {
+                machineListener.OnMachineRemoved(this);
+            }
+            
             GameObject.Destroy(gameObject);
         }
         
