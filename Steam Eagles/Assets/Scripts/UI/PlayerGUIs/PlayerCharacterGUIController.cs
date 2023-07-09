@@ -55,6 +55,8 @@ namespace UI.PlayerGUIs
         private ReadOnlyReactiveProperty<UIInputMode> _uiInputMode;
         private PCGUIState _guiState;
 
+        
+        public int PlayerNumber => playerID;
 
         #region [Debugging Properties]
 

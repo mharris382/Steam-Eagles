@@ -5,11 +5,13 @@ using Zenject;
 
 namespace Buildables
 {
+    [Obsolete("Modify so that the vent logic for all vents is controlled in one place")]
     public class ExhaustVentController : IDisposable
     {
         private readonly ExhaustVent _exhaustVent;
         private readonly HypergasEngineConfig _config;
 
+        [Obsolete("Do not use factory for this")]
         public class Factory : PlaceholderFactory<ExhaustVent, ExhaustVentController> { }
         
         Subject<float> _onSteamConsumed;

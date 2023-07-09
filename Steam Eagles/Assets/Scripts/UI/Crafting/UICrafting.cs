@@ -5,6 +5,7 @@ using Buildings;
 using Buildings.Rooms.Tracking;
 using Buildings.Tiles;
 using CoreLib;
+using CoreLib.SharedVariables;
 using Items;
 using Sirenix.OdinInspector;
 using UI;
@@ -26,6 +27,8 @@ public class UICrafting : UIPlayerSystemBase
     public InputActions inputActions;
     public Shortcuts shortcuts;
     public UICraftingMode craftingMode;
+    public HoverPosition hoverPosition;
+    
     
     
     [Serializable]

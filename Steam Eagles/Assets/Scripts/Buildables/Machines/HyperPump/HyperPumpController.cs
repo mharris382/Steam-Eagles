@@ -9,6 +9,7 @@ using Zenject;
 
 namespace Buildables
 {
+    [Obsolete("Modify so that the vent logic for all vents is controlled in one place")]
     public class HyperPumpController : IDisposable
     {
         private readonly HypergasEngineConfig _config;

@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UniRx;
 
-
 public class CategoryRecipeList : MonoBehaviour
 {
     private UICrafting _uiCrafting;
@@ -130,6 +129,17 @@ public class CategoryRecipeList : MonoBehaviour
         foreach (var uiCategoryListItem in GetComponentsInChildren<UICategoryListItem>()    )
         {
             uiCategoryListItem.SetupForRecipe(this);
+        }
+    }
+
+    public void SetupForCategory(UICrafting uiCrafting, CategoryLists categoryLists, string category)
+    {
+        var recipes = uiCrafting.recipes.GetRecipes(category);
+        for (int i = 0; i < recipes.Count; i++)
+        {
+            var recipe = recipes[i];
+            var recipeItem = Instantiate(recipePrefab, transform);
+            recipeItem.SetupForRecipe(recipe);
         }
     }
 }

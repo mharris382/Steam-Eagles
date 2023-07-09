@@ -34,6 +34,13 @@ namespace Buildables
             _buildablesRegistry = buildablesRegistry;
         }
 
+        public void SetIsCopy(bool isCopy)
+        {
+            _isCopy = isCopy;
+        }
+
+        private bool _isCopy;
+        public bool IsCopy => _isCopy;
         [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)] public GameObject buildingTarget;
         [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
 
@@ -189,12 +196,13 @@ namespace Buildables
         {
             var cell = (Vector3Int) CellPosition;
             var size = this.MachineGridSize;
+            var offset = !IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
             for (int x = 0; x < size.x; x++)
             {
                 for (int y = 0; y < size.y; y++)
                 {
                     var cellPos = cell + new Vector3Int(x, y, 0);
-                    yield return cellPos;
+                    yield return cellPos + offset;
                 }
             }
         }

@@ -10,6 +10,9 @@ namespace UI.Crafting
         private readonly AimHandlingMode _gamepadMode;
         private readonly AimHandlingMode _keyboardMode;
         private ReactiveProperty<Vector3> _aimPositionWS = new();
+        
+        
+        public IReadOnlyReactiveProperty<Vector3> AimWorldSpace => _aimPositionWS;
         public bool centerOnGrid = true;
         public CraftingAimHanding() : this(new KeyboardMouseAimHandlingMode(), new ControllerAimHandlingMode()){}
         public CraftingAimHanding(AimHandlingMode keyboardMode, AimHandlingMode gamepadMode)

@@ -497,6 +497,9 @@ namespace Buildings
         public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
         public override bool Equals(object obj) => obj is BuildingCell other && Equals(other);
         public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
+        
+        public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
+        public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);
     }
 
     public struct BuildingTile : IEquatable<BuildingTile>
@@ -519,6 +522,9 @@ namespace Buildings
         public bool Equals(BuildingTile other) => cell.Equals(other.cell) && Equals(tile, other.tile);
         public override bool Equals(object obj) => obj is BuildingTile other && Equals(other);
         public override int GetHashCode() => HashCode.Combine(cell, tile);
+        
+        public static bool operator ==(BuildingTile left, BuildingTile right) => left.Equals(right);
+        public static bool operator !=(BuildingTile left, BuildingTile right) => !(left == right);
     }
 
     public struct BuildingRect : IEquatable<BuildingRect>

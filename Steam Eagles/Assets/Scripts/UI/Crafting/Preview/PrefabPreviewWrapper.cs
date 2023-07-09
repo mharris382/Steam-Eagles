@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using Buildings;
+using Sirenix.Utilities;
 using UnityEngine;
 using Zenject;
 
@@ -46,6 +47,7 @@ namespace UI.Crafting
             var autoInjector = loadedObject.GetComponent<ZenAutoInjecter>();
             if (autoInjector != null) autoInjector.enabled = false;
             var copy = GameObject.Instantiate(loadedObject);
+            copy.SendMessage("SetIsCopy", true, SendMessageOptions.DontRequireReceiver);
             if (autoInjector != null) autoInjector.enabled = true;
             
             var components = copy.GetComponentsInChildren<Component>();
@@ -58,7 +60,19 @@ namespace UI.Crafting
                 }
                 else
                 {
-                    Object.Destroy(component);
+                    var type = component.GetType();
+                    if (type.InheritsFrom<MonoInstaller>() || type == typeof(GameObjectContext))
+                    {
+                        continue;
+                    }
+
+                    var previewAttribute = type.GetCustomAttribute<PreviewAttribute>();
+                    if (previewAttribute == null) 
+                        Object.Destroy(component);
+                    else
+                    {
+                        if(!previewAttribute.isPreview) Object.Destroy(component);
+                    }
                 }
             }
 

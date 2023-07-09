@@ -31,6 +31,11 @@ public class UICategoryListItem : MonoBehaviour
         }
     }
 
+    public void SetupForRecipe(Recipe recipe)
+    {
+        _recipe = recipe;
+        SetupUI(recipe);
+    }
     [Button]
    public void SetupForRecipe(CategoryRecipeList list)
     {

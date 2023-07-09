@@ -335,6 +335,7 @@ namespace Buildings
             }
         }
         public bool HasCell(BuildingCell cell) => GetTile(cell) != null;
+        public T GetTile<T>(BuildingCell cell) where T : TileBase => GetTile<T>(cell.cell, cell.layers);
         public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
         {
             if (!_layerToTilemap.ContainsKey(layers))

@@ -6,6 +6,7 @@ using Zenject;
 
 namespace Buildables
 {
+    [Obsolete("Modify so that the vent logic for all vents is controlled in one place")]
     public class SteamTurbineController : IDisposable
     {
         public class Factory : PlaceholderFactory<SteamTurbine, SteamTurbineController> { }
