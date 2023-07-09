@@ -2,10 +2,10 @@
 {
     public class MachineHandlers
     {
-        public MachineHandler<HyperPump> hyperPumps;
-        public MachineHandler<HypergasGenerator> generators;
-        public MachineHandler<SteamTurbine> turbines;
-        public MachineHandler<ExhaustVent> vents;
+        public readonly MachineHandler<HyperPump> hyperPumps;
+        public readonly MachineHandler<HypergasGenerator> generators;
+        public readonly MachineHandler<SteamTurbine> turbines;
+        public readonly MachineHandler<ExhaustVent> vents;
 
 
         public MachineHandlers(MachineHandler<HyperPump> hyperPumps, MachineHandler<HypergasGenerator> generators, MachineHandler<SteamTurbine> turbines, MachineHandler<ExhaustVent> vents)

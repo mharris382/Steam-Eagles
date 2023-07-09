@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Buildables
 {
-    public class SteamTurbine : MonoBehaviour, IMachineCustomSaveData
+    public class SteamTurbine : Machine<SteamTurbine>, IMachineCustomSaveData
     {
         [Required,ChildGameObjectsOnly] public MachineCell inputCell;
         [Required,ChildGameObjectsOnly] public MachineCell outputCell;
@@ -58,7 +58,7 @@ namespace Buildables
         private float StorageCapacity => _config?.generatorStorageCapacity ?? 1000;
         
         
-        [Inject]
+        
         void InjectMe(SteamTurbineController.Factory controllerFactory, HypergasEngineConfig config)
         {
             _controller = controllerFactory.Create(this);
@@ -78,7 +78,7 @@ namespace Buildables
 
         private void OnDestroy()
         {
-            _controller.Dispose();
+            _controller?.Dispose();
         }
 
         public void LoadDataFromJson(string json)

@@ -12,7 +12,7 @@ namespace Buildables
     
    
     [RequireComponent(typeof(BuildableMachine))]
-    public class HypergasGenerator : MonoBehaviour, IMachineCustomSaveData
+    public class HypergasGenerator : Machine<HypergasGenerator>, IMachineCustomSaveData
     {
         private BuildableMachine _buildableMachine;
         private HypergasEngineController _controller;
@@ -63,7 +63,7 @@ namespace Buildables
         
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
         
-        [Inject]
+        
         public void InjectSteamNetwork(HypergasEngineController.Factory hypergasEngineControllerFactory, HypergasEngineConfig config)
         {
            _controller = hypergasEngineControllerFactory.Create(this);

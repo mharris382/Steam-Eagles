@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Buildables
 {
-    public class ExhaustVent : MonoBehaviour
+    public class ExhaustVent : Machine<ExhaustVent>
     {
         [Required,ChildGameObjectsOnly] public MachineCell cell;
         public UnityEvent<float> onSteamConsumed;
@@ -28,16 +28,16 @@ namespace Buildables
         }
         
         
+        //
+        // [Inject]
+        // public void InjectMe(ExhaustVentController.Factory controllerFactory)
+        // {
+        //     _controller = controllerFactory.Create(this);
+        // }
 
-        [Inject]
-        public void InjectMe(ExhaustVentController.Factory controllerFactory)
-        {
-            _controller = controllerFactory.Create(this);
-        }
-
-        private void OnDestroy()
-        {
-            _controller.Dispose();
-        }
+        // private void OnDestroy()
+        // {
+        //     _controller.Dispose();
+        // }
     }
 }

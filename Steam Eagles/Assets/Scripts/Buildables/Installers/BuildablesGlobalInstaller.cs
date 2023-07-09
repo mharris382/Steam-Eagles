@@ -31,6 +31,11 @@ namespace Buildables.Installers
             Container.BindFactory<Recipe, DestructionDropperConfig, DropperImp, DropperImp.Factory>().AsSingle().NonLazy();
             Container.BindFactory<Recipe, PickupHandler, PickupHandler.Factory>().AsSingle().NonLazy();
 
+            Container.Bind<MachineHandler<HyperPump>>().AsSingle();
+            Container.Bind<MachineHandler<HypergasGenerator>>().AsSingle();
+            Container.Bind<MachineHandler<SteamTurbine>>().AsSingle();
+            Container.Bind<MachineHandler<ExhaustVent>>().AsSingle();
+            Container.Bind<MachineHandlers>().AsSingle().NonLazy();
         }
 
 

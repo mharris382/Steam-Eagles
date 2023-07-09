@@ -6,23 +6,28 @@ using Zenject;
 
 namespace Buildables
 {
-    public class HyperPump : MonoBehaviour
+    public class HyperPump : Machine<HyperPump>
     {
         private HyperPumpController _pumpController;
         private BuildableMachine _buildableMachine;
         [Required] public MachineCell producerCell;
+        
         private HypergasEngineConfig _config;
+        
+
+
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
         public Building Building => BuildableMachine.Building;
-        [Inject]
+        
         public void Inject(HyperPumpController.Factory pumpControllerFactory, HypergasEngineConfig config)
         {
             _pumpController = pumpControllerFactory.Create(this);
             _config = config;
         }
+       
         public void Interact()
         {
-            _pumpController.OnInteraction();
+            if(_pumpController != null) _pumpController.OnInteraction();
         }
         public Vector2Int GetOutputCell()
         {
