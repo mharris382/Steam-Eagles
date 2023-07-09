@@ -50,11 +50,9 @@ namespace Buildables
             return true;
         }
 
-      
-
-        public bool PlaceMachine(BuildableMachineBase machine, Vector2Int position)
+        public bool PlaceMachine(BuildableMachineBase machine, Vector2Int position, bool flipped)
         {
-            if (!CanPlaceMachine(machine, position))
+            if (!CanPlaceMachine(machine, position, flipped))
             {
                 return false;
             }
@@ -71,7 +69,10 @@ namespace Buildables
             
             return true;
         }
-        
+
+
+        public bool PlaceMachine(BuildableMachineBase machine, Vector2Int position) => PlaceMachine(machine, position, machine.IsFlipped);
+
         public BuildableMachineBase GetMachine(Vector2Int position)
         {
             if (!IsCellOverlappingMachine(position)) return null;
@@ -80,6 +81,10 @@ namespace Buildables
         }
 
         public IEnumerable<Vector2Int> GetAllValidCells(BuildableMachineBase machine, Vector2Int placement)
+        {
+            return GetAllValidCells(machine, placement, machine.IsFlipped);
+        }
+        public IEnumerable<Vector2Int> GetAllValidCells(BuildableMachineBase machine, Vector2Int placement, bool flipped)
         {
             foreach (var cell in GetMachineCells(machine, placement))
             {
@@ -95,18 +100,19 @@ namespace Buildables
                 yield return cell;
             }
         }
-
-        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement, ref string reason)
+        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement, ref string reason) => CanPlaceMachine(machine, placement, machine.IsFlipped, ref reason);
+        
+        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement, bool flipped, ref string reason)
         {
-            if(_config.debugCells) _debugger.Debug(GetAllValidCells(machine, placement));
-            var allValidCells = GetAllValidCells(machine, placement).ToArray();
+            if(_config.debugCells) _debugger.Debug(GetAllValidCells(machine, placement, flipped));
+            var allValidCells = GetAllValidCells(machine, placement, flipped).ToArray();
             var neededSpace = machine.MachineGridSize.x * machine.MachineGridSize.y;
             if (allValidCells.Length != neededSpace)
             {
                 reason = "Placement is not valid.";
                 return false;
             }
-            foreach (var cell in GetMachineCells(machine, placement))
+            foreach (var cell in GetMachineCells(machine, placement, flipped))
             {
                 if (IsCellOverlappingMachine(cell))
                 {
@@ -123,32 +129,21 @@ namespace Buildables
             if (machine.snapsToGround)
             {
                 reason = "Machine must be placed on floor";
-                return _helper.IsPlacementOnFloor(machine, placement);
+                return _helper.IsPlacementOnFloor(machine, placement, flipped);
             }
             return true;
     }
-        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement)
-        {
-            foreach (var cell in GetMachineCells(machine, placement))
-            {
-                if (IsCellOverlappingMachine(cell))
-                {
-                    return false;
-                }
+        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement) => CanPlaceMachine(machine, placement, machine.IsFlipped);
 
-                if (IsCellOverlappingTile(cell))
-                {
-                    return false;
-                }
-            }
-            if (machine.snapsToGround)
-            {
-                return _helper.IsPlacementOnFloor(machine, placement);
-            }
-            return true;
+        public bool CanPlaceMachine(BuildableMachineBase machine, Vector2Int placement, bool flipped)
+        {
+               var reason = "";
+                return CanPlaceMachine(machine, placement, flipped, ref reason);
         }
 
-        private IEnumerable<Vector2Int> GetMachineCells(BuildableMachineBase machine, Vector2Int placement) => _helper.GetMachineCells(machine, placement);
+        private IEnumerable<Vector2Int> GetMachineCells(BuildableMachineBase machine, Vector2Int placement) =>
+            GetMachineCells(machine, placement, machine.IsFlipped);
+        private IEnumerable<Vector2Int> GetMachineCells(BuildableMachineBase machine, Vector2Int placement, bool flipped) => _helper.GetMachineCells(machine, placement, flipped);
 
         private bool IsCellOverlappingMachine(Vector2Int cell) => _usedCells.ContainsKey(cell);
 

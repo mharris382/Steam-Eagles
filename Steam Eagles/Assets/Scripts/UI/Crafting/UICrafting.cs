@@ -86,6 +86,7 @@ public class UICrafting : UIPlayerSystemBase
     private GameObject _character;
     private Camera _camera;
     private CraftingAimHanding _aimHanding;
+    private CraftingDirectionHandler _directionHandler;
     private LoadHelper _recipeLoader;
     private EntityRoomState _roomState;
     private RecipePreviewController _previewController;
@@ -119,8 +120,9 @@ public class UICrafting : UIPlayerSystemBase
 
 
     [Inject] public void Install(LoadHelper loadHelper, CraftingAimHanding aimHanding, PlacementValidity placementValidity,
-        RecipePreviewController previewController, DestructionPreviewController destructionPreviewController)
+        RecipePreviewController previewController, DestructionPreviewController destructionPreviewController, CraftingDirectionHandler directionHandler)
     {
+        _directionHandler = directionHandler;
         _recipeLoader = loadHelper;
         _aimHanding = aimHanding;
         _placementValidity = placementValidity;
@@ -175,6 +177,7 @@ public class UICrafting : UIPlayerSystemBase
         var building = _roomState.CurrentRoom.Value.Building;
         var gridPosition = _aimHanding.ProcessGridAim(_playerInput, _character, _camera, building, targetLayer);
         
+        _directionHandler.UpdateDirection(_playerInput);
         if (craftingMode.isDestructMode.Value)
         {
             if(_destructionPreviewController == null) return;

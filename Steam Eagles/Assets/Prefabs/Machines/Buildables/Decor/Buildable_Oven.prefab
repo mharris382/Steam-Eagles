@@ -169,7 +169,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 1.02
+      - m_Value: 0.51
         m_Name: Offset
         m_Overridden: 1
       - m_Value: 0.21
@@ -191,7 +191,7 @@ VisualEffect:
       - m_Value: {x: 0, y: 0.45, z: 0}
         m_Name: Scale End
         m_Overridden: 1
-      - m_Value: {x: -0.51, y: 0, z: 0}
+      - m_Value: {x: 0.01, y: 0, z: 0}
         m_Name: Position Center
         m_Overridden: 1
       - m_Value: {x: 1, y: 0.5, z: 1}
@@ -199,6 +199,9 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: {x: 0, y: 0.51, z: 0}
         m_Name: collider position
+        m_Overridden: 1
+      - m_Value: {x: 0.25, y: 0.19, z: 0.39}
+        m_Name: Stove Values
         m_Overridden: 1
     m_Vector4f:
       m_Array: []
@@ -243,6 +246,38 @@ VisualEffect:
           m_NumColorKeys: 3
           m_NumAlphaKeys: 4
         m_Name: Color Over Life
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 0.43867922, g: 0.9243209, b: 1, a: 0}
+          key1: {r: 1, g: 1, b: 1, a: 0.15686275}
+          key2: {r: 1, g: 1, b: 1, a: 1}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 65535
+          ctime2: 65535
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 30455
+          atime2: 65535
+          atime3: 0
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: 1
+          m_NumColorKeys: 2
+          m_NumAlphaKeys: 3
+        m_Name: Color Over Value
         m_Overridden: 1
     m_NamedObject:
       m_Array:
@@ -321,8 +356,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3682922595100594539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.9899938, y: 0, z: 0}
+  m_LocalScale: {x: 1.1335887, y: 1.1335887, z: 1.1335887}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 389625917916280376}
@@ -545,8 +580,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7814432298880020931}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.99, y: 0, z: 0}
+  m_LocalScale: {x: 1.1335887, y: 1.1335887, z: 1.1335887}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8723187369121269690}
@@ -751,6 +786,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1564507143092256203, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 1564507143092256203, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
       propertyPath: m_Name
       value: Buildable_Oven

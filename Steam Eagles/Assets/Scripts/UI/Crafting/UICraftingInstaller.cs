@@ -41,7 +41,7 @@ public class UICraftingInstaller : MonoInstaller
         
         
         Container.Bind<HoverPosition>().FromInstance(hoverPosition).AsSingle();
-
+        Container.Bind<CraftingDirectionHandler>().AsSingle().NonLazy();
         Container.Bind<TilePlacementValidityChecks>().AsSingle();
         Container.Bind<PrefabPlacementValidityChecks>().AsSingle();
         Container.Bind<OverlapValidityChecksConfig>().FromInstance(config.overlapValidityChecksConfig).AsSingle().NonLazy();

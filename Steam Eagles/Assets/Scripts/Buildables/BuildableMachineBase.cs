@@ -168,20 +168,15 @@ namespace Buildables
 
         public IEnumerable<Vector3Int> GetCells(Vector2Int position)
         {
-            var cell = (Vector3Int) position;
-            var size = this.MachineGridSize;
-            var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
-            for (int x = 0; x < size.x; x++)
-            {
-                for (int y = 0; y < size.y; y++)
-                {
-                    var cellPos = cell + new Vector3Int(x, y, 0);
-                    yield return cellPos + offset;
-                }
-            }
+            return GetCells(position, IsFlipped);
         }
 
         public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position)
+        {
+            return GetBottomCells(position, IsFlipped);
+        }
+
+        public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position, bool flipped)
         {
             var cell = (Vector3Int) position;
             var size = this.MachineGridSize;
@@ -195,9 +190,15 @@ namespace Buildables
         }
         public IEnumerable<Vector3Int> GetCells()
         {
-            var cell = (Vector3Int) CellPosition;
+            return GetCells(this.CellPosition);
+        }
+
+
+        public IEnumerable<Vector3Int> GetCells(Vector2Int position, bool flipped)
+        {
+            var cell = (Vector3Int) position;
             var size = this.MachineGridSize;
-            var offset = !IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
+            var offset = flipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
             for (int x = 0; x < size.x; x++)
             {
                 for (int y = 0; y < size.y; y++)

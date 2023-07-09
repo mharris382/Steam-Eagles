@@ -1,7 +1,9 @@
 ﻿
 using System.Collections.Generic;
+using Buildables;
 using Buildings;
 using Sirenix.Utilities;
+using Unity.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -46,44 +48,101 @@ namespace UI.Crafting
         {
             var autoInjector = loadedObject.GetComponent<ZenAutoInjecter>();
             if (autoInjector != null) autoInjector.enabled = false;
-            var copy = GameObject.Instantiate(loadedObject);
-            copy.SendMessage("SetIsCopy", true, SendMessageOptions.DontRequireReceiver);
-            if (autoInjector != null) autoInjector.enabled = true;
             
-            var components = copy.GetComponentsInChildren<Component>();
-            foreach (var component in components)
+            Dictionary<string, Transform> transformCopies = new Dictionary<string, Transform>();
+            Dictionary<string, Matrix4x4> localMatrices = new Dictionary<string, Matrix4x4>();
+            Dictionary<string, BuildableVariant> variants = new();
+
+            var copy = new GameObject(loadedObject.name).transform; //GameObject.Instantiate(loadedObject);
+            transformCopies.Add(loadedObject.name, copy);
+            
+            if (autoInjector != null) autoInjector.enabled = true;
+
+            Queue<(Transform, string, Transform)> toProcess = new();
+            loadedObject.Descendants(t => t.GetComponentsInChildren<SpriteRenderer>().Length > 0)
+                .ForEach(t => {
+                    if (transformCopies.ContainsKey(t.name)) Debug.LogError($"Duplicate name found: {t.name}, this is not allowed for sprites on buildables", loadedObject);
+
+
+                    var childCopy = new GameObject(t.name).transform;
+                    transformCopies.Add(t.name, childCopy);
+                    localMatrices.Add(t.name, t.transform.worldToLocalMatrix);
+                    var parentName = t.transform.parent.name;
+                    toProcess.Enqueue((childCopy, parentName, t.transform));
+            
+                });
+
+            while (toProcess.Count > 0)
             {
-                if (component is Transform) continue;
-                if (component is SpriteRenderer sr)
+                var (childCopy, parentName, original) = toProcess.Dequeue();
+                if (transformCopies.ContainsKey(parentName))
                 {
-                    _spriteRenderers.Add(sr);
+                    childCopy.parent = transformCopies[parentName];
                 }
                 else
                 {
-                    var type = component.GetType();
-                    if (type.InheritsFrom<MonoInstaller>() || type == typeof(GameObjectContext))
-                    {
-                        continue;
-                    }
+                    Debug.LogError("Couldn't find parent: " + parentName, loadedObject);
+                    Object.Destroy(childCopy.gameObject);
+                    continue;
+                }
+                Process(childCopy, original);
+               
 
-                    var previewAttribute = type.GetCustomAttribute<PreviewAttribute>();
-                    if (previewAttribute == null) 
-                        Object.Destroy(component);
-                    else
-                    {
-                        if(!previewAttribute.isPreview) Object.Destroy(component);
-                    }
+                // var variant = original.GetComponent<BuildableVariant>();
+                // if(variant != null) variants.Add(original.name, variant);
+            }
+
+            void Process(Transform copyT, Transform originalT)
+            {
+                var parentName = originalT.parent.name;
+                var copyParent = transformCopies[parentName];
+                
+                copyT.parent = copyParent;
+                copyT.localPosition = originalT.localPosition;
+                copyT.localRotation = originalT.localRotation;
+                copyT.localScale = originalT.localScale;
+                var sr =originalT.GetComponent<SpriteRenderer>();
+                if (sr != null && sr.enabled && sr.sprite != null)
+                {
+                    var srCopy = copyT.gameObject.AddComponent<SpriteRenderer>();
+                    MatchOriginal(srCopy, sr, true);
                 }
             }
-
-            var originalSprites = loadedObject.GetComponentsInChildren<SpriteRenderer>();
-            var copySprites = copy.GetComponentsInChildren<SpriteRenderer>();
-            for (int i = 0; i < originalSprites.Length; i++)
-            {
-                var originalSprite = originalSprites[i];
-                var copySprite = copySprites[i];
-                MatchOriginal(copySprite, originalSprite, copySprite.gameObject != copy);
-            }
+            //
+            // var components = copy.GetComponentsInChildren<Component>();
+            // foreach (var component in components)
+            // {
+            //     if (component is Transform) continue;
+            //     if (component is SpriteRenderer sr)
+            //     {
+            //         _spriteRenderers.Add(sr);
+            //     }
+            //     else
+            //     {
+            //         var type = component.GetType();
+            //         if (type.InheritsFrom<MonoInstaller>() || type == typeof(GameObjectContext))
+            //         {
+            //             continue;
+            //         }
+            //
+            //         var previewAttribute = type.GetCustomAttribute<PreviewAttribute>();
+            //         if (previewAttribute == null) 
+            //             Object.Destroy(component);
+            //         else
+            //         {
+            //             if(!previewAttribute.isPreview) Object.Destroy(component);
+            //         }
+            //     }
+            // }
+            //
+            // var originalSprites = loadedObject.GetComponentsInChildren<SpriteRenderer>();
+            // var copySprites = copy.GetComponentsInChildren<SpriteRenderer>();
+            // for (int i = 0; i < originalSprites.Length; i++)
+            // {
+            //     var originalSprite = originalSprites[i];
+            //     var copySprite = copySprites[i];
+            //     MatchOriginal(copySprite, originalSprite, copySprite.gameObject != copy);
+            // }
             // var newGo = new GameObject($"{loadedObject.name} Preview");
             // var originalSprite = loadedObject.GetComponent<SpriteRenderer>();
             // if (originalSprite != null)
@@ -119,7 +178,7 @@ namespace UI.Crafting
             //         }
             //     }
             // }
-            _preview = copy;
+            _preview = copy.gameObject;
         }
 
         public void Update(Building building, BuildingCell aimedPosition)

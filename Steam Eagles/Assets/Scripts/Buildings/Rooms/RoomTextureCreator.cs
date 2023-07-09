@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Buildings.Rooms.Tracking;
 using Buildings.Tiles;
-using Codice.CM.Common;
-using Sirenix.Utilities;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Tilemaps;
