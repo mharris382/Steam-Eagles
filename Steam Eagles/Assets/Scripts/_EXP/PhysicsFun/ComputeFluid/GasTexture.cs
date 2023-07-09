@@ -1,36 +1,56 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GasTexture : MonoBehaviour
 {
     [SerializeField, Range(1, 5)] private int resolution = 1;
     [SerializeField, ReadOnly] private Vector2Int sizeRaw;
-    [SerializeField, ReadOnly, PreviewField]
-    private RenderTexture _renderTexture;
+    [FormerlySerializedAs("_renderTexture")] [SerializeField, ReadOnly, PreviewField] private RenderTexture _pressureTexture;
+   [SerializeField, ReadOnly, PreviewField]  private RenderTexture _dyeTexture;
+   [SerializeField, ReadOnly, PreviewField]private RenderTexture _velocityTexture;
+    
+    public DebugImages debugImages;
     public RawImage image;
-    [ShowInInspector]
-    private Vector2Int SizeActual => sizeRaw * (resolution * resolution);
-    [ShowInInspector]
-    public Vector2Int ImageSize
+    
+    [Serializable]
+    public class DebugImages
+    {
+        public RawImage pressureImage;
+        public RawImage dyeImage;
+        public RawImage velocityImage;
+        
+        
+        public void Debug(RenderTexture pressure, RenderTexture dye, RenderTexture velocity)
+        {
+            if(pressureImage) pressureImage.texture = pressure;
+            if(dyeImage) dyeImage.texture = dye;
+            if(velocityImage) velocityImage.texture = velocity;
+        }
+    }
+    
+    
+   [FoldoutGroup("Debugging")] [ShowInInspector] private Vector2Int SizeActual => sizeRaw * (resolution * resolution);
+   [FoldoutGroup("Debugging")] [ShowInInspector] public Vector2Int ImageSize
     {
         get
         {
-            if(HasTexture) return new Vector2Int(_renderTexture.width, _renderTexture.height);
+            if(HasTexture) return new Vector2Int(_pressureTexture.width, _pressureTexture.height);
             return Vector2Int.zero;
         }
     }
     public int Resolution => resolution;
     
-    public bool HasTexture => _renderTexture != null;
+    public bool HasTexture => _pressureTexture != null && _velocityTexture != null && _dyeTexture != null;
     
-    public RenderTexture RenderTexture => _renderTexture ? _renderTexture : _renderTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
+    public RenderTexture RenderTexture => _pressureTexture ? _pressureTexture : _pressureTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
 
     [Button()]
     public void ResetTexture()
     {
-        _renderTexture = null;
+        _pressureTexture = null;
     }
 
     public void SetSize(int w, int h)
@@ -51,8 +71,8 @@ public class GasTexture : MonoBehaviour
             CreateTexture(sizeActual.x, sizeActual.y);
         }
         
-        if(image) image.texture = _renderTexture;
-        return _renderTexture;
+        if(image) image.texture = _pressureTexture;
+        return _pressureTexture;
     }
 
     public bool TryGetTexture(out RenderTexture texture)
@@ -60,8 +80,8 @@ public class GasTexture : MonoBehaviour
         texture = null;
         if (HasTexture)
         {
-            texture = _renderTexture;
-            if(image) image.texture = _renderTexture;
+            texture = _pressureTexture;
+            if(image) image.texture = _pressureTexture;
             return true;
         }
 
@@ -70,11 +90,27 @@ public class GasTexture : MonoBehaviour
 
     void CreateTexture(int w, int h)
     {
-        if (HasTexture) _renderTexture.Release();
-        _renderTexture = new RenderTexture(w, h, 0);
-        _renderTexture.enableRandomWrite = true;
-        _renderTexture.Create();
-        if(image) image.texture = _renderTexture;
+        if (HasTexture)
+        {
+            _pressureTexture?.Release();
+            _dyeTexture?.Release();
+            _velocityTexture?.Release();
+        }
+        
+        _pressureTexture = new RenderTexture(w, h, 0);
+        _pressureTexture.enableRandomWrite = true;
+        _pressureTexture.Create();
+        
+        _dyeTexture = new RenderTexture(w, h, 0);
+        _dyeTexture.enableRandomWrite = true;
+        _dyeTexture.Create();
+        
+        _velocityTexture = new RenderTexture(w, h, 0);
+        _velocityTexture.enableRandomWrite = true;
+        _velocityTexture.Create();
+        
+        if(image) image.texture = _pressureTexture;
+        debugImages.Debug(_pressureTexture, _dyeTexture, _velocityTexture);
         
     }
     
@@ -82,7 +118,7 @@ public class GasTexture : MonoBehaviour
     {
         var sizeActual = SizeActual;
         if (HasTexture == false) return false;
-        return _renderTexture.width != sizeActual.x || _renderTexture.height != sizeActual.y;
+        return _pressureTexture.width != sizeActual.x || _pressureTexture.height != sizeActual.y;
     }
     
     

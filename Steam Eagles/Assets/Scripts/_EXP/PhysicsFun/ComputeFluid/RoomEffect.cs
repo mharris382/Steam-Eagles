@@ -21,8 +21,8 @@ public class RoomEffect : MonoBehaviour
     [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string centerParameter = "BoundsCenter";
 
     [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameInt))] public string resolutionParameter = "Resolution";
-    
-    
+
+    public bool disableSim = true;
     private RoomTextures _room;
     private RoomSimTextures _simTextures;
     private VisualEffect _visualEffect;
@@ -181,20 +181,30 @@ public class RoomEffect : MonoBehaviour
         GasTexture.ResetTexture();
         SimTextures.Init();
     }
+    
     [Button,ButtonGroup()]
     void RunCompute()
     {
-        if (GasTexture.HasTexture == false)
-        {
-            Debug.LogError("No Gas Texture", this);
-            return;
-        }
-        var gasTexture = GasTexture.RenderTexture;
-        SimCompute.AssignDiffuse(gasTexture,(RenderTexture)SimTextures.textureSet.compositeBoundariesTexture.texture, laplacianCenter,laplacianNeighbor, laplacianDiagnal);
-        SimCompute.DispatchDiffuse();
-        _textureParamId = Shader.PropertyToID(textureParameter);
-        VisualEffect.SetTexture(_textureParamId, gasTexture);
+        if(!disableSim)
+            RunComputeShader();
     }
+
+    private void UpdateVisualEffectTexture()
+    {
+        _textureParamId = Shader.PropertyToID(textureParameter);
+        VisualEffect.SetTexture(_textureParamId, GasTexture.RenderTexture);
+    }
+
+    private void RunComputeShader()
+    {
+        
+        var gasTexture = GasTexture.RenderTexture;
+        SimCompute.AssignDiffuse(gasTexture, (RenderTexture)SimTextures.textureSet.compositeBoundariesTexture.texture,
+            laplacianCenter, laplacianNeighbor, laplacianDiagnal);
+        SimCompute.DispatchDiffuse();
+        return;
+    }
+
     [Button(ButtonSizes.Large)]
     private void FullSimCompute()
     {
@@ -216,7 +226,13 @@ public class RoomEffect : MonoBehaviour
         while (enabled)
         {
             yield return new WaitForSeconds(updateRate);
+            if (GasTexture.HasTexture == false)
+            {
+                Debug.LogError("No Gas Texture", this);
+                continue;
+            }
             RunCompute();
+            UpdateVisualEffectTexture();
         }
     }
     IEnumerator UpdateIO()
@@ -228,14 +244,14 @@ public class RoomEffect : MonoBehaviour
         }
     }
 
-    IEnumerator UpdateTilemap()
-    {
-        while (enabled)
-        {
-            yield return new WaitForSeconds(updateTilemapRate);
-            
-        }
-    }
+    // IEnumerator UpdateTilemap()
+    // {
+    //     while (enabled)
+    //     {
+    //         yield return new WaitForSeconds(updateTilemapRate);
+    //         
+    //     }
+    // }
 
     private void Update()
     {
