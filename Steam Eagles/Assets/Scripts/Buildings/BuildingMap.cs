@@ -259,6 +259,7 @@ namespace Buildings
         }
 
         public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
+        public Room GetRoom(BuildingCell cell) => GetRoom(cell.cell, cell.layers);
         public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);
         public bool CellIsInARoom(Vector3Int cell, BuildingLayers layer) => GetMapForLayer(layer).HasCell(cell);
 
@@ -266,6 +267,7 @@ namespace Buildings
 
         public Vector3 CellToWorldCentered(Vector3Int cell, BuildingLayers buildingLayers) => CellToWorld(cell, buildingLayers) + (Vector3)GetCellSize(buildingLayers)/2f;
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
+        public BuildingCell  WorldToBCell(Vector3 wp, BuildingLayers buildingLayers) => new BuildingCell(_layerToTilemap[buildingLayers].WorldToCell(wp), buildingLayers);
         public Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
         public Vector3 CellToWorld(BuildingCell cell) => CellToWorld(cell.cell, cell.layers);
         public Vector3 CellToLocal(BuildingCell cell) => CellToLocal(cell.cell, cell.layers);

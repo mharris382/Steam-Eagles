@@ -61,6 +61,16 @@ float4 gradient(StructuredBuffer<float4> scalar_field, float partial_xy, int2 co
     return float4(right - left, top - bottom, 0.0, 0.0)  / partial_xy;
 
 }
+float4 gradient_texture(Texture2D<float4> scalar_field, float partial_xy, int2 coord) {
+    
+    float left     = scalar_field[coord - int2(1, 0)].x;
+    float right    = scalar_field[coord + int2(1, 0)].x;
+    float bottom   = scalar_field[coord - int2(0, 1)].x;
+    float top      = scalar_field[coord + int2(0, 1)].x;
+
+    return float4(right - left, top - bottom, 0.0, 0.0)  / partial_xy;
+
+}
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 

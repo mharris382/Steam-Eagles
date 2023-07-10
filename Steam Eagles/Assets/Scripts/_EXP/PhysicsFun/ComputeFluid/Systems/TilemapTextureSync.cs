@@ -47,8 +47,8 @@ namespace _EXP.PhysicsFun.ComputeFluid
         }
 
         private void UpdateSolid(IList<(BuildingCell, float)> valueTuples) => Update(valueTuples, BuildingLayers.SOLID);
-        private void UpdateGas(IList<(BuildingCell, float)> valueTuples) => Update(valueTuples, BuildingLayers.SOLID);
-        private void UpdateWall(IList<(BuildingCell, float)> valueTuples) => Update(valueTuples, BuildingLayers.SOLID);
+        private void UpdateGas(IList<(BuildingCell, float)> valueTuples) => Update(valueTuples, BuildingLayers.GAS);
+        private void UpdateWall(IList<(BuildingCell, float)> valueTuples) => Update(valueTuples, BuildingLayers.WALL);
 
         float GetValueForGas(TileBase gasTile) => gasTile == null ? 0 : 1;
         float GetValueForSolid(TileBase solidTile) => solidTile == null ? 0 : 1;

@@ -16,7 +16,7 @@
         </member>
         <member name="M:DG.DemiEditor.DeEditorCompatibilityUtils.GetPrefabParent(UnityEngine.GameObject)">
             <summary>
-            Returns the prefab parent by using different code on Unity 2018 or later
+            Returns the prefabInstance parent by using different code on Unity 2018 or later
             </summary>
             <param name="instance"></param>
             <returns></returns>
@@ -204,7 +204,7 @@
         </member>
         <member name="M:DG.DemiEditor.DeEditorMetaFixer.FixComponentGuidInSceneOrPrefabString(DG.DemiEditor.DeEditorMetaFixer.ComponentData,System.String@,System.String,DG.DemiEditor.DeEditorMetaFixer.ModInfo)">
             <summary>
-            Finds all MonoBehaviour/Behaviour/Component in the given scene/prefab file string
+            Finds all MonoBehaviour/Behaviour/Component in the given scene/prefabInstance file string
             that contain the given <see cref="F:DG.DemiEditor.DeEditorMetaFixer.ComponentData.serializedIdentifiers"/>
             and replaces their GUID with the one passed (if different).<para/>
             Returns the total number of Component GUIDs that were fixed
@@ -297,30 +297,30 @@
         </member>
         <member name="M:DG.DemiEditor.DeEditorPrefabUtils.ApplyPrefabInstanceModifications(UnityEngine.GameObject)">
             <summary>
-            Behaves as the Inspector's Apply button, applying any modification of this instance to the prefab parent
+            Behaves as the Inspector's Apply button, applying any modification of this instance to the prefabInstance parent
             </summary>
             <param name="instance"></param>
         </member>
         <member name="M:DG.DemiEditor.DeEditorPrefabUtils.InstanceHasUnappliedModifications(UnityEngine.GameObject)">
             <summary>
-            Returns TRUe if a prefab instance has unapplied modifications, ignoring any modifications applied to the transform.<para/>
+            Returns TRUe if a prefabInstance instance has unapplied modifications, ignoring any modifications applied to the transform.<para/>
             NOTE: this a somehow costly operation (since it generates GC)
             </summary>
         </member>
         <member name="M:DG.DemiEditor.DeEditorPrefabUtils.BreakPrefabInstances(System.Collections.Generic.List{UnityEngine.GameObject},System.Boolean)">
             <summary>
-            Completely removes any prefab connection from the given prefab instances, by desotroing the original object and recreating it.<para/>
+            Completely removes any prefabInstance connection from the given prefabInstance instances, by desotroing the original object and recreating it.<para/>
             Returns a list with all the new elements created.
             <para>
-            Based on RodGreen's method (http://forum.unity3d.com/threads/82883-Breaking-connection-from-gameObject-to-prefab-for-good.?p=726602&amp;viewfull=1#post726602)
+            Based on RodGreen's method (http://forum.unity3d.com/threads/82883-Breaking-connection-from-gameObject-to-prefabInstance-for-good.?p=726602&amp;viewfull=1#post726602)
             </para>
             </summary>
         </member>
         <member name="M:DG.DemiEditor.DeEditorPrefabUtils.BreakPrefabInstance(UnityEngine.GameObject,System.Boolean)">
             <summary>
-            Completely removes any prefab connection from the given prefab instance, by desotroing the original object and recreating it.
+            Completely removes any prefabInstance connection from the given prefabInstance instance, by desotroing the original object and recreating it.
             <para>
-            Based on RodGreen's method (http://forum.unity3d.com/threads/82883-Breaking-connection-from-gameObject-to-prefab-for-good.?p=726602&amp;viewfull=1#post726602)
+            Based on RodGreen's method (http://forum.unity3d.com/threads/82883-Breaking-connection-from-gameObject-to-prefabInstance-for-good.?p=726602&amp;viewfull=1#post726602)
             </para>
             </summary>
         </member>

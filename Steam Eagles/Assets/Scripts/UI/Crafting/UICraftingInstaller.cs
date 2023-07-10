@@ -3,6 +3,7 @@ using CoreLib.SharedVariables;
 using Items;
 using UI.Crafting;
 using UI.Crafting.Destruction;
+using UI.Crafting.Events;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
@@ -37,8 +38,9 @@ public class UICraftingInstaller : MonoInstaller
         Container.BindFactory<Recipe, TileDestructionHandler, TileDestructionHandler.Factory>().AsSingle();
         Container.BindFactory<Recipe, MachineDestructionHandler, MachineDestructionHandler.Factory>().AsSingle();
         Container.Bind<DestructionHandlers>().AsSingle().NonLazy();
-        
-        
+
+
+        Container.Bind<CraftingBuildingTarget>().AsSingle().NonLazy();
         
         Container.Bind<HoverPosition>().FromInstance(hoverPosition).AsSingle();
         Container.Bind<CraftingDirectionHandler>().AsSingle().NonLazy();
@@ -46,6 +48,9 @@ public class UICraftingInstaller : MonoInstaller
         Container.Bind<PrefabPlacementValidityChecks>().AsSingle();
         Container.Bind<OverlapValidityChecksConfig>().FromInstance(config.overlapValidityChecksConfig).AsSingle().NonLazy();
         Container.Bind<CraftingConfig>().FromInstance(config).AsSingle();
+
+
+        Container.Bind<CraftingEventPublisher>().AsSingle();
     }
 
 

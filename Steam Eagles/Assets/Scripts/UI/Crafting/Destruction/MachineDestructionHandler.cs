@@ -1,6 +1,7 @@
 ﻿using Buildables;
 using Buildings;
 using Items;
+using UI.Crafting.Events;
 using UnityEngine;
 using Zenject;
 
@@ -8,9 +9,12 @@ namespace UI.Crafting.Destruction
 {
     public class MachineDestructionHandler : DestructionHandler
     {
+        private readonly CraftingEventPublisher _eventPublisher;
+
         public class Factory : PlaceholderFactory<Recipe, MachineDestructionHandler> { }
-        public MachineDestructionHandler(Recipe recipe, DestructionPreview destructionPreview) : base(recipe, destructionPreview)
+        public MachineDestructionHandler(Recipe recipe, DestructionPreview destructionPreview, CraftingEventPublisher eventPublisher) : base(recipe, destructionPreview)
         {
+            _eventPublisher = eventPublisher;
         }
 
         public override bool HasDestructionTarget(Building building, BuildingCell cell)
@@ -31,7 +35,12 @@ namespace UI.Crafting.Destruction
         public override void Destruct(Building building, BuildingCell cell)
         {
             var bMachines = building.GetComponent<BMachines>();
-            bMachines.Map.RemoveMachineAt(cell.cell2D);
+            var machine = bMachines.Map.GetMachine(cell.cell2D);
+            if (machine != null)
+            {
+                _eventPublisher.OnPrefabDeconstruct(cell, machine.gameObject, machine.IsFlipped);
+                bMachines.Map.RemoveMachineAt(cell.cell2D);    
+            }
         }
     }
 }

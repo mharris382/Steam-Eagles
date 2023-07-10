@@ -3,6 +3,7 @@ using Buildables;
 using Buildings;
 using Buildings.Tiles;
 using Items;
+using UI.Crafting.Events;
 using UnityEngine;
 using Zenject;
 
@@ -10,11 +11,14 @@ namespace UI.Crafting.Destruction
 {
     public class TileDestructionHandler : DestructionHandler
     {
+        private readonly CraftingEventPublisher _tileEventPublisher;
+
         public class Factory : PlaceholderFactory<Recipe, TileDestructionHandler> { }
         BuildingCell lastCell;
         float timeLastDestruction = 0;
-        public TileDestructionHandler(Recipe recipe, DestructionPreview destructionPreview) : base(recipe, destructionPreview)
+        public TileDestructionHandler(Recipe recipe, DestructionPreview destructionPreview, CraftingEventPublisher tileEventPublisher) : base(recipe, destructionPreview)
         {
+            _tileEventPublisher = tileEventPublisher;
         }
 
         public override bool HasDestructionTarget(Building building, BuildingCell cell)
@@ -46,11 +50,14 @@ namespace UI.Crafting.Destruction
             var tile = building.Map.GetTile<DamageableTile>(cell);
             if (tile != null)
             {
-                building.Map.SetTile(cell,  tile.GetDamagedTileVersion());
+                var damagedTile = tile.GetDamagedTileVersion();
+                building.Map.SetTile(cell,  damagedTile);
+                _tileEventPublisher.OnTileSwapped(cell, tile, damagedTile);
             }
             else
             {
                 building.Map.SetTile(cell, null);
+                _tileEventPublisher.OnTileRemoved(cell, tile);
             }
         }
     }

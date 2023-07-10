@@ -64,7 +64,7 @@ namespace Buildables
 
         public IEnumerable<Vector2Int> GetFloorCells(BuildableMachineBase prefab, Vector2Int placement, bool flipped)
         {
-            foreach (var cell in prefab.GetBottomCells(placement, flipped))
+            foreach (var cell in prefab.GetBorderCells(placement, flipped))
             {
                 yield return (Vector2Int)cell + Vector2Int.down;
             }

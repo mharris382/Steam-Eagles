@@ -1,27 +1,45 @@
 ﻿using Buildables.Interfaces;
 using Buildings;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Buildables.Utilities
 {
-    public class TileSetter : MonoBehaviour, IMachineListener
+    public class TileSetter : TileUtility
     {
-        public BuildingLayers layers = BuildingLayers.PIPE;
-        public TileBase tileBase;
+       [ValidateInput(nameof(ValidateTile))] public BuildingLayers layers = BuildingLayers.PIPE;
+       [ValidateInput(nameof(ValidateLayer))]public TileBase tileBase;
 
-        public void OnMachineBuilt(BuildableMachineBase machineBase)
+        bool ValidateTile(TileBase tileBase) => Validate(layers, tileBase);
+        bool ValidateLayer(BuildingLayers layer) => Validate(layer, tileBase);
+        
+        public override BuildingLayers TargetLayer => layers;
+
+        protected virtual bool Validate(BuildingLayers layer, TileBase tile)
         {
-            var building = machineBase.Building;
-            var pos = building.Map.WorldToCell(transform.position, layers);
-            building.Map.SetTile(new BuildingCell(pos, layers),tileBase);
+            return layer != BuildingLayers.NONE && tile != null;
         }
 
-        public void OnMachineRemoved(BuildableMachineBase machineBase)
+        public override void OnMachineBuilt(BuildableMachineBase machineBase)
         {
-            var building = machineBase.Building;
-            var pos = building.Map.WorldToCell(transform.position, layers);
-            building.Map.SetTile(new BuildingCell(pos, layers), null);
+            SetTile(machineBase);
+        }
+
+        public override void OnMachineRemoved(BuildableMachineBase machineBase)
+        {
+            UnSetTile(machineBase);
+        }
+
+
+        public void SetTile(BuildableMachineBase machineBase=null)
+        {
+            (machineBase ? machineBase : Machine).Building.Map.SetTile(Cell,tileBase);
+        }
+
+        public void UnSetTile(BuildableMachineBase machineBase=null)
+        {
+            (machineBase ? machineBase : Machine).Building.Map.SetTile(Cell,null);
         }
     }
 }

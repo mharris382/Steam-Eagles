@@ -494,12 +494,24 @@ namespace Buildings
             this.cell = (Vector3Int)cell;
             this.layers = layers;
         }
+        public IEnumerable<BuildingCell> GetNeighbors()
+        {
+            yield return this + Vector2Int.up;
+            yield return this + Vector2Int.right;
+            yield return this + Vector2Int.left;
+            yield return this + Vector2Int.down;
+        }
+
+
         public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
         public override bool Equals(object obj) => obj is BuildingCell other && Equals(other);
         public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
         
         public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
         public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);
+        
+        
+        public static BuildingCell operator +(BuildingCell buildingCell, Vector2Int vector2Int) => new BuildingCell(buildingCell.cell + (Vector3Int)vector2Int, buildingCell.layers);
     }
 
     public struct BuildingTile : IEquatable<BuildingTile>

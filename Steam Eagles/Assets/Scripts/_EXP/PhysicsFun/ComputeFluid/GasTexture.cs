@@ -15,6 +15,9 @@ public class GasTexture : MonoBehaviour
     public DebugImages debugImages;
     public RawImage image;
     
+    
+    
+    
     [Serializable]
     public class DebugImages
     {
@@ -37,6 +40,11 @@ public class GasTexture : MonoBehaviour
     {
         get
         {
+            if (!HasTexture)
+            {
+                ResetTexture();
+                GetComponent<RoomSimTextures>().Init();
+            }
             if(HasTexture) return new Vector2Int(_pressureTexture.width, _pressureTexture.height);
             return Vector2Int.zero;
         }
@@ -46,6 +54,8 @@ public class GasTexture : MonoBehaviour
     public bool HasTexture => _pressureTexture != null && _velocityTexture != null && _dyeTexture != null;
     
     public RenderTexture RenderTexture => _pressureTexture ? _pressureTexture : _pressureTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
+    public RenderTexture Velocity => _velocityTexture ? _velocityTexture : _velocityTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
+    public RenderTexture Dye => _dyeTexture ? _dyeTexture : _dyeTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
 
     [Button()]
     public void ResetTexture()

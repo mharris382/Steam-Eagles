@@ -2,6 +2,7 @@
 using Buildables;
 using Buildings;
 using Items;
+using UI.Crafting.Events;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -11,13 +12,15 @@ namespace UI.Crafting
     public class PrefabPreview : RecipePreview<GameObject>
     {
         private readonly PrefabPreviewCache _cache;
+        private readonly CraftingEventPublisher _eventPublisher;
         private PrefabPreviewWrapper _wrapper;
         private BuildableMachineBase _machinePrefab;
 
         public class Factory : PlaceholderFactory<Recipe, GameObject, PrefabPreview> {}
-        public PrefabPreview(Recipe recipe, GameObject loadedObject, PrefabPreviewCache cache) : base(recipe, loadedObject)
+        public PrefabPreview(Recipe recipe, GameObject loadedObject, PrefabPreviewCache cache, CraftingEventPublisher eventPublisher) : base(recipe, loadedObject)
         {
             _cache = cache;
+            _eventPublisher = eventPublisher;
             _machinePrefab = loadedObject.GetComponent<BuildableMachineBase>();
         }
         
@@ -40,7 +43,8 @@ namespace UI.Crafting
             var bMachines = building.GetComponent<BMachines>();
             Debug.Assert(bMachines != null, $"Building {building.name} does not have a BMachines component", building);
             if (bMachines == null) return;
-            bMachines.Build(_machinePrefab, gridPosition.cell2D, isFlipped);
+            var builtMachine = bMachines.Build(_machinePrefab, gridPosition.cell2D, isFlipped);
+            _eventPublisher.OnPrefabBuilt(gridPosition, builtMachine.gameObject, _machinePrefab.gameObject, builtMachine.IsFlipped);
         }
 
         public override GameObject CreatePreviewFrom(Recipe recipe, GameObject loadedObject, Building building, BuildingCell aimedPosition)

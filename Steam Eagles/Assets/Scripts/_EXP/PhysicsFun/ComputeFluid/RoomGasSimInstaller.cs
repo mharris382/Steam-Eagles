@@ -1,4 +1,5 @@
 ﻿using System;
+using _EXP.PhysicsFun.ComputeFluid.Engine;
 using _EXP.PhysicsFun.ComputeFluid.Utilities;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
@@ -12,6 +13,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
     public class RoomGasSimInstaller : MonoInstaller
     {
         public RoomGasSimConfig config;
+        public FluidSimulater fluidSimulater;
         private RoomState _roomState;
         public RoomState RoomState => _roomState ? _roomState : _roomState = GetOrAdd<RoomState>();
         
@@ -44,29 +46,50 @@ namespace _EXP.PhysicsFun.ComputeFluid
 
         public override void InstallBindings()
         {
+            Container.Bind<RoomGasSimConfig>().FromInstance(config).AsSingle().NonLazy();
             
             
             Container.Bind<Room>().FromInstance(Room).AsSingle().IfNotBound();
             Container.Bind<RoomState>().FromInstance(RoomState).AsSingle().IfNotBound();
             Container.Bind<RoomTextureCreator>().FromInstance(RoomTextureCreator).AsSingle().IfNotBound();
+            
             Container.Bind<BoundsLookup>().FromInstance(BoundsLookup).AsSingle().IfNotBound();
+            //creates a render texture that is used to store the gas pressure, velocity, and temperature
             Container.Bind<GasTexture>().FromInstance(GasTexture).AsSingle().IfNotBound();
             Container.Bind<RoomSimTextures>().FromInstance(SimTextures).AsSingle().IfNotBound();
             Container.Bind<RoomEffect>().FromInstance(RoomEffect).AsSingle().IfNotBound();
             Container.Bind<RoomCamera>().FromInstance(RoomCamera).AsSingle().IfNotBound();
             
             
-            Container.Bind<RoomGasSimConfig>().FromInstance(config).AsSingle().NonLazy();
+            // listens for changes in tilemaps and periodically dispatches a compute shader to update the boundary texture for the room 
             Container.BindInterfacesTo<TilemapTextureSync>().AsSingle().NonLazy();
+            // ensures that gas pressure that is inside a boundary cell is deleted
             Container.BindInterfacesTo<DeleteGasInsideSolids>().AsSingle().NonLazy();
 
+            
+            Container.Bind<TextureMap>().AsSingle();    
 
             Container.Bind<SamplePoints>().AsSingle();
-            Container.BindInterfacesAndSelfTo<SamplePointsCompute>().AsSingle().NonLazy();
-            Container.Bind<TextureMap>().AsSingle();
-
+            Container.Bind<DynamicForceInputObjects>().AsSingle();
             Container.Bind<DynamicIObjects>().AsSingle();
+            
+            
+            Container.BindInterfacesAndSelfTo<SamplePointsCompute>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<DynamicGasIO>().AsSingle().NonLazy();
+
+            Container.Bind<GasBridge>().FromNewComponentOn(c => c.Container.Resolve<Room>().gameObject).AsSingle().NonLazy();
+
+            Container.Bind<SamplePointFactory>().AsSingle();
+            Container.BindFactory<Vector3, SamplePointHandle, SamplePointHandle.Factory>().AsSingle();
+            
+            Container.Bind<FluidSimulater>().FromInstance(fluidSimulater).AsSingle().NonLazy();
+            Container.Bind<FluidGPUResources>().AsSingle().NonLazy();
+
+        }
+
+        private void OnDrawGizmos()
+        {
+            fluidSimulater.simulation_dimension = fluidSimulater.canvas_dimension = GasTexture.ImageSize;
         }
     }
 }

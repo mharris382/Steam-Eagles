@@ -11,6 +11,7 @@ using Sirenix.OdinInspector;
 using UI;
 using UI.Crafting;
 using UI.Crafting.Destruction;
+using UI.Crafting.Events;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -92,7 +93,7 @@ public class UICrafting : UIPlayerSystemBase
     private RecipePreviewController _previewController;
     private PlacementValidity _placementValidity;
     private DestructionPreviewController _destructionPreviewController;
-
+    private CraftingBuildingTarget _craftingBuildingTarget;
     public bool IsReady => _playerInput && _character && _camera;
     
     public bool IsCurrentRecipeLoaded { get; set; }
@@ -120,8 +121,10 @@ public class UICrafting : UIPlayerSystemBase
 
 
     [Inject] public void Install(LoadHelper loadHelper, CraftingAimHanding aimHanding, PlacementValidity placementValidity,
-        RecipePreviewController previewController, DestructionPreviewController destructionPreviewController, CraftingDirectionHandler directionHandler)
+        RecipePreviewController previewController, DestructionPreviewController destructionPreviewController, CraftingDirectionHandler directionHandler,
+        CraftingBuildingTarget craftingBuildingTarget)
     {
+        _craftingBuildingTarget = craftingBuildingTarget;
         _directionHandler = directionHandler;
         _recipeLoader = loadHelper;
         _aimHanding = aimHanding;
@@ -174,7 +177,7 @@ public class UICrafting : UIPlayerSystemBase
         var loadedObject = _recipeLoader.CurrentRecipeLoadedObject;
         var targetLayer = _recipeLoader.CurrentTargetLayer;
         if (targetLayer == BuildingLayers.NONE) return;
-        var building = _roomState.CurrentRoom.Value.Building;
+        var building = _craftingBuildingTarget.BuildingTarget = _roomState.CurrentRoom.Value.Building;
         var gridPosition = _aimHanding.ProcessGridAim(_playerInput, _character, _camera, building, targetLayer);
         
         _directionHandler.UpdateDirection(_playerInput);

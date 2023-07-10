@@ -2,6 +2,7 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel DynamicGasIO
 #pragma kernel DeleteGasOnBoundaries
+#pragma kernel DynamicExternalForcesInput
 struct IO
 {
     int2 texCoord;
@@ -90,5 +91,30 @@ void DeleteGasOnBoundaries(uint3 id : SV_DispatchThreadID)
         {
             gasState[gasTexCoord + uint2(x,y)] = float4(0,0,0,0);
         }   
+    }
+}
+struct ForceInput
+{
+    int2 texCoord;
+    int2 area;
+    float2 forceToAdd;
+};
+
+StructuredBuffer<ForceInput> forceInputBuffer;
+RWTexture2D<float2> velocityTexture;
+
+[numthreads(8,2,1)]
+void DynamicExternalForcesInput(uint3 id : SV_DispatchThreadID)
+{
+    ForceInput input = forceInputBuffer[id.x]; 
+    for (int x = id.y %  2; x < boundaryScale.x; x +=2)
+    {
+        for (int y = id.y %  2; y < boundaryScale.y; y +=2)
+        {
+            int2 texCoord = input.texCoord + int2(x,y);
+            float2 velocity = velocityTexture[texCoord];
+            velocity += input.forceToAdd;
+            velocityTexture[texCoord] = velocity;
+        }
     }
 }

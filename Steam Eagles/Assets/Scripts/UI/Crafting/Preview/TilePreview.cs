@@ -1,6 +1,7 @@
 ﻿using System;
 using Buildings;
 using Items;
+using UI.Crafting.Events;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
@@ -10,8 +11,13 @@ namespace UI.Crafting
 {
     public class TilePreview : RecipePreview<TileBase>
     {
+        private readonly CraftingEventPublisher _eventPublisher;
+
         public class Factory : PlaceholderFactory<Recipe, TileBase, TilePreview> {}
-        public TilePreview(Recipe recipe, TileBase loadedObject) : base(recipe, loadedObject) { }
+        public TilePreview(Recipe recipe, TileBase loadedObject, CraftingEventPublisher eventPublisher) : base(recipe, loadedObject)
+        {
+            _eventPublisher = eventPublisher;
+        }
 
 
         private SpriteRenderer _spriteRenderer;
@@ -41,6 +47,15 @@ namespace UI.Crafting
         public override void BuildFromPreview(Building building, BuildingCell gridPosition, bool isFlipped)
         {
             var tile = LoadedObject;
+            var oldTile = building.Map.GetTile(gridPosition.cell, gridPosition.layers);
+            if (oldTile != null)
+            {
+                _eventPublisher.OnTileSwapped(gridPosition, oldTile, tile);
+            }
+            else
+            {
+                _eventPublisher.OnTileBuilt(gridPosition, tile);
+            }
             building.Map.SetTile(gridPosition.cell, gridPosition.layers, tile);
         }
     }

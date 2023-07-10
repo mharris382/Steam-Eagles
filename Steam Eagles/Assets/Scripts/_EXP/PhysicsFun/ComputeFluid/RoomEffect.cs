@@ -6,9 +6,10 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.VFX;
 
-[RequireComponent(typeof(VisualEffect))]
+
 public class RoomEffect : MonoBehaviour
 {
+    public VisualEffect effect;
     public bool useBoundaryTexture = true;
     public float updateRate = 0.5f;
     public float updateIoRate = 0.25f;
@@ -41,13 +42,14 @@ public class RoomEffect : MonoBehaviour
     const string USE_BOUNDARY_TEX_NAME = "use boundary";
     public ISimIOTextures IOTexture => _ioTexture!=null ? _ioTexture : _ioTexture = GetComponentInParent<ISimIOTextures>();
     
-    public VisualEffect VisualEffect => _visualEffect ? _visualEffect : _visualEffect = GetComponent<VisualEffect>();
+    public VisualEffect VisualEffect => _visualEffect ? _visualEffect : _visualEffect = GetComponentInChildren<VisualEffect>();
     public RoomTextures Room => _room ? _room : _room = GetComponentInParent<RoomTextures>();
     public GasTexture GasTexture => _gasTexture ? _gasTexture : _gasTexture = GetComponentInParent<GasTexture>();
 
     public RoomSimTextures SimTextures => _simTextures ? _simTextures : _simTextures = GetComponentInParent<RoomSimTextures>();
     private void Awake()
     {
+        _visualEffect = effect ? effect : GetComponentInChildren<VisualEffect>();
         _resolutionParamId = Shader.PropertyToID(resolutionParameter);
         _textureParamId = Shader.PropertyToID(textureParameter);
         _useBoundaryParamId = Shader.PropertyToID(USE_BOUNDARY_TEX_NAME);
@@ -60,6 +62,7 @@ public class RoomEffect : MonoBehaviour
 
     bool ValidateParamNameTex(string p)
     {
+        if (_visualEffect == null) _visualEffect = this.effect;
         if (string.IsNullOrEmpty(p))
         {
             return false;
@@ -252,8 +255,4 @@ public class RoomEffect : MonoBehaviour
     //         
     //     }
     // }
-
-    private void Update()
-    {
-    }
 }

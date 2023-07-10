@@ -21,8 +21,7 @@ namespace Buildables
         {
             _exhaustVent = exhaustVent;
             _config = config;
-            var cellPosition = exhaustVent.cell.BuildingSpacePosition;
-            _consumer = consumerFactory.Create(cellPosition, GetConsumptionRate, ConsumeSteam);
+            _consumer = consumerFactory.Create(exhaustVent.InputCell.cell2D, GetConsumptionRate, ConsumeSteam);
             _onSteamConsumed = new Subject<float>();
             IObservable<float> onConsumed = _onSteamConsumed.Where(t => t >= 0.01f);
             _onSteamConsumed.Subscribe(t => exhaustVent.ConsumptionAmountTotal += t);

@@ -7638,6 +7638,50 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &802847283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 802847285}
+  - component: {fileID: 802847284}
+  m_Layer: 0
+  m_Name: Auto Screen Size
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &802847284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802847283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86e3adc31824d7fbd6a3ca2190c3c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &802847285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802847283}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -534.3165, y: 328.96893, z: -2.9859006}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &862675664 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1166986546307529407, guid: 1cdc4d3010888f64c8e332d4586a6074, type: 3}
@@ -10522,7 +10566,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3.9907126
+  orthographic size: 9.605674
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -16491,6 +16535,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 7e260847a9112034a9c30d71f5dde09e, type: 2}
     - {fileID: 11400000, guid: 9bf122e9a4f967f41bb07b6992d97d64, type: 2}
     - {fileID: 11400000, guid: 177661fdbb6c3e1479277a580403e2fd, type: 2}
+    - {fileID: 11400000, guid: 62fd890d72adec647bd36675a67d32e2, type: 2}
     categories:
     - Tiles
     - Machines
@@ -20264,7 +20309,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5225263883224164372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -347.3922, y: -70.18092, z: 15.071188}
+  m_LocalPosition: {x: -611.0234, y: 88.241615, z: -44.36476}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20386,9 +20431,9 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 5000
-  field of view: 40
+  field of view: 60
   orthographic: 1
-  orthographic size: 3.9907126
+  orthographic size: 9.605674
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -21244,7 +21289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 508a607216664a26b9c1a955e561746f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceInstanceAsSingleton: 1
+  forceInstanceAsSingleton: 0
 --- !u!114 &7264329576729738498
 MonoBehaviour:
   m_ObjectHideFlags: 0

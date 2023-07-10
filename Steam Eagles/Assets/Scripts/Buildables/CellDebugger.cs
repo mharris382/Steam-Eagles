@@ -32,7 +32,11 @@ namespace Buildables
         }
 
         private bool HasResources() => _building != null;
-
+        public void Debug(IEnumerable<BuildingCell> cells)
+        {
+            if (_lastCells.HasValue) _lastCells.Value.ForEach(Hide);
+            _debugCells.OnNext(cells.Select(t => t.cell2D));
+        }
         public void Debug(IEnumerable<Vector2Int> cells)
         {
             if (_lastCells.HasValue) _lastCells.Value.ForEach(Hide);

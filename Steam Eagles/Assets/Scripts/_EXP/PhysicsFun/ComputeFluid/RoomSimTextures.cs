@@ -137,7 +137,7 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
        textureSet.compositeBoundariesTexture = new TilemapTexture(SolidTextureSize, RoomTextureCreator.CopyFromMultipleTilemaps(true,BuildingLayers.SOLID, BuildingLayers.FOUNDATION));
    }
 
-   private void InitGasTexture()
+   public void InitGasTexture()
    {
        var gasTex = GasTexture;
        gasTex.GetGasTexture(roomSize.x, roomSize.y);

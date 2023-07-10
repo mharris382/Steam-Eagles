@@ -1,17 +1,12 @@
 ﻿using System;
 using _EXP.PhysicsFun.ComputeFluid.Utilities;
 using Buildings;
-using CoreLib;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
 namespace _EXP.PhysicsFun.ComputeFluid
 {
-    public class DynamicIObjects : Registry<DynamicIOObject>
-    {
-        
-    }
     public class DynamicIOObject : MonoBehaviour
     {
         private static Color sinkColor = new Color(0.8f, 0.1f, 0.2f);

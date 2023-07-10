@@ -333,6 +333,25 @@ using Sirenix.OdinInspector;
         {
             
         }
+
+        /// <summary>
+        /// convience method to get all cells in a room for a specific layer
+        /// <seealso cref="BuildingMap"/>
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
+        public IEnumerable<BuildingCell> GetBuildingCells(BuildingLayers layer)
+        {
+            var area = _building.Map.GetCellsForRoom(this, layer);
+            for (int x = area.xMin; x < area.xMax; x++)
+            {
+                for (int y = area.yMin; x < area.yMax; y++)
+                {
+                    var cell = new Vector3Int(x, y, 0);
+                    yield return new BuildingCell(cell, layer);
+                }
+            }
+        }
     }
 
     public class RoomTester

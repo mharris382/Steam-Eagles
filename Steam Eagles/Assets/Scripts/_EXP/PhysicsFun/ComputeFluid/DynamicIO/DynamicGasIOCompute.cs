@@ -11,12 +11,16 @@ namespace _EXP.PhysicsFun.ComputeFluid
 
         static int _dynamicGasIOKernel;
         static int _deleteGasInBoundaryKernel;
+        private static readonly int _dynamicForceInputKernel;
+
         static DynamicGasIOCompute()
         {
             _dynamicGasIOKernel = ComputeShader.FindKernel("DynamicGasIO");
             _deleteGasInBoundaryKernel = ComputeShader.FindKernel("DeleteGasOnBoundaries");
+            _dynamicForceInputKernel = ComputeShader.FindKernel("DynamicExternalForcesInput");
         }
 
+        
 
         public static void ExecuteDynamicIO(RenderTexture gasState, ref DynamicIOData[] dynamicIO)
         {
@@ -62,5 +66,28 @@ namespace _EXP.PhysicsFun.ComputeFluid
             if(yThreads == 0) yThreads = 1;
             ComputeShader.Dispatch(_deleteGasInBoundaryKernel, xThreads, yThreads, 1);
         }
+
+
+        public static void ExecuteDynamicForce(RenderTexture velocityState, DynamicForceInput[] dynamicForceInputs)
+        {
+            ComputeShader.SetTexture(_dynamicForceInputKernel, "velocityTexture", velocityState);
+            var buffer = new ComputeBuffer(dynamicForceInputs.Length, DynamicForceInput.Stride());
+            buffer.SetData(dynamicForceInputs);
+            int xThreads = dynamicForceInputs.Length / 8;
+            if(xThreads == 0) xThreads = 1;
+            int yThreads = 1;
+            ComputeShader.SetBuffer(_dynamicForceInputKernel, "forceInputBuffer", buffer);
+            ComputeShader.Dispatch(_dynamicForceInputKernel, xThreads, yThreads, 1);
+            buffer.Release();
+        }
+    }
+
+    public struct DynamicForceInput
+    {
+        public Vector2Int texel;
+        public Vector2Int area;
+        public Vector2 velocity;
+        
+        public static int Stride() => sizeof(int) * 4 + sizeof(float) * 2;
     }
 }
