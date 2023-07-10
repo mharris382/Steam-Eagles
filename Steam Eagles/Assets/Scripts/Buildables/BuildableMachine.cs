@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Buildings;
 using CoreLib;
+using CoreLib.Structures;
 using Power.Steam;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -240,15 +242,31 @@ namespace Buildables
     public class ActAsSolidModule
     {
         public bool actAsSolid = false;
+        public TileBase solidTile;
         
         public void CleanUp(BuildableMachine buildableMachine)
         {
             if(actAsSolid == false) return;
             var cells = buildableMachine.GetCells();
             var map = buildableMachine.Building.Map;
+            var building = buildableMachine.Building;
+            var setTile = GetTile(building);
             foreach (var cell in cells)
             {
-                map.SetTile(new BuildingCell(cell, BuildingLayers.SOLID), null);
+                var bcell = new BuildingCell(cell, BuildingLayers.SOLID);
+                var tile = map.GetTile(bcell);
+                if (tile == setTile)
+                {
+                    map.SetTile(bcell, null);
+                    MessageBroker.Default.Publish(new TileEventInfo()
+                    {
+                        building = building.gameObject,
+                        oldTile = tile,
+                        tile = null,
+                        tilePosition = new Vector2Int(cell.x, cell.y),
+                        type = CraftingEventInfoType.DECONSTRUCT
+                    });
+                }
             }
         }
 
@@ -257,11 +275,26 @@ namespace Buildables
             if(actAsSolid == false) return;
             var cells = buildableMachine.GetCells();
             var map = buildableMachine.Building.Map;
-            var tile = building.Tiles.SolidTile;
+            var tile = GetTile(building);
             foreach (var cell in cells)
             {
-                map.SetTile(new BuildingCell(cell, BuildingLayers.SOLID), tile);
+                var bcell = new BuildingCell(cell, BuildingLayers.SOLID);
+                var oldTile = map.GetTile(bcell);
+                map.SetTile(bcell, tile);
+                MessageBroker.Default.Publish(new TileEventInfo()
+                {
+                    building = building.gameObject,
+                    oldTile = oldTile,
+                    tile = tile,
+                    tilePosition = new Vector2Int(cell.x, cell.y),
+                    type = CraftingEventInfoType.BUILD
+                });
             }
+        }
+
+        TileBase GetTile(Building building)
+        {
+            return solidTile != null ? solidTile :  building.Tiles.SolidTile;
         }
     }
 }

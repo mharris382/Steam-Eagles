@@ -155,17 +155,19 @@ namespace Buildings
             public BuildingMapEvents(BuildingLayers layer, IObservable<BuildingTile> onTileSet, Func<BuildingCell, Room> getRoom)
             {
                 _layer = layer;
-                _disposable = onTileSet.Select(t => (t, getRoom(t.cell))).Where(t =>
-                {
-                    var room = getRoom(t.t.cell);
-                    return room != null && 
-                           _filteredByRoomEvents.ContainsKey(room) &&
-                           _filteredByRoomEvents[room] != null;
-                })
-                    .Subscribe(t =>
-                {
-                    _filteredByRoomEvents[t.Item2].OnNext((t.t.cell.cell, t.t.tile));
-                });
+                _disposable = onTileSet.Select(t => (t, getRoom(t.cell)))
+                    .Where(t =>
+                    {
+                        if (t.t.cell.layers != layer) return false;
+                        var room = getRoom(t.t.cell);
+                        return room != null && 
+                               _filteredByRoomEvents.ContainsKey(room) &&
+                               _filteredByRoomEvents[room] != null;
+                    })
+                        .Subscribe(t =>
+                    {
+                        _filteredByRoomEvents[t.Item2].OnNext((t.t.cell.cell, t.t.tile));
+                    });
                 // _disposable= onTileChanged.Select(t => new BuildingTile() {
                 //     cell = new BuildingCell(t.cell, _layer),
                 //     tile = t.tile

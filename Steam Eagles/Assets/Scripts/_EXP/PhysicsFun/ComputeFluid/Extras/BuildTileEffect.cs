@@ -5,8 +5,8 @@ using CoreLib;
 using CoreLib.Structures;
 using Sirenix.OdinInspector;
 using UniRx;
-using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 using Zenject;
 
@@ -21,13 +21,31 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         public string sizeName = "size";
         public string roomPositionName = "roomPosition";
         public string roomSizeName = "roomSize";
-        public string eventName = "OnBuild";
+        [FormerlySerializedAs("eventName")] public string buildEventName = "OnBuild";
+        public string deconstructEventName = "OnDestroy";
+        public string repairEventName = "OnRepair";
+        public string damageEventName = "OnDamage";
+        
+        public string previewBuildEventName = "OnPreviewBuild";
+        public string previewDeconstructEventName = "OnPreviewDestroy";
+        public string previewRepairEventName = "OnPreviewRepair";
+        public string previewDamageEventName = "OnPreviewDamage";
+        
+        
         private Room _room;
 
         private int _sizeId;
         private int _positionId;
         private int _roomPositionId;
         private int _roomSizeId;
+        private int _previewBuildEventId;
+        private int _previewDeconstructEventId;
+        private int _previewRepairEventId;
+        private int _previewDamageEventId;
+        private int _buildEventId;
+        private int _deconstructEventId;
+        private int _repairEventId;
+        private int _damageEventId;
 
         private BoundsLookup _boundsLookup;
         [Inject] void Install(Room room, BoundsLookup boundsLookup)
@@ -42,32 +60,93 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
             _sizeId = Shader.PropertyToID(sizeName);
             _roomPositionId = Shader.PropertyToID(roomPositionName);
             _roomSizeId = Shader.PropertyToID(roomSizeName);
+            _previewBuildEventId = Shader.PropertyToID(previewBuildEventName);
+            _previewDeconstructEventId = Shader.PropertyToID(previewDeconstructEventName);
+            _previewRepairEventId = Shader.PropertyToID(previewRepairEventName);
+            _previewDamageEventId = Shader.PropertyToID(previewDamageEventName);
+            _buildEventId = Shader.PropertyToID(buildEventName);
+            _deconstructEventId = Shader.PropertyToID(deconstructEventName);
+            _repairEventId = Shader.PropertyToID(repairEventName);
+            _damageEventId = Shader.PropertyToID(damageEventName);
         }
 
         private void OnEnable()
         {
-            MessageBroker.Default.Receive<TileEventInfo>()
-                .Where(t => t.type == CraftingEventInfoType.BUILD &&
-                            _room.Building.Map.GetRoom(t.GetBuildingCell()) == _room)
+            var eventInRoom = MessageBroker.Default.Receive<TileEventInfo>()
+                .Where(t => _room.Building.Map.GetRoom(t.GetBuildingCell()) == _room);
+            var previewEventInRoom = eventInRoom.Where(t => t.isPreview);
+            var actionEventInRoom = eventInRoom.Where(t => !t.isPreview);
+            
+            actionEventInRoom
                 .TakeUntilDisable(this)
                 .Subscribe(PlayEffectOnTile)
+                .AddTo(this);
+            
+            previewEventInRoom
+                .TakeUntilDisable(this)
+                .Subscribe(DrawPreviewOnTile)
                 .AddTo(this);
         }
 
         bool HasResources() => _room != null && _room.Building != null;
+
+        public void DrawPreviewOnTile(TileEventInfo eventInfo)
+        {
+            if(!HasResources()) return;
+            UpdateEffectParameters(eventInfo);
+            effect.SendEvent(GetPreviewEventName(eventInfo.type));
+        }
         public void PlayEffectOnTile(TileEventInfo eventInfo)
         {
             if(!HasResources()) return;
-            var bounds = _boundsLookup.GetWsBounds();
-            
-            var cell = eventInfo.GetBuildingCell();
-            var wsPos = _room.Building.Map.CellToWorld(cell);
-            var cellSize = _room.Building.Map.GetCellSize(cell.layers);
-            effect.SetVector2(_positionId, wsPos);
-            effect.SetVector2(_sizeId, cellSize);
-            UpdateRoomsBounds();
-            effect.SendEvent(eventName);
+            UpdateEffectParameters(eventInfo);
+            effect.SendEvent(GetActionEventName(eventInfo.type));
         }
+
+        private string GetPreviewEventName(CraftingEventInfoType eventInfoType)
+        {
+            switch (eventInfoType)
+            {
+                case CraftingEventInfoType.DECONSTRUCT:
+                    return previewDeconstructEventName;
+                case CraftingEventInfoType.BUILD:
+                    return previewBuildEventName;
+                case CraftingEventInfoType.DAMAGED:
+                    return previewDamageEventName;
+                case CraftingEventInfoType.SWAP:
+                    return previewBuildEventName;
+                case CraftingEventInfoType.REPAIR:
+                    return previewRepairEventName;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eventInfoType), eventInfoType, null);
+            }
+        }
+        private string GetActionEventName(CraftingEventInfoType eventInfoType)
+        {
+            switch (eventInfoType)
+            {
+                case CraftingEventInfoType.DECONSTRUCT:
+                    return deconstructEventName;
+                case CraftingEventInfoType.BUILD:
+                    return buildEventName;
+                case CraftingEventInfoType.DAMAGED:
+                    return damageEventName;
+                case CraftingEventInfoType.SWAP:
+                    return buildEventName;
+                case CraftingEventInfoType.REPAIR:
+                    return repairEventName;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eventInfoType), eventInfoType, null);
+            }
+        }
+
+
+        void UpdateEffectParameters(TileEventInfo eventInfo)
+        {
+            UpdateCellRuntime(eventInfo.GetBuildingCell());
+            UpdateRoomRuntime();
+        }
+        
         [Button(ButtonSizes.Gigantic)]
         void UpdateRoomsBounds()
         {
@@ -95,6 +174,13 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
             effect.SetVector2(roomSizeName, size);
         }
 
+        void UpdateCellRuntime(BuildingCell cell)
+        {
+            var wsPos = _room.Building.Map.CellToWorld(cell);
+            var cellSize = _room.Building.Map.GetCellSize(cell.layers);
+            effect.SetVector2(_positionId, wsPos);
+            effect.SetVector2(_sizeId, cellSize);
+        }
         private void UpdateRoomRuntime()
         {
             var bounds = _boundsLookup.GetWsBounds();

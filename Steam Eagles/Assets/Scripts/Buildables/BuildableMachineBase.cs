@@ -45,7 +45,7 @@ namespace Buildables
         [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)] public GameObject buildingTarget;
         [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
 
-        [SerializeField] [Required] private Transform partsParent;
+        
         [SerializeField] private Sprite previewIcon;
         [SerializeField] private FX fx;
         public bool snapsToGround = true;
@@ -65,10 +65,10 @@ namespace Buildables
         [Flags]
         public enum SnappingMode
         {
-            NONE,
-            FLOOR,
-            WALL,
-            CEILING,
+            NONE = 0,
+            FLOOR = 1 << 0,
+            WALL = 1 << 1,
+            CEILING = 1 << 2,
             ALL = FLOOR | WALL | CEILING
         }
 

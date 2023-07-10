@@ -10,6 +10,7 @@ namespace CoreLib.Structures
         public Object tile;
         public Object oldTile;
         public CraftingEventInfoType type;
+        public bool isPreview;
     }
 
     public struct PrefabEventInfo
