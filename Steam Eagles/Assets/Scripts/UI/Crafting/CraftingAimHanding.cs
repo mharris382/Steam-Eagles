@@ -13,6 +13,7 @@ namespace UI.Crafting
         
         
         public IReadOnlyReactiveProperty<Vector3> AimWorldSpace => _aimPositionWS;
+        public BuildingCell cell { get; private set;  }
         public bool centerOnGrid = true;
         public CraftingAimHanding() : this(new KeyboardMouseAimHandlingMode(), new ControllerAimHandlingMode()){}
         public CraftingAimHanding(AimHandlingMode keyboardMode, AimHandlingMode gamepadMode)
@@ -38,7 +39,8 @@ namespace UI.Crafting
             var aimWs = _aimPositionWS.Value;
             var cell = building.Map.WorldToCell(aimWs, layers);
             if (centerOnGrid) _aimPositionWS.Value = building.Map.CellToWorldCentered(cell, layers);
-            return new BuildingCell(cell,layers);
+            this.cell = new BuildingCell(cell,layers);
+            return this.cell;
         }
         
         

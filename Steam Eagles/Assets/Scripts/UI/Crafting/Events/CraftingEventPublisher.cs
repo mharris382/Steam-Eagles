@@ -16,13 +16,95 @@ namespace UI.Crafting.Events
         private Building _building => _buildingTarget.BuildingTarget;
 
         private readonly CompositeDisposable _cd = new();
-
+        private Subject<TileEventInfo> _previewEventSubject = new Subject<TileEventInfo>();
+        private Subject<TileEventInfo> _actionEventSubject = new Subject<TileEventInfo>();
         public CraftingEventPublisher(CraftingBuildingTarget buildingTarget)
         {
             _buildingTarget = buildingTarget;
+            _actionEventSubject.Do(t => t.isPreview = false).Subscribe(t => MessageBroker.Default.Publish(t)).AddTo(_cd);
+            _previewEventSubject.Do(t => t.isPreview = true).Subscribe(t => MessageBroker.Default.Publish(t)).AddTo(_cd);
+        }
+        CraftingEventInfoType GetEventType(BuildingTile oldTile, BuildingTile newTile)
+        {
+            var eventType = CraftingEventInfoType.BUILD;
+            if (oldTile.IsEmpty && newTile.IsEmpty)
+            {
+                eventType = CraftingEventInfoType.NO_ACTION;
+            }
+            else if (!oldTile.IsEmpty && !newTile.IsEmpty)
+            {
+                if (oldTile.tile == newTile.tile)
+                {
+                    eventType = CraftingEventInfoType.NO_ACTION;
+                }
+                else if(oldTile.tile is RepairableTile && newTile.tile is DamageableTile)
+                {
+                    eventType = CraftingEventInfoType.REPAIR;
+                }
+                else if(oldTile.tile is DamageableTile && newTile.tile is RepairableTile)
+                {
+                    eventType = CraftingEventInfoType.DAMAGED;
+                }
+                else 
+                {
+                    eventType = CraftingEventInfoType.SWAP;
+                }
+            }
+            else if (oldTile.IsEmpty && !newTile.IsEmpty)
+            {
+                eventType = CraftingEventInfoType.BUILD;
+            }
+            else if(!oldTile.IsEmpty && newTile.IsEmpty)
+            {
+                eventType = CraftingEventInfoType.DECONSTRUCT;
+            }
+
+            return eventType;
+        }
+        
+        CraftingEventInfoType GetEventType(BuildingCell pos, TileBase oldTile, TileBase newTile)
+        {
+            return GetEventType(new BuildingTile(pos, oldTile), new BuildingTile(pos, newTile));
+        }
+        
+        public void OnTilePreview(Building building, BuildingTile oldTile, BuildingTile newTile)
+        {
+            var eventType = GetEventType(oldTile, newTile);
+            var eventInfo = new TileEventInfo() {
+                building = building.gameObject,
+                isPreview = true,
+                layer = (int)oldTile.cell.layers,
+                tilePosition = oldTile.cell.cell2D,
+                tile = newTile.tile,
+                oldTile = oldTile.tile,
+                type = eventType
+            };
+            _previewEventSubject.OnNext(eventInfo);
+        }
+        public void OnTilePreview(Building building, BuildingCell cell, TileBase oldTile, TileBase newTile)
+        {
+            return;
+            OnTilePreview(building, new BuildingTile(cell, oldTile), new BuildingTile(cell, newTile));
         }
 
-
+        
+        public void OnTileChanged(Building building, BuildingCell cell, TileBase oldTile, TileBase newTile)
+        {
+            var t0 = new BuildingTile(cell, oldTile);
+            var t1 = new BuildingTile(cell, newTile);
+            var eventType = GetEventType(t0, t1);
+            var eventInfo = new TileEventInfo() {
+                building = building.gameObject,
+                isPreview = false,
+                layer = (int)cell.layers,
+                tilePosition = cell.cell2D,
+                tile = t1.tile,
+                oldTile = t0.tile,
+                type = eventType
+            };
+            _actionEventSubject.OnNext(eventInfo);
+        }
+        
         public void OnTileBuilt(BuildingCell cell, TileBase tile)
         {
             
@@ -45,7 +127,7 @@ namespace UI.Crafting.Events
                 layer = (int)cell.layers,
                 tile = tile,
                 oldTile = tile,
-                type = CraftingEventInfoType.BUILD
+                type = CraftingEventInfoType.DECONSTRUCT
             };
             MessageBroker.Default.Publish(info);
         }

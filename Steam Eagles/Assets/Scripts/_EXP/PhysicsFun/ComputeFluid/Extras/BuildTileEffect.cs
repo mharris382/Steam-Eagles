@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Buildings;
 using Buildings.Rooms;
 using CoreLib;
 using CoreLib.Structures;
+using ModestTree;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -30,6 +33,69 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         public string previewDeconstructEventName = "OnPreviewDestroy";
         public string previewRepairEventName = "OnPreviewRepair";
         public string previewDamageEventName = "OnPreviewDamage";
+        public string noActionEventName = "OnPreviewNoAction";
+        public ModeEffectParameterNames parameterNames;
+        [ValidateInput(nameof(Validate)), TableList]
+        public List<ModeEffectParameters> effectParametersArray;
+
+
+        bool Validate(List<ModeEffectParameters> parametersList)
+        {
+            
+            var cnt = Enum.GetNames(typeof(CraftingEventInfoType)).Length;
+            if (parametersList.Count != cnt)
+            {
+                Debug.LogError($"Effect parameters count {parametersList.Count} does not match CraftingEventInfoType count {cnt}");
+                return false;
+            }
+            return true;
+        }
+        
+        [Serializable]
+        public class ModeEffectParameterNames
+        {
+            public string colorGradientName = "_colorGradient";
+            public string sizeName = "_size";
+            public string countName = "_count";
+            public string lifetimeName = "_lifetime";
+            public string speedName = "_speed";
+        }
+        [Serializable]
+        public class ModeEffectParameters
+        {
+            [EnumPaging]
+            public CraftingEventInfoType type;
+            public Gradient color = new Gradient();
+            public Vector2 count = new Vector2(32, 50);
+            public Vector2 size = new Vector2(0.1f, 0.5f);
+            public Vector2 lifetime = new Vector2(1, 3);
+            public Vector2 speed = new Vector2(1, 5);
+            public bool SetParams(VisualEffect effect, ModeEffectParameterNames parameterNames, TileEventInfo info)
+            {
+                if(info.type != type)
+                    return false;
+                effect.SetVector2(parameterNames.countName, count);
+                effect.SetGradient(parameterNames.colorGradientName, color);
+                effect.SetVector2(parameterNames.sizeName, size);
+                effect.SetVector2(parameterNames.lifetimeName, lifetime);
+                effect.SetVector2(parameterNames.speedName, speed);
+                return true;
+            }
+        }
+
+        private bool TryGetModeEffects(TileEventInfo eventInfo, out ModeEffectParameters effectParameters)
+        {
+            foreach (var modeEffectParameter in this.effectParametersArray)
+            {
+                if (modeEffectParameter.SetParams(effect, parameterNames, eventInfo))
+                {
+                    effectParameters = modeEffectParameter;
+                    return true;
+                }
+            }
+            effectParameters = null;
+            return false;
+        }
         
         
         private Room _room;
@@ -75,7 +141,7 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
             var eventInRoom = MessageBroker.Default.Receive<TileEventInfo>()
                 .Where(t => _room.Building.Map.GetRoom(t.GetBuildingCell()) == _room);
             var previewEventInRoom = eventInRoom.Where(t => t.isPreview);
-            var actionEventInRoom = eventInRoom.Where(t => !t.isPreview);
+            var actionEventInRoom = eventInRoom.Where(t => !t.isPreview && t.type != CraftingEventInfoType.NO_ACTION);
             
             actionEventInRoom
                 .TakeUntilDisable(this)
@@ -94,13 +160,15 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         {
             if(!HasResources()) return;
             UpdateEffectParameters(eventInfo);
-            effect.SendEvent(GetPreviewEventName(eventInfo.type));
+            string eventName = GetPreviewEventName(eventInfo.type);
+            effect.SendEvent(eventName);
         }
         public void PlayEffectOnTile(TileEventInfo eventInfo)
         {
             if(!HasResources()) return;
             UpdateEffectParameters(eventInfo);
-            effect.SendEvent(GetActionEventName(eventInfo.type));
+            string eventName = GetActionEventName(eventInfo.type);
+            effect.SendEvent(eventName);
         }
 
         private string GetPreviewEventName(CraftingEventInfoType eventInfoType)
@@ -118,7 +186,8 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
                 case CraftingEventInfoType.REPAIR:
                     return previewRepairEventName;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(eventInfoType), eventInfoType, null);
+                case CraftingEventInfoType.NO_ACTION:
+                    return noActionEventName;
             }
         }
         private string GetActionEventName(CraftingEventInfoType eventInfoType)
@@ -136,7 +205,8 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
                 case CraftingEventInfoType.REPAIR:
                     return repairEventName;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(eventInfoType), eventInfoType, null);
+                case CraftingEventInfoType.NO_ACTION:
+                    return noActionEventName;
             }
         }
 
@@ -145,6 +215,7 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         {
             UpdateCellRuntime(eventInfo.GetBuildingCell());
             UpdateRoomRuntime();
+            TryGetModeEffects(eventInfo, out _);
         }
         
         [Button(ButtonSizes.Gigantic)]

@@ -1,5 +1,6 @@
 using System;
 using CoreLib.SharedVariables;
+using CoreLib.Structures;
 using Items;
 using UI.Crafting;
 using UI.Crafting.Destruction;
@@ -15,6 +16,30 @@ public class CraftingConfig
 {
     [FormerlySerializedAs("overlapValidityChecks")] public OverlapValidityChecksConfig overlapValidityChecksConfig;
    
+}
+
+public class HoverPositionBinder : IInitializable, IDisposable
+{
+    public HoverPosition hoverPosition;
+    private readonly CraftingAimHanding _aimHanding;
+    private CompositeDisposable _disposable = new();
+    public HoverPositionBinder(HoverPosition hoverPosition, CraftingAimHanding aimHanding)
+    {
+        this.hoverPosition = hoverPosition;
+        _aimHanding = aimHanding;
+        if (this.hoverPosition.hoverTransform == null)
+            this.hoverPosition.hoverTransform =
+                new GameObject($"Hover Transform: {hoverPosition.hoverPositionShared.name}").transform;
+    }
+    public void Initialize()
+    {
+        _aimHanding.AimWorldSpace.Subscribe(t => this.hoverPosition.hoverTransform.position = t).AddTo(_disposable);;
+  }
+
+    public void Dispose()
+    {
+        _disposable?.Dispose();
+    }
 }
 
 public class UICraftingInstaller : MonoInstaller
@@ -51,6 +76,7 @@ public class UICraftingInstaller : MonoInstaller
 
 
         Container.Bind<CraftingEventPublisher>().AsSingle();
+        Container.BindInterfacesAndSelfTo<HoverPositionBinder>().AsSingle().NonLazy();
     }
 
 

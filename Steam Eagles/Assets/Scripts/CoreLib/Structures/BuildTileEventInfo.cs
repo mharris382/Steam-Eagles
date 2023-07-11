@@ -25,6 +25,7 @@ namespace CoreLib.Structures
 
 public enum CraftingEventInfoType
     {
+        NO_ACTION,
         DECONSTRUCT,
         BUILD,
         DAMAGED,

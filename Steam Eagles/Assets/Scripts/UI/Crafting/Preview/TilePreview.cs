@@ -42,6 +42,9 @@ namespace UI.Crafting
             var go = PreviewObject;
             _spriteRenderer.color = isValid ? Resources.validColor : Resources.invalidColor;
             go.transform.position = building.Map.CellToWorldCentered(aimedPosition.cell, aimedPosition.layers);
+            
+            //publish preview feedback event
+            _eventPublisher.OnTilePreview(building, aimedPosition, building.Map.GetTile(aimedPosition), LoadedObject);
         }
 
         public override void BuildFromPreview(Building building, BuildingCell gridPosition, bool isFlipped)
@@ -56,6 +59,7 @@ namespace UI.Crafting
             {
                 _eventPublisher.OnTileBuilt(gridPosition, tile);
             }
+            _eventPublisher.OnTileChanged(building, gridPosition, oldTile, tile);
             building.Map.SetTile(gridPosition.cell, gridPosition.layers, tile);
         }
     }
