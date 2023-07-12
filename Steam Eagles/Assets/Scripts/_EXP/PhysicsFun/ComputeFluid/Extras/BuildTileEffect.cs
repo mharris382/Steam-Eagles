@@ -35,6 +35,9 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         public string previewRepairEventName = "OnPreviewRepair";
         public string previewDamageEventName = "OnPreviewDamage";
         public string noActionEventName = "OnPreviewNoAction";
+        
+        
+        public string sampleEventName = "OnSample";
         public ModeEffectParameterNames parameterNames;
         [ValidateInput(nameof(Validate)), TableList]
         public List<ModeEffectParameters> effectParametersArray;
@@ -153,10 +156,20 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
                 .TakeUntilDisable(this)
                 .Subscribe(DrawPreviewOnTile)
                 .AddTo(this);
+            
+            
+            MessageBroker.Default.Receive<SampleEventInfo>()
+                .TakeUntilDisable(this)
+                .Subscribe(PlaySampleEffect)
+                .AddTo(this);
         }
 
         bool HasResources() => _room != null && _room.Building != null;
 
+        void PlaySampleEffect(SampleEventInfo eventInfo)
+        {
+            
+        }
         public void DrawPreviewOnTile(TileEventInfo eventInfo)
         {
             if(!HasResources()) return;

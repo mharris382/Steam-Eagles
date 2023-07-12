@@ -5,8 +5,50 @@ using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
+public class FMODSamplePlayer : FMODOneShotEventListener<SampleEventInfo>
+{
+    public FMODSamplePlayer([Inject(Id = FMODEventIDs.SAMPLE_CRAFTING)] EventReference eventReference) : base(eventReference)
+    {
+    }
+
+    protected override bool FilterBy(SampleEventInfo value)
+    {
+        return value.aimTransform == null;
+    }
+
+    protected override Vector2 GetWorldPosition(SampleEventInfo value)
+    {
+        return value.aimTransform.position;
+    }
+}
+public abstract class FMODOneShotEventListener<T> : FMODOneShotEventBase, IInitializable, IDisposable
+{
+    IDisposable _disposable;
+    private readonly ReadOnlyReactiveProperty<T> _lastEvent;
+
+    protected FMODOneShotEventListener(EventReference eventReference) : base(eventReference)
+    {
+        _lastEvent = MessageBroker.Default.Receive<T>().Where(FilterBy).ToReadOnlyReactiveProperty();
+        //_disposable = _lastEvent.DistinctWhere(Compare).Select(GetWorldPosition).Subscribe(PlayEventAtPosition);
+    }
+
+    protected abstract bool FilterBy(T value);
+
+    protected abstract Vector2 GetWorldPosition(T value);
+    protected virtual bool  Compare(T v1, T v2) => v1.Equals(v2);
+    public void Initialize()
+    {
+        _disposable = _lastEvent.DistinctWhere(Compare).Select(GetWorldPosition).Subscribe(PlayEventAtPosition);
+    }
+
+    public void Dispose()
+    {
+        _disposable?.Dispose();
+    }
+}
 public class FMODCraftingPlayer : FMODOneShotEventBase, IInitializable, IDisposable
 {
     private IDisposable _disposable;

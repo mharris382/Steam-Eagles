@@ -184,6 +184,20 @@ public class Recipes
         if (index == -1) return;
         CurrentRecipeIndex = index;
     }
+    
+    
+    
+    
+    public Recipe FindRecipeWithName(string recipeName)
+    {
+        foreach (var recipe in recipes)
+        {
+            if (recipe.name == recipeName)
+                return recipe;
+        }
+        Debug.LogWarning($"Recipe not found: {recipeName}");
+        return null;
+    }
 
 }
 

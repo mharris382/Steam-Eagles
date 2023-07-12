@@ -29,7 +29,7 @@ public class FMODSceneInstaller : MonoInstaller
     
     [FoldoutGroup("Events/Crafting")] public FMODEvent tileCraftingEvent;
     [FoldoutGroup("Events/Crafting")] public FMODEvent prefabCraftingEvent;
-    
+    [FoldoutGroup("Events/Crafting")] public FMODEvent sampleCraftingEvent;
     [HideInInspector]
     public BlockEvents blockEvents;
     
@@ -39,6 +39,7 @@ public class FMODSceneInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.Bind<FMODSceneLoadCallback>().FromComponentOn(gameObject).AsSingle().NonLazy();
+        Container.Bind<FMODEvent>().WithId(FMODEventIDs.SAMPLE_CRAFTING).FromInstance(sampleCraftingEvent).AsCached().NonLazy();
         Container.Bind<FMODEvent>().WithId(FMODEventIDs.FOOTSTEP).FromInstance(footstepEvent).AsCached().NonLazy();
         Container.Bind<FMODEvent>().WithId(FMODEventIDs.MUSIC).FromInstance(musicEvent).AsCached().WhenInjectedInto<FMODMusicPlayer>().NonLazy();
         Container.Bind<FMODEvent>().WithId(FMODEventIDs.AMBIANCE).FromInstance(ambianceEvent).AsCached().NonLazy();
@@ -52,8 +53,9 @@ public class FMODSceneInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<FMODAmbiancePlayer>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<FMODFootstepPlayer>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<FMODCraftingPlayer>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<FMODSamplePlayer>().AsSingle().NonLazy();
 
-        
+
 
     }
 }
@@ -65,6 +67,7 @@ public static class FMODEventIDs
     public const string FOOTSTEP = "footstep";
     public const string TILE_ACTION = "Tile Action";
     public const string CRAFTING_ACTION = "Crafting Action";
+    public const string SAMPLE_CRAFTING = "Sample Crafting";
 }
 
 public static class FMODLabeledParameterIDs

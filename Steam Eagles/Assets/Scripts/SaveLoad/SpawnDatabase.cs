@@ -17,7 +17,7 @@ namespace SaveLoad
     private List<SpawnPoint> spawnPoints;
     
     private Dictionary<string, Transform> _dynamicSpawnPoints = new Dictionary<string, Transform>();
-
+    public string filePath;
     [System.Serializable]
     public class SpawnPoint
     {
@@ -143,18 +143,19 @@ namespace SaveLoad
                 _dynamicSpawnPoints.Remove(characterName);
         }
 
-        if (string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath))
-        {
-            Debug.LogWarning("Save directory path is null, waiting for it to be set");
-            await new WaitUntil(() => !string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath));
-        }
+        // if (string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath))
+        // {
+        //     Debug.LogWarning("Save directory path is null, waiting for it to be set");
+        //     await new WaitUntil(() => !string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath));
+        // }
+        //
+        // string filePath = Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "SpawnPoints.json");
+         if (!File.Exists(filePath))
+         {
+             return GetDefaultSpawnPointForCharacter(characterName);
+         }
         
-        string filePath = Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "SpawnPoints.json");
-        if (!File.Exists(filePath))
-        {
-            return GetDefaultSpawnPointForCharacter(characterName);
-        }
-
+        
         var json = await File.ReadAllTextAsync(filePath);
         var spawnPoints = JsonUtility.FromJson<SavedSpawnPoints>(json);
         if (spawnPoints == null)

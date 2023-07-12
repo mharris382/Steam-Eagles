@@ -55,7 +55,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-7451102562266537849
+--- !u!114 &-8309421142209511675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,52 +65,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Tile Deconstruction
+  m_Name: event:/Player Actions/Prefab Action
   m_EditorClassIdentifier: 
-  Path: event:/Tile Deconstruction
+  Path: event:/Player Actions/Prefab Action
   Guid:
-    Data1: -848980247
-    Data2: 1206441053
-    Data3: -375839817
-    Data4: -1508996906
+    Data1: 1453588366
+    Data2: 1216731092
+    Data3: 1112500900
+    Data4: 862818299
   Banks:
   - {fileID: 2924718624880632120}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
   Parameters:
-  - {fileID: -7382144268574667121}
+  - {fileID: -4863632303719212582}
   MinDistance: 1
   MaxDistance: 20
-  Length: 702
---- !u!114 &-7382144268574667121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Tile Deconstruction/block type
-  m_EditorClassIdentifier: 
-  Name: block type
-  StudioPath: 
-  Min: 0
-  Max: 3
-  Default: 0
-  ID:
-    data1: 2197600615
-    data2: 820470920
-  Type: 2
-  IsGlobal: 0
-  Labels:
-  - Solid
-  - Pipe
-  - Ladder
-  - Wall
-  Exists: 1
+  Length: 0
 --- !u!114 &-6610765567987018692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,6 +129,34 @@ MonoBehaviour:
   FileSizes:
   - Name: Desktop
     Value: 2446432
+  Exists: 1
+--- !u!114 &-4863632303719212582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Prefab Action/CraftingActionType
+  m_EditorClassIdentifier: 
+  Name: CraftingActionType
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 2339205801
+    data2: 3964766034
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Build
+  - Deconstruct
+  - Damage
+  - Repair
   Exists: 1
 --- !u!114 &-4447536127489348248
 MonoBehaviour:
@@ -213,6 +213,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-1761313566456715758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player Actions/Sample Action
+  m_EditorClassIdentifier: 
+  Path: event:/Player Actions/Sample Action
+  Guid:
+    Data1: 228083017
+    Data2: 1266029551
+    Data3: 2100835746
+    Data4: 1326614889
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1280
 --- !u!114 &-106740714995315001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,15 +291,15 @@ MonoBehaviour:
   - {fileID: -4447536127489348248}
   - {fileID: -8541659772659667331}
   - {fileID: -2332712013049670873}
-  - {fileID: -7451102562266537849}
   - {fileID: 7573690006153104365}
-  - {fileID: 7408596194423420350}
+  - {fileID: -1761313566456715758}
+  - {fileID: -8309421142209511675}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6806358472309568043}
   StringsBanks:
   - {fileID: 301517338111838257}
-  cacheTime: 638246997738063843
+  cacheTime: 638247213719863661
   cacheVersion: 131603
 --- !u!114 &301517338111838257
 MonoBehaviour:
@@ -289,10 +316,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638246997710973362
+  lastModified: 638247213719179012
   FileSizes:
   - Name: Desktop
-    Value: 1384
+    Value: 1338
   Exists: 1
 --- !u!114 &1674415375344157029
 MonoBehaviour:
@@ -329,10 +356,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638246997738063843
+  lastModified: 638247213719863661
   FileSizes:
   - Name: Desktop
-    Value: 286752
+    Value: 327936
   Exists: 1
 --- !u!114 &4496208037811881943
 MonoBehaviour:
@@ -363,34 +390,6 @@ MonoBehaviour:
   - Foundation
   - Dirt
   Exists: 1
---- !u!114 &6206766823339798621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Build Recipe/CraftingActionType
-  m_EditorClassIdentifier: 
-  Name: CraftingActionType
-  StudioPath: 
-  Min: 0
-  Max: 3
-  Default: 0
-  ID:
-    data1: 2339205801
-    data2: 3964766034
-  Type: 2
-  IsGlobal: 0
-  Labels:
-  - Build
-  - Deconstruct
-  - Damage
-  - Repair
-  Exists: 1
 --- !u!114 &6806358472309568043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,39 +405,11 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638246997710950776
+  lastModified: 638247213719168806
   FileSizes:
   - Name: Desktop
-    Value: 72832
+    Value: 1036
   Exists: 1
---- !u!114 &7408596194423420350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Player Actions/Build Recipe
-  m_EditorClassIdentifier: 
-  Path: event:/Player Actions/Build Recipe
-  Guid:
-    Data1: 1453588366
-    Data2: 1216731092
-    Data3: 1112500900
-    Data4: 862818299
-  Banks:
-  - {fileID: 2924718624880632120}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters:
-  - {fileID: 6206766823339798621}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &7573690006153104365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +429,7 @@ MonoBehaviour:
     Data3: 1767604141
     Data4: -973431717
   Banks:
-  - {fileID: 6806358472309568043}
+  - {fileID: 2924718624880632120}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1

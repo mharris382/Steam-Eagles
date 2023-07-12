@@ -30,5 +30,7 @@ namespace Items
 
 
         public bool IsLoaded => _loadedRecipe;
+        
+        public Recipe Recipe => _loadedRecipe;
     }
 }

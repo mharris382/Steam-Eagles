@@ -16,7 +16,15 @@ namespace CoreLib.Entities
     {
         public override bool DestroyOnLoad => false;
         
-        private string _entityPersistentSavePath =>Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "Entities");
+        private string _entityPersistentSavePath 
+        {
+            get
+            {
+                throw
+                    new NotImplementedException(); //Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "Entities");
+            }
+            
+        }
 
         
 
@@ -31,7 +39,16 @@ namespace CoreLib.Entities
             public Entity Entity;    
             public EntityType entityType => Entity.entityType;
             public string EntityGUID => Entity.entityGUID;
-            public string EntitySavePath => Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "Entities", $"{EntityGUID}.json");
+            public string EntitySavePath
+            {
+                get
+                {
+
+                    throw new NotImplementedException();
+                    // return Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "Entities",
+                    //     $"{EntityGUID}.json");
+                }
+            }
 
             public bool doneLoading => Entity != null;
             public EntityHandle(GameObject initializer, string entityGUID, EntityType entityType)
@@ -111,16 +128,7 @@ namespace CoreLib.Entities
             return _entityHandles[guid].Entity;
         }
 
-        public async UniTask<Entity> GetEntityAsync(EntityInitializer initializer)
-        {
-            if (string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath))
-            {
-                Debug.LogWarning("Save Directory Path is not set yet, waiting for it to be set...");
-                await new WaitUntil(() => !string.IsNullOrEmpty(PersistenceManager.Instance.SaveDirectoryPath));
-            }
-
-            return GetEntity(initializer);
-        }
+     
         [ShowInInspector]
         private Dictionary<string, EntityHandle> _entityHandles = new Dictionary<string, EntityHandle>();
 

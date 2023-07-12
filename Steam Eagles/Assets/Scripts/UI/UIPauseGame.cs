@@ -116,13 +116,14 @@ namespace UI
         
         public void QuitButton()
         {
-            PersistenceManager.Instance.GameSaved += s =>
-            {
-                Debug.Log($"Saving and quitting: {s}");
-                Application.Quit();
-            };
-            throw new NotImplementedException();
-            MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
+            Application.Quit();
+            return;
+            // PersistenceManager.Instance.GameSaved += s =>
+            // {
+            //     Debug.Log($"Saving and quitting: {s}");
+            // };
+            // throw new NotImplementedException();
+            // MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
         }
 
         public void QuitToMainMenu()

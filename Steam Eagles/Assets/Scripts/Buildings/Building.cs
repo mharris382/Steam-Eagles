@@ -278,14 +278,14 @@ namespace Buildings
 
         private void OnEnable()
         {
-            PersistenceManager.Instance.GameSaved += SaveBuilding;
-            PersistenceManager.Instance.GameLoaded += LoadBuilding;
+            // PersistenceManager.Instance.GameSaved += SaveBuilding;
+            // PersistenceManager.Instance.GameLoaded += LoadBuilding;
         }
 
         private void OnDisable()
         {
-            PersistenceManager.Instance.GameSaved -= SaveBuilding;
-            PersistenceManager.Instance.GameLoaded -= LoadBuilding;
+           // PersistenceManager.Instance.GameSaved -= SaveBuilding;
+           // PersistenceManager.Instance.GameLoaded -= LoadBuilding;
         }
 
         #endregion
