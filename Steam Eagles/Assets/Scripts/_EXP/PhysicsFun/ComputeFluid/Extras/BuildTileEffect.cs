@@ -15,6 +15,7 @@ using Zenject;
 
 namespace _EXP.PhysicsFun.ComputeFluid.Extras
 {
+ 
     public class BuildTileEffect : MonoBehaviour
     {
         [Required]
@@ -140,7 +141,7 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         {
             var eventInRoom = MessageBroker.Default.Receive<TileEventInfo>()
                 .Where(t => _room.Building.Map.GetRoom(t.GetBuildingCell()) == _room);
-            var previewEventInRoom = eventInRoom.Where(t => t.isPreview);
+            var previewEventInRoom = eventInRoom.Where(t => t.isPreview&& t.type != CraftingEventInfoType.NO_ACTION);
             var actionEventInRoom = eventInRoom.Where(t => !t.isPreview && t.type != CraftingEventInfoType.NO_ACTION);
             
             actionEventInRoom

@@ -1,4 +1,5 @@
-﻿using SteamEagles.Characters;
+﻿using CoreLib.Interfaces;
+using SteamEagles.Characters;
 
 namespace Characters
 {

@@ -549,6 +549,7 @@ GameObject:
   - component: {fileID: 8240237011690389665}
   - component: {fileID: 5962853321663540412}
   - component: {fileID: 3699429497452213875}
+  - component: {fileID: 4968909717503402222}
   m_Layer: 10
   m_Name: Character_Builder
   m_TagString: Builder
@@ -576,6 +577,7 @@ Transform:
   - {fileID: 6702007219427428268}
   - {fileID: 6245505013639434628}
   - {fileID: 1627851329855996665}
+  - {fileID: 4895225967074262698}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -672,7 +674,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be7bf5a73d318d45bc223fb7e1669fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxValue:
+    value: 10
   onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onRespawn:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &822289114925148332
@@ -779,7 +786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slopeCheckDistance: 1
   NormalizeXInput: 1
-  groundCheck: {fileID: 2919451076819208450}
+  groundCheck: {fileID: 4895225967074262698}
 --- !u!114 &8546787809986255483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -795,6 +802,9 @@ MonoBehaviour:
   dropTime: 0.25
   dropSpeed: 5
   debug: 1
+  climbableValues:
+    ladderDetectTime: 0.5
+    timeLastHasClimbable: 0
 --- !u!114 &7975492967524370468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -965,6 +975,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxToolSlots: 7
   toolParent: {fileID: 4438283006891795381}
+--- !u!114 &4968909717503402222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023073604413840154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f35520b72e6406cbe07042979d23633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2462750353514555147
 GameObject:
   m_ObjectHideFlags: 0
@@ -7143,6 +7165,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tool: {fileID: 11400000, guid: 050c7f000dfc5604e8149dafceb76ec7, type: 2}
+--- !u!1 &7232332079369708367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4895225967074262698}
+  m_Layer: 10
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4895225967074262698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7232332079369708367}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2023073604413840133}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7568282407114908441
 GameObject:
   m_ObjectHideFlags: 0
@@ -14825,7 +14878,7 @@ PrefabInstance:
     - target: {fileID: 9152026915330111035, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
       propertyPath: activationEvents.onActivationStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 8974997213169033458}
+      objectReference: {fileID: 0}
     - target: {fileID: 9152026915330111035, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
       propertyPath: activationEvents.onActivationStateChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -14884,10 +14937,5 @@ MonoBehaviour:
 --- !u!4 &7620199131465081339 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1226331078767172258, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
-  m_PrefabInstance: {fileID: 8702272944480926553}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8974997213169033458 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 308838844802309035, guid: 5f89e4c2d4b390d45ad5f609ec28718a, type: 3}
   m_PrefabInstance: {fileID: 8702272944480926553}
   m_PrefabAsset: {fileID: 0}

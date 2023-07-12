@@ -61,7 +61,11 @@ namespace UI.Crafting
             Queue<(Transform, string, Transform)> toProcess = new();
             loadedObject.Descendants(t => t.GetComponentsInChildren<SpriteRenderer>().Length > 0)
                 .ForEach(t => {
-                    if (transformCopies.ContainsKey(t.name)) Debug.LogError($"Duplicate name found: {t.name}, this is not allowed for sprites on buildables", loadedObject);
+                    if (transformCopies.ContainsKey(t.name))
+                    {
+                        Debug.LogError($"Duplicate name found: {t.name}, this is not allowed for sprites on buildables", loadedObject);
+                        return;
+                    }
 
 
                     var childCopy = new GameObject(t.name).transform;
@@ -81,7 +85,7 @@ namespace UI.Crafting
                 }
                 else
                 {
-                    Debug.LogError("Couldn't find parent: " + parentName, loadedObject);
+                    Debug.LogWarning("Couldn't find parent: " + parentName, loadedObject);
                     Object.Destroy(childCopy.gameObject);
                     continue;
                 }
@@ -193,6 +197,8 @@ namespace UI.Crafting
             previewSr.size = originalSr.size;
             previewSr.drawMode = originalSr.drawMode;
             previewSr.enabled = originalSr.enabled;
+            previewSr.sortingOrder = originalSr.sortingOrder;
+            previewSr.sortingLayerID = originalSr.sortingLayerID;
             if (isChild)
             {
                 var previewSrTransform = previewSr.transform;

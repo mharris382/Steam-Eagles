@@ -1,5 +1,6 @@
 ﻿using Buildings.CoreData;
 using Buildings.Damage;
+using Buildings.Graph;
 using Buildings.Rooms;
 using JetBrains.Annotations;
 using SaveLoad;
@@ -37,6 +38,10 @@ namespace Buildings.DI
             Container.BindFactory<Room, RoomTilemapTextures, RoomTilemapTextures.Factory>().AsSingle().NonLazy();
             Container.BindFactory<Room, BuildingLayers, RoomTilemapTextures.RoomTexture, RoomTilemapTextures.RoomTexture.Factory>().AsSingle().NonLazy();
             ReflectedInstaller<IRoomTilemapTextureSaveLoader>.Install(Container, ContainerLevel.GAMEOBJECT);
+
+
+            Container.BindInterfacesAndSelfTo<PipeTilemapGraph>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<WireTilemapGraph>().AsSingle().NonLazy();
         }
     }
 

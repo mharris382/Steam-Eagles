@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9008414647352343677
 MonoBehaviour:
@@ -45,13 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f15fba616c9ca446a0ea2f00a925aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  footstepEvent:
-    Guid:
-      Data1: -798141793
-      Data2: 1216466225
-      Data3: 445973643
-      Data4: -625494026
-    Path: event:/Footstep
   musicEvent:
     Guid:
       Data1: -109854389
@@ -66,14 +59,36 @@ MonoBehaviour:
       Data3: -646408318
       Data4: 97508901
     Path: event:/Ambience/Engineering
+  footstepEvent:
+    Guid:
+      Data1: -798141793
+      Data2: 1216466225
+      Data3: 445973643
+      Data4: -625494026
+    Path: event:/Footstep
+  tileCraftingEvent:
+    Guid:
+      Data1: -1903007573
+      Data2: 1272295172
+      Data3: 1767604141
+      Data4: -973431717
+    Path: event:/Player Actions/Tile Action
+  prefabCraftingEvent:
+    Guid:
+      Data1: 1453588366
+      Data2: 1216731092
+      Data3: 1112500900
+      Data4: 862818299
+    Path: event:/Player Actions/Build Recipe
   blockEvents:
-    itemPickupEvent:
+    tileBuildEvent:
       Guid:
-        Data1: 930572299
-        Data2: 1256451320
-        Data3: -81419347
-        Data4: 1136899135
-      Path: event:/Item Pickup
+        Data1: 0
+        Data2: 0
+        Data3: 0
+        Data4: 0
+      Path: 
+    craftingTypeParameter: CraftingActionType
     blockPlaceEvent:
       Guid:
         Data1: 0
@@ -89,6 +104,7 @@ MonoBehaviour:
         Data4: -1508996906
       Path: event:/Tile Deconstruction
   surfaceParameter: {fileID: 11400000, guid: bde7a511cffb51e49b720dc74cba4f52, type: 2}
+  craftingTypeParameter: {fileID: 11400000, guid: 04aa673384c196e45b4f9ccc711aed5d, type: 2}
 --- !u!114 &-6743996972577306943
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -315,6 +315,7 @@ namespace Buildings
             var rooms = GetComponent<Rooms.Rooms>();
             var max = Vector2Int.zero;
             var min = Vector2Int.zero;
+            if (rooms == null) return;
             foreach (var room in rooms.AllRooms)
             {
                 var bounds = room.RoomRect;
@@ -479,7 +480,7 @@ namespace Buildings
     }
 
 
-    public struct BuildingCell : IEquatable<BuildingCell>
+    public struct BuildingCell : IEquatable<BuildingCell>, IComparable<BuildingCell>
     {
         public Vector3Int cell;
         public BuildingLayers layers;
@@ -509,9 +510,22 @@ namespace Buildings
         
         public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
         public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);
-        
-        
+
+        public override string ToString()
+        {
+            return $"({cell.x}, {cell.y}, {layers})";
+        }
+
+
         public static BuildingCell operator +(BuildingCell buildingCell, Vector2Int vector2Int) => new BuildingCell(buildingCell.cell + (Vector3Int)vector2Int, buildingCell.layers);
+        public static BuildingCell operator +(BuildingCell buildingCell, Vector3Int vector2Int) => new BuildingCell(buildingCell.cell + (Vector3Int)vector2Int, buildingCell.layers);
+
+        public int CompareTo(BuildingCell other)
+        {
+            if(other.layers != this.layers) return (int)other.layers - (int)layers > 0 ? 1 : -1;
+            if (other.cell2D == cell2D) return 0;
+            return cell.x > other.cell.x ? 1 : cell.x < other.cell.x ? -1 : cell.y > other.cell.y ? 1 : cell.y < other.cell.y ? -1 : 0;
+        }
     }
 
     public struct BuildingTile : IEquatable<BuildingTile>
@@ -520,6 +534,13 @@ namespace Buildings
         public TileBase tile;
         
         public bool IsEmpty => tile == null;
+
+        public BuildingLayers Layer
+        {
+            get => cell.layers;
+            set => cell.layers = value;
+        }
+
         public BuildingTile(Vector3Int cell, BuildingLayers layer, TileBase tile)
         {
             this.cell = new BuildingCell(cell, layer);
@@ -533,10 +554,14 @@ namespace Buildings
 
         public bool Equals(BuildingTile other) => cell.Equals(other.cell) && Equals(tile, other.tile);
         public override bool Equals(object obj) => obj is BuildingTile other && Equals(other);
-        public override int GetHashCode() => HashCode.Combine(cell, tile);
+        public override int GetHashCode() => cell.GetHashCode();
         
         public static bool operator ==(BuildingTile left, BuildingTile right) => left.Equals(right);
         public static bool operator !=(BuildingTile left, BuildingTile right) => !(left == right);
+
+        public static implicit operator BuildingCell(BuildingTile buildingTile) => buildingTile.cell;
+        public static implicit operator BuildingTile(BuildingCell buildingCell) => new(buildingCell, null);
+        public override string ToString() => $"{cell.ToString()} {(tile == null ? "EMPTY" : tile.name)}";
     }
 
     public struct BuildingRect : IEquatable<BuildingRect>
@@ -562,5 +587,11 @@ namespace Buildings
         public override bool Equals(object obj) => obj is BuildingRect other && Equals(other);
         public override int GetHashCode() => HashCode.Combine((int)layers, bounds);
         public bool Contains(BuildingCell cell) => cell.layers == this.layers && bounds.Contains(cell.cell);
+
+        public override string ToString()
+        {
+            return $"Position:\t {(Vector2Int)bounds.position} {(Vector2Int)bounds.size}\n" +
+                   $"Layer:\t {layers}";
+        }
     }
 }

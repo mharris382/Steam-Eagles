@@ -36,6 +36,7 @@ namespace Players.PCController
             {
                 copy = GameObject.Instantiate(original, original.transform.position, original.transform.rotation,
                     original.transform.parent);
+                copy.SendMessage("ReassignFrom", original, SendMessageOptions.DontRequireReceiver);
                 copy.layer = _layerMaskFactory.Create(param1);
                 if (playerSpecificCopies.ContainsKey(original)) playerSpecificCopies.Remove(original);
                 playerSpecificCopies.Add(original, copy);

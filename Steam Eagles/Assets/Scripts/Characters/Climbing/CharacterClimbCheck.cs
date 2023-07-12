@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DefaultNamespace;
 using SteamEagles.Characters;
 using UnityEngine;
+using CoreLib.Interfaces;
 
 namespace Characters
 {
@@ -39,6 +40,8 @@ namespace Characters
             _climbLayers = LayerMask.GetMask("Triggers");
             _capsuleCollider2D = characterState.Collider;
             _climbableFactories = new List<IClimbableFactory>(climbableFactories);
+            var childFactories = _characterState.GetComponentsInChildren<IClimbableFactory>();
+            _climbableFactories.AddRange(childFactories);
             Debug.Assert(_climbableFactories.Count > 0, "No climbable factories were provided",characterState);
         }
         
@@ -71,7 +74,7 @@ namespace Characters
             var position = (Vector2)_characterState.transform.position;
             foreach (var climbableFactory in _climbableFactories)
             {
-                if(climbableFactory.TryGetClimbable(position, out _currentClimbable))
+                if(climbableFactory.TryGetClimbable(position, out _currentClimbable, 0.5f))
                     return true;
             }
             return false;

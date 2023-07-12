@@ -205,14 +205,14 @@ namespace Buildables
             if(Contains(SnappingMode.FLOOR))
                 foreach (var cell in GetBottomCells(position, IsFlippedv))
                 {
-                    yield return cell + Vector3Int.down;
+                    yield return cell;
                 }
 
             if (Contains(SnappingMode.CEILING))
             {
                 foreach (var cell in GetCellsTop(position, IsFlippedv))
                 {
-                    yield return cell + Vector3Int.up;
+                    yield return cell ;
                 }
             }
 
@@ -220,12 +220,12 @@ namespace Buildables
             {
                 foreach (var cell in GetCellsRight(position, IsFlippedv))
                 {
-                    yield return cell + Vector3Int.right;
+                    yield return cell;
                 }
 
                 foreach (var cell in GetCellsLeft(position, IsFlippedv))
                 {
-                    yield return   cell + Vector3Int.left;
+                    yield return   cell ;
                 }
             }
 

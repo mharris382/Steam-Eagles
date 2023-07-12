@@ -16,7 +16,7 @@ MonoBehaviour:
   usedActionAssets:
   - {fileID: -944628639613478452, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
   controlSchemeName_Keyboard: Keyboard
-  controlSchemeName_Gamepad: Gamepad
+  controlSchemeName_Gamepad: Controller 1
   showAllInputOptionsInStyles: 0
   openingTag: 
   closingTag: 
@@ -307,6 +307,113 @@ MonoBehaviour:
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="FALLBACKSPRITE">
     humanReadableString: SHIFT
     humanReadableString_singleInput: SHIFT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Next Recipe>
+    bindingName: Gameplay/Next Recipe
+    inputStyleString: <sprite="Keyboard and Mouse" name="UPARROW"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse" name="F">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="UPARROW">
+    humanReadableString: UP ARROW <size=80%>or</size> F
+    humanReadableString_singleInput: UP ARROW
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Next Recipe/2>
+    bindingName: Gameplay/Next Recipe/2
+    inputStyleString: <sprite="Keyboard and Mouse" name="F">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="F">
+    humanReadableString: F
+    humanReadableString_singleInput: F
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Previous Recipe>
+    bindingName: Gameplay/Previous Recipe
+    inputStyleString: <sprite="Keyboard and Mouse" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DOWNARROW">
+    humanReadableString: DOWN ARROW
+    humanReadableString_singleInput: DOWN ARROW
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Next Category>
+    bindingName: Gameplay/Next Category
+    inputStyleString: <sprite="Keyboard and Mouse" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="RIGHTARROW">
+    humanReadableString: RIGHT ARROW
+    humanReadableString_singleInput: RIGHT ARROW
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Previous Category>
+    bindingName: Gameplay/Previous Category
+    inputStyleString: <sprite="Keyboard and Mouse" name="LEFTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="LEFTARROW">
+    humanReadableString: LEFT ARROW
+    humanReadableString_singleInput: LEFT ARROW
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Category 1>
+    bindingName: Gameplay/Category 1
+    inputStyleString: <sprite="Keyboard and Mouse" name="DIGIT1">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DIGIT1">
+    humanReadableString: 1
+    humanReadableString_singleInput: 1
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Category 2>
+    bindingName: Gameplay/Category 2
+    inputStyleString: <sprite="Keyboard and Mouse" name="DIGIT2">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DIGIT2">
+    humanReadableString: 2
+    humanReadableString_singleInput: 2
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Category 3>
+    bindingName: Gameplay/Category 3
+    inputStyleString: <sprite="Keyboard and Mouse" name="DIGIT3">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DIGIT3">
+    humanReadableString: 3
+    humanReadableString_singleInput: 3
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Category 4>
+    bindingName: Gameplay/Category 4
+    inputStyleString: <sprite="Keyboard and Mouse" name="DIGIT4">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="DIGIT4">
+    humanReadableString: 4
+    humanReadableString_singleInput: 4
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Zoom>
+    bindingName: Gameplay/Zoom
+    inputStyleString: <sprite="Keyboard and Mouse" name="Y">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="Y">
+    humanReadableString: SCROLL/Y
+    humanReadableString_singleInput: SCROLL/Y
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Gas>
+    bindingName: Gameplay/Gas
+    inputStyleString: <sprite="Keyboard and Mouse" name="G"><sprite="Keyboard and
+      Mouse" name="H">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="G"><sprite="Keyboard
+      and Mouse" name="H">
+    humanReadableString: G, H
+    humanReadableString_singleInput: G, H
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Gas/negative>
+    bindingName: Gameplay/Gas/negative
+    inputStyleString: <sprite="Keyboard and Mouse" name="G">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="G">
+    humanReadableString: G
+    humanReadableString_singleInput: G
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Gas/positive>
+    bindingName: Gameplay/Gas/positive
+    inputStyleString: <sprite="Keyboard and Mouse" name="H">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="H">
+    humanReadableString: H
+    humanReadableString_singleInput: H
   - isComposite: 0
     isPartOfComposite: 0
     tmproReferenceText: <style=Wheel/Preview>
@@ -830,7 +937,485 @@ MonoBehaviour:
     inputStyleString_singleInput: <sprite="Keyboard and Mouse" name="RIGHTARROW">
     humanReadableString: RIGHT ARROW
     humanReadableString_singleInput: RIGHT ARROW
-  inputStyleGamepadDataList: []
+  inputStyleGamepadDataList:
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Move>
+    bindingName: Gameplay/Move
+    inputStyleString: <sprite="XBox" name="LEFT STICK">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT STICK">
+    humanReadableString: LEFT STICK
+    humanReadableString_singleInput: LEFT STICK
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Jump>
+    bindingName: Gameplay/Jump
+    inputStyleString: <sprite="XBox" name="BUTTON SOUTH">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON SOUTH">
+    humanReadableString: BUTTON SOUTH
+    humanReadableString_singleInput: BUTTON SOUTH
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Pickup>
+    bindingName: Gameplay/Pickup
+    inputStyleString: <sprite="XBox" name="BUTTON EAST"> <size=80%>or</size> <sprite="XBox"
+      name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON EAST">
+    humanReadableString: BUTTON EAST <size=80%>or</size> B
+    humanReadableString_singleInput: BUTTON EAST
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Pickup/2>
+    bindingName: Gameplay/Pickup/2
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: B
+    humanReadableString_singleInput: B
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Interact>
+    bindingName: Gameplay/Interact
+    inputStyleString: <sprite="XBox" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON WEST">
+    humanReadableString: BUTTON WEST
+    humanReadableString_singleInput: BUTTON WEST
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Aim>
+    bindingName: Gameplay/Aim
+    inputStyleString: <sprite="XBox" name="RIGHT STICK">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT STICK">
+    humanReadableString: RIGHT STICK
+    humanReadableString_singleInput: RIGHT STICK
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Ability Primary>
+    bindingName: Gameplay/Ability Primary
+    inputStyleString: <sprite="XBox" name="RIGHT SHOULDER">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT SHOULDER">
+    humanReadableString: RIGHT SHOULDER
+    humanReadableString_singleInput: RIGHT SHOULDER
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Ability Secondary>
+    bindingName: Gameplay/Ability Secondary
+    inputStyleString: <sprite="XBox" name="LEFT SHOULDER">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT SHOULDER">
+    humanReadableString: LEFT SHOULDER
+    humanReadableString_singleInput: LEFT SHOULDER
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select>
+    bindingName: Gameplay/Select
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: MOUSE
+    humanReadableString_singleInput: MOUSE
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Open Wheel>
+    bindingName: Gameplay/Open Wheel
+    inputStyleString: <sprite="XBox" name="LEFT TRIGGER">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT TRIGGER">
+    humanReadableString: LEFT TRIGGER
+    humanReadableString_singleInput: LEFT TRIGGER
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Pause>
+    bindingName: Gameplay/Pause
+    inputStyleString: <sprite="XBox" name="START">
+    inputStyleString_singleInput: <sprite="XBox" name="START">
+    humanReadableString: START
+    humanReadableString_singleInput: START
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Inventory>
+    bindingName: Gameplay/Inventory
+    inputStyleString: <sprite="XBox" name="BUTTON NORTH">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON NORTH">
+    humanReadableString: BUTTON NORTH
+    humanReadableString_singleInput: BUTTON NORTH
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select Recipe>
+    bindingName: Gameplay/Select Recipe
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN"><sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN"><sprite="XBox"
+      name="D-PAD/UP">
+    humanReadableString: D-PAD/DOWN, D-PAD/UP
+    humanReadableString_singleInput: D-PAD/DOWN, D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Recipe/negative>
+    bindingName: Gameplay/Select Recipe/negative
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN">
+    humanReadableString: D-PAD/DOWN
+    humanReadableString_singleInput: D-PAD/DOWN
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Recipe/positive>
+    bindingName: Gameplay/Select Recipe/positive
+    inputStyleString: <sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/UP">
+    humanReadableString: D-PAD/UP
+    humanReadableString_singleInput: D-PAD/UP
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select Tool>
+    bindingName: Gameplay/Select Tool
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT"><sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT"><sprite="XBox"
+      name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/LEFT, D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/LEFT, D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Tool/negative>
+    bindingName: Gameplay/Select Tool/negative
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT">
+    humanReadableString: D-PAD/LEFT
+    humanReadableString_singleInput: D-PAD/LEFT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay/Select Tool/positive>
+    bindingName: Gameplay/Select Tool/positive
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Select Tool Mode>
+    bindingName: Gameplay/Select Tool Mode
+    inputStyleString: <sprite="XBox" name="LEFT SHOULDER">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT SHOULDER">
+    humanReadableString: LEFT SHOULDER
+    humanReadableString_singleInput: LEFT SHOULDER
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Tool Sample>
+    bindingName: Gameplay/Tool Sample
+    inputStyleString: <sprite="XBox" name="RIGHT STICK PRESS">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT STICK PRESS">
+    humanReadableString: RIGHT STICK PRESS
+    humanReadableString_singleInput: RIGHT STICK PRESS
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Next Recipe>
+    bindingName: Gameplay/Next Recipe
+    inputStyleString: <sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/UP">
+    humanReadableString: D-PAD/UP
+    humanReadableString_singleInput: D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Previous Recipe>
+    bindingName: Gameplay/Previous Recipe
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN">
+    humanReadableString: D-PAD/DOWN
+    humanReadableString_singleInput: D-PAD/DOWN
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Next Category>
+    bindingName: Gameplay/Next Category
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay/Previous Category>
+    bindingName: Gameplay/Previous Category
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT">
+    humanReadableString: D-PAD/LEFT
+    humanReadableString_singleInput: D-PAD/LEFT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Wheel/Preview>
+    bindingName: Wheel/Preview
+    inputStyleString: <sprite="XBox" name="RIGHT STICK/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT STICK/LEFT">
+    humanReadableString: RIGHT STICK/LEFT
+    humanReadableString_singleInput: RIGHT STICK/LEFT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Queue Action Smart>
+    bindingName: Depricated/Queue Action Smart
+    inputStyleString: <sprite="XBox" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON WEST">
+    humanReadableString: BUTTON WEST
+    humanReadableString_singleInput: BUTTON WEST
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Quick Action Up>
+    bindingName: Depricated/Quick Action Up
+    inputStyleString: <sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/UP">
+    humanReadableString: D-PAD/UP
+    humanReadableString_singleInput: D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Quick Action Right>
+    bindingName: Depricated/Quick Action Right
+    inputStyleString: <sprite="XBox" name="LEFT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT STICK/RIGHT">
+    humanReadableString: LEFT STICK/RIGHT
+    humanReadableString_singleInput: LEFT STICK/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Quick Action Left>
+    bindingName: Depricated/Quick Action Left
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT">
+    humanReadableString: D-PAD/LEFT
+    humanReadableString_singleInput: D-PAD/LEFT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Quick Action Down>
+    bindingName: Depricated/Quick Action Down
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN">
+    humanReadableString: D-PAD/DOWN
+    humanReadableString_singleInput: D-PAD/DOWN
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Special Ability>
+    bindingName: Depricated/Special Ability
+    inputStyleString: <sprite="XBox" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON WEST">
+    humanReadableString: BUTTON WEST
+    humanReadableString_singleInput: BUTTON WEST
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/_Valve_Old>
+    bindingName: Depricated/_Valve_Old
+    inputStyleString: <sprite="XBox" name="LEFT TRIGGER"><sprite="XBox" name="RIGHT
+      TRIGGER">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT TRIGGER"><sprite="XBox"
+      name="RIGHT TRIGGER">
+    humanReadableString: LEFT TRIGGER, RIGHT TRIGGER
+    humanReadableString_singleInput: LEFT TRIGGER, RIGHT TRIGGER
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Depricated/_Valve_Old/negative>
+    bindingName: Depricated/_Valve_Old/negative
+    inputStyleString: <sprite="XBox" name="LEFT TRIGGER">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT TRIGGER">
+    humanReadableString: LEFT TRIGGER
+    humanReadableString_singleInput: LEFT TRIGGER
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Depricated/_Valve_Old/positive>
+    bindingName: Depricated/_Valve_Old/positive
+    inputStyleString: <sprite="XBox" name="RIGHT TRIGGER">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT TRIGGER">
+    humanReadableString: RIGHT TRIGGER
+    humanReadableString_singleInput: RIGHT TRIGGER
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Depricated/Valve>
+    bindingName: Depricated/Valve
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT"><sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT"><sprite="XBox"
+      name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/LEFT, D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/LEFT, D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Depricated/Valve/negative>
+    bindingName: Depricated/Valve/negative
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT">
+    humanReadableString: D-PAD/LEFT
+    humanReadableString_singleInput: D-PAD/LEFT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Depricated/Valve/positive>
+    bindingName: Depricated/Valve/positive
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Basic/Move>
+    bindingName: Gameplay Basic/Move
+    inputStyleString: <sprite="XBox" name="LEFT STICK">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT STICK">
+    humanReadableString: LEFT STICK
+    humanReadableString_singleInput: LEFT STICK
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Basic/Jump>
+    bindingName: Gameplay Basic/Jump
+    inputStyleString: <sprite="XBox" name="BUTTON SOUTH">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON SOUTH">
+    humanReadableString: BUTTON SOUTH
+    humanReadableString_singleInput: BUTTON SOUTH
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Basic/Interact>
+    bindingName: Gameplay Basic/Interact
+    inputStyleString: <sprite="XBox" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON WEST">
+    humanReadableString: BUTTON WEST
+    humanReadableString_singleInput: BUTTON WEST
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Basic/Aim>
+    bindingName: Gameplay Basic/Aim
+    inputStyleString: <sprite="XBox" name="RIGHT STICK">
+    inputStyleString_singleInput: <sprite="XBox" name="RIGHT STICK">
+    humanReadableString: RIGHT STICK
+    humanReadableString_singleInput: RIGHT STICK
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Construction/Move>
+    bindingName: Gameplay Construction/Move
+    inputStyleString: <sprite="XBox" name="LEFT STICK">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT STICK">
+    humanReadableString: LEFT STICK
+    humanReadableString_singleInput: LEFT STICK
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Gameplay Piloting Airship/Gas>
+    bindingName: Gameplay Piloting Airship/Gas
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN"><sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN"><sprite="XBox"
+      name="D-PAD/UP">
+    humanReadableString: D-PAD/DOWN, D-PAD/UP
+    humanReadableString_singleInput: D-PAD/DOWN, D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay Piloting Airship/Gas/negative>
+    bindingName: Gameplay Piloting Airship/Gas/negative
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN">
+    humanReadableString: D-PAD/DOWN
+    humanReadableString_singleInput: D-PAD/DOWN
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Gameplay Piloting Airship/Gas/positive>
+    bindingName: Gameplay Piloting Airship/Gas/positive
+    inputStyleString: <sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/UP">
+    humanReadableString: D-PAD/UP
+    humanReadableString_singleInput: D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Left Click>
+    bindingName: UI/Left Click
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: LEFT BUTTON
+    humanReadableString_singleInput: LEFT BUTTON
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Right Click>
+    bindingName: UI/Right Click
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: RIGHT BUTTON
+    humanReadableString_singleInput: RIGHT BUTTON
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Middle Click>
+    bindingName: UI/Middle Click
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: MIDDLE BUTTON
+    humanReadableString_singleInput: MIDDLE BUTTON
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Scroll Wheel>
+    bindingName: UI/Scroll Wheel
+    inputStyleString: <sprite="XBox" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="XBox" name="FALLBACKSPRITE">
+    humanReadableString: SCROLL/UP
+    humanReadableString_singleInput: SCROLL/UP
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Move>
+    bindingName: UI/Move
+    inputStyleString: <sprite="XBox" name="LEFT STICK"> <size=80%>or</size> <sprite="XBox"
+      name="D-PAD/UP"><sprite="XBox" name="D-PAD/DOWN"><sprite="XBox" name="D-PAD/LEFT"><sprite="XBox"
+      name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="LEFT STICK">
+    humanReadableString: LEFT STICK <size=80%>or</size> D-PAD/UP, D-PAD/DOWN, D-PAD/LEFT,
+      D-PAD/LEFT
+    humanReadableString_singleInput: LEFT STICK
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=UI/Move/up>
+    bindingName: UI/Move/up
+    inputStyleString: <sprite="XBox" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/UP">
+    humanReadableString: D-PAD/UP
+    humanReadableString_singleInput: D-PAD/UP
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=UI/Move/down>
+    bindingName: UI/Move/down
+    inputStyleString: <sprite="XBox" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/DOWN">
+    humanReadableString: D-PAD/DOWN
+    humanReadableString_singleInput: D-PAD/DOWN
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=UI/Move/left>
+    bindingName: UI/Move/left
+    inputStyleString: <sprite="XBox" name="D-PAD/LEFT"> <size=80%>or</size> <sprite="XBox"
+      name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/LEFT">
+    humanReadableString: D-PAD/LEFT <size=80%>or</size> D-PAD/LEFT
+    humanReadableString_singleInput: D-PAD/LEFT
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Submit>
+    bindingName: UI/Submit
+    inputStyleString: <sprite="XBox" name="BUTTON SOUTH">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON SOUTH">
+    humanReadableString: BUTTON SOUTH
+    humanReadableString_singleInput: BUTTON SOUTH
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Cancel>
+    bindingName: UI/Cancel
+    inputStyleString: <sprite="XBox" name="BUTTON EAST">
+    inputStyleString_singleInput: <sprite="XBox" name="BUTTON EAST">
+    humanReadableString: BUTTON EAST
+    humanReadableString_singleInput: BUTTON EAST
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=UI/Horizontal Select>
+    bindingName: UI/Horizontal Select
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT"><sprite="XBox" name="D-PAD/RIGHT">
+      <size=80%>or</size> <sprite="XBox" name="D-PAD/RIGHT"><sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT"><sprite="XBox"
+      name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT, D-PAD/RIGHT <size=80%>or</size> D-PAD/RIGHT,
+      D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT, D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=UI/Horizontal Select/negative>
+    bindingName: UI/Horizontal Select/negative
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=UI/Horizontal Select/positive>
+    bindingName: UI/Horizontal Select/positive
+    inputStyleString: <sprite="XBox" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="XBox" name="D-PAD/RIGHT">
+    humanReadableString: D-PAD/RIGHT
+    humanReadableString_singleInput: D-PAD/RIGHT
   TEXTMESHPRO_SPRITEASSET_FOLDERPATH: Assets/Fonts/TextMesh Pro/Resources/Sprite
     Assets/
   loggingEnabled: 1

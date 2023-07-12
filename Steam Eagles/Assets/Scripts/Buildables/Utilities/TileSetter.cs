@@ -8,8 +8,8 @@ namespace Buildables.Utilities
 {
     public class TileSetter : TileUtility
     {
-       [ValidateInput(nameof(ValidateTile))] public BuildingLayers layers = BuildingLayers.PIPE;
-       [ValidateInput(nameof(ValidateLayer))]public TileBase tileBase;
+       [ValidateInput(nameof(ValidateLayer))] public BuildingLayers layers = BuildingLayers.PIPE;
+       [ValidateInput(nameof(ValidateTile))]public TileBase tileBase;
 
         bool ValidateTile(TileBase tileBase) => Validate(layers, tileBase);
         bool ValidateLayer(BuildingLayers layer) => Validate(layer, tileBase);

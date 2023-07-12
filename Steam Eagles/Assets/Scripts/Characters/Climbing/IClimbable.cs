@@ -2,12 +2,7 @@
 
 using UnityEngine;
 
-namespace Characters
+namespace CoreLib.Interfaces
 {
-    public interface IClimbable
-    {
-        Rigidbody2D Rigidbody { get; }
-        Vector2 MinClimbLocalPosition { get; }
-        Vector2 MaxClimbLocalPosition { get; }
-    }
+
 }

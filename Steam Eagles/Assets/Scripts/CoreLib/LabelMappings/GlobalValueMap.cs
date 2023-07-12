@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ObjectLabelMapping
@@ -7,7 +8,7 @@ namespace ObjectLabelMapping
     {
         LabelMappedDictionary<int> _layerMap = new();
         LabelMappedDictionary<string> _tagMap = new();
-        
+        Dictionary<Type, LabelMappedDictionary<object>> _customMaps = new();
         public GlobalValueMap(
             List< IValueMapProvider<int>> layerParameters,
             List<IValueMapProvider<string>> tagParameters)
@@ -54,7 +55,45 @@ namespace ObjectLabelMapping
                 return true;
             return false;
         }
-        
+
+        public bool TryGetLabelFromCustom<T>(T value, string parameter, out string label)
+        {
+            label = "";
+            if (_customMaps.ContainsKey(typeof(T)))
+            {
+                var map = _customMaps[typeof(T)];
+                if (map.TryGetLabel(value, parameter, out label))
+                    return true;
+                return false;
+            }
+            return false;
+        }
+
+        public void CreateCustomMap<T>(List<IValueMapProvider<T>> providers)
+        {
+            var newCustomMap = new LabelMappedDictionary<object>();
+            foreach (var valueMapProvider in providers)
+            {
+                foreach (var mappedParameter in valueMapProvider.GetParameters())
+                {
+                    var res = newCustomMap.Link(mappedParameter.Value, mappedParameter.ParameterName, mappedParameter.Label);
+                    Debug.Assert(res, "Failed to link custom parameter " + mappedParameter.ParameterName + " to " + mappedParameter.Label);
+                }
+            }
+            _customMaps.Add(typeof(T), newCustomMap);
+        }
+        public void CreateCustomMap<T>(string parameter, IValueMapProvider<T> provider)
+        {
+            var newCustomMap = new LabelMappedDictionary<object>();
+
+            foreach (var mappedParameter in provider.GetParameters())
+            {
+                var res = newCustomMap.Link(mappedParameter.Value, mappedParameter.ParameterName, mappedParameter.Label);
+                Debug.Assert(res, "Failed to link custom parameter " + mappedParameter.ParameterName + " to " + mappedParameter.Label);
+            }
+            
+            _customMaps.Add(typeof(T), newCustomMap);
+        }
         public class LabelMappedDictionary<T>
         {
             private Dictionary<T, Dictionary<string, string>> _mappings = new();
@@ -97,6 +136,14 @@ namespace ObjectLabelMapping
             }
         }
 
+        public LabelMappedDictionary<object> GetCustomMap<T>()
+        {
+            if (!_customMaps.ContainsKey(typeof(T)))
+            {
+                _customMaps.Add(typeof(T), new LabelMappedDictionary<object>());
+            }
+            return _customMaps[typeof(T)];
+        }
 
 
     }
