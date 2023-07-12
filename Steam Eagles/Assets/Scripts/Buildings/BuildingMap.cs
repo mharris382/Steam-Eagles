@@ -73,43 +73,60 @@ namespace Buildings
     }
     
 
-    public class BuildingMap : IBuildingRoomLookup, IBGrid
+    public class BuildingMap : IBuildingRoomLookup, IBGrid, IDisposable
     {
         public class Factory : PlaceholderFactory<Building, BuildingMap> { }
         
         private readonly Building _building;
         private class CellToRoomLookup
         {
+            private readonly GridLayout _grid;
             public readonly Vector2 cellSize;
             private Dictionary<Vector3Int, Room> _cellToRoomLookup = new Dictionary<Vector3Int, Room>();
             private Dictionary<Room, BoundsInt> _roomToCellBounds = new Dictionary<Room, BoundsInt>();
             public CellToRoomLookup(GridLayout grid, Room[] rooms)
             {
+                _grid = grid;
                 this.cellSize = grid.cellSize;
                 foreach (var room in rooms)
                 {
-                    var roomBounds = room.GetCells(grid);
-                    _roomToCellBounds.Add(room, roomBounds);
-                    for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
+                    AddRoomToSet(grid, room);
+                }
+            }
+
+            private void AddRoomToSet(GridLayout grid, Room room)
+            {
+                var roomBounds = room.GetCells(grid);
+                _roomToCellBounds.Add(room, roomBounds);
+                for (int x = roomBounds.xMin; x < roomBounds.xMax; x++)
+                {
+                    for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
                     {
-                        for (int y = roomBounds.yMin; y < roomBounds.yMax; y++)
+                        var cell = new Vector3Int(x, y, 0);
+                        if (!_cellToRoomLookup.ContainsKey(cell))
                         {
-                            var cell = new Vector3Int(x, y, 0);
-                            if (!_cellToRoomLookup.ContainsKey(cell))
-                            {
-                                _cellToRoomLookup.Add(cell, room);
-                            }
-                            else
-                            {
-                                Debug.LogError($"Cell {cell} is already registered to {_cellToRoomLookup[cell].name} but also found in {room.name}");
-                            }
+                            _cellToRoomLookup.Add(cell, room);
+                        }
+                        else
+                        {
+                            Debug.LogError(
+                                $"Cell {cell} is already registered to {_cellToRoomLookup[cell].name} but also found in {room.name}");
                         }
                     }
                 }
             }
+
             public Room GetRoom(Vector3Int cell) => _cellToRoomLookup.ContainsKey(cell) ? _cellToRoomLookup[cell] : null;
 
-            public BoundsInt GetCells(Room room) => _roomToCellBounds[room];
+            public BoundsInt GetCells(Room room)
+            {
+                if (!_roomToCellBounds.ContainsKey(room))
+                {
+                    AddRoomToSet(_grid, room);
+                }
+                return _roomToCellBounds[room];
+            }
+
             public IEnumerable<(Room room, Vector3Int cell)> GetAllCells() => _cellToRoomLookup.Select(kvp => (kvp.Value, kvp.Key));
             public IEnumerable<(Room room, BoundsInt bounds)> GetAllBounds() => _roomToCellBounds.Select(kvp => (kvp.Key, kvp.Value));
             
@@ -119,15 +136,66 @@ namespace Buildings
         private readonly Dictionary<Vector2, CellToRoomLookup> _cellToRoomMaps;
         private readonly RoomGraph _roomGraph;
 
+        private readonly Subject<BuildingTile> _onTileSet = new ();
         private readonly Dictionary<BuildingLayers, HashSet<Vector2Int>> _blockedCells = new();
         private readonly Dictionary<BuildingLayers, Vector2> _layerToCellSize;
         private readonly Dictionary<BuildingLayers, Tilemap> _layerToTilemap;
         private readonly Dictionary<BuildingLayers, BuildingMapEvents> _layerToEvents = new ();
-        class BuildingMapEvents
+        
+
+        class BuildingMapEvents : IDisposable
         {
+            private readonly BuildingLayers _layer;
+            private IDisposable _disposable;
+            private Dictionary<Room, Subject<(Vector3Int cell, TileBase tile)>> _filteredByRoomEvents = new();
             public Subject<(Vector3Int cell, TileBase tile)> onTileChanged = new Subject<(Vector3Int cell, TileBase)>();
+            private CompositeDisposable _cd = new();
+
+
+            public BuildingMapEvents(BuildingLayers layer, IObservable<BuildingTile> onTileSet, Func<BuildingCell, Room> getRoom)
+            {
+                _layer = layer;
+                _disposable = onTileSet.Select(t => (t, getRoom(t.cell)))
+                    .Where(t =>
+                    {
+                        if (t.t.cell.layers != layer) return false;
+                        var room = getRoom(t.t.cell);
+                        return room != null && 
+                               _filteredByRoomEvents.ContainsKey(room) &&
+                               _filteredByRoomEvents[room] != null;
+                    })
+                        .Subscribe(t =>
+                    {
+                        _filteredByRoomEvents[t.Item2].OnNext((t.t.cell.cell, t.t.tile));
+                    });
+                // _disposable= onTileChanged.Select(t => new BuildingTile() {
+                //     cell = new BuildingCell(t.cell, _layer),
+                //     tile = t.tile
+                // }).Subscribe(onTileSet);
+            }
+
             public IObservable<(Vector3Int cell, TileBase tile)> OnTileSet => onTileChanged.Where(t => t.tile != null);
             public IObservable<Vector3Int> OnTileCleared => onTileChanged.Where(t => t.tile == null).Select(t => t.cell);
+            public IObservable<(Vector3Int cell, TileBase tile)> OnTileSetPerRoom(Room room, Func<Room, BoundsInt> getBounds)
+            {
+                if (room == null) return OnTileSet;
+                if(!_filteredByRoomEvents.TryGetValue(room, out var roomEvent))
+                {
+                    roomEvent = new Subject<(Vector3Int cell, TileBase tile)>();
+                    var bounds = getBounds(room);
+                    onTileChanged.Where(t => bounds.Contains(t.cell)).Subscribe(roomEvent).AddTo(_cd);
+                    _filteredByRoomEvents.Add(room, roomEvent);
+                }
+                return roomEvent;
+            }
+
+            public void Dispose()
+            {
+                onTileChanged?.Dispose();
+                _disposable?.Dispose();
+                _cd.Dispose();
+                
+            }
         }
 
         public BuildingGraphs BuildingGraphs { get; }
@@ -167,6 +235,8 @@ namespace Buildings
             return _layerToTilemap[layers];
         }
 
+        public IObservable<BuildingTile> OnTileSetStream => _onTileSet;
+
         public IEnumerable<(BoundsInt, Room)> GetAllBoundsForLayer(BuildingLayers layer) => GetMapForLayer(layer).GetAllBounds().Select(kvp => (kvp.bounds, kvp.room));
         public IEnumerable<(BoundsInt, Room)> GetAllBoundsForLayer(BuildingLayers layer, Predicate<Room> roomFilter) => GetMapForLayer(layer).GetAllBounds().Where(t => roomFilter(t.room)).Select(kvp => (kvp.bounds, kvp.room));
 
@@ -174,7 +244,14 @@ namespace Buildings
 
         public RoomGraph RoomGraph => _roomGraph;
 
-        
+        public IObservable<(Vector3Int cell, TileBase tile)> OnTileChanged(BuildingLayers buildingLayers, Room room)
+        {
+            var events = GetBuildingMapEvents(buildingLayers);
+            return events.OnTileSetPerRoom(room, GetCells);
+
+            BoundsInt GetCells(Room _) => GetCellsForRoom(_, buildingLayers);
+        }
+
         CellToRoomLookup GetMapForLayer(BuildingLayers layer)
         {
             if (!_layerToCellSize.ContainsKey(layer))
@@ -184,6 +261,7 @@ namespace Buildings
         }
 
         public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
+        public Room GetRoom(BuildingCell cell) => GetRoom(cell.cell, cell.layers);
         public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);
         public bool CellIsInARoom(Vector3Int cell, BuildingLayers layer) => GetMapForLayer(layer).HasCell(cell);
 
@@ -191,6 +269,7 @@ namespace Buildings
 
         public Vector3 CellToWorldCentered(Vector3Int cell, BuildingLayers buildingLayers) => CellToWorld(cell, buildingLayers) + (Vector3)GetCellSize(buildingLayers)/2f;
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
+        public BuildingCell  WorldToBCell(Vector3 wp, BuildingLayers buildingLayers) => new BuildingCell(_layerToTilemap[buildingLayers].WorldToCell(wp), buildingLayers);
         public Vector3 CellToWorld(Vector3Int cell, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].CellToWorld(cell);
         public Vector3 CellToWorld(BuildingCell cell) => CellToWorld(cell.cell, cell.layers);
         public Vector3 CellToLocal(BuildingCell cell) => CellToLocal(cell.cell, cell.layers);
@@ -230,6 +309,12 @@ namespace Buildings
 
         }
 
+        public BuildingTile GetBuildingTile(BuildingCell cell)
+        {
+            var tile = GetTile(cell);
+            return new BuildingTile(cell, tile);
+        }
+
         public TileBase GetTile(Vector3Int cell, BuildingLayers layers)
         {
             if (!_layerToTilemap.ContainsKey(layers))
@@ -239,7 +324,22 @@ namespace Buildings
 
         public TileBase GetTile(BuildingCell cell) => GetTile(cell.cell, cell.layers);
 
+        public IEnumerable<BuildingCell> GetTileAnyLayer(BuildingCell cell, params BuildingLayers[] layers)
+        {
+            var t = GetTile(cell);
+            if (t) yield return cell;
+            foreach (var layer in layers)
+            {
+                if (layer == cell.layers) continue;
+                foreach (var buildingCell in ConvertBetweenLayers(cell, layer))
+                {
+                    t = GetTile(buildingCell);
+                    if (t) yield return buildingCell;
+                }
+            }
+        }
         public bool HasCell(BuildingCell cell) => GetTile(cell) != null;
+        public T GetTile<T>(BuildingCell cell) where T : TileBase => GetTile<T>(cell.cell, cell.layers);
         public T GetTile<T>(Vector3Int cell, BuildingLayers layers) where T : TileBase
         {
             if (!_layerToTilemap.ContainsKey(layers))
@@ -277,21 +377,23 @@ namespace Buildings
         {
             var tm = GetTilemap(cell.layers);
             tm.SetTile(cell.cell, tile);
-            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
             var room = GetRoom(cell.cell, cell.layers);
+            if (room == null) return;
+            _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
             
             var buildingEvents = GetBuildingMapEvents(cell.layers);
             buildingEvents.onTileChanged.OnNext((cell.cell, tile));
-            
             var roomEvents = room.GetComponent<RoomEvents>();
             Debug.Assert(roomEvents != null, room);
             roomEvents.OnTileSet(cell.cell, cell.layers, tile);
+            _onTileSet.OnNext(new BuildingTile(cell, tile));
         }
         
         public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);
 
         public void SetTile(Vector3Int cell, BuildingLayers layer, EditableTile tile) => SetTile(new BuildingCell(cell, layer), tile);
 
+        [Obsolete("Use SetTile(BuildingCell, EditableTile) instead")]
         public void SetTile(Vector3Int cell, EditableTile tile)
         {
             var layer = tile.GetLayer();
@@ -360,7 +462,7 @@ namespace Buildings
         {
             if (!_layerToEvents.TryGetValue(layers, out var bme))
             {
-                _layerToEvents.Add(layers, bme = new BuildingMapEvents());
+                _layerToEvents.Add(layers, bme = new BuildingMapEvents(layers, _onTileSet, cell => GetRoom(cell.cell, cell.layers)));
             }
             return bme;
         }
@@ -370,6 +472,16 @@ namespace Buildings
         public IObservable<Vector3Int> OnTileCleared(BuildingLayers layers) => GetBuildingMapEvents(layers).OnTileCleared;
         public IObservable<(Vector2Int cell, TileBase tile)> OnTileSet2D(BuildingLayers layers) => OnTileSet(layers).Select(t => ((Vector2Int)t.cell, t.tile));
         public IObservable<(Vector3Int cell, TileBase tile)> OnTileSet(BuildingLayers layers) => GetBuildingMapEvents(layers).OnTileSet;
+
+        public void Dispose()
+        {
+            _onTileSet?.Dispose();
+            foreach (var layerToEvent in _layerToEvents)
+            {
+                layerToEvent.Value.Dispose();
+            }
+            _layerToEvents.Clear();
+        }
     }
 
 

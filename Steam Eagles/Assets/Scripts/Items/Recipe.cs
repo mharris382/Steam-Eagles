@@ -4,6 +4,7 @@ using System.Linq;
 using CoreLib;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -16,12 +17,19 @@ using Sirenix.OdinInspector.Editor;
 namespace Items
 {
     [CreateAssetMenu(menuName = "Steam Eagles/Items/Recipe")]
-    public class Recipe : ScriptableObject, IIconable
+    public class Recipe : SerializedScriptableObject, IIconable
     {
         public enum RecipeType
         {
             TILE,
             MACHINE
+        }
+        public enum RecipeCategory
+        {
+            Tiles,
+            Machines,
+            Decor,
+            Security,
         }
 
         [HorizontalGroup("Recipe", width:0.2f, marginLeft:15),HideLabel] public Sprite icon;
@@ -29,6 +37,9 @@ namespace Items
         [HorizontalGroup("Recipe", width:0.8f),TableList(AlwaysExpanded = true)] public List<ItemStack> components;
 
 
+        
+        public RecipeCategory recipeCategory = RecipeCategory.Tiles;
+        public string category => recipeCategory.ToString();
         [SerializeField, EnumPaging] private RecipeType recipeType;
 
         [ShowIf(nameof(UseInstanceReference)),SerializeField] private RecipeInstanceReference instanceReference;
@@ -38,7 +49,21 @@ namespace Items
 
         private PrefabLoader _prefabLoader;
         private TileLoader _tileLoader;
-        
+
+        public string friendlyName;
+        public string FriendlyName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(friendlyName))
+                {
+                    var newName = name.Replace("Recipe", "").Replace("Buildable", "").Replace("_", "").Trim();
+                    return newName;
+                }
+
+                return friendlyName;
+            }
+        }
         
         bool UseTileReference => recipeType == RecipeType.TILE;
 

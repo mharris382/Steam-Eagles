@@ -8,7 +8,7 @@ namespace Buildings.DI
     {
         public override void InstallBindings()
         {
-            Container.Bind<Building>().FromComponentOn(gameObject).AsSingle();
+            //Container.Rebind<Building>().FromComponentOn(gameObject).AsSingle();
             
         }
     }

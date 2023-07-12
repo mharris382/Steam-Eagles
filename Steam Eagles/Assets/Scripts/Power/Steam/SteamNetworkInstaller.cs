@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Buildings;
+using Buildings.Rooms;
 using Power;
 using Power.Steam;
 using Power.Steam.Core;
 using Power.Steam.Network;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Zenject;
 
 public class SteamNetworkInstaller : MonoInstaller
@@ -29,6 +31,8 @@ public class SteamNetworkInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
         Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
+        
+        //Container.BindInterfacesAndSelfTo<BuildingPipeNetwork>().AsSingle().NonLazy();
         
     }
     class Tester : IInitializable
@@ -183,6 +187,11 @@ public class SteamNetworkInstaller : MonoInstaller
         }
 
     
+    }
+    
+    public class RoomPipeNetwork
+    {
+        public class Factory : PlaceholderFactory<Room, RoomPipeNetwork> { }
     }
 }
 

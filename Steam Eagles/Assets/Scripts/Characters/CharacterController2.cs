@@ -242,13 +242,18 @@ namespace Characters
                 StopDropping();
             }
 
-            if (IsGrounded && !_isOnSlope && !_isJumping)
+            if (IsGrounded && !_isOnSlope && !_isJumping && !State.IsDropping)
             {
                 _newVelocity.Set(MoveSpeed * xInput, 0.0f);
             }
-            else if (IsGrounded && _isOnSlope && !_isJumping)
+            else if (IsGrounded && _isOnSlope && !_isJumping && !State.IsDropping)
             {
-                _newVelocity.Set(MoveSpeed * _slopeNormalPerp.x * -xInput, MoveSpeed * _slopeNormalPerp.y * -xInput);
+                var moveSpeed = MoveSpeed;
+              
+              
+                _newVelocity.Set(moveSpeed * _slopeNormalPerp.x * -xInput, moveSpeed * _slopeNormalPerp.y * -xInput);
+                _newVelocity = _newVelocity.normalized * MoveSpeed;
+
             }
             else if(!IsGrounded)
             {
@@ -532,9 +537,11 @@ namespace Characters
 
         private void SlopeCheckHorizontal(Vector2 checkPos)
         {
-            
-            RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, _facingRight ? Vector2.right : Vector2.left, slopeCheckDistance, whatIsGround);
-            RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos,_facingRight ? Vector2.left : Vector2.right, slopeCheckDistance, whatIsGround);
+            var offset = Vector2.up * 0.25f;
+            RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos + offset, _facingRight ? Vector2.right : Vector2.left, slopeCheckDistance, whatIsGround);
+            RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos + offset,_facingRight ? Vector2.left : Vector2.right, slopeCheckDistance, whatIsGround);
+            Debug.DrawRay(checkPos+ offset, _facingRight ? Vector2.right * slopeCheckDistance : Vector2.left * slopeCheckDistance, Color.red);
+            Debug.DrawRay(checkPos+ offset, _facingRight ? Vector2.left * slopeCheckDistance : Vector2.right * slopeCheckDistance, Color.blue);
             if (slopeHitBack)
             {
                 _isOnSlope = true;

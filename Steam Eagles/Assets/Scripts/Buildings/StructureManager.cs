@@ -74,6 +74,9 @@ namespace Buildings
 
         public void NotifyPlayerEnteredStructure(int playerNumber, StructureState structureState)
         {
+            if (_playerStructures == null)
+                _playerStructures = new List<StructureState>[2]
+                    { new List<StructureState>(), new List<StructureState>() };
             if(_playerStructures[playerNumber].Contains(structureState)) return;
             _playerStructures[playerNumber].Add(structureState);
             if (_isInitialized)
@@ -85,6 +88,7 @@ namespace Buildings
         }
         public void NotifyPlayerExitedStructure(int playerNumber, StructureState structureState)
         {
+            if(_playerStructures == null) _playerStructures = new List<StructureState>[2]{ new List<StructureState>(), new List<StructureState>()};
             if(!_playerStructures[playerNumber].Contains(structureState)) return;
             _playerStructures[playerNumber].Remove(structureState);
             if (_isInitialized)

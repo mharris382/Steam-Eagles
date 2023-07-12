@@ -38,6 +38,17 @@ namespace Buildings
 
         public int orderInLayer;
 
+        [Button]
+        void Helper()
+        {
+            Debug.Log(typeof(Building).AssemblyQualifiedName);
+            var assemblyQualifiedName = typeof(Building).AssemblyQualifiedName;
+            if (assemblyQualifiedName != null)
+            {
+                var t = Type.GetType(assemblyQualifiedName);
+                Debug.Assert(t != null);
+            }
+        }
         
         [SerializeField] Rect _sizeWorldSpace;
 
@@ -67,12 +78,44 @@ namespace Buildings
         private BuildingMap _buildingMap;
         private BuildingTiles _buildingTiles;
         Rooms.Rooms _rooms;
+        
+        [SerializeField]
+        RectInt _sizeGridSpace;
 
         internal Subject<BuildingTilemapChangedInfo> tilemapChangedSubject = new Subject<BuildingTilemapChangedInfo>();
 
         #endregion
 
         #region [Properties]
+
+        public Transform TilemapParent
+        {
+            get
+            {
+                if (tilemapParent == null)
+                {
+                    tilemapParent = new GameObject("[TILEMAPS]").transform;
+                    tilemapParent.SetParent(transform);
+                    tilemapParent.localPosition = Vector3.zero;
+                }
+                return tilemapParent;
+            }
+        }
+
+
+        public RectInt SizeGridSpace
+        {
+            get => _sizeGridSpace;
+            set
+            {
+                _sizeGridSpace = value;
+                var minGs = (Vector3Int)_sizeGridSpace.min;
+                var maxGs = (Vector3Int)_sizeGridSpace.max;
+                var minWs = Grid.CellToWorld(minGs);
+                var maxWs = Grid.CellToWorld(maxGs);
+                _sizeWorldSpace = new Rect(minWs, maxWs - minWs);
+            }
+        }
 
         public Rect sizeWorldSpace
         {
@@ -224,6 +267,7 @@ namespace Buildings
             _coverTilemap = GetComponent<CoverTilemap>();
 
             SetupPhysics();
+            CalculateSizeWs();
 
             void SetupPhysics()
             {
@@ -265,6 +309,24 @@ namespace Buildings
 
         #region [Helper Methods]
 
+
+        private void CalculateSizeWs()
+        {
+            var rooms = GetComponent<Rooms.Rooms>();
+            var max = Vector2Int.zero;
+            var min = Vector2Int.zero;
+            foreach (var room in rooms.AllRooms)
+            {
+                var bounds = room.RoomRect;
+                if (bounds.xMin < min.x) min.x = bounds.xMin;
+                if (bounds.yMin < min.y) min.y = bounds.yMin;
+                if (bounds.xMax > max.x) max.x = bounds.xMax;
+                if (bounds.yMax > max.y) max.y = bounds.yMax;
+            }
+
+            var finalRect = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+            SizeGridSpace = finalRect.CastTo();
+        }
         public IEnumerable<BuildingTilemap> GetAllBuildingLayers() => GetComponentsInChildren<BuildingTilemap>();
 
         [Button, HideInEditorMode, ShowIf("@_skin != null")]
@@ -432,11 +494,50 @@ namespace Buildings
             this.cell = (Vector3Int)cell;
             this.layers = layers;
         }
+        public IEnumerable<BuildingCell> GetNeighbors()
+        {
+            yield return this + Vector2Int.up;
+            yield return this + Vector2Int.right;
+            yield return this + Vector2Int.left;
+            yield return this + Vector2Int.down;
+        }
+
+
         public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
         public override bool Equals(object obj) => obj is BuildingCell other && Equals(other);
         public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
+        
+        public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
+        public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);
+        
+        
+        public static BuildingCell operator +(BuildingCell buildingCell, Vector2Int vector2Int) => new BuildingCell(buildingCell.cell + (Vector3Int)vector2Int, buildingCell.layers);
     }
 
+    public struct BuildingTile : IEquatable<BuildingTile>
+    {
+        public BuildingCell cell;
+        public TileBase tile;
+        
+        public bool IsEmpty => tile == null;
+        public BuildingTile(Vector3Int cell, BuildingLayers layer, TileBase tile)
+        {
+            this.cell = new BuildingCell(cell, layer);
+            this.tile = tile;
+        }
+        public BuildingTile(BuildingCell cell, TileBase tile)
+        {
+            this.cell = cell;
+            this.tile = tile;
+        }
+
+        public bool Equals(BuildingTile other) => cell.Equals(other.cell) && Equals(tile, other.tile);
+        public override bool Equals(object obj) => obj is BuildingTile other && Equals(other);
+        public override int GetHashCode() => HashCode.Combine(cell, tile);
+        
+        public static bool operator ==(BuildingTile left, BuildingTile right) => left.Equals(right);
+        public static bool operator !=(BuildingTile left, BuildingTile right) => !(left == right);
+    }
 
     public struct BuildingRect : IEquatable<BuildingRect>
     {

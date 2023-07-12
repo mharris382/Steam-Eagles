@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using CoreLib;
+using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using UnityEditor;
@@ -18,6 +19,8 @@ namespace Buildings.Rooms.MyEditor
         private RoomsGraphEditor _graphEditor;
         private Dictionary<Color, Rooms.RoomGroupings> _colorToGrouping = new Dictionary<Color, Rooms.RoomGroupings>();
 
+        private GridHelper _gridHelper;
+        public GridHelper GridHelper => _gridHelper ??= new GridHelper(target as Rooms);
         protected override void OnEnable()
         {
             if (target == null || (target as Rooms)==null) return;
@@ -76,18 +79,6 @@ namespace Buildings.Rooms.MyEditor
             base.OnInspectorGUI();
             
             _graphEditor.OnInspectorGUI();
-            
-            var roomTrackerManager = FindObjectOfType<RoomTrackerManager>();
-            if (roomTrackerManager == null)
-            {
-                EditorGUILayout.HelpBox("RoomTrackerManager not found in scene", MessageType.Warning);
-                if(GUILayout.Button("Create RoomTrackerManager"))
-                {
-                    var go = new GameObject("[ROOM TRACKER MANAGER]");
-                    go.AddComponent<RoomTrackerManager>();
-                    Selection.activeGameObject = go;
-                }
-            }
         }
 
         private void OnPreSceneGUI()
@@ -99,7 +90,7 @@ namespace Buildings.Rooms.MyEditor
             _graphEditor.OnPreSceneGUI(size);
         }
 
-        private void OnSceneGUI()
+        public void OnSceneGUI()
         {
             Rooms rooms = (Rooms)target;
             if (rooms == null) return;
@@ -155,10 +146,14 @@ namespace Buildings.Rooms.MyEditor
             var center = buildingTransform.InverseTransformPoint(centerWs);
             roomArea = new Rect(center, roomArea.size);
             var roomGo = new GameObject("New Room");
+            targetRooms.CreateRoomParent();
+            roomGo.transform.parent = targetRooms.roomParent;
+            roomGo.transform.position = centerWs;
             Undo.RegisterCreatedObjectUndo(roomGo, "Created New Room");
             var boxCollider = roomGo.AddComponent<BoxCollider2D>();
             boxCollider.isTrigger = true;
             var room = roomGo.AddComponent<Room>();
+            
             room.gameObject.layer = LayerMask.NameToLayer("Triggers");
             room.tag = "Room";
             room.roomColor = Color.HSVToRGB(Random.value, 1, 1);
@@ -168,9 +163,106 @@ namespace Buildings.Rooms.MyEditor
             targetRooms.UpdateRoomsList();
             _newRoomDrawer.Dispose();
             var btnRect = GUIHelper.GetCurrentLayoutRect();
-            OdinEditorWindow.InspectObject(roomGo);
+            OdinEditorWindow.InspectObject(new NewRoomWindow(room));
         }
 
+        public class NewRoomWindow
+        {
+            private readonly Room _room;
+
+            [ShowInInspector]
+            public string roomName
+            {
+                get => _room.name;
+                set => _room.name = value;
+            }
+
+            [ShowInInspector, ColorPalette]
+            public Color roomColor
+            {
+                get => _room.roomColor;
+                set => _room.roomColor = value;
+            }
+            
+            [ShowInInspector]
+            public CameraHelper cameraHelper;
+
+            [ShowInInspector]
+            public BuildLevel BuildLevel
+            {
+                get => _room.buildLevel;
+                set => _room.buildLevel = value;
+            }
+            
+            [ShowInInspector]
+            public AccessLevel accessLevel
+            {
+                get => _room.accessLevel;
+                set => _room.accessLevel = value;
+            }
+
+            public NewRoomWindow(Room room)
+            {
+                _room = room;
+                cameraHelper = new CameraHelper(room);
+            }
+        }
+        
+        [InlineProperty()]
+        public class CameraHelper
+        {
+            public Room room;
+            public bool useExistingCamera;
+
+            
+            [ShowInInspector]
+            public bool IsFollowCamera
+            {
+                get => room.roomCameraConfig.IsDynamic;
+                set => room.roomCameraConfig.IsDynamic = value;
+            }
+            
+            [ShowInInspector, HideIf(nameof(useExistingCamera))]
+            public GameObject RoomCamera
+            {
+                get => room.roomCamera;
+                set => room.roomCamera = value;
+            }
+            [ShowInInspector, ShowIf(nameof(useExistingCamera))]
+            [ValueDropdown(nameof(ExistingCameras))]
+            public GameObject SharedRoomCamera
+            {
+                get => RoomCamera;
+                set => RoomCamera = value;
+            }
+            ValueDropdownList<GameObject> ExistingCameras()
+            {
+                var vdl = new ValueDropdownList<GameObject>();
+                var rooms = room.GetComponentInParent<Rooms>();
+                HashSet<GameObject> cameras = GetAllCameras();
+                foreach (var gameObject in cameras) vdl.Add(gameObject.name, gameObject);
+                return vdl;
+            }
+
+            HashSet<GameObject> GetAllCameras()
+            {
+                HashSet<GameObject> seenCameras = new HashSet<GameObject>();
+                var rooms = room.GetComponentInParent<Rooms>();
+                foreach (var roomsAllRoom in rooms.AllRooms)
+                {
+                    var cam = roomsAllRoom.roomCamera;
+                    if(cam == null) continue;
+                    if(seenCameras.Contains(cam)) continue;
+                    seenCameras.Add(cam);
+                }
+                return seenCameras;
+            }
+            public CameraHelper(Room room)
+            {
+                this.room = room;
+                if(room.roomCamera != null) useExistingCamera = true;
+            }
+        }
 
         bool _isCopyingColor;
         Room _copyingFrom;

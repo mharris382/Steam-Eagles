@@ -2,6 +2,7 @@
 
 using System;
 using Buildings.BuildingTilemaps;
+using CoreLib;
 using PhysicsFun;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
@@ -10,6 +11,13 @@ using UnityEngine.Tilemaps;
 
 namespace Buildings.MyEditor
 {
+    public class BuildingEditorWindow : OdinEditorWindow
+    {
+        public static void EditBuilding(Building building)
+        {
+            
+        }
+    }
     [CustomEditor(typeof(Building), true)]
     public class BuildingEditor :
 #if !ODIN_INSPECTOR
@@ -82,6 +90,10 @@ namespace Buildings.MyEditor
             DrawAddBonusTilemapButtons(building);
             
             serializedObject.ApplyModifiedProperties();
+            if (GUILayout.Button("Calculate Size"))
+            {
+                CalculateBuildingSize();
+            }
             base.OnInspectorGUI();
         }
 
@@ -224,6 +236,26 @@ namespace Buildings.MyEditor
                     }
                 }
             } 
+        }
+
+
+        
+        void CalculateBuildingSize()
+        {
+            var building = target as Building;
+            var rooms = building.GetComponent<Rooms.Rooms>();
+            var max = Vector2Int.zero;
+            var min = Vector2Int.zero;
+            foreach (var room in rooms.AllRooms)
+            {
+                var bounds = room.RoomRect;
+                if(bounds.xMin < min.x) min.x = bounds.xMin;
+                if(bounds.yMin < min.y) min.y = bounds.yMin;
+                if(bounds.xMax > max.x) max.x = bounds.xMax;
+                if(bounds.yMax > max.y) max.y = bounds.yMax;
+            }
+            var finalRect = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+            building.SizeGridSpace = finalRect.CastTo();
         }
     }
 }

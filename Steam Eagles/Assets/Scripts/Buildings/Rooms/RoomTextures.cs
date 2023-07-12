@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
@@ -16,30 +19,48 @@ namespace Buildings.Rooms
         private Dictionary<BuildingLayers, Texture2D> _textures = new Dictionary<BuildingLayers, Texture2D>();
         private BoundsLookup _boundsLookup;
         private ITileColorPicker _tileColorPicker;
+        private Subject<BuildingTile> _onTileSet = new();
 
+        public IObservable<BuildingTile> OnTileSetStream => _onTileSet;
+
+        [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
         public Texture2D SolidTexture
         {
             get => _textures.ContainsKey(BuildingLayers.SOLID) ? _textures[BuildingLayers.SOLID] : null;
             set => AssignTexture(BuildingLayers.SOLID, value);
         }
-
+        [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
         public Texture2D PipeTexture
         {
             get => GetTexture(BuildingLayers.PIPE);
             set => AssignTexture(BuildingLayers.PIPE, value);
         }
-
+        [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
         public Texture2D WallTexture
         {
             get => GetTexture(BuildingLayers.WALL);
             set => AssignTexture(BuildingLayers.WALL, value);
         }
 
+        [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
         public Texture2D FoundationTexture
         {
             get => GetTexture(BuildingLayers.FOUNDATION);
             set => AssignTexture(BuildingLayers.FOUNDATION, value);
         }
+
+        [ShowInInspector, PreviewField, ReadOnly, BoxGroup("Textures")]
+        public Texture2D GasInputTexture
+        {
+            get => GetTexture(BuildingLayers.GAS);
+            set => AssignTexture(BuildingLayers.GAS, value);
+        }
+
+        public void InitAllTextures()
+        {
+            
+        }
+        
 
         private Texture2D GetTexture(BuildingLayers layers) => _textures.ContainsKey(layers) ? _textures[layers] : null;
         public void AssignTexture(BuildingLayers layers, Texture2D texture2D)
@@ -54,7 +75,7 @@ namespace Buildings.Rooms
         }
 
 
-        [Inject]
+        
         void Inject(RoomEvents roomEvents, BoundsLookup boundsLookup, ITileColorPicker tileColorPicker)
         {
             this._boundsLookup = boundsLookup;
@@ -65,8 +86,14 @@ namespace Buildings.Rooms
 
         void OnTileSet(Vector3Int cell, BuildingLayers layers, TileBase tile)
         {
+            _onTileSet.OnNext(new BuildingTile()
+            {
+                cell = new BuildingCell(cell, layers),
+                tile = tile
+            });
             var texture = GetTexture(layers);
             if (texture == null) return;
+            if(_boundsLookup == null)_boundsLookup = new BoundsLookup(Room);
             var bounds = _boundsLookup.GetBounds(layers);
             var index = (cell.x - bounds.xMin) + (cell.y - bounds.yMin) * bounds.size.x;
             var prevColor = texture.GetPixel(index % bounds.size.x, index / bounds.size.x);

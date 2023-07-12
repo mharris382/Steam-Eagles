@@ -190,6 +190,9 @@ public class EntityRoomTrackerV2 : IInitializable, ITickable, IDisposable
     bool CanEntityBeInside(EntityInitializer entityInitializer, Building building)
     {
         var pos = entityInitializer.transform.position;
+        var sizeWs = building.sizeWorldSpace;
+        var inside = sizeWs.Contains(pos);
+        return inside;
         return building.WorldSpaceBounds.Contains(pos);
     }
     private void RemoveEntities()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoreLib.Entities;
 using UnityEngine;
 
@@ -6,6 +7,42 @@ namespace CoreLib.EntityTag
 {
     public static class GameObjectExtensions
     {
+        public static bool IsPlayer(this GameObject go)
+        {
+            if (go == null) return false;
+            if (go.CompareTag("Builder") || go.CompareTag("Transporter"))
+            {
+                return true;
+            }
+            return false;
+        }
+        private static Dictionary<GameObject, Dictionary<Type, Component>> _componentCache = new();
+        public static T GetOrAddComponent<T>(this Component other) where T : Component
+        {
+            if (other == null) return null;
+            if(other.TryGetComponent(out T component))
+                return component;
+            return other.gameObject.AddComponent<T>();
+        }
+
+        public static T GetOrAddCached<T>(this Component other) where T : Component
+        {
+            if (other == null) return null;
+            
+            if(!_componentCache.TryGetValue(other.gameObject, out var cache))
+            {
+                cache = new Dictionary<Type, Component>();
+                _componentCache.Add(other.gameObject, cache);
+               
+            }
+            if (!cache.TryGetValue(typeof(T), out var component) || component == null)
+            {
+                cache.Add(typeof(T), component = other.GetOrAddComponent<T>());
+            }
+            return component as T;
+        }
+        #region [Entity]
+
         public static Dictionary<GameObject, Entity> s_EntityCache = new Dictionary<GameObject, Entity>();
         public static Dictionary<GameObject, Entity> s_remoteEntityLinks = new Dictionary<GameObject, Entity>();
         
@@ -82,7 +119,7 @@ namespace CoreLib.EntityTag
 
             if (guid == null || string.IsNullOrEmpty(guid))
             {
-                guid = System.Guid.NewGuid().ToString();
+                guid = Guid.NewGuid().ToString();
             }
             var entityGO = new GameObject("Entity", typeof(Entity));
             var entity = entityGO.GetComponent<Entity>();
@@ -120,5 +157,7 @@ namespace CoreLib.EntityTag
             entity = null;
             return false;
         }
+
+        #endregion
     }
 }

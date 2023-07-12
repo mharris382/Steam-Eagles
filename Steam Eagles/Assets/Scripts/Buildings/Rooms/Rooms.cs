@@ -10,6 +10,7 @@ namespace Buildings.Rooms
 {
     public class Rooms : MonoBehaviour
     {
+        public Transform roomParent;
         [OnValueChanged(nameof(OnBuildingAssigned))] [SerializeField, Required]
         private StructureState building;
 
@@ -38,6 +39,20 @@ namespace Buildings.Rooms
         public IEnumerable<Room> AllRooms
         {
             get { return GetComponentsInChildren<Room>(); }
+        }
+
+
+        public void CreateRoomParent()
+        {
+            if (roomParent != null) return;
+            var t =transform.Find("[Rooms]");
+            if (t == null)
+            {
+                t = new GameObject("[Rooms]").transform;
+                t.parent = transform;
+                t.localPosition = Vector3.zero;
+            }
+            roomParent = t;
         }
 
         public void UpdateRoomsList()

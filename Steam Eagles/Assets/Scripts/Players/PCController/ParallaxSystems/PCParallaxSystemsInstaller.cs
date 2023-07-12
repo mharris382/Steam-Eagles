@@ -6,7 +6,7 @@ public class PCParallaxSystemsInstaller : Installer<PCParallaxSystemsInstaller>
 {
     public override void InstallBindings()
     {
-        Container.BindFactoryCustomInterface<PC, PCParallaxSystem, PCParallaxSystem.Factory, ISystemFactory<PCParallaxSystem>>().AsSingle().NonLazy();
+        Container.BindFactory<PC, PCParallaxSystem, PCParallaxSystem.Factory>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PCParallaxSystems>().AsSingle().NonLazy();
         Container.Bind<ParallaxSprites>().FromNew().AsSingle();
     }

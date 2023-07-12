@@ -1,0 +1,23 @@
+#pragma kernel CSMain
+
+struct Cell
+{
+    int3 position;
+    int pressure;
+};
+
+int4 bounds;
+float4 globalWind;
+
+Texture2D<float> solid;
+StructuredBuffer<Cell> cells;
+
+RWTexture2D<float> gas;
+
+
+[numthreads(10,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    Cell cell = cells[id.x];
+    gas[cell.position.xy] = cell.pressure/16.0;
+}

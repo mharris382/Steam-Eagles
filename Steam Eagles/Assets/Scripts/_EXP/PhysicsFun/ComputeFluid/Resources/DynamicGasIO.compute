@@ -1,0 +1,120 @@
+// Each #kernel tells which function to compile; you can have many kernels
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel DynamicGasIO
+#pragma kernel DeleteGasOnBoundaries
+#pragma kernel DynamicExternalForcesInput
+struct IO
+{
+    int2 texCoord;
+    int2 size;
+    float valueToAdd;
+    float valueAdded;
+};
+int ioCount;
+RWStructuredBuffer<IO> ioBuffer;
+RWTexture2D<float4> gas;
+float AddToCell(uint2 cell, float delta)
+{
+    float gasCurrent = gas[cell].x;
+    float gasNew = clamp(gasCurrent + delta, 0, 1);
+    gas[cell] = float4(gasNew,  gasNew,  gasNew, gasNew);
+    return gasNew - gasCurrent;
+    
+}
+[numthreads(8,1,1)]
+void DynamicGasIO (uint3 id : SV_DispatchThreadID)
+{
+    IO io = ioBuffer[id.x];
+    
+    for (int x =  0; x < io.size.x; x++)
+    {
+        for (int y = 0; y < io.size.y; y++)
+        {
+            if(io.valueToAdd == 0)return;
+            int2 texCoord = int2(io.texCoord.x + x, io.texCoord.y + y);
+            float gasDelta = AddToCell(texCoord, io.valueToAdd);
+            io.valueAdded += gasDelta;
+            io.valueToAdd -= gasDelta;
+            ioBuffer[id.x] = io;
+            // int2 upCoord = int2(texCoord.x, texCoord.y + 1);
+            // int2 downCoord = int2(texCoord.x, texCoord.y - 1);
+            // int2 leftCoord = int2(texCoord.x - 1, texCoord.y);
+            // int2 rightCoord = int2(texCoord.x + 1, texCoord.y);
+            //
+            //
+            //
+            // float gasUp = gas[upCoord].x;
+            // float gasDown = gas[downCoord].x;
+            // float gasLeft = gas[leftCoord].x;
+            // float gasRight = gas[rightCoord].x;
+            //
+            // //gas[texCoord] = float4(gasClamped,  gas[texCoord].y,  gas[texCoord].z, gas[texCoord].w);
+            // io.valueAdded += gasDelta;
+        }
+    }
+    // float gasCurrent = gas[io.texCoord].x;
+    // float gasNew = gasCurrent + io.valueToAdd;
+    // float gasClamped = clamp(gasNew, 0, 1);
+    // float gasDelta = gasClamped - gasCurrent;
+    // gas[io.texCoord] = float4(gasClamped,  gas[io.texCoord].y,  gas[io.texCoord].z, gas[io.texCoord].w);
+    // io.valueAdded = gasDelta;
+    ioBuffer[id.x] = io;
+}
+
+uint2 boundaryScale = uint2(1,1);
+Texture2D<float> boundary;
+RWTexture2D<float4> gasState;
+
+
+uint2 BoundaryToGasTextureCoord(uint2 boundaryCoord)
+{
+    return boundaryCoord * boundaryScale;
+}
+uint2 GasToBoundaryTextureCoord(uint2 gasCoord)
+{
+    return gasCoord / boundaryScale;
+}
+
+
+
+[numthreads(8,8,1)]
+void DeleteGasOnBoundaries(uint3 id : SV_DispatchThreadID)
+{
+    uint2 boundaryTexCoord = id.xy;
+    float boundaryValue = boundary[boundaryTexCoord];
+    if(boundaryValue == 0)
+        return;
+    uint2 gasTexCoord = BoundaryToGasTextureCoord(boundaryTexCoord);
+    for (int x = 0; x < boundaryScale.x; x ++)
+    {
+        for (int y = 0; y < boundaryScale.y; y ++)
+        {
+            gasState[gasTexCoord + uint2(x,y)] = float4(0,0,0,0);
+        }   
+    }
+}
+struct ForceInput
+{
+    int2 texCoord;
+    int2 area;
+    float2 forceToAdd;
+};
+
+StructuredBuffer<ForceInput> forceInputBuffer;
+RWTexture2D<float2> velocityTexture;
+
+[numthreads(8,2,1)]
+void DynamicExternalForcesInput(uint3 id : SV_DispatchThreadID)
+{
+    ForceInput input = forceInputBuffer[id.x]; 
+    for (int x = id.y %  2; x < boundaryScale.x; x +=2)
+    {
+        for (int y = id.y %  2; y < boundaryScale.y; y +=2)
+        {
+            int2 texCoord = input.texCoord + int2(x,y);
+            float2 velocity = velocityTexture[texCoord];
+            velocity += input.forceToAdd;
+            velocityTexture[texCoord] = velocity;
+        }
+    }
+}

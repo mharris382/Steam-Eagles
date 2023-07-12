@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Buildings;
 using CoreLib;
+using CoreLib.Structures;
 using Power.Steam;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -12,8 +14,15 @@ namespace Buildables
 {
     public class BuildableMachine : BuildableMachineBase
     {
-       
-        [SerializeField]
+       public ActAsSolidModule solidModule;
+
+       private bool ActAsSolid
+       {
+           set { solidModule.actAsSolid = value;}
+           get { return solidModule.actAsSolid; }
+       }
+
+       [SerializeField]
         private Vector2Int cellSize = Vector2Int.one * new Vector2Int(3, 2);
 
         #region [obsolete]
@@ -164,6 +173,31 @@ namespace Buildables
                 Gizmos.color = machineCell.gizmoColor;
                 Gizmos.DrawCube(worldPos + (Vector3)offset / 2, offset);
             }*/
+            if (GridLayout == null)
+            {
+
+                var size = new Vector2(cellSize.x, cellSize.y);
+                var center = size / 2f;
+                var min = Vector2.zero;
+                var max = Vector2.one * size;
+                var points = new [] {
+                    min,
+                    new Vector2(min.x, max.y),
+                    max,
+                    new Vector2(max.x, min.y),
+                    min
+                };
+                for (int i = 1; i < points.Length; i++)
+                {
+                    var p0 = points[0];
+                    var p1 = points[1];
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawLine(p0, p1);
+                }
+                
+                return;
+            }
+            
             Vector3 offset = Vector3.one / 2f;
             foreach (var cell in GetCells())
             {
@@ -181,6 +215,11 @@ namespace Buildables
             }
         }
 
+        public override void DestroyMachine()
+        {
+            solidModule.CleanUp(this);
+            base.DestroyMachine();
+        }
 
         protected override void OnMachineBuilt(Vector3Int cell, Building building)
         {
@@ -188,10 +227,74 @@ namespace Buildables
             {
                 mc.OnMachineBuilt((Vector2Int)cell, building);
             }
+
+            solidModule.Build(building, this);
             /*foreach (var machineCell in machineCells)
             {
                 machineCell.OnMachineBuilt(cell, building);
             }*/
+        }
+    }
+
+
+
+    [Serializable]
+    public class ActAsSolidModule
+    {
+        public bool actAsSolid = false;
+        public TileBase solidTile;
+        
+        public void CleanUp(BuildableMachine buildableMachine)
+        {
+            if(actAsSolid == false) return;
+            var cells = buildableMachine.GetCells();
+            var map = buildableMachine.Building.Map;
+            var building = buildableMachine.Building;
+            var setTile = GetTile(building);
+            foreach (var cell in cells)
+            {
+                var bcell = new BuildingCell(cell, BuildingLayers.SOLID);
+                var tile = map.GetTile(bcell);
+                if (tile == setTile)
+                {
+                    map.SetTile(bcell, null);
+                    MessageBroker.Default.Publish(new TileEventInfo()
+                    {
+                        building = building.gameObject,
+                        oldTile = tile,
+                        tile = null,
+                        tilePosition = new Vector2Int(cell.x, cell.y),
+                        type = CraftingEventInfoType.DECONSTRUCT
+                    });
+                }
+            }
+        }
+
+        public void Build(Building building, BuildableMachine buildableMachine)
+        {
+            if(actAsSolid == false) return;
+            var cells = buildableMachine.GetCells();
+            var map = buildableMachine.Building.Map;
+            var tile = GetTile(building);
+            foreach (var cell in cells)
+            {
+                var bcell = new BuildingCell(cell, BuildingLayers.SOLID);
+                var oldTile = map.GetTile(bcell);
+                map.SetTile(bcell, tile);
+                MessageBroker.Default.Publish(new TileEventInfo()
+                {
+                    building = building.gameObject,
+                    oldTile = oldTile,
+                    tile = tile,
+                    tilePosition = new Vector2Int(cell.x, cell.y),
+                    type = CraftingEventInfoType.BUILD
+                });
+            }
+        }
+
+        TileBase GetTile(Building building)
+        {
+            return solidTile != null ? solidTile :  building.Tiles.SolidTile;
         }
     }
 }

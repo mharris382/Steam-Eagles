@@ -2,13 +2,13 @@
 using System.Collections;
 using Game;
 using Players.Shared;
+using Sirenix.OdinInspector;
 using UI.PlayerGUIs;
-using UniRx;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Interactions.UI
 {
+    [InfoBox("Passes player input to the player character interaction agent")]
     [RequireComponent(typeof(PlayerCharacterGUIController))]
     public class UIPlayerInteractionController : MonoBehaviour
     {
@@ -48,4 +48,5 @@ namespace Interactions.UI
 
         }
     }
+    
 }

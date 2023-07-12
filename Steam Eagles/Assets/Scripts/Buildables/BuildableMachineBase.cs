@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Buildables.Interfaces;
 using Buildings;
 using Buildings.Rooms;
 using CoreLib;
@@ -34,13 +35,22 @@ namespace Buildables
             _buildablesRegistry = buildablesRegistry;
         }
 
+        public void SetIsCopy(bool isCopy)
+        {
+            _isCopy = isCopy;
+        }
+
+        private bool _isCopy;
+        public bool IsCopy => _isCopy;
         [ValidateInput(nameof(ValidateBuildingTarget))] [PropertyOrder(-9)] public GameObject buildingTarget;
         [SerializeField] private BuildingLayers targetLayer = BuildingLayers.SOLID;
 
-        [SerializeField] [Required] private Transform partsParent;
+        
         [SerializeField] private Sprite previewIcon;
         [SerializeField] private FX fx;
         public bool snapsToGround = true;
+        [EnumToggleButtons]
+        [SerializeField] SnappingMode snappingMode;
         public bool debug = true;
         private GridLayout _gridLayout;
         private SpriteRenderer _sr;
@@ -51,6 +61,16 @@ namespace Buildables
         private int _machineID;
         private Vector3Int? _spawnedPosition;
         private BuildablesRegistry _buildablesRegistry;
+
+        [Flags]
+        public enum SnappingMode
+        {
+            NONE = 0,
+            FLOOR = 1 << 0,
+            WALL = 1 << 1,
+            CEILING = 1 << 2,
+            ALL = FLOOR | WALL | CEILING
+        }
 
         #region [Properties]
 
@@ -100,7 +120,8 @@ namespace Buildables
                 _gridLayout = FindGridOnTarget();
                 if (!HasResources())
                 {
-                    Debug.LogError("No grid found on building target or building not set", this);
+                    if(Application.isPlaying)
+                        Debug.LogError("No grid found on building target or building not set", this);
                     return null;
                 }
 
@@ -117,6 +138,16 @@ namespace Buildables
             }
         }
 
+
+        public Room Room
+        {
+            get
+            {
+                if (Building == null) return default;
+                var cell = new BuildingCell(CellPosition, BuildingLayers.SOLID);
+                return Building.Map.GetRoom(cell);
+            }
+        }
 
         public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
         bool HasBuilding => buildingTarget != null;
@@ -139,6 +170,8 @@ namespace Buildables
             yield return new MachineGridArea(MachineID, MachineSize, MachineLayers.SOLID);
         }
 
+        public SnappingMode GetSnappingMode() => snappingMode | (snapsToGround ? SnappingMode.FLOOR : SnappingMode.NONE);
+        
         #endregion
 
         public bool HasResources()
@@ -159,20 +192,88 @@ namespace Buildables
 
         public IEnumerable<Vector3Int> GetCells(Vector2Int position)
         {
+            return GetCells(position, IsFlipped);
+        }
+
+        public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position)
+        {
+            return GetBottomCells(position, IsFlipped);
+        }
+
+        public IEnumerable<Vector3Int> GetBorderCells(Vector2Int position, bool IsFlippedv)
+        {
+            if(Contains(SnappingMode.FLOOR))
+                foreach (var cell in GetBottomCells(position, IsFlippedv))
+                {
+                    yield return cell + Vector3Int.down;
+                }
+
+            if (Contains(SnappingMode.CEILING))
+            {
+                foreach (var cell in GetCellsTop(position, IsFlippedv))
+                {
+                    yield return cell + Vector3Int.up;
+                }
+            }
+
+            if (Contains(SnappingMode.WALL))
+            {
+                foreach (var cell in GetCellsRight(position, IsFlippedv))
+                {
+                    yield return cell + Vector3Int.right;
+                }
+
+                foreach (var cell in GetCellsLeft(position, IsFlippedv))
+                {
+                    yield return   cell + Vector3Int.left;
+                }
+            }
+
+            bool Contains(SnappingMode mode)
+            {
+                return (snappingMode & mode) == mode;
+            }
+        }
+
+
+        public IEnumerable<Vector3Int> GetCellsTop(Vector2Int position, bool IsFlipped)
+        {
             var cell = (Vector3Int) position;
             var size = this.MachineGridSize;
             var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
             for (int x = 0; x < size.x; x++)
             {
-                for (int y = 0; y < size.y; y++)
-                {
-                    var cellPos = cell + new Vector3Int(x, y, 0);
-                    yield return cellPos + offset;
-                }
+                var y = size.y-1;
+                var cellPos = cell + new Vector3Int(x, y, 0);
+                yield return cellPos + offset;
+            }
+        }
+        public IEnumerable<Vector3Int> GetCellsRight(Vector2Int position, bool IsFlipped)
+        {
+            var cell = (Vector3Int) position;
+            var size = this.MachineGridSize;
+            var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
+            for (int y = 0; y < size.y; y++)
+            {
+                var x = size.x-1;
+                var cellPos = cell + new Vector3Int(x, y, 0);
+                yield return cellPos + offset;
+            }
+        }
+        public IEnumerable<Vector3Int> GetCellsLeft(Vector2Int position, bool IsFlipped)
+        {
+            var cell = (Vector3Int) position;
+            var size = this.MachineGridSize;
+            var offset = IsFlipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
+            for (int y = 0; y < size.y; y++)
+            {
+                var x = 0;
+                var cellPos = cell + new Vector3Int(x, y, 0);
+                yield return cellPos + offset;
             }
         }
 
-        public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position)
+        public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position, bool IsFlipped)
         {
             var cell = (Vector3Int) position;
             var size = this.MachineGridSize;
@@ -186,14 +287,21 @@ namespace Buildables
         }
         public IEnumerable<Vector3Int> GetCells()
         {
-            var cell = (Vector3Int) CellPosition;
+            return GetCells(this.CellPosition);
+        }
+
+
+        public IEnumerable<Vector3Int> GetCells(Vector2Int position, bool flipped)
+        {
+            var cell = (Vector3Int) position;
             var size = this.MachineGridSize;
+            var offset = flipped ? new Vector3Int(-size.x, 0, 0) : Vector3Int.zero;
             for (int x = 0; x < size.x; x++)
             {
                 for (int y = 0; y < size.y; y++)
                 {
                     var cellPos = cell + new Vector3Int(x, y, 0);
-                    yield return cellPos;
+                    yield return cellPos + offset;
                 }
             }
         }
@@ -344,6 +452,8 @@ namespace Buildables
             if (buildingTarget == null)
             {
                 var b = GetComponentInParent<Building>();
+                if (b == null)
+                    return null;
                 buildingTarget = b.gameObject;
             }
             var grid = buildingTarget.GetComponent<Grid>();
@@ -368,9 +478,15 @@ namespace Buildables
         }
 
 
-        public void DestroyMachine()
+        public virtual void DestroyMachine()
         {
-            throw new NotImplementedException();
+            var listeners = this.GetComponentsInChildren<IMachineListener>();
+            foreach (var machineListener in listeners)
+            {
+                machineListener.OnMachineRemoved(this);
+            }
+            
+            GameObject.Destroy(gameObject);
         }
         
         

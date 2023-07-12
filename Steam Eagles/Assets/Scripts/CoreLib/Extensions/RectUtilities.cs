@@ -128,6 +128,34 @@ namespace CoreLib
             }
         }
 
+        public static RectInt CastTo(this Rect rect)
+        {
+            return new RectInt((int)rect.xMin, (int)rect.yMin, (int)rect.width, (int)rect.height);
+        }
+        public static void DrawGizmos(this RectInt rect, GridLayout gridLayout)
+        {
+            var pointsE =  rect.GetPoints(true);
+            
+            //if(transform != null) pointsE = pointsE.Select(p => (Vector2) transform.TransformVector(p));
+            var points = pointsE.ToArray();
+            for (int i = 1; i < points.Length; i++)
+            {
+                var p0 = points[i - 1];
+                var p1 = points[i];
+                var wsP0 = gridLayout.CellToWorld((Vector3Int)p0);
+                var wsP1 = gridLayout.CellToWorld((Vector3Int)p1);
+                Gizmos.DrawLine(wsP0, wsP1);
+                // if (transform != null)
+                // {
+                //     Gizmos.DrawLine(transform.TransformVector(p0), transform.TransformVector(p1));
+                // }
+                // else
+                // {
+                //     Gizmos.DrawLine(p0, p1);
+                // }
+            }
+        }
+
         public static Rect ToRect(this Bounds bounds)
         {
             return new Rect(bounds.min, bounds.size);

@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DefaultNamespace
 {
@@ -31,6 +32,8 @@ namespace DefaultNamespace
         public float maxSlopeAngle = 75;
         
         [SerializeField] private ClimbConfig climbConfig = new ClimbConfig();
+        public float slopeUpSpeedMultiplier = 2;
+        public float slopeDownSpeedMultiplier = 2;
 
         public ClimbConfig ClimbSettings => climbConfig;
         public LayerMask GetGroundLayers()

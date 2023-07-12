@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 namespace Items
@@ -12,6 +13,17 @@ namespace Items
         [TableList(AlwaysExpanded = true, ShowIndexLabels = false)]
         [ShowInInspector]
         public List<RecipeWrapper> r;
+
+        [Button]
+        void SortByName()
+        {
+            r = r.OrderBy(recipe => recipe.Name).ToList();
+        }
+        [Button]
+        void SortByCategory()
+        {
+            r = r.OrderBy(recipe => recipe.category).ToList();
+        }
         public RecipeEditor(IEnumerable<Recipe> recipes,IEnumerable<ItemBase> allItems)
         {
             _allItems = allItems.ToList();
@@ -21,26 +33,41 @@ namespace Items
             {
                 r.Add(new RecipeWrapper(re, this));
             }
+            
         }
         
         public class RecipeWrapper
         {
+        
             [TableColumnWidth(160, true),ShowInInspector]
             public string Name
             {
                 get { return _recipe.name; }
             }
+            [OnValueChanged(nameof(SaveAsset))]
             [ShowInInspector,InlineEditor(Expanded = false)]
             private readonly Recipe _recipe;
             private readonly RecipeEditor _recipeEditor;
+            private readonly SerializedObject _serializedObject;
+            private readonly SerializedProperty _category;
+            private readonly SerializedProperty _components;
+            private readonly SerializedProperty _icon;
 
+            [OnValueChanged(nameof(SaveAsset))]
             [ShowInInspector, TableColumnWidth(50, false), PreviewField(height:50, ObjectFieldAlignment.Left)]
             public Sprite Icon
             {
                 get => _recipe.icon;
-                set => _recipe.icon = value;
+                set
+                {
+                    _serializedObject.Update();
+                    _recipe.icon = value;
+                    _icon.objectReferenceValue = value;
+                    _serializedObject.ApplyModifiedProperties();
+                }
             }
 
+            [OnValueChanged(nameof(SaveAsset))]
             [TableList(AlwaysExpanded = false)]
             [ShowInInspector, TableColumnWidth(250, true)]
             List<ItemStackWrapper> components
@@ -65,12 +92,36 @@ namespace Items
                 }
             }
 
+            [OnValueChanged(nameof(SaveAsset))]
+            [ShowInInspector, TableColumnWidth(250, true), EnumToggleButtons]
+            public Recipe.RecipeCategory category
+            {
+                get => _recipe.recipeCategory;
+                set
+                {
+                    _serializedObject.Update();
+                    
+                    _recipe.recipeCategory = value;
+                    _category.enumValueIndex = (int) value;
+                    _serializedObject.ApplyModifiedProperties();
+                }
+            }
+
             public RecipeWrapper(Recipe recipe, RecipeEditor recipeEditor)
             {
                 _recipe = recipe;
+                _serializedObject = new SerializedObject(_recipe);
+                _category = _serializedObject.FindProperty("recipeCategory");
+                _icon = _serializedObject.FindProperty("icon");
                 _recipeEditor = recipeEditor;
             }
 
+            void SaveAsset()
+            {
+                var r = AssetDatabase.GetAssetPath(_recipe);
+                AssetDatabase.ForceReserializeAssets(new[] {r}, ForceReserializeAssetsOptions.ReserializeMetadata);
+                AssetDatabase.SaveAssets();
+            }
 
             public class ItemStackWrapper
             {

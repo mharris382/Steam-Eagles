@@ -19,6 +19,7 @@ namespace Buildings
         DECOR=64,
         WIRES=128,
         LADDERS=256,
+        GAS,
         REQUIRED = FOUNDATION | SOLID | PIPE | WIRES,
     }
 

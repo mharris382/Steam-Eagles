@@ -1,0 +1,198 @@
+﻿// DEALING WITH THE BOUNDARY CONDITIONS TO CONTAIN THE SIMULATION
+
+//____________________________________________________________________________________
+// KERNELS
+#pragma kernel NeuMannBoundary
+#pragma kernel debugBoundaryAlgo
+#pragma kernel UpdateArbitaryBoundaryOffset
+#pragma kernel ArbitaryBoundaryVelocity
+#pragma kernel ArbitaryBoundaryPressure
+#pragma kernel ArbitaryBoundaryDye
+
+//____________________________________________________________________________________
+// DECLERNATIONS
+#include "FluidDynamicCommonUniforms.cginc"
+
+//____________________________________________________________________________________
+// HELPER FUNCTIONS
+#include "FluidDynamicUtility.cginc"
+
+//____________________________________________________________________________________
+// MAIN FUNCTIONS
+
+// NEUMANN DECLERNATIONS
+
+RWStructuredBuffer<float4> _neumaboundary_field_to_contain;   // The field we read and write to. 
+float                      _neumaboundary_scale;              // The scale on: velocity field = -1, Presure Field = 1, Denisty = 0, ... 
+                                                              // For veloicty you want to have opposite for partials to be zero. 
+                                                              // Pressure needs to be the same, otherwise you get acceleration, and denisty is a choice thing
+
+//----------------------------------------------------------------------------
+// Function         : NeuMannBoundary
+// Description      : The boundaries need to ensure that partiaul(u)/partial(n) is zero, where
+//                    n is the normal of the boundary. Baisicly set the velocity on borders to
+//                    the negative of the cell right next to it in the direction of the normal
+//                    This is dispatched once on the edges of the vector field.
+//                    so each thread maps to one of the edge cells. So i_Resolution * 4 threads 
+//                    in total. It is a one dimensional dispatch
+//----------------------------------------------------------------------------
+
+
+[numthreads(256,1,1)]
+void NeuMannBoundary(uint3 id : SV_DispatchThreadID)
+{
+
+    int  case_id = id.x / i_Resolution;               // Deteriming which corner we are in. 0 = left_corner, 1 = right_corner , 2 = top_corner, 3 = bottom_corner
+    int  rest    = id.x - case_id * i_Resolution;     // In the dispatch, this is used to map the threads in each case to a cell on a border
+
+    int2 coord   = uint2(0, 0);
+    int2 offset  = uint2(0, 0);
+
+    if (case_id == 0) { coord = int2(0,                rest            );   offset = int2( 1,  0); }
+    if (case_id == 1) { coord = int2(i_Resolution - 1, rest            );   offset = int2(-1,  0); }
+    if (case_id == 2) { coord = int2(rest,             i_Resolution - 1);   offset = int2( 0, -1); }
+    if (case_id == 3) { coord = int2(rest,             0               );   offset = int2( 0,  1); }
+
+    _neumaboundary_field_to_contain[id2Dto1D(coord)] = _neumaboundary_scale * _neumaboundary_field_to_contain[id2Dto1D(coord + offset)];    // Since the threads are only writing on the border cells, there is no racing condition here
+
+}
+
+// _____________________________________
+
+// DEBUG DECLERNATIONS
+
+RWTexture2D<float4> _boundary_debug_texture;
+
+//----------------------------------------------------------------------------
+// Function         : debugBoundaryAlgo
+// Description      : This program debugs the algorithm used for determining the borders
+//----------------------------------------------------------------------------
+
+
+[numthreads(256, 1, 1)]
+void debugBoundaryAlgo(uint3 id : SV_DispatchThreadID) 
+{
+    int  case_id = id.x / i_Resolution;               // 0 = left_corner, 1 = right_corner , 2 = top_corner, 3 = bottom_corner
+    int  rest    = id.x - case_id * i_Resolution;     // In the dispatch, this is used to map the threads in each case to a cell on a border
+
+    int2 coord   = int2(0, 0);
+    int2 offset  = int2(0, 0);
+
+    float4 borderColor;
+
+    if (case_id == 0) { coord = int2(0,                rest            );   offset = int2( 1,  0);  borderColor = float4(1.,0.,0.,1.);}
+    if (case_id == 1) { coord = int2(i_Resolution - 1, rest            );   offset = int2(-1,  0);  borderColor = float4(0.,1.,0.,1.);}
+    if (case_id == 2) { coord = int2(rest,             i_Resolution - 1);   offset = int2( 0, -1);  borderColor = float4(0.,0.,1.,1.);}
+    if (case_id == 3) { coord = int2(rest,             0               );   offset = int2( 0,  1);  borderColor = float4(0.,1.,1.,1.);}
+
+    _boundary_debug_texture[coord] = borderColor;
+
+}
+
+// _____________________________________
+
+// ARIBTARY BOUNDARY HANDELING
+// Arbitary boundary resources
+RWStructuredBuffer<int4>    _perCellArbitaryBoundryOffsets        ;          // This buffer contains the offset (normal) of the arbitrary bounderies. It has the same dimension as the simulation grid NxN
+StructuredBuffer<int4>      _arbitaryBoundaryCardinalDirectionsLUT;          // This buffer contains the normal for all the permutations of arbitary boundary on per cell basis (example, if east is block, the normal points to west etc)
+Texture2D<float4>           _arbitary_boundaries_texture          ;          // The texture is a mask that holds the information regarding where the arbitarary boundaries are
+SamplerState                sampler_arbitary_boundaries_texture   ;          // Needs to be named like this in Unity. Or use one of the basic sampler
+float                       _arbitary_boundaries_texel_size       ;          // How large is a single texel in the boundary texture. Used for offseting by one pixel
+
+//----------------------------------------------------------------------------
+// Function         : UpdateArbitaryBoundaryOffset
+// Description      : This runs once everytime the arbitary boundaries change
+//                    It looks in the four cardinal direction, and based on 
+//                    which of the neighbouring pixels are occuluded, it determines
+//                    the boundaries surface normal. All permutations of the neighbours occulision
+//                    is saved in a look up table, so the surface normals are precalculated
+//                    
+//                    
+//----------------------------------------------------------------------------
+
+// STENCIL MAP
+// The binary map is following. East is the first bit, North the second, West the third, South the fourth and Center the 5. So . For more info, look at the arbitaryBoundaryLUT Generator
+//        |00010|
+//   _____|_____|_____
+//   00100|10000|00001
+//   _____|_____|_____
+//        |01000|
+//        |     |
+
+
+[numthreads(16, 16, 1)]                                                      // This will run once per grid cell
+void UpdateArbitaryBoundaryOffset(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = float2((float)id.x / (float)(i_Resolution - 1), (float)id.y / (float)(i_Resolution - 1));
+
+    // Check for each cardinal direction + center wether they are occuluded by arbitrary boundary
+    int east   = (int)step(0.1, _arbitary_boundaries_texture.SampleLevel(sampler_arbitary_boundaries_texture, uv + float2( 1.,  0.) * _arbitary_boundaries_texel_size, 0.0));
+    int north  = (int)step(0.1, _arbitary_boundaries_texture.SampleLevel(sampler_arbitary_boundaries_texture, uv + float2( 0.,  1.) * _arbitary_boundaries_texel_size, 0.0));
+    int west   = (int)step(0.1, _arbitary_boundaries_texture.SampleLevel(sampler_arbitary_boundaries_texture, uv + float2(-1.,  0.) * _arbitary_boundaries_texel_size, 0.0));
+    int south  = (int)step(0.1, _arbitary_boundaries_texture.SampleLevel(sampler_arbitary_boundaries_texture, uv + float2( 0., -1.) * _arbitary_boundaries_texel_size, 0.0));
+    int center = (int)step(0.1, _arbitary_boundaries_texture.SampleLevel(sampler_arbitary_boundaries_texture, uv                                                 , 0.0));
+
+    //                           CENTER              SOUTH              WEST              NORTH             EAST
+    //  index is in binary        10000    or        01000    or       00100    or        00010    or       00001
+    int lookUpIndex = (center * 0x0010) | (south * 0x0008) | (west * 0x0004) | (north * 0x0002) | (east * 0x0001);        // Based on the encoding here, you get a unique index for each of the occulusion permutation. The LUT is pre written for all these different scenarios to give you the correct offset (normal)
+
+    _perCellArbitaryBoundryOffsets[id2Dto1D(id.xy)] = _arbitaryBoundaryCardinalDirectionsLUT[lookUpIndex];
+
+
+}
+
+// _____________________________________
+
+//----------------------------------------------------------------------------
+// Function         : ArbitaryBoundaryVelocity
+// Description      : Just like the boundary handling for the corners, here we do  
+//                    similar stuff, (setting velocity to the negative of the neighbouring 
+//                    cell in the direction of the surface normal, or pressure equal, dye zero
+//                    etc). The main difference is that a texture is used to determine arbitary
+//                    boudnaries and based on what neighbours are occuluded, surface normal is determined
+//                    The offest are precalculated in a grid
+//                    
+//----------------------------------------------------------------------------
+
+
+
+StructuredBuffer<int4>     _perCellArbitaryBoundryOffsetsVellocity ;              // This is the per cell map baked by the UpdateArbitaryBoundaryOffset for the velocity field
+StructuredBuffer<float4>   _velocity_buffer                        ;              // The buffer we read from
+RWStructuredBuffer<float4> _new_handleded_velocity                 ;              // a Temp buffer we write too. We need this since unlike the corner boundaries we cant garntee a no racing condition situation
+
+[numthreads(16, 16, 1)]                                                           // This will run once per grid cell 
+void ArbitaryBoundaryVelocity(uint3 id : SV_DispatchThreadID)
+{
+    int4 scaleOffset = _perCellArbitaryBoundryOffsetsVellocity[id2Dto1D(id.xy)];  // The values here are as follows XY hold the offset in the x and y direction (example would be to get the east neighbour (1, 0), and ZW determine how the value of the neighbour relates with the new value for the central field (example, to set the velocity negative of the east neighbour (1, 0, -1, 0)
+
+    float4 boundaryVelocity = float4(0., 0., 0., 0.);
+
+    boundaryVelocity.x = scaleOffset.z * _velocity_buffer[id2Dto1D(id.xy + int2(scaleOffset.x, 0))].x;
+    boundaryVelocity.y = scaleOffset.w * _velocity_buffer[id2Dto1D(id.xy + int2(0, scaleOffset.y))].y;
+
+    _new_handleded_velocity[id2Dto1D(id.xy)] = boundaryVelocity;
+}
+// -------------------------
+StructuredBuffer<int4>     _perCellArbitaryBoundryOffsetsPressure;                // Look at the explaination for velocity, is the same
+StructuredBuffer<float4>   _pressure_buffer                      ;
+RWStructuredBuffer<float4> _new_handleded_pressure               ;
+[numthreads(16, 16, 1)]                                                           // This will run once per grid cell
+void ArbitaryBoundaryPressure(uint3 id : SV_DispatchThreadID)
+{
+    int4 offsets = _perCellArbitaryBoundryOffsetsPressure[id2Dto1D(id.xy)];       // In order for the field to be divergance free, the centeral section needs to equal to the average of its surrounding, so here the offset contains TWO different offsets coordinates XY is one ZW is the either, the centeral area is set to be equal to the average of both
+
+    float4 newPressure = (_pressure_buffer[id2Dto1D(id.xy + offsets.xy)] + _pressure_buffer[id2Dto1D(id.xy + offsets.zw)]) * 0.5;
+    _new_handleded_pressure[id2Dto1D(id.xy)] = newPressure;
+} 
+
+// -------------------------
+StructuredBuffer<int4>     _perCellArbitaryBoundryOffsetsDye;
+StructuredBuffer<float4>   _dye_buffer;
+RWStructuredBuffer<float4> _new_handleded_dye;
+
+[numthreads(16, 16, 1)]                                                           // This will run once per grid cell
+void ArbitaryBoundaryDye(uint3 id : SV_DispatchThreadID)
+{
+    int4 scaleOffset = _perCellArbitaryBoundryOffsetsDye[id2Dto1D(id.xy)];        // XY is the offset and Z sets it to either zero for boundary cells or 1 for everything else
+    _new_handleded_dye[id2Dto1D(id.xy)] = _dye_buffer[id2Dto1D(id.xy)] * scaleOffset.z;
+}

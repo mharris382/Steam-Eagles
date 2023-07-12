@@ -21,24 +21,27 @@ namespace CoreLib
         private ReactiveProperty<int> _count;
         private Subject<T> _onValueAdded;
         private Subject<T> _onValueRemoved;
-        private readonly CompositeDisposable _cd;
+        protected readonly CompositeDisposable cd;
 
+        public int ListCount => _values.Count;
 
         private ReactiveProperty<int> Count => _count??=new ReactiveProperty<int>(_values.Count);
         public IObservable<T> OnValueAdded => _onValueAdded;
         public IObservable<T> OnValueRemoved => _onValueRemoved;
         public IReadOnlyReactiveProperty<int> ValueCount => Count;
-        public CompositeDisposable Disposable => _cd;
+        public CompositeDisposable Disposable => cd;
+
+        
 
         public Registry()
         {
-            _cd = new CompositeDisposable();
+            cd = new CompositeDisposable();
             _onValueAdded = new Subject<T>();
             _onValueRemoved = new Subject<T>();
             _count = new ReactiveProperty<int>();
-            _count.AddTo(_cd);
-            _onValueAdded.AddTo(_cd);
-            _onValueRemoved.AddTo(_cd);
+            _count.AddTo(cd);
+            _onValueAdded.AddTo(cd);
+            _onValueRemoved.AddTo(cd);
         }
         public T this[int index]
         {
@@ -90,7 +93,7 @@ namespace CoreLib
 
         public void Dispose()
         {
-            _cd?.Dispose();
+            cd?.Dispose();
         }
     }
     

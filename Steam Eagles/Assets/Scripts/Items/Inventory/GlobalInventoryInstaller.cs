@@ -85,14 +85,7 @@ namespace Items
 
         public void Dispose()
         {
-            foreach (var kvp in _controllerPrefabs)
-            {
-                if (kvp.Value != null)
-                {
-                    Object.Destroy(kvp.Value);
-                }
-            }
-            _controllerPrefabs.Clear();
+            
         }
     }
 }

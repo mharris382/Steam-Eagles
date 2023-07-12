@@ -6,13 +6,53 @@ using UnityEngine;
 
 namespace Buildings.Rooms.MyEditor
 {
+    public class GridHelper
+    {
+        private readonly Grid _grid;
+        public Grid Grid => _grid;
+
+        public GridHelper(Rooms rooms)
+        {
+            _grid = rooms.GetComponent<Grid>();
+            var allGrids = rooms.GetComponentsInChildren<Grid>();
+            Vector3 largestCellSize = Vector3.negativeInfinity;
+            foreach (var grid in allGrids)
+            {
+                if (grid.cellSize.x > largestCellSize.x)
+                {
+                    largestCellSize = grid.cellSize;
+                    _grid = grid;
+                }
+            }
+        }
+        
+        
+        public Vector3 SnappedPoint(Vector3 original)
+        {
+            var cell = _grid.WorldToCell(original);
+            return _grid.CellToWorld(cell);
+        }
+    }
     public partial class RoomsEditor
     {
         public class NewRoomDrawer 
         {
+            private readonly global::Buildings.Rooms.Rooms _rooms;
+            private readonly Grid _grid;
             public NewRoomDrawer(global::Buildings.Rooms.Rooms rooms)
             {
                 _rooms = rooms;
+                _grid = rooms.GetComponent<Grid>();
+                var allGrids = rooms.GetComponentsInChildren<Grid>();
+                Vector3 largestCellSize = Vector3.negativeInfinity;
+                foreach (var grid in allGrids)
+                {
+                    if (grid.cellSize.x > largestCellSize.x)
+                    {
+                        largestCellSize = grid.cellSize;
+                        _grid = grid;
+                    }
+                }
             }
             
             public bool IsFinished {
@@ -41,37 +81,27 @@ namespace Buildings.Rooms.MyEditor
                 }
             }
 
-            private void BeforeSceneGUI(SceneView obj)
-            {
-                var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
-                position.z = 0;
-                if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
-                {
-                    DoConfirmButton(position);
-                    Event.current.Use();
-                }
-                else if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
-                {
-                    DoCancelButton();
-                    Event.current.Use();
-                }
-                else
-                {
-                    DoPreviewAction(position);
-                }
-            }
-
+       
             public bool IsDrawingSecondPoint { get; private set; }
             
             public Vector3 FirstPoint { get; private set; }
             public Vector3 SecondPoint { get; private set; }
             
             public Vector3 SelectedPoint { get; private set; }
+
+            public Vector3Int FirstCell => _grid.WorldToCell(FirstPoint);
+            public Vector3Int SecondCell => _grid.WorldToCell(SecondPoint);
             
-            
+            public Vector3 SnappedFirstPoint => _grid.CellToWorld(FirstCell);
+            public Vector3 SnappedSecondPoint => _grid.CellToWorld(SecondCell);
 
             public Vector3 FirstPointLocal => _rooms.Building.transform.InverseTransformPoint(FirstPoint);
 
+            Vector3 SnappedPoint(Vector3 original)
+            {
+                var cell = _grid.WorldToCell(original);
+                return _grid.CellToWorld(cell);
+            }
             public Rect GetWorldSpaceRect()
             {
                 if (!IsFinished)
@@ -79,10 +109,10 @@ namespace Buildings.Rooms.MyEditor
                     throw new Exception();
                 }
 
-                var minX = Mathf.Min(FirstPoint.x, SecondPoint.x);
-                var minY = Mathf.Min(FirstPoint.y, SecondPoint.y);
-                var maxX = Mathf.Max(FirstPoint.x, SecondPoint.x);
-                var maxY = Mathf.Max(FirstPoint.y, SecondPoint.y);
+                var minX = Mathf.Min(SnappedFirstPoint.x, SnappedSecondPoint.x);
+                var minY = Mathf.Min(SnappedFirstPoint.y, SnappedSecondPoint.y);
+                var maxX = Mathf.Max(SnappedFirstPoint.x, SnappedSecondPoint.x);
+                var maxY = Mathf.Max(SnappedFirstPoint.y, SnappedSecondPoint.y);
                 return Rect.MinMaxRect(minX, minY, maxX, maxY);
                 var center = (FirstPoint + SecondPoint) / 2f;
                 var size = SecondPoint - FirstPoint;
@@ -120,15 +150,35 @@ namespace Buildings.Rooms.MyEditor
                 var bounds = new Bounds((firstPoint + secondPoint)/2f, (firstPoint - secondPoint));
                 return bounds;
             }
-            private readonly global::Buildings.Rooms.Rooms _rooms;
+     
             public bool IsValid => _rooms.HasBuilding;
+            
+            private void BeforeSceneGUI(SceneView obj)
+            {
+                var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
+                position.z = 0;
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
+                {
+                    DoConfirmButton(position);
+                    Event.current.Use();
+                }
+                else if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
+                {
+                    DoCancelButton();
+                    Event.current.Use();
+                }
+                else
+                {
+                    DoPreviewAction(position);
+                }
+            }
 
 
             public void OnSceneGUI()
             {
                 var position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
                 position.z = 0;
-                DoPreviewAction(position);
+                DoPreviewAction(SnappedPoint(position));
             }
 
 
@@ -136,12 +186,12 @@ namespace Buildings.Rooms.MyEditor
             {
                 void DrawSelectedPoint(Vector3 validPoint)
                 {
-                    Handles.DrawWireDisc(validPoint, Vector3.forward, 0.5f);
+                    Handles.DrawWireDisc(SnappedPoint(validPoint), Vector3.forward, 0.5f);
                 }
                 void DrawSelectedArea(Vector3 validPoint)
                 {
-                    Handles.DrawWireDisc(FirstPoint, Vector3.forward, 0.5f);
-                    Handles.DrawWireDisc(validPoint, Vector3.forward, 0.5f);
+                    Handles.DrawWireDisc(SnappedFirstPoint, Vector3.forward, 0.5f);
+                    Handles.DrawWireDisc(SnappedPoint(validPoint), Vector3.forward, 0.5f);
                     Vector3[] verts = new Vector3[4]
                     {
                         new Vector3(FirstPoint.x, FirstPoint.y, 0),
@@ -149,6 +199,10 @@ namespace Buildings.Rooms.MyEditor
                         new Vector3(position.x, position.y, 0),
                         new Vector3(position.x, FirstPoint.y, 0),
                     };
+                    for (int i = 0; i < verts.Length; i++)
+                    {
+                        verts[i] = SnappedPoint(verts[i]);
+                    }
                     Handles.DrawSolidRectangleWithOutline(verts, new Color(1, 0, 0, 0.2f), Color.red.Lighten(0.5f));
                 }
 
@@ -157,11 +211,11 @@ namespace Buildings.Rooms.MyEditor
                     var validPoint = position;
                     if (IsDrawingSecondPoint)
                     {
-                        DrawSelectedArea(validPoint);
+                        DrawSelectedArea(SnappedPoint(validPoint));
                     }
                     else
                     {
-                        DrawSelectedPoint(validPoint);
+                        DrawSelectedPoint(SnappedPoint(validPoint));
                     }
                 }
             }

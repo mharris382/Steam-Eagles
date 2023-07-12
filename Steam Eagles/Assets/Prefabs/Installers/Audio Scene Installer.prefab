@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8865736728098763358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4798413019535617338}
+  - component: {fileID: 9008414647352343677}
+  - component: {fileID: -6743996972577306943}
+  m_Layer: 0
+  m_Name: Audio Scene Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4798413019535617338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865736728098763358}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -520.0015, y: 450.06863, z: -0.6419369}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9008414647352343677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865736728098763358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f15fba616c9ca446a0ea2f00a925aca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footstepEvent:
+    Guid:
+      Data1: -798141793
+      Data2: 1216466225
+      Data3: 445973643
+      Data4: -625494026
+    Path: event:/Footstep
+  musicEvent:
+    Guid:
+      Data1: -109854389
+      Data2: 1332028780
+      Data3: -293565771
+      Data4: -456943848
+    Path: event:/Music
+  ambianceEvent:
+    Guid:
+      Data1: -185131621
+      Data2: 1203108457
+      Data3: -646408318
+      Data4: 97508901
+    Path: event:/Ambience/Engineering
+  blockEvents:
+    itemPickupEvent:
+      Guid:
+        Data1: 930572299
+        Data2: 1256451320
+        Data3: -81419347
+        Data4: 1136899135
+      Path: event:/Item Pickup
+    blockPlaceEvent:
+      Guid:
+        Data1: 0
+        Data2: 0
+        Data3: 0
+        Data4: 0
+      Path: 
+    blockBreakEvent:
+      Guid:
+        Data1: -848980247
+        Data2: 1206441053
+        Data3: -375839817
+        Data4: -1508996906
+      Path: event:/Tile Deconstruction
+  surfaceParameter: {fileID: 11400000, guid: bde7a511cffb51e49b720dc74cba4f52, type: 2}
+--- !u!114 &-6743996972577306943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8865736728098763358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d19bbb3691645c5a4d11d707d1e14e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

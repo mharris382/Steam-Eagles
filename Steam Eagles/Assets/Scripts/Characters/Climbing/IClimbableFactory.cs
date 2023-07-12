@@ -93,8 +93,6 @@ namespace Characters
                             climbable = new BoxColliderClimbable(box);
                             return true;
                         }
-                        else
-                            Debug.LogError("Marked as climbable but no box collider found", c);
                     }
                 }
             }

@@ -26,6 +26,12 @@ namespace UI.PlayerGUIs
         PILOTING,
         DEFAULT
     }
+    public enum UIInputMode
+    {
+        NONE,
+        KEYBOARD_MOUSE,
+        CONTROLLER
+    }
     public class PlayerCharacterGUIController : MonoBehaviour
     {
         [OnValueChanged(nameof(OnPlayerIDChanged)), Range(0, 1), SerializeField] private int playerID;
@@ -37,24 +43,28 @@ namespace UI.PlayerGUIs
         [Obsolete] private IDisposable _entityListener;
         [Obsolete] private ReactiveProperty<bool> _isGuiActive = new ReactiveProperty<bool>(false);
         [Obsolete] private ReactiveProperty<Entity> __pcEntity = new ReactiveProperty<Entity>();
-        [Obsolete] private ReactiveProperty<PlayerInput> __playerInput = new ReactiveProperty<PlayerInput>();
+        
         [Obsolete]
         private Coroutine _initialization;
         private PCRegistry _pcRegistry;
 
+        
         private ReadOnlyReactiveProperty<GameObject> _characterGameObject;
         private ReadOnlyReactiveProperty<PlayerInput> _pInput;
         private ReadOnlyReactiveProperty<Camera> _playerCamera;
-
+        private ReadOnlyReactiveProperty<UIInputMode> _uiInputMode;
         private PCGUIState _guiState;
 
+        
+        public int PlayerNumber => playerID;
 
         #region [Debugging Properties]
 
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")] public PlayerInput playerInput => _pInput?.Value;
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")] public Camera PlayerCamera => _playerCamera?.Value;
         [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")]public GameObject PlayerCharacter => _characterGameObject?.Value;
-
+        [ShowInInspector, ReadOnly,HideInEditorMode,BoxGroup("Debugging")] public UIInputMode InputMode => _uiInputMode?.Value ?? UIInputMode.NONE;
+        
         #endregion
 
         public IReadOnlyReactiveProperty<PlayerInput> PlayerInputProperty => _pInput;
@@ -63,6 +73,7 @@ namespace UI.PlayerGUIs
         
         public IReadOnlyReactiveProperty<GameObject> PlayerCharacterProperty => _characterGameObject;
 
+        public IReadOnlyReactiveProperty<UIInputMode> InputModeProperty => _uiInputMode;
 
         public PCGUIState GUIState
         {
@@ -98,8 +109,16 @@ namespace UI.PlayerGUIs
             var onCameraRemoved = onRemoved.Select(_ => _playerCamera.Value);
             var onCharacterRemoved = onRemoved.Select(_ => (GameObject)null);
 
+            _uiInputMode =  onInputAdded
+                .Do(input => Debug.Assert(input != null, "Input null", this))
+                .Where(t => t != null)
+                .Select(input => input.currentControlScheme.Contains("Keyboard") ? UIInputMode.KEYBOARD_MOUSE : UIInputMode.CONTROLLER)
+                .Merge( onInputRemoved.Select(_ => UIInputMode.NONE)).ToReadOnlyReactiveProperty();
+           
+            
             _characterGameObject =onCharacterAdded.Merge(onCharacterRemoved).ToReadOnlyReactiveProperty();
             _pInput = onInputAdded.Merge(onInputRemoved).ToReadOnlyReactiveProperty();
+            
             _playerCamera = onCameraAdded.Merge(onCameraRemoved).ToReadOnlyReactiveProperty();
         }
 

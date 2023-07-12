@@ -88,6 +88,18 @@ using Sirenix.OdinInspector;
                 roomBounds = value;
             }
         }
+        
+        public RectInt RoomRect
+        {
+            get
+            {
+                var min = RoomBounds.min;
+                var max = RoomBounds.max;
+                var minInt = new Vector2Int(Mathf.FloorToInt(min.x), Mathf.FloorToInt(min.y));
+                var maxInt = new Vector2Int(Mathf.CeilToInt(max.x), Mathf.CeilToInt(max.y));
+                return new RectInt(minInt, maxInt - minInt);
+            }
+        }
 
         public Bounds Bounds
         {
@@ -110,17 +122,37 @@ using Sirenix.OdinInspector;
         {
             get
             {
-                var lsBounds = Bounds;
-                var wsMin = BuildingTransform.TransformPoint(lsBounds.min);
-                var wsMax = BuildingTransform.TransformPoint(lsBounds.max);
+                var solidBounds = Building.Map.GetCellsForRoom(this, BuildingLayers.SOLID);
+                var solidMin = solidBounds.min;
+                var solidMax = solidBounds.max;
+                var wsMin = Building.Map.CellToWorld(solidMin, BuildingLayers.SOLID);
+                var wsMax = Building.Map.CellToWorld(solidMax, BuildingLayers.SOLID);
+                var extent = wsMax - wsMin;
+                var center = wsMax - (extent / 2f);
                 wsMin.z = -0.5f;
                 wsMax.z = 0.5f;
-                var wsBounds = new Bounds(wsMin, Vector3.zero);
-                Bounds.SetMinMax(wsMin, wsMax);
+                var wsBounds = new Bounds(center, extent);
                 return wsBounds;
             }
         }
-
+        public Bounds LocalSpaceBounds
+        {
+            get
+            {
+                var solidBounds = Building.Map.GetCellsForRoom(this, BuildingLayers.SOLID);
+                var solidMin = solidBounds.min;
+                var solidMax = solidBounds.max;
+                var wsMin = Building.Map.CellToLocal(solidMin, BuildingLayers.SOLID);
+                var wsMax = Building.Map.CellToLocal(solidMax, BuildingLayers.SOLID);
+                var extent = wsMax - wsMin;
+                var center = wsMax - (extent / 2f);
+                wsMin.z = -0.5f;
+                wsMax.z = 0.5f;
+                var wsBounds = new Bounds(center, extent);
+                return wsBounds;
+            }
+        }
+        public Vector2 Size => WorldSpaceBounds.size;
         private Rooms _rooms;
 
 
@@ -236,6 +268,10 @@ using Sirenix.OdinInspector;
             return new BoundsInt(cellMin, size);
         }
 
+        public BoundsInt GetBounds(BuildingLayers layers)
+        {
+            return Building.Map.GetCellsForRoom(this, layers);
+        }
         public RectInt GetCellRect(Tilemap target)
         {
             var center = Bounds.center;
@@ -296,6 +332,25 @@ using Sirenix.OdinInspector;
         public void NotifyPlayerCharacterExitedRoom(PCInstance pcInstance)
         {
             
+        }
+
+        /// <summary>
+        /// convience method to get all cells in a room for a specific layer
+        /// <seealso cref="BuildingMap"/>
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
+        public IEnumerable<BuildingCell> GetBuildingCells(BuildingLayers layer)
+        {
+            var area = _building.Map.GetCellsForRoom(this, layer);
+            for (int x = area.xMin; x < area.xMax; x++)
+            {
+                for (int y = area.yMin; x < area.yMax; y++)
+                {
+                    var cell = new Vector3Int(x, y, 0);
+                    yield return new BuildingCell(cell, layer);
+                }
+            }
         }
     }
 

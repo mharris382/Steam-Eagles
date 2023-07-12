@@ -1,0 +1,179 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel SimIO
+#pragma kernel SimDiffuse
+#pragma kernel SampleSimPoints
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float> Result;
+
+float sinkMultiplier;
+int sinkTexSize;
+Texture2D<float4> sinks;
+
+float sourceMultiplier;
+int sourceTexSize;
+Texture2D<float4> sources;
+
+
+uint2 GetSinkCord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sinkTexSize, texCoord.y / sinkTexSize);
+}
+uint2 GetSourceCord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sourceTexSize, texCoord.y / sourceTexSize);
+}
+
+[numthreads(8,8,1)]
+void SimIO (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    uint2 texCoord = uint2(id.x, id.y);
+    uint2 sinkCoord = GetSinkCord(texCoord);
+    uint2 sourceCoord = GetSourceCord(texCoord);
+    float sink = sinks[sinkCoord].x * sinkMultiplier;
+    float source = sources[sourceCoord].x * sourceMultiplier;
+    float delta = source - sink;
+    Result[texCoord] = clamp(Result[texCoord] + delta, 0, 1);
+    
+}
+Texture2D<float> boundaryTexture;
+RWTexture2D<float> gas;
+uint2 boundaryTextureScale = uint2(1, 1);
+float laplacianCenter = -4.0f;
+float laplacianNeighbor = 1.0f;
+float laplacianDiagnal = 0.5f;
+[numthreads(8,8,1)]
+void SimDiffuse (uint3 id : SV_DispatchThreadID)
+{
+    int2 texCoord = int2(id.x, id.y);
+    int2 boundaryTexCoord = texCoord / boundaryTextureScale;
+// Sample the boundary texture
+float boundaryValue = boundaryTexture[boundaryTexCoord];
+
+// Modify the Laplacian matrix based on the boundary value
+if (boundaryValue > 0.5f)
+    {
+    laplacianCenter = -2.0f;
+    laplacianNeighbor = 0.5f;
+    laplacianDiagnal = 0.25f;
+}
+
+    // Perform multiple iterations of the diffusion process
+float gasValue = gas[texCoord];
+float updatedGasValue = gasValue;
+
+float leftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 0)];
+float rightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 0)];
+float upBoundary = boundaryTexture[boundaryTexCoord - int2(0, 1)];
+float downBoundary = boundaryTexture[boundaryTexCoord + int2(0, 1)];
+float topLeftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 1)];
+float topRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, -1)];
+float bottomLeftBoundary = boundaryTexture[boundaryTexCoord + int2(-1, 1)];
+float bottomRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 1)];
+// Perform multiple iterations of the diffusion process
+const int numIterations = 5;
+for (int i = 0; i < numIterations; i++)
+    {
+    // Calculate the diffusion using the modified Laplacian matrix
+    float left = gas[texCoord - int2(1, 0)];
+    
+
+    float right = gas[texCoord + int2(1, 0)];
+    
+
+    float up = gas[texCoord - int2(0, 1)];
+
+    float down = gas[texCoord + int2(0, 1)];
+
+    float topLeft = gas[texCoord - int2(1, 1)];
+
+    float topRight = gas[texCoord + int2(1, -1)];
+
+    float bottomLeft = gas[texCoord + int2(-1, 1)];
+
+    float bottomRight = gas[texCoord + int2(1, 1)];
+
+    float delta = (left + right + up + down + topLeft + topRight + bottomLeft + bottomRight) / 8 - gasValue;
+
+    float3x3 laplacian = float3x3(laplacianDiagnal, laplacianNeighbor, laplacianDiagnal,
+                                   laplacianNeighbor, laplacianCenter, laplacianNeighbor,
+                                   laplacianDiagnal, laplacianNeighbor, laplacianDiagnal);
+    float3x3 gradient = float3x3(left, up, right, topLeft, gasValue, topRight, bottomLeft, bottomRight, down);
+    float3x3 result = gradient + laplacian * delta;
+
+    // Update the gas value for the current iteration
+    updatedGasValue = (boundaryValue > 0.5f) ? 0.0f : result[1][1];
+
+    // Synchronize to ensure correct data access between iterations
+    gasValue = updatedGasValue;
+
+
+    // Update the gas texture with the updated value for the current iteration
+    if(boundaryValue < 0.5f) gas[texCoord] = updatedGasValue;
+    if(upBoundary < 0.5f) gas[texCoord - int2(0, 1)] = result[1][0];
+    if(downBoundary < 0.5f) gas[texCoord + int2(0, 1)] = result[1][2];
+    if(leftBoundary < 0.5f) gas[texCoord - int2(1, 0)] = result[0][1];
+    // if(rightBoundary < 0.5f)
+    //     gas[texCoord + int2(1, 0)] = result[2][1];
+    // if(topLeftBoundary < 0.5f)
+    //     gas[texCoord - int2(1, 1)] = result[0][0];
+    // if(topRightBoundary < 0.5f)
+    //     gas[texCoord + int2(1, -1)] = result[2][0];
+    // if(bottomLeftBoundary < 0.5f)
+    //     gas[texCoord + int2(-1, 1)] = result[0][2];
+    // if(bottomRightBoundary < 0.5f)
+    //     gas[texCoord + int2(1, 1)] = result[2][2];
+    //as[texCoord + int2(1, 0)] = result[2][1];
+    //as[texCoord - int2(1, 0)] = result[0][1];
+    //as[texCoord + int2(0, 1)] = result[1][2];
+    //as[texCoord - int2(0, 1)] = result[1][0];
+    // gas[texCoord + int2(1, 1)] = result[2][2];
+    // gas[texCoord - int2(1, 1)] = result[0][0];
+    // gas[texCoord + int2(1, -1)] = result[2][0];
+    // gas[texCoord - int2(1, -1)] = result[0][2];
+}
+    //requirement: conservation of pressure, any pressure lost here must be gained elsewhere
+    
+}
+
+struct SamplePoint
+{
+    uint2 texelCoord;
+    float value;
+    float3x3 gradient;
+};
+
+
+RWStructuredBuffer<SamplePoint> samplePoints;
+Texture2D<float4> sampleTarget;
+
+[numthreads(8,1,1)]
+void SampleSimPoints(uint3 id : SV_DispatchThreadID)
+{
+    SamplePoint sample_point = samplePoints[id.x];
+    uint2 texelCoord = sample_point.texelCoord;
+    uint2 upCoord = texelCoord + uint2(0, 1);
+    uint2 downCoord = texelCoord - uint2(0, 1);
+    uint2 leftCoord = texelCoord - uint2(1, 0);
+    uint2 rightCoord = texelCoord + uint2(1, 0);
+    
+    float up = sampleTarget[upCoord].x;
+    float down = sampleTarget[downCoord].x;
+    float left = sampleTarget[leftCoord].x;
+    float right = sampleTarget[rightCoord].x;
+    float center = sampleTarget[texelCoord].x;
+    float upLeft = sampleTarget[upCoord - uint2(1, 0)].x;
+    float upRight = sampleTarget[upCoord + uint2(1, 0)].x;
+    float downLeft = sampleTarget[downCoord - uint2(1, 0)].x;
+    float downRight = sampleTarget[downCoord + uint2(1, 0)].x;
+  
+    float sum = up + down + left + right + center + upLeft + upRight + downLeft + downRight;
+    float average = sum / 9.0;
+
+    float3x3 gradient = float3x3(left, up, right, upLeft, center, upRight, downLeft, down, downRight);
+    sample_point.gradient = gradient;
+    
+    sample_point.value = average;
+    samplePoints[id.x] = sample_point;
+}

@@ -101,6 +101,7 @@ namespace Characters.MyInput
                                               inputPlayer.actions["Codex"].WasPressedThisFrame() ||
                                               inputPlayer.actions["Characters"].WasPressedThisFrame();
             _toolState.Inputs.SamplePressed = inputPlayer.actions["Tool Sample"].WasPressedThisFrame();
+            _toolState.Inputs.ToggleToolMode = inputPlayer.actions["Select Tool Mode"].WasPressedThisFrame();
             if (_toolState.Inputs.UsePressed) LogInput("UsePressed");
             if (_toolState.Inputs.CancelPressed) LogInput("CancelPressed");
 

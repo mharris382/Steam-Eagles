@@ -149,8 +149,8 @@ namespace UI
                 if (success && entitySaveSuccess)
                 {
                     Debug.Log("Save successful!");
-                    SceneManager.LoadScene("Main Menu");
                 }
+                SceneManager.LoadScene("Main Menu");
             });
         }
     }

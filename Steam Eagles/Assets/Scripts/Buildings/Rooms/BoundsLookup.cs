@@ -21,5 +21,8 @@ namespace Buildings.Rooms
             }
             return boundsInt;
         }
+
+        public Bounds GetWsBounds() => _room.WorldSpaceBounds;
+        public Bounds GetLsBounds() => _room.LocalSpaceBounds;
     }
 }

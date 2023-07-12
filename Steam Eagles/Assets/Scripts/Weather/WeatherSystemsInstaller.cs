@@ -9,14 +9,18 @@ using Zenject;
 public class WeatherSystemsInstaller : MonoInstaller
 {
     public WeatherConfig config;
-    public GlobalStormConfig stormConfig;
+    
+    public bool installDebug;
     public TestStorm testStorm;
+    
     public override void InstallBindings()
     {
         Container.BindInterfacesAndSelfTo<WeatherRunner>().AsSingle().NonLazy();
         Container.Bind<WeatherConfig>().FromInstance(config).AsSingle().NonLazy();
-        Container.Bind<TestStorm>().FromInstance(testStorm).AsSingle().NonLazy();
         
+        if (installDebug) Container.Bind<TestStorm>().FromInstance(testStorm).AsSingle().NonLazy();
+
+
         StormSystemsInstaller.Install(Container);
         Container.BindInterfacesTo<SlowTickUpdater>().AsSingle().NonLazy();
     }
