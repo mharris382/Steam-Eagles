@@ -92,6 +92,19 @@ public class RoomCamera : MonoBehaviour
     {
         
     }
+
+
+    public void CaptureRoom(RenderTexture target, LayerMask layers)
+    {
+        camera.targetTexture = target;
+        camera.cullingMask = layers;
+        var bounds = room.WorldSpaceBounds;
+        var size = bounds.size;
+        var orthoSize = Mathf.Min(size.x, size.y) * 0.5f;
+        camera.orthographicSize = orthoSize;
+        camera.transform.position = bounds.center + (Vector3.back * zOffset);
+        camera.Render();
+    }
 }
 
 

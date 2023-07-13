@@ -46,6 +46,7 @@ public abstract class FMODOneShotEventListener<T> : FMODOneShotEventBase, IIniti
 
     public void Dispose()
     {
+        _lastEvent.Dispose();
         _disposable?.Dispose();
     }
 }

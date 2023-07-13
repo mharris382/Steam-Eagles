@@ -77,23 +77,13 @@ for (int i = 0; i < numIterations; i++)
     {
     // Calculate the diffusion using the modified Laplacian matrix
     float left = gas[texCoord - int2(1, 0)];
-    
-
     float right = gas[texCoord + int2(1, 0)];
-    
-
     float up = gas[texCoord - int2(0, 1)];
-
     float down = gas[texCoord + int2(0, 1)];
-
     float topLeft = gas[texCoord - int2(1, 1)];
-
     float topRight = gas[texCoord + int2(1, -1)];
-
     float bottomLeft = gas[texCoord + int2(-1, 1)];
-
     float bottomRight = gas[texCoord + int2(1, 1)];
-
     float delta = (left + right + up + down + topLeft + topRight + bottomLeft + bottomRight) / 8 - gasValue;
 
     float3x3 laplacian = float3x3(laplacianDiagnal, laplacianNeighbor, laplacianDiagnal,

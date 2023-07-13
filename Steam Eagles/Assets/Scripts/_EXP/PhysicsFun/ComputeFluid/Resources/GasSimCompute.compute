@@ -1,0 +1,203 @@
+﻿#pragma kernel UpdateVelocity
+#pragma kernel UpdateGasState
+#pragma kernel MergeSourceSink
+#pragma kernel VelocityFromHoles
+#pragma kernel InvertWalls
+
+
+//-----------------------------------------------------------------------------------------------
+//Velocity
+
+RWTexture2D<float4> velocityState;
+Texture2D<float4> gasStateTexture;
+Texture2D<float4> sourceSinkTexture;
+Texture2D<float4> boundaryTexture;
+
+uint ioSize;
+uint boundarySize;
+float deltaTime;
+uint2 gasTextureSize;
+
+uint2 GasCoordToBoundaryCoord(uint2 texCoord)
+{
+    return uint2(texCoord.x / boundarySize, texCoord.y / boundarySize);
+}
+uint2 GasCoordToSourceSinkCoord(uint2 texCoord)
+{
+    return uint2(texCoord.x / ioSize, texCoord.y / ioSize);
+}
+
+
+bool ShouldIgnoreNeighbor(uint2 neighborCoord)
+{
+    if(neighborCoord.x < 0 || neighborCoord.y < 0 || neighborCoord.x >= gasTextureSize.x || neighborCoord.y >= gasTextureSize.y)
+        return false;
+    uint2 boundaryCoord = GasCoordToBoundaryCoord(neighborCoord);
+    if(boundaryTexture[boundaryCoord].x )
+    {
+        return true;
+    }
+    return false;
+}
+
+[numthreads(16,16,1)]
+void UpdateVelocity(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = uint2(id.x, id.y);
+    uint2 boundaryCoord = GasCoordToBoundaryCoord(texCoord);
+    if(boundaryTexture[boundaryCoord].x)
+    {
+        velocityState[texCoord] = float4(0,0,0,0);
+        return;
+    }
+
+    float2 velocity = velocityState[texCoord].xy;
+    float2 force = float2(0,0);
+    for (int dx = -1; dx <= 1; dx++)
+    {
+        for (int dy = -1; dy <= 1; dy++)
+        {
+            uint2 neighborCoord = texCoord + uint2(dx, dy);
+            // if(ShouldIgnoreNeighbor(neighborCoord))
+            //     continue;
+            float pressureDiff = gasStateTexture[neighborCoord].x - gasStateTexture[texCoord].x;
+            float2 dir =normalize(float2(neighborCoord.x, neighborCoord.y) - float2(texCoord.x, texCoord.y));
+            float2 neighborVelocity = velocityState[neighborCoord].xy;
+            force += dir * pressureDiff;
+        }
+    }
+    velocity += force ;
+    velocityState[texCoord] = float4(velocity, velocityState[texCoord].z, velocityState[texCoord].w);
+}
+
+//-----------------------------------------------------------------------------------------------
+// Gas State
+
+RWTexture2D<float4> gasState;
+Texture2D velocityStateTexture;
+
+[numthreads(16,16,1)]
+void UpdateGasState(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = int2(id.x, id.y);
+    uint2 boundaryCoord = GasCoordToBoundaryCoord(texCoord);
+    if(boundaryTexture[boundaryCoord].x)
+    {
+        gasState[texCoord] = float4(0,0,0,0);
+        return;
+    }
+    float gasStateValue = gasState[texCoord];
+    uint2 ioCoord = GasCoordToSourceSinkCoord(texCoord);
+    float ioValue = sourceSinkTexture[ioCoord];
+    gasStateValue += ioValue * deltaTime;
+
+    float diffusion = 0.0;
+    for (int dx = -1; dx <= 1; dx++)
+    {
+        for (int dy = -1; dy <= 1; dy++)
+        {
+            uint2 neighborCoord = texCoord + uint2(dx, dy);
+            if(ShouldIgnoreNeighbor(neighborCoord))
+            {
+                continue;
+            }
+            float neighborGasStateValue = gasState[neighborCoord].x;
+            float2 neighborVelocityState = velocityStateTexture[neighborCoord].xy;
+
+            diffusion += (neighborGasStateValue - gasStateValue) * dot(neighborVelocityState, normalize(float2(dx, dy))) /
+                (length(float2(dx,dy)) * 1);
+        }
+    }
+    gasStateValue += diffusion * deltaTime;
+    gasStateValue = max(0, gasStateValue);
+    gasState[texCoord] = float4(gasStateValue, gasStateValue, gasStateValue, gasStateValue);
+        //, gasState[texCoord].y, gasState[texCoord].z, gasState[texCoord].w);
+}
+
+//-----------------------------------------------------------------------------------------------
+//MERGE SOURCE SINK
+
+RWTexture2D<float4> ioTexture;
+Texture2D<float4> sourceTexture;
+Texture2D<float4> sinkTexture;
+
+uint sourceTexSize;
+uint sinkTexSize;
+
+uint2 IOTextureCoordToSourceCoord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sourceTexSize, texCoord.y / sourceTexSize);
+}
+uint2 IOTextureCoordToSinkCoord(uint2 texCoord)
+{
+    return uint2(texCoord.x / sinkTexSize, texCoord.y / sinkTexSize);
+}
+
+[numthreads(16,16,1)]
+void MergeSourceSink(uint3 id : SV_DispatchThreadID)
+{
+     uint2 texCoord = uint2(id.x, id.y);
+     uint2 sinkCoord = IOTextureCoordToSinkCoord(texCoord);
+     uint2 sourceCoord = IOTextureCoordToSourceCoord(texCoord);
+     float sourceValue = sourceTexture[sinkCoord].x;
+     float sinkValue = sinkTexture[sourceCoord].x;
+     ioTexture[texCoord]= float4(sourceValue - sinkValue, 0, 0, 0);
+}
+
+uint holeTexSize;
+Texture2D<float4> holesTexture;
+
+uint2 VelocityToHoleCoord(uint2 texCoord)
+{
+    return uint2(texCoord.x / holeTexSize, texCoord.y / holeTexSize);
+}
+
+[numthreads(16,16,1)]
+void VelocityFromHoles(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = uint2(id.x, id.y);
+    uint2 holeCoord = VelocityToHoleCoord(texCoord);
+
+    float holeValue = 1- sign(holesTexture[holeCoord].x);
+    if(holeValue)
+    {
+        velocityState[texCoord] = float4(0,0,0,0);
+        return;
+    }
+    float2 velocity = velocityState[texCoord].xy;
+    //velocity = float2(1,id.x % 2);
+     for (int dx = -1; dx <= 1; dx++)
+     {
+         for (int dy = -1; dy <= 1; dy++)
+         {
+             uint2 offset =uint2(dx, dy);
+             uint2 neighborCoord = texCoord + offset;
+             uint2 neighborHoleCoord = VelocityToHoleCoord(neighborCoord);
+             uint2 coordDiff = neighborHoleCoord - holeCoord;
+             float2 dir = float2(sign(dx), sign(dy));
+              if(coordDiff.x + coordDiff.y)
+              {
+                  float neighborHole = holesTexture[neighborHoleCoord].x;
+                  if(1-neighborHole)
+                  {
+                      float2 holeDirection  = float2(neighborHoleCoord.x - holeCoord.x, neighborHoleCoord.y - holeCoord.y);
+                      float2 direction = normalize(holeDirection);
+                      velocity = direction;
+                      velocityState[texCoord] = float4(direction, velocityState[texCoord].z, clamp(0, 1, velocity.x + velocity.y));
+                      return;
+                  }
+              }
+         }
+     }
+    velocityState[texCoord] = float4(velocity, velocityState[texCoord].z, clamp(0, 1, velocity.x + velocity.y));
+}
+
+RWTexture2D<float4> wallsTexture;
+[numthreads(16,16,1)]
+void InvertWalls(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = id.xy;
+    float wall = wallsTexture[texCoord].x;
+    if(wall) wallsTexture[texCoord] = float4(0, 0, 0,0);
+    else wallsTexture[texCoord] = float4(1, 1, 1,1);
+}

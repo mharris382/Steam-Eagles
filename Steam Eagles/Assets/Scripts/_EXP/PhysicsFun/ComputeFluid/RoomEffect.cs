@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _EXP.PhysicsFun.ComputeFluid.Computes;
 using Buildings.Rooms;
+using CoreLib.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -42,11 +44,16 @@ public class RoomEffect : MonoBehaviour
     const string USE_BOUNDARY_TEX_NAME = "use boundary";
     public ISimIOTextures IOTexture => _ioTexture!=null ? _ioTexture : _ioTexture = GetComponentInParent<ISimIOTextures>();
     
+    public RoomCamera RoomCamera => _roomCamera ? _roomCamera : _roomCamera = GetComponentInParent<RoomCamera>();
     public VisualEffect VisualEffect => _visualEffect ? _visualEffect : _visualEffect = GetComponentInChildren<VisualEffect>();
     public RoomTextures Room => _room ? _room : _room = GetComponentInParent<RoomTextures>();
     public GasTexture GasTexture => _gasTexture ? _gasTexture : _gasTexture = GetComponentInParent<GasTexture>();
 
     public RoomSimTextures SimTextures => _simTextures ? _simTextures : _simTextures = GetComponentInParent<RoomSimTextures>();
+   
+    private RenderTexture _mergedIoTexture;
+    
+    
     private void Awake()
     {
         _visualEffect = effect ? effect : GetComponentInChildren<VisualEffect>();
@@ -176,6 +183,8 @@ public class RoomEffect : MonoBehaviour
         Debug.Assert(srcTextureSize == gasTexture.height / sourceTexture.height, $"Expected {srcTextureSize} but got {gasTexture.height/sourceTexture.height}",this);
         SimCompute.AssignIO(gasTexture, sinkTexture, sourceTexture, srcTextureSize, sinkTextureSize, sourceMultiplier, sinkMultiplier);
         SimCompute.DispatchIO(gasTexture);
+        SimCompute.AssignIO(GasTexture.Velocity, sinkTexture, sourceTexture, srcTextureSize, sinkTextureSize, sourceMultiplier, sinkMultiplier);
+        SimCompute.DispatchIO(gasTexture);
     }
 
     [Button,ButtonGroup()]
@@ -247,6 +256,102 @@ public class RoomEffect : MonoBehaviour
         }
     }
 
+
+    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
+    public float testDeltaTime = 0.1f;
+
+    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    private void MergeIOTextures()
+    {
+        MergeIOTextures(this.SimTextures.SimInputTexture, SimTextures.SimOutputTexture);
+    }
+
+    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    private void TestUpdateVelocityFromHoles()
+    {
+        if(!CanCompute())return;
+        var velTex = GasTexture.Velocity;
+        CaptureWallsFromCamera();
+        var holeTex = _wallCaptured;
+        GasSimCompute.UpdateVelocityFromHoles(velTex, holeTex);
+    }
+    private void MergeIOTextures(RenderTexture source, RenderTexture sink)
+    {
+        
+        if (_mergedIoTexture == null ||
+            !_mergedIoTexture.SizeMatches(source))
+        {
+            if(_mergedIoTexture != null)_mergedIoTexture.Release();
+            _mergedIoTexture = new RenderTexture(source.width, source.height, 0);
+            _mergedIoTexture.enableRandomWrite = true;
+            _mergedIoTexture.Create();
+        }
+        GasSimCompute.MergeSourceSinks(source, sink, _mergedIoTexture);
+    }
+
+
+    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    private void TestUpdateVelocity() => UpdateVelocity(testDeltaTime);
+
+    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    private void TestUpdateGas() => UpdateGasState(testDeltaTime);
+    
+    
+    
+    private void UpdateVelocity(float dt)
+    {
+        if(!CanCompute())return;
+        var gasTexture = GasTexture.RenderTexture;
+        var velTexture = GasTexture.Velocity;
+        var boundaryTexture = SimTextures.SolidTexture;
+        GasSimCompute.UpdateVelocity(gasTexture, velTexture, boundaryTexture, _mergedIoTexture, dt);
+    }
+
+
+    bool CanCompute()
+    {
+        if (!GasTexture.HasTexture)
+            return false;
+        if(_mergedIoTexture == null)MergeIOTextures();
+        return true;
+    }
+    
+ 
+    private void UpdateGasState(float dt)
+    {
+        if(!CanCompute())return;
+        var gasTexture = GasTexture.RenderTexture;
+        var velTexture = GasTexture.Velocity;
+        var boundaryTexture = SimTextures.SolidTexture;
+        GasSimCompute.UpdateGasState(gasTexture, velTexture, boundaryTexture, _mergedIoTexture, dt);
+    }
+
+
+    bool EnableButtons()
+    {
+        return GasTexture.HasTexture && SimTextures.SolidTexture != null;
+    }
+
+
+    [ShowInInspector, PreviewField]
+    private RenderTexture _wallCaptured;
+    public LayerMask wallLayer;
+    [Button]
+    void CaptureWallsFromCamera()
+    {
+        if (_wallCaptured == null)
+        {
+            _wallCaptured = new RenderTexture(GasTexture.Velocity.width, GasTexture.Velocity.height, 1);
+            _wallCaptured.enableRandomWrite = true;
+            _wallCaptured.Create();
+        }
+        RoomCamera.CaptureRoom(_wallCaptured, wallLayer);
+        GasSimCompute.InvertWalls(_wallCaptured);
+    }
     // IEnumerator UpdateTilemap()
     // {
     //     while (enabled)
