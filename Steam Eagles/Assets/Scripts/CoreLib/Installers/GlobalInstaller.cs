@@ -100,6 +100,10 @@ public class GlobalInstaller : MonoInstaller
     
     [Required, AssetsOnly] public GameObject pauseMenuPrefab;
     [Required, AssetsOnly] public GameObject playerGUIPrefab;
+    
+    [ToggleGroup(nameof(enableDayNightCycle))]public bool enableDayNightCycle = true;
+    [ToggleGroup(nameof(enableDayNightCycle))][Required, AssetsOnly] public GameObject dayNightCycle;
+    
     public SharedTransform p1Character;
     public SharedTransform p2Character;
     public SlowTickConfig slowTickConfig;
@@ -128,10 +132,10 @@ public class GlobalInstaller : MonoInstaller
         Container.Bind<GameState>().AsSingle();
         Container.Bind<SpawnPoints>().AsSingle().NonLazy();
         TimeInstaller.Install(Container);
-
-  
-         ParameterMapInstaller.Install(Container);
-         Container.Bind<StatsTypeLookup>().AsSingle().NonLazy();
+        ParameterMapInstaller.Install(Container);
+        Container.Bind<StatsTypeLookup>().AsSingle().NonLazy();
+         Container.Bind<DayNightListeners>().AsSingle().NonLazy();
+         if (enableDayNightCycle) Container.Bind<DayNightCycle>().FromComponentInNewPrefab(dayNightCycle).AsSingle().NonLazy();
     }
     
 
