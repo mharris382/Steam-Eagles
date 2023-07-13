@@ -152,6 +152,9 @@ namespace SaveLoad
         // string filePath = Path.Combine(PersistenceManager.Instance.SaveDirectoryPath, "SpawnPoints.json");
          if (!File.Exists(filePath))
          {
+             var spawnPnts = GameObject.FindObjectsOfType<CoreLib.SpawnPoint>();
+             if(spawnPnts.Length > 0)
+                 return spawnPnts[0].transform.position;
              return GetDefaultSpawnPointForCharacter(characterName);
          }
         

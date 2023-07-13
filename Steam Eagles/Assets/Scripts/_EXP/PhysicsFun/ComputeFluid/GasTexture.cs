@@ -54,8 +54,23 @@ public class GasTexture : MonoBehaviour
     public bool HasTexture => _pressureTexture != null && _velocityTexture != null && _dyeTexture != null;
     
     public RenderTexture RenderTexture => _pressureTexture ? _pressureTexture : _pressureTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
-    public RenderTexture Velocity => _velocityTexture ? _velocityTexture : _velocityTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
-    public RenderTexture Dye => _dyeTexture ? _dyeTexture : _dyeTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
+    public RenderTexture Velocity
+    {
+        get
+        {
+            if(_velocityTexture == null) CreateTexture(sizeRaw.x, sizeRaw.y);
+            return _velocityTexture;
+        }
+    }
+
+    public RenderTexture Dye
+    {
+        get
+        {
+            if(_dyeTexture == null) CreateTexture(sizeRaw.x, sizeRaw.y);
+            return _dyeTexture;// ? _dyeTexture : _dyeTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
+        }
+    }
 
     [Button()]
     public void ResetTexture()
