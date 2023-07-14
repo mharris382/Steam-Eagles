@@ -45,6 +45,7 @@ namespace SteamEagles.Characters
         public float balloonJumpMultiplier => config.balloonJumpMultiplier;
         public float sprintMultiplier => config.sprintMultiplier;
 
+        public Action resetJumpTimer { get; set; }
 
         public float GetBalloonJumpMultiplier()
         {
@@ -215,10 +216,22 @@ namespace SteamEagles.Characters
             set;
         }
 
+        float? timeLastClimbing = 0f;
+        public bool WasClimbingRecently => timeLastClimbing  != null && Time.time - timeLastClimbing < 0.5f;
         public bool IsClimbing
         {
             get => _isClimbing.Value;
-            set => _isClimbing.Value = value;
+            set
+            {
+                if(_isClimbing.Value != value)
+                {
+                    _isClimbing.Value = value;
+                    if (!value)
+                    {
+                        timeLastClimbing = Time.time;
+                    }
+                }
+            }
         }
 
         #region [RxStreams]

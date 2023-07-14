@@ -228,6 +228,7 @@ namespace Characters
             }
             
             _state = GetComponent<CharacterState>();
+            _state.resetJumpTimer = ResetJumpTimer;
             _input = GetComponent<CharacterInputState>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _capsuleCollider = GetComponent<CapsuleCollider2D>();
@@ -239,6 +240,10 @@ namespace Characters
 
         #endregion
 
+        void ResetJumpTimer()
+        {
+            _jumpTimeCounter = State.jumpTime;
+        }
         public void ApplyMovement(float dt)
         {
             if (State.IsDropping)
@@ -467,7 +472,7 @@ namespace Characters
 
         public bool AbleToJump()
         {
-            if (IsGrounded || _inWater || _wasOnBalloon || State.IsClimbing)
+            if (IsGrounded || _inWater || _wasOnBalloon || State.WasClimbingRecently)
             {
                 return true;
             }

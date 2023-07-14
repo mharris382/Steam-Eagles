@@ -169,7 +169,15 @@ namespace Characters
             physicsFSM.AddTransition(DROPPING, DEFAULT);
             
             physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => CheckClimbStopCondition() && !State.IsJumping);
-            physicsFSM.AddTransition(CLIMBING, JUMPING, _ => CheckClimbStopCondition() && State.IsJumping);
+            physicsFSM.AddTransition(CLIMBING, JUMPING, _ =>
+            {
+                bool result = CheckClimbStopCondition() && State.IsJumping;
+                if (result && State.resetJumpTimer != null)
+                {
+                    State.resetJumpTimer();
+                }
+                return result;
+            });
             physicsFSM.AddTransitionFromAny(CLIMBING, _ => CheckClimbStartCondition());
 
             physicsFSM.SetStartState(DEFAULT);
