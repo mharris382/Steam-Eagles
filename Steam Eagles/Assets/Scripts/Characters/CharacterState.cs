@@ -29,8 +29,39 @@ namespace SteamEagles.Characters
         public ToolState Tool => _tool ??= (_tool = GetComponent<ToolState>());
 
         public bool UsingTool => Tool.currentToolState != ToolStates.None;
-    
+
         #region Public variables
+
+        public RaycastHit2D _balloonHit
+        {
+            get;
+            set;
+        }
+
+    public float moveSpeed => config.moveSpeed;
+        public float jumpForce => config.jumpForce;
+        public float jumpTime => config.jumpTime;
+        
+        public float balloonJumpMultiplier => config.balloonJumpMultiplier;
+        public float sprintMultiplier => config.sprintMultiplier;
+
+
+        public float GetBalloonJumpMultiplier()
+        {
+            return balloonJumpMultiplier;
+        }
+
+        public float GetMoveSpeed()
+        {
+            float speed = config.moveSpeed;
+            
+            if (IsSprinting)
+            {
+                speed *= sprintMultiplier;
+            }
+
+            return speed;
+        }
 
         [ShowInInspector]
         public Camera AssignedPlayerCamera { get; set; }
@@ -38,7 +69,8 @@ namespace SteamEagles.Characters
    
         public bool SprintHeld {get; set; }
 
-        public bool IsSprinting => SprintHeld;
+        public bool IsSprinting => SprintHeld && canSprint;
+        public bool canSprint = true;
         public Vector2 MoveInput
         {
             get => _moveInput;

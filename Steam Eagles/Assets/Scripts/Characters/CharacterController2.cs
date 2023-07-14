@@ -71,8 +71,12 @@ namespace Characters
         private Collider2D[] _droppingColliders = new Collider2D[10];
         private RaycastHit2D[] _oneWayHits = new RaycastHit2D[10];
         private RaycastHit2D[] _triggerHits = new RaycastHit2D[10];
-        
 
+        private RaycastHit2D _balloonHit
+        {
+            get => State._balloonHit;
+            set => State._balloonHit = value;
+        }
 
         public bool IsBalloonJumping => _isBalloonJumping;
 
@@ -199,7 +203,7 @@ namespace Characters
         public float xInput => (NormalizeXInput ? (Mathf.Abs(State.MoveX) > 0.1f ? Mathf.Sign(State.MoveX) : 0) : State.MoveX);
         public float yInput => State.MoveY;
         public LayerMask whatIsGround => Config.GetGroundLayers();
-        public float MoveSpeed => State.SprintHeld ? Config.moveSpeed * Config.sprintMultiplier : Config.moveSpeed;
+        public float MoveSpeed => State.GetMoveSpeed();
         public float JumpForce => Config.jumpForce;
 
         public Vector2 colliderSize => _capsuleCollider.size;
@@ -295,9 +299,9 @@ namespace Characters
                 if (_jumpTimeCounter > 0)
                 {
                     float jumpForce = Config.jumpForce;
-                    if(_isBalloonJumping)jumpForce *= Config.balloonJumpMultiplier;
+                    if(_isBalloonJumping)jumpForce *= State.GetBalloonJumpMultiplier();
                     
-                    float t = _jumpTimeCounter / Config.jumpTime;
+                    float t = _jumpTimeCounter / State.jumpTime;
                     
                     var x = rb.velocity.x;
                     rb.velocity = new Vector2(x, jumpForce);
@@ -323,8 +327,9 @@ namespace Characters
             var onGround = groundHit ? groundHit.collider : null; // Physics2D.OverlapCircle(pos, radius, groundLayers);
             var onBalloon = balloonHit ? balloonHit.collider : null;//Physics2D.OverlapCircle(pos, radius, balloonLayers);
             this.OnBalloon = onBalloon != null;
+            if (OnBalloon && Config.alwaysJumpOnBalloons) State.IsJumping = true;
             BalloonCollider = onBalloon;
-
+            _balloonHit = balloonHit;
 
             var oneWayHit = Physics2D.Raycast(pos, Vector2.down, radius, oneWayLayer);
             _onOneWay = oneWayHit ? oneWayHit.collider : null;
@@ -372,7 +377,7 @@ namespace Characters
                 {
                     _isJumping = true;
                     _canJumpBecauseGrounded = false;
-                    _jumpTimeCounter = Config.jumpTime;
+                    _jumpTimeCounter = State.jumpTime;
                 }
             }
             else if (!State.JumpHeld)
@@ -478,7 +483,7 @@ namespace Characters
             }
             _isJumping = true;
             State.IsJumping = true;
-            _jumpTimeCounter = Config.jumpTime;
+            _jumpTimeCounter = State.jumpTime;
         }
         public void EndJump()
         {

@@ -103,7 +103,7 @@ namespace Buildings.Graph
             FindEdges(nonEmptyTiles, timer);
         }
 
-
+        [System.Obsolete]
         public int GetStronglyConnectedComponents(out IDictionary<Vector3Int, int> stronglyConnected)
         {
             scComponents = new Dictionary<Vector3Int, int>();

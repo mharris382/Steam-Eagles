@@ -86,7 +86,7 @@ namespace Tools.RecipeTool
             previewSprite.transform.position = position;
             _machinePrefab.CopyOntoPreviewSprite(previewSprite);
             // ReSharper disable once AssignmentInConditionalExpression
-            previewSprite.color = (positionValid = _machinePrefab.IsPlacementValid(building, cell))
+            previewSprite.color = (positionValid = true)
                 ? _config.validColor
                 : _config.invalidColor;
         }
@@ -113,13 +113,13 @@ namespace Tools.RecipeTool
                 cellsToCheck.Add(current);
             }
 
-            foreach (var pos in cellsToCheck)
-            {
-                if (previewMachine.IsPlacementValid(building, pos))
-                {
-                    allValidCells.Add(pos);
-                }
-            }
+            // foreach (var pos in cellsToCheck)
+            // {
+            //     if (previewMachine.IsPlacementValid(building, pos))
+            //     {
+            //         allValidCells.Add(pos);
+            //     }
+            // }
             
             if(allValidCells.Count== 0)
             {

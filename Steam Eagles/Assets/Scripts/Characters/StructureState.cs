@@ -60,7 +60,7 @@ namespace Characters
         public FixedJoint2D BuildingJoint => _buildingJoint;
         
         private CharacterState State => _state ??= GetComponent<CharacterState>();
-        public float MoveSpeed => State.SprintHeld ? State.config.moveSpeed * State.config.sprintMultiplier : State.config.moveSpeed;
+        public float MoveSpeed => State.GetMoveSpeed();
         [ShowInInspector]
         public Rigidbody2D BuildingRigidbody
         {

@@ -2442,7 +2442,7 @@
              </code>
              </example>
              <example>
-             <para>Styling a cell.</para>
+             <para>Styling a root.</para>
              <para>Each <see cref="T:Sirenix.Utilities.Editor.GUITableCell"/> has two events, OnGUI and OnGUIStyle. OnGUIStyle is called right before OnGUI, but only in repaint events.</para>
              <code>
              guiTable[x,y].GUIStyle += bounds => EditorGUI.DrawRect(bounds, Color.red);
@@ -2450,7 +2450,7 @@
              </example>
              <example>
              <para>Row and column span.</para>
-             <para>A cell will span and cover all neighbour cells that are null.</para>
+             <para>A root will span and cover all neighbour cells that are null.</para>
              <code>
              // Span horizontally:
              guiTable[x - 2,y] = null;
@@ -2505,7 +2505,7 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITable.MarkDirty">
             <summary>
-            Recaluclates cell and column sizes in the next frame.
+            Recaluclates root and column sizes in the next frame.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITable.ReCalculateSizes">
@@ -2537,7 +2537,7 @@
         </member>
         <member name="T:Sirenix.Utilities.Editor.GUITableCell">
             <summary>
-            A cell of a <see cref="T:Sirenix.Utilities.Editor.GUITable"/>
+            A root of a <see cref="T:Sirenix.Utilities.Editor.GUITable"/>
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableCell.MinWidth">
@@ -2547,25 +2547,25 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableCell.Width">
             <summary>
-            <para>The width of the cell. Default is width is 0.</para>
-            <para>The width the column is determained by the widest cell in the column.</para>
+            <para>The width of the root. Default is width is 0.</para>
+            <para>The width the column is determained by the widest root in the column.</para>
             <para>Width = 0 = auto.</para>
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableCell.Height">
             <summary>
-            <para>The height of the cell. Default is height is 22.</para>
-            <para>The height the column is determained by the tallest cell in the row.</para>
+            <para>The height of the root. Default is height is 22.</para>
+            <para>The height the column is determained by the tallest root in the row.</para>
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableCell.SpanY">
             <summary>
-            If true, the cell will expand vertically, covering all neighbour null cells.
+            If true, the root will expand vertically, covering all neighbour null cells.
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableCell.SpanX">
             <summary>
-            If true, the cell will expand horizontally, covering all neighbour null cells.
+            If true, the root will expand horizontally, covering all neighbour null cells.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableCell.X">
@@ -2597,7 +2597,7 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableColumn.OnGUI">
             <summary>
-            Draws a cell at the given row index for this column.
+            Draws a root at the given row index for this column.
             </summary>
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableColumn.ColumnTitle">
@@ -2624,7 +2624,7 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableColumn.SpanColumnTitle">
             <summary>
-            If true, the column title cell, will span horizontally to neighbour columns, which column titles are null.
+            If true, the column title root, will span horizontally to neighbour columns, which column titles are null.
             Default is false.
             </summary>
         </member>
@@ -2650,7 +2650,7 @@
         </member>
         <member name="F:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.CellStyle">
             <summary>
-            The cell style
+            The root style
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.ContentRect">
@@ -2690,12 +2690,12 @@
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.BeginCell(System.Int32)">
             <summary>
-            Begins the cell.
+            Begins the root.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.EndCell(System.Int32)">
             <summary>
-            Ends the cell.
+            Ends the root.
             </summary>
         </member>
         <member name="M:Sirenix.Utilities.Editor.GUITableRowLayoutGroup.EndColumn">

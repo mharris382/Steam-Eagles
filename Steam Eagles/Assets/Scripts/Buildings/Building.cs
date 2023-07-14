@@ -485,16 +485,19 @@ namespace Buildings
         public Vector3Int cell;
         public BuildingLayers layers;
         public Vector2Int cell2D => (Vector2Int)cell;
+
         public BuildingCell(Vector3Int cell, BuildingLayers layers)
         {
             this.cell = cell;
             this.layers = layers;
         }
+
         public BuildingCell(Vector2Int cell, BuildingLayers layers)
         {
             this.cell = (Vector3Int)cell;
             this.layers = layers;
         }
+
         public IEnumerable<BuildingCell> GetNeighbors()
         {
             yield return this + Vector2Int.up;
@@ -503,10 +506,14 @@ namespace Buildings
             yield return this + Vector2Int.down;
         }
 
+        public void ClearZ()
+        {
+            this.cell.z = 0;
+        }
 
-        public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
+    public bool Equals(BuildingCell other) => layers == other.layers && cell.Equals(other.cell);
         public override bool Equals(object obj) => obj is BuildingCell other && Equals(other);
-        public override int GetHashCode() => HashCode.Combine(cell, (int)layers);
+        public override int GetHashCode() => HashCode.Combine(cell2D, (int)layers);
         
         public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
         public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);

@@ -1,0 +1,100 @@
+﻿#pragma kernel UpdateVelocity
+#pragma kernel MoveWater
+#pragma kernel SampleWater
+#pragma kernel WaterIOFromBuffer
+
+
+uint2 waterTextureSize;
+
+float deltaTime;
+
+Texture2D<float4> boundaryTexture;
+Texture2D<float4> drainTexture;
+int boundaryTexSize = 1;
+int drainTexSize = 1;
+
+RWTexture2D<float4> waterState;
+Texture2D<float4> velocityTexture;
+
+uint2 WaterCoordToBoundaryCoord(uint2 texCoord)
+{
+    return texCoord/ boundaryTexSize;
+}
+uint2 WaterCoordToDrainCoord(uint2 texCoord)
+{
+    return texCoord/ drainTexSize;
+}
+bool IsOutOfBounds(uint2 texCoord)
+{
+    return texCoord.x >= waterTextureSize.x || texCoord.y >= waterTextureSize.y || texCoord.x < 0 || texCoord.y < 0;
+}
+
+
+
+RWTexture2D<float4> velocityState;
+Texture2D<float4> waterTexture;
+
+[numthreads(16, 16, 1)]
+void UpdateVelocity(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = id.xy;
+    float water = waterState[texCoord].y;
+    if(!water)return;
+    uint2 boundaryCoord = WaterCoordToBoundaryCoord(texCoord);
+    uint2 drainCoord = WaterCoordToDrainCoord(texCoord);
+    float drainValue = drainTexture[drainCoord].x;
+    if(drainValue)
+    {
+        
+    }
+    
+    uint2 downNeighbor = texCoord + uint2(0, 1);
+    //float downWater = wat
+
+    uint2 downLeftNeighbor = texCoord + uint2(-1, 1);
+    uint2 downRightNeighbor = texCoord + uint2(1, 1);
+
+    uint2 leftNeighbor = texCoord + uint2(-1, 0);
+    uint2 rightNeighbor = texCoord + uint2(1, 0);
+}
+
+
+
+
+
+[numthreads(16, 16, 1)]
+void SampleWater(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = id.xy;
+    float water = waterState[texCoord].y;
+    if(!water)return;
+    uint2 boundaryCoord = WaterCoordToBoundaryCoord(texCoord);
+    uint2 drainCoord = WaterCoordToDrainCoord(texCoord);
+    float drainValue = drainTexture[drainCoord].x;
+    if(drainValue)
+    {
+        
+    }
+    
+    uint2 downNeighbor = texCoord + uint2(0, 1);
+    //float downWater = wat
+
+    uint2 downLeftNeighbor = texCoord + uint2(-1, 1);
+    uint2 downRightNeighbor = texCoord + uint2(1, 1);
+
+    uint2 leftNeighbor = texCoord + uint2(-1, 0);
+    uint2 rightNeighbor = texCoord + uint2(1, 0);
+}
+
+struct WaterIOData
+{
+    uint2 coord;
+    float waterDelta;
+    float2 velocityDelta;
+};
+
+[numthreads(8, 1, 1)]
+void WaterIOFromBuffer(uint3 id : SV_DispatchThreadID)
+{
+    
+}

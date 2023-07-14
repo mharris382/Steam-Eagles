@@ -64,15 +64,9 @@ namespace Buildables
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
         
         
-        public void InjectSteamNetwork(HypergasEngineController.Factory hypergasEngineControllerFactory, HypergasEngineConfig config)
+       [Inject] public void InjectSteamNetwork(HypergasEngineConfig config)
         {
-           _controller = hypergasEngineControllerFactory.Create(this);
            _config = config;
-           if (!string.IsNullOrEmpty(_json))
-           {
-               _controller.LoadFromJson(_json);
-               _json = null;
-           }
         }
 
         private void Start()

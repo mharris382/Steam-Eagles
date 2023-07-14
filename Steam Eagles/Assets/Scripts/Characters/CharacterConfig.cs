@@ -24,6 +24,7 @@ namespace DefaultNamespace
         public float balloonJumpCoyoteTime = 0.2f;
         public float balloonJumpMultiplier = 2;
         public float balloonImpactForce = 20;
+        public bool alwaysJumpOnBalloons = false;
         [SerializeField] private bool overrideGroundMask = false;
         
         [SerializeField] private LayerMask groundMask = 1;

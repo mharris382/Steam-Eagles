@@ -4835,7 +4835,7 @@
         </member>
         <member name="F:Sirenix.OdinInspector.TableListAttribute.CellPadding">
             <summary>
-            The cell padding.
+            The root padding.
             </summary>
         </member>
         <member name="P:Sirenix.OdinInspector.TableListAttribute.ShowPaging">
@@ -4929,7 +4929,7 @@
         </member>
         <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.DrawElementMethod">
             <summary>
-            Override how Odin draws each cell.                  <para />
+            Override how Odin draws each root.                  <para />
             [TableMatrix(DrawElementMethod='DrawMyElement')]    <para />
             public MyType[,] myArray;                           <para />
             private static MyType DrawElement(Rect bounds, MyType value) { return GUI.DrawMyType(bounds, value); }
@@ -4942,7 +4942,7 @@
         </member>
         <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.SquareCells">
             <summary>
-            If true, the height of each row will be the same as the width of the first cell.
+            If true, the height of each row will be the same as the width of the first root.
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.HideColumnIndices">

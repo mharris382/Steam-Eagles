@@ -71,13 +71,16 @@ namespace Buildings
     {
         bool SetTile(BuildingCell buildingCell, TileBase tile);
     }
-    
+
+
+   
 
     public class BuildingMap : IBuildingRoomLookup, IBGrid, IDisposable
     {
         public class Factory : PlaceholderFactory<Building, BuildingMap> { }
         
         private readonly Building _building;
+        private BuildingPowerGrid _powerGrid = new();
         private class CellToRoomLookup
         {
             private readonly GridLayout _grid;
@@ -199,6 +202,8 @@ namespace Buildings
         }
 
         public BuildingGraphs BuildingGraphs { get; }
+
+        public BuildingPowerGrid PowerGrid => _powerGrid;
 
         public BuildingMap(Building building)
         {
