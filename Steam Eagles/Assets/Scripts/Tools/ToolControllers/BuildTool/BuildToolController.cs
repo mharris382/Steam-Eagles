@@ -74,16 +74,16 @@ namespace Tools.BuildTool
 
         public override bool IsPlacementInvalid(ref string errorMessage)
         {
-            if (this.Building.IsCellOverlappingMachine(AimHandler.HoveredPosition.Value))
-            {
-                errorMessage = "Cannot build on top of a machine";
-                return true;
-            }
-            if (!_isValid)
-            {
-                errorMessage = _errorMessage;
-                return true;
-            }
+            // if (this.Building.IsCellOverlappingMachine(AimHandler.HoveredPosition.Value))
+            // {
+            //     errorMessage = "Cannot build on top of a machine";
+            //     return true;
+            // }
+            // if (!_isValid)
+            // {
+            //     errorMessage = _errorMessage;
+            //     return true;
+            // }
             return false;
         }
 

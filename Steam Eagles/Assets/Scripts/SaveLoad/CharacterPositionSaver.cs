@@ -8,37 +8,37 @@ namespace SaveLoad
     {
         private void Start()
         {
-            if (Directory.Exists(PersistenceManager.Instance.SaveDirectoryPath))
-            {
-                var airship = GameObject.FindGameObjectWithTag("Airship");
-                if (airship != null)
-                {
-                    for (int i = 0; i < airship.transform.childCount; i++)
-                    {
-                        var child = airship.transform.GetChild(i);
-                        if (child.CompareTag("Building"))
-                        {
-                            transform.parent = child;        
-                        }
-                    }
-                }
-                transform.localPosition = SpawnDatabase.Instance.LoadSpawnPointForPath(tag, PersistenceManager.Instance.SaveDirectoryPath);
-            }
+            // if (Directory.Exists(PersistenceManager.Instance.SaveDirectoryPath))
+            // {
+            //     var airship = GameObject.FindGameObjectWithTag("Airship");
+            //     if (airship != null)
+            //     {
+            //         for (int i = 0; i < airship.transform.childCount; i++)
+            //         {
+            //             var child = airship.transform.GetChild(i);
+            //             if (child.CompareTag("Building"))
+            //             {
+            //                 transform.parent = child;        
+            //             }
+            //         }
+            //     }
+            //     transform.localPosition = SpawnDatabase.Instance.LoadSpawnPointForPath(tag, PersistenceManager.Instance.SaveDirectoryPath);
+            // }
         }
 
         private void OnEnable()
         {
-            PersistenceManager.Instance.GameSaved += OnSave;
-            PersistenceManager.Instance.GameLoaded += OnLoad;
+            // PersistenceManager.Instance.GameSaved += OnSave;
+            // PersistenceManager.Instance.GameLoaded += OnLoad;
         }
 
         private void OnDisable()
         {
-            if (PersistenceManager.HasInstance)
-            {
-                PersistenceManager.Instance.GameSaved -= OnSave;
-                PersistenceManager.Instance.GameLoaded -= OnLoad;
-            }
+            // if (PersistenceManager.HasInstance)
+            // {
+            //     PersistenceManager.Instance.GameSaved -= OnSave;
+            //     PersistenceManager.Instance.GameLoaded -= OnLoad;
+            // }
         }
 
         void OnSave(string path)

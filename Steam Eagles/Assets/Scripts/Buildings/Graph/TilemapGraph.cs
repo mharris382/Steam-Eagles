@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Buildings.BuildingTilemaps;
 using QuikGraph;
 using QuikGraph.Algorithms;
@@ -33,6 +34,7 @@ namespace Buildings.Graph
             }
         }
     }
+
     public abstract class TilemapGraph
     {
         protected AdjacencyGraph<Vector3Int,Edge<Vector3Int>> graph;
@@ -101,7 +103,7 @@ namespace Buildings.Graph
             FindEdges(nonEmptyTiles, timer);
         }
 
-
+        [System.Obsolete]
         public int GetStronglyConnectedComponents(out IDictionary<Vector3Int, int> stronglyConnected)
         {
             scComponents = new Dictionary<Vector3Int, int>();

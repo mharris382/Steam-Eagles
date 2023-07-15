@@ -55,7 +55,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-7716088488309096815
+--- !u!114 &-8309421142209511675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,79 +65,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Tools/Break Tile
+  m_Name: event:/Player Actions/Prefab Action
   m_EditorClassIdentifier: 
-  Path: event:/Tools/Break Tile
+  Path: event:/Player Actions/Prefab Action
   Guid:
-    Data1: -1350927228
-    Data2: 1261797366
-    Data3: 1779020460
-    Data4: 867151756
-  Banks:
-  - {fileID: 6806358472309568043}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
---- !u!114 &-7451102562266537849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Tile Deconstruction
-  m_EditorClassIdentifier: 
-  Path: event:/Tile Deconstruction
-  Guid:
-    Data1: -848980247
-    Data2: 1206441053
-    Data3: -375839817
-    Data4: -1508996906
+    Data1: 1453588366
+    Data2: 1216731092
+    Data3: 1112500900
+    Data4: 862818299
   Banks:
   - {fileID: 2924718624880632120}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
   Parameters:
-  - {fileID: -7382144268574667121}
+  - {fileID: -4863632303719212582}
   MinDistance: 1
   MaxDistance: 20
-  Length: 702
---- !u!114 &-7382144268574667121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Tile Deconstruction/block type
-  m_EditorClassIdentifier: 
-  Name: block type
-  StudioPath: 
-  Min: 0
-  Max: 3
-  Default: 0
-  ID:
-    data1: 2197600615
-    data2: 820470920
-  Type: 2
-  IsGlobal: 0
-  Labels:
-  - Solid
-  - Pipe
-  - Ladder
-  - Wall
-  Exists: 1
+  Length: 0
 --- !u!114 &-6610765567987018692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,10 +125,38 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638237195586202958
+  lastModified: 638246997736857043
   FileSizes:
   - Name: Desktop
     Value: 2446432
+  Exists: 1
+--- !u!114 &-4863632303719212582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Prefab Action/CraftingActionType
+  m_EditorClassIdentifier: 
+  Name: CraftingActionType
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 2339205801
+    data2: 3964766034
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Build
+  - Deconstruct
+  - Damage
+  - Repair
   Exists: 1
 --- !u!114 &-4447536127489348248
 MonoBehaviour:
@@ -240,6 +213,61 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-1761313566456715758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player Actions/Sample Action
+  m_EditorClassIdentifier: 
+  Path: event:/Player Actions/Sample Action
+  Guid:
+    Data1: 228083017
+    Data2: 1266029551
+    Data3: 2100835746
+    Data4: 1326614889
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1280
+--- !u!114 &-106740714995315001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Tile Action/CraftingActionType
+  m_EditorClassIdentifier: 
+  Name: CraftingActionType
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 2339205801
+    data2: 3964766034
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Build
+  - Deconstruct
+  - Damage
+  - Repair
+  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,18 +288,18 @@ MonoBehaviour:
   - {fileID: 2924718624880632120}
   EditorEvents:
   - {fileID: -8701015017041753123}
-  - {fileID: -7716088488309096815}
-  - {fileID: 2813908003119881036}
   - {fileID: -4447536127489348248}
   - {fileID: -8541659772659667331}
   - {fileID: -2332712013049670873}
-  - {fileID: -7451102562266537849}
+  - {fileID: 7573690006153104365}
+  - {fileID: -1761313566456715758}
+  - {fileID: -8309421142209511675}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6806358472309568043}
   StringsBanks:
   - {fileID: 301517338111838257}
-  cacheTime: 638237195586223135
+  cacheTime: 638247213719863661
   cacheVersion: 131603
 --- !u!114 &301517338111838257
 MonoBehaviour:
@@ -288,10 +316,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638237195586062843
+  lastModified: 638247213719179012
   FileSizes:
   - Name: Desktop
-    Value: 1332
+    Value: 1338
   Exists: 1
 --- !u!114 &1674415375344157029
 MonoBehaviour:
@@ -308,38 +336,11 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Ambience.bank
   Name: Ambience
   StudioPath: bank:/Ambience
-  lastModified: 638237195586062843
+  lastModified: 638246997710306198
   FileSizes:
   - Name: Desktop
     Value: 250016
   Exists: 1
---- !u!114 &2813908003119881036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Tools/Build Tile
-  m_EditorClassIdentifier: 
-  Path: event:/Tools/Build Tile
-  Guid:
-    Data1: -1903007573
-    Data2: 1272295172
-    Data3: 1767604141
-    Data4: -973431717
-  Banks:
-  - {fileID: 6806358472309568043}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &2924718624880632120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,10 +356,10 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638237195586223135
+  lastModified: 638247213719863661
   FileSizes:
   - Name: Desktop
-    Value: 275136
+    Value: 327936
   Exists: 1
 --- !u!114 &4496208037811881943
 MonoBehaviour:
@@ -404,8 +405,36 @@ MonoBehaviour:
   Path: ../FMOD Project/SteamEagles/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638237195586062843
+  lastModified: 638247213719168806
   FileSizes:
   - Name: Desktop
-    Value: 2076
+    Value: 1036
   Exists: 1
+--- !u!114 &7573690006153104365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player Actions/Tile Action
+  m_EditorClassIdentifier: 
+  Path: event:/Player Actions/Tile Action
+  Guid:
+    Data1: -1903007573
+    Data2: 1272295172
+    Data3: 1767604141
+    Data4: -973431717
+  Banks:
+  - {fileID: 2924718624880632120}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -106740714995315001}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0

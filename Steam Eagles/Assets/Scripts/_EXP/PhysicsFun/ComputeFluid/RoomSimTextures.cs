@@ -3,6 +3,7 @@ using Buildings;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -76,7 +77,15 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
        public TilemapTexture compositeBoundariesTexture;
        public TilemapTexture wallTexture;
        public TilemapTexture gasInputTexture;
-       
+
+       public void DisposeWith(MonoBehaviour monoBehaviour, IObservable<Unit> release)
+       {
+           foundationTexture.ReleaseWith(monoBehaviour, release);
+            solidTexture.ReleaseWith(monoBehaviour, release);
+            compositeBoundariesTexture.ReleaseWith(monoBehaviour, release);
+            wallTexture.ReleaseWith(monoBehaviour, release);
+            gasInputTexture.ReleaseWith(monoBehaviour, release);
+       }
    }
 
    [Serializable]
@@ -91,6 +100,18 @@ public class RoomSimTextures : MonoBehaviour, ISimIOTextures
            int y = (int)(1/gridSize.y);
            this.gridSize = gridSize;
            this.texture = texture;
+       }
+
+       public void ReleaseWith(MonoBehaviour monoBehaviour, IObservable<Unit> release)
+       {
+           release.Take(1).Subscribe(_ =>
+           {
+               if (texture != null)
+               {
+                   var rt = (RenderTexture)texture;
+                   rt.Release();
+               }
+           }).AddTo(monoBehaviour);
        }
    }
 

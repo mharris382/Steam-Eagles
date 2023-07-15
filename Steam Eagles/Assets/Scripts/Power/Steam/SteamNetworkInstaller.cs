@@ -18,19 +18,19 @@ public class SteamNetworkInstaller : MonoInstaller
     {
         
         
-        Container.BindInterfacesAndSelfTo<SteamNetworkState>().AsSingle().NonLazy();
+        //Container.BindInterfacesAndSelfTo<SteamNetworkState>().AsSingle().NonLazy();
 
         //binds Producers and Consumers as well as Producer Factory and Consumer Factory
-        SteamIO.Installer.Install(Container);
-        Container.BindInterfacesAndSelfTo<PipeGridGraph>().AsSingle().NonLazy();
-        Container.Bind(typeof(INetwork), typeof(NodeRegistry), typeof(ISteamProcessing), typeof(GridGraph<NodeHandle>)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
-        Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
-
-        Container.Bind<PowerNetworkConfigs.SteamNetworkConfig>().FromInstance(PowerNetworkConfigs.Instance.steamNetworkConfig).AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
-        Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
+        //SteamIO.Installer.Install(Container);
+        // Container.BindInterfacesAndSelfTo<PipeGridGraph>().AsSingle().NonLazy();
+        // Container.Bind(typeof(INetwork), typeof(NodeRegistry), typeof(ISteamProcessing), typeof(GridGraph<NodeHandle>)).FromSubContainerResolve().ByInstaller<Power.Steam.Network.SteamNetworkInstaller>().AsSingle().NonLazy();
+        // Container.BindFactory<Vector3Int, NodeType, NodeHandle, NodeHandle.Factory>().AsSingle().NonLazy();
+        //
+        // Container.Bind<PowerNetworkConfigs.SteamNetworkConfig>().FromInstance(PowerNetworkConfigs.Instance.steamNetworkConfig).AsSingle().NonLazy();
+        // Container.BindInterfacesAndSelfTo<SteamNetworkTilemapBridge>().AsSingle().NonLazy();
+        // Container.BindInterfacesAndSelfTo<SteamNetworkBusinessLogic>().AsSingle().NonLazy();
+        // Container.BindInterfacesTo<Tester>().AsSingle().NonLazy();
+        // Container.BindInterfacesAndSelfTo<SteamFlowCalculator>().AsSingle().NonLazy();
         
         //Container.BindInterfacesAndSelfTo<BuildingPipeNetwork>().AsSingle().NonLazy();
         

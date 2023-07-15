@@ -13,6 +13,7 @@ struct IO
 int ioCount;
 RWStructuredBuffer<IO> ioBuffer;
 RWTexture2D<float4> gas;
+RWTexture2D<float4> gasVelocity;
 float AddToCell(uint2 cell, float delta)
 {
     float gasCurrent = gas[cell].x;
@@ -89,7 +90,8 @@ void DeleteGasOnBoundaries(uint3 id : SV_DispatchThreadID)
     {
         for (int y = 0; y < boundaryScale.y; y ++)
         {
-            gasState[gasTexCoord + uint2(x,y)] = float4(0,0,0,0);
+            float4 prevGasState = gasState[gasTexCoord + uint2(x,y)];
+            gasState[gasTexCoord + uint2(x,y)] = float4(0,prevGasState.g,prevGasState.z,prevGasState.w);
         }   
     }
 }
@@ -101,7 +103,7 @@ struct ForceInput
 };
 
 StructuredBuffer<ForceInput> forceInputBuffer;
-RWTexture2D<float2> velocityTexture;
+RWTexture2D<float2> velocityTextureInputTarget;
 
 [numthreads(8,2,1)]
 void DynamicExternalForcesInput(uint3 id : SV_DispatchThreadID)
@@ -112,9 +114,63 @@ void DynamicExternalForcesInput(uint3 id : SV_DispatchThreadID)
         for (int y = id.y %  2; y < boundaryScale.y; y +=2)
         {
             int2 texCoord = input.texCoord + int2(x,y);
-            float2 velocity = velocityTexture[texCoord];
+            float2 velocity = velocityTextureInputTarget[texCoord];
             velocity += input.forceToAdd;
-            velocityTexture[texCoord] = velocity;
+            velocityTextureInputTarget[texCoord] = velocity;
         }
     }
 }
+
+
+struct HeatInput
+{
+    int2 texCoord;
+    int2 area;
+    float heatToAdd;
+};
+
+StructuredBuffer<HeatInput> heatInputBuffer;
+RWTexture2D<float4> heatTexture;
+
+[numthreads(8,1,1)]
+void DynamicHeatInput(uint3 id : SV_DispatchThreadID)
+{
+    HeatInput input = heatInputBuffer[id.x]; 
+    for (int x = id.y %  2; x < boundaryScale.x; x +=2)
+    {
+        for (int y = id.y %  2; y < boundaryScale.y; y +=2)
+        {
+            int2 texCoord = input.texCoord + int2(x,y);
+            float heat = heatTexture[texCoord].z;
+        }
+    }
+}
+
+RWTexture2D<float4> velocityTexture;
+Texture2D<float4> gasStateTexture;
+[numthreads(8,8,1)]
+void Project(uint3 id : SV_DispatchThreadID)
+{
+    uint2 texCoord = id.xy;
+    float4 gasState = gasStateTexture[texCoord];
+    float4 velocity = velocityTexture[texCoord];
+    float2 velocity2D = velocity.xy;
+    float2 velocity2DProjected = velocity2D - gasState.xy * velocity2D;
+    velocityTexture[texCoord] = float4(velocity2DProjected, velocity.z, velocity.w);
+}
+
+
+void Diffuse(uint2 texCoord, float4 gasState, float4 velocity)
+{
+    float2 velocity2D = velocity.xy;
+    float2 velocity2DProjected = velocity2D - gasState.xy * velocity2D;
+    velocityTexture[texCoord] = float4(velocity2DProjected, velocity.z, velocity.w);
+}
+// void ProjectVelocity(uint2 texCoord)
+// {
+//     float4 gasState = gasStateTexture[texCoord];
+//     float4 velocity = velocityTexture[texCoord];
+//     float2 velocity2D = velocity.xy;
+//     float2 velocity2DProjected = velocity2D - gasState.xy * velocity2D;
+//     velocity[texCoord] = float4(velocity2DProjected, velocity.z, velocity.w);
+// }

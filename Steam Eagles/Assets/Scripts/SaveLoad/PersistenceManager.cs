@@ -68,7 +68,7 @@ namespace SaveLoad
                 .DelayFrame(1)
                 .Subscribe(info =>
                 {
-                    StartCoroutine(SpawnCharacter(info.characterName, info.character));
+                    //StartCoroutine(SpawnCharacter(info.characterName, info.character));
                     
                 }).AddTo(this);
         }

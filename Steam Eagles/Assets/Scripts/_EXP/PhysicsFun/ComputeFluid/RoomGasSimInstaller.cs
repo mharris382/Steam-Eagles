@@ -31,7 +31,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
         public Room Room => _room ? _room : _room = GetComponent<Room>();
         public RoomSimTextures SimTextures => _simTextures ? _simTextures : _simTextures = GetOrAdd<RoomSimTextures>();
         public RoomEffect RoomEffect => _roomEffect ? _roomEffect : _roomEffect = GetOrAdd<RoomEffect>();
-        public RoomCamera RoomCamera => _roomCamera ? _roomCamera : _roomCamera = GetOrAdd<RoomCamera>(t => t.Init());
+        public RoomCamera RoomCamera => _roomCamera ? _roomCamera : _roomCamera = GetOrAdd<RoomCamera>();
         T GetOrAdd<T>() where T : Component => GetOrAdd<T>(_ => { });
         T GetOrAdd<T>(Action<T> onCreated) where T : Component
         {

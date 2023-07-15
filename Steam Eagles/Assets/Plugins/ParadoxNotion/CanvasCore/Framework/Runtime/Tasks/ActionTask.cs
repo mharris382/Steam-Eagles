@@ -13,8 +13,8 @@ namespace NodeCanvas.Framework
     ///<summary>Base class for actions. Extend this to create your own. T is the agentType required by the action. Generic version where T is the AgentType (Component or Interface) required by the Action. For GameObject, use 'Transform'</summary>
     abstract public class ActionTask<T> : ActionTask where T : class
     {
-        sealed public override Type agentType { get { return typeof(T); } }
-        new public T agent { get { return base.agent as T; } }
+        sealed public override Type agentType => typeof(T);
+        new public T agent => base.agent as T;
     }
 
     ///----------------------------------------------------------------------------------------------
@@ -26,7 +26,6 @@ namespace NodeCanvas.Framework
     ///<summary>Base class for all actions. Extend this to create your own.</summary>
     abstract public class ActionTask : Task
     {
-
         private Status status = Status.Resting;
         private float timeStarted;
         private bool latch;
@@ -55,9 +54,6 @@ namespace NodeCanvas.Framework
         }
 
         ///----------------------------------------------------------------------------------------------
-
-        [System.Obsolete("Use 'Execute'")]
-        public Status ExecuteAction(Component agent, IBlackboard blackboard) { return Execute(agent, blackboard); }
 
         ///<summary>Ticks the action for the provided agent and blackboard</summary>
         public Status Execute(Component agent, IBlackboard blackboard) {
@@ -141,5 +137,8 @@ namespace NodeCanvas.Framework
         ///<summary>Called when the action resumes after being paused</summary>
         virtual protected void OnResume() { }
         ///----------------------------------------------------------------------------------------------
+
+        [System.Obsolete("Use 'Execute'")]
+        public Status ExecuteAction(Component agent, IBlackboard blackboard) { return Execute(agent, blackboard); }
     }
 }

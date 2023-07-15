@@ -6,6 +6,7 @@ namespace CoreLib.Structures
     {
         public GameObject building;
         public Vector2Int tilePosition;
+        public Vector3 wsPosition;
         public int layer;
         public Object tile;
         public Object oldTile;

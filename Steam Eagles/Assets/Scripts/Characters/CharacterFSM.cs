@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Security.Cryptography;
+
+
 using CoreLib;
 using CoreLib.Interactions;
 using FSM;
@@ -16,7 +17,7 @@ namespace Characters
         [Range(0.001f, 1), SerializeField] private float dropTime = 0.25f;
         [SerializeField] private float dropSpeed = 5f;
         [SerializeField] private bool debug = true;
-        
+        [SerializeField] private TilemapClimbableValues climbableValues;
         private CharacterInputState _input;
         private CharacterController2 _controller;
         
@@ -81,6 +82,10 @@ namespace Characters
 
         private SpawnPoints _spawnPoints;
         private NullPilot _nullPilot;
+        // private EntityRoomState _roomState;
+
+        
+        // public EntityRoomState RoomState => _roomState != null ? _roomState : _roomState = GetComponent<EntityRoomState>();
         
         private IPilot Pilot => _pilot ?? _nullPilot;
 
@@ -92,8 +97,11 @@ namespace Characters
             _health = GetComponent<Health>();
             _structureState = GetComponent<StructureState>();
             _interactionState = GetComponent<CharacterInteractionState>();
+            // _roomState = GetComponent<EntityRoomState>();
             _nullPilot = new NullPilot(gameObject);
-            _climbCheck = new CharacterClimbCheck(_state, new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty), new ColliderClimbableFactory());
+            _climbCheck = new CharacterClimbCheck(_state, 
+                new TilemapClimbableFactory(_structureState.BuildingRigidbodyProperty, climbableValues), 
+                new ColliderClimbableFactory());
             _climbingController = new CharacterClimbingController(_state, _controller.Config, _climbCheck);
             
             _pilot = GetComponent<IPilot>();
@@ -161,7 +169,15 @@ namespace Characters
             physicsFSM.AddTransition(DROPPING, DEFAULT);
             
             physicsFSM.AddTransition(CLIMBING, DEFAULT, _ => CheckClimbStopCondition() && !State.IsJumping);
-            physicsFSM.AddTransition(CLIMBING, JUMPING, _ => CheckClimbStopCondition() && State.IsJumping);
+            physicsFSM.AddTransition(CLIMBING, JUMPING, _ =>
+            {
+                bool result = CheckClimbStopCondition() && State.IsJumping;
+                if (result && State.resetJumpTimer != null)
+                {
+                    State.resetJumpTimer();
+                }
+                return result;
+            });
             physicsFSM.AddTransitionFromAny(CLIMBING, _ => CheckClimbStartCondition());
 
             physicsFSM.SetStartState(DEFAULT);

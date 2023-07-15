@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoreLib;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UniRx;
@@ -30,27 +31,66 @@ namespace Items
             Machines,
             Decor,
             Security,
+            CUSTOM
         }
 
-        [HorizontalGroup("Recipe", width:0.2f, marginLeft:15),HideLabel] public Sprite icon;
-
-        [HorizontalGroup("Recipe", width:0.8f),TableList(AlwaysExpanded = true)] public List<ItemStack> components;
-
-
+        private const string TAB_GROUP = "Tabs";
+        private const string BASIC_INFO = "Main";
+        private const string TYPE_INFO = "/Recipe Type";
+        private const string HORIZONTAL_SPLIT_1 = "/h1";
+        private const string VERTICAL_SPLIT_1 = "/v1";
         
+        [BoxGroup(BASIC_INFO)]
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:3.3f)]
+        [HideLabel,PreviewField(150, ObjectFieldAlignment.Left)] public Sprite icon;
+        
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:.66f, LabelWidth = 55)]
+        
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Display Name")]
+        public string friendlyName;
+        
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Category")]
         public RecipeCategory recipeCategory = RecipeCategory.Tiles;
-        public string category => recipeCategory.ToString();
+        
+        [ShowIf("@recipeCategory == RecipeCategory.CUSTOM")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Custom Category")]
+        [SerializeField] string customCategory = "Misc";
+        
+        
+        
+
+
+        public string category
+        {
+            get
+            {
+                if (recipeCategory == RecipeCategory.CUSTOM) return customCategory;
+                return recipeCategory.ToString();
+            }
+        }
+
+
+        [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO, "Recipe Type")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
         [SerializeField, EnumPaging] private RecipeType recipeType;
 
+        [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO)]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
         [ShowIf(nameof(UseInstanceReference)),SerializeField] private RecipeInstanceReference instanceReference;
 
+        [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO)]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
         [ShowIf(nameof(UseTileReference)),SerializeField] private TileReference tileReference;
 
 
+        [BoxGroup("Recipe Component")]
+        [PropertyOrder(1000), ListDrawerSettings(ShowFoldout = true)]
+        public List<ItemStack> components;
+        
         private PrefabLoader _prefabLoader;
         private TileLoader _tileLoader;
 
-        public string friendlyName;
+        
         public string FriendlyName
         {
             get

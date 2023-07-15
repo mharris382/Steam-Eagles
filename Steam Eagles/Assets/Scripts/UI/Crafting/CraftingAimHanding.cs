@@ -38,6 +38,7 @@ namespace UI.Crafting
             ProcessAim(playerInput, character, camera);
             var aimWs = _aimPositionWS.Value;
             var cell = building.Map.WorldToCell(aimWs, layers);
+            cell.z = 0;
             if (centerOnGrid) _aimPositionWS.Value = building.Map.CellToWorldCentered(cell, layers);
             this.cell = new BuildingCell(cell,layers);
             return this.cell;

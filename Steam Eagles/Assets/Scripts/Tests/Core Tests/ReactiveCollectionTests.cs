@@ -1,9 +1,111 @@
-﻿using NUnit.Framework;
+﻿using System;
+using CoreLib.Extensions;
+using NUnit.Framework;
 using UniRx;
 using UnityEngine;
 
 namespace Tests.Core_Tests
 {
+    public class UniRxExtensionTests
+    {
+
+        class DistinctWhereTest
+        {
+            public int value;
+            public bool suppress = false;
+            public string name = "";
+        }
+
+        private CompositeDisposable cd;
+        Subject<DistinctWhereTest> stream = new();
+        Subject<DistinctWhereTest> streamSuppressed = new();
+        private DistinctWhereTest[] _whereTests;
+        int[] recievedCount = new int[3];
+        int[] suppressedCount = new int[3];
+        [SetUp]
+        public void SetUp()
+        {
+            cd = new CompositeDisposable();
+            stream = new();
+            streamSuppressed = new();
+            stream.AddTo(cd);
+            streamSuppressed.AddTo(cd);
+            
+
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            cd.Dispose();
+        }
+        
+
+        void SetupTestValues(int count)
+        {
+            DistinctWhereTest[] GetTestValues(int v)
+            {
+                DistinctWhereTest[] values = new DistinctWhereTest[v];
+                for (int i = 0; i < v; i++)
+                {
+                    values[i] = new DistinctWhereTest()
+                    {
+                        value = i,
+                        name = i.ToString(),
+                    };
+                }
+                return values;
+            }
+            _whereTests = GetTestValues(count);
+            recievedCount = new int[count];
+            suppressedCount = new int[count];
+            void OnTestValueRecieved(DistinctWhereTest t) => recievedCount[t.value]++;
+            void OnSuppressedValueRecieved(DistinctWhereTest t) => suppressedCount[t.value]++;
+            stream.Subscribe(OnTestValueRecieved).AddTo(cd);
+            streamSuppressed.Subscribe(OnSuppressedValueRecieved).AddTo(cd);
+        }
+        [Test]
+        public void TestDistinctWhere()
+        {
+            SetupTestValues(5);
+            
+            Func<DistinctWhereTest, DistinctWhereTest, bool> comparer = (t1, t2) => t1.value == t2.value;
+            stream.DistinctWhere(comparer).Subscribe(t => Debug.Log($"Recieved {t.value}")).AddTo(cd);
+            EmitTestValues(_whereTests);
+            for (int i = 0; i < _whereTests.Length; i++)
+            {
+                Assert.AreEqual(1, recievedCount[i]);
+                Assert.AreEqual(1, suppressedCount[i]);
+            }
+            EmitTestValues(_whereTests);
+            for (int i = 0; i < _whereTests.Length; i++)
+            {
+                Assert.AreEqual(2, recievedCount[i]);
+                Assert.AreEqual(2, suppressedCount[i]);
+            }
+            EmitTestValue(_whereTests[^1]);
+            Assert.AreEqual(3, recievedCount[^1]);
+            Assert.AreEqual(2, suppressedCount[^1]);
+            EmitTestValues(_whereTests);
+            for (int i = 0; i < _whereTests.Length; i++)
+            {
+                Assert.AreEqual(4, recievedCount[i]);
+                Assert.AreEqual(3, suppressedCount[i]);
+            }
+        }
+        void EmitTestValue(DistinctWhereTest t)
+        {
+            stream.OnNext(t);
+        }
+
+        void EmitTestValues(DistinctWhereTest[] values)
+        {
+            foreach (var distinctWhere in values)
+            {
+                EmitTestValue(distinctWhere);
+            }
+        }
+    }
     public class ReactiveCollectionTests
     {
         private ReactiveCollection<string> _collection = new ReactiveCollection<string>();

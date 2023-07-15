@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreLib.Interfaces;
 using SteamEagles.Characters;
 using UnityEngine;
 

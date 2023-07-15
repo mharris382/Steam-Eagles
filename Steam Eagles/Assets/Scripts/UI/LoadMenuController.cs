@@ -74,8 +74,8 @@ namespace UI
         
         void PopulateLoadMenu()
         {
-            var allSaves = PersistenceManager.GetAllGameSaves().ToArray();
-            PopulateLoadMenu(allSaves);
+            // var allSaves = PersistenceManager.GetAllGameSaves().ToArray();
+            // PopulateLoadMenu(allSaves);
         }
 
         void PopulateLoadMenu(string[] saves)

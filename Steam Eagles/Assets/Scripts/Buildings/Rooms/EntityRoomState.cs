@@ -16,18 +16,14 @@ namespace Buildings.Rooms.Tracking
     public class EntityRoomState : MonoBehaviour
     {
         private DynamicReactiveProperty<Room> _currentRoom = new DynamicReactiveProperty<Room>();
-        
+        private ReadOnlyReactiveProperty<Building> _currentBuilding;
+
+        public ReadOnlyReactiveProperty<Building> CurrentBuilding => _currentBuilding ??=
+            _currentRoom.Select(t => t == null ? null : t.Building).ToReadOnlyReactiveProperty();
         public IReadOnlyReactiveProperty<Room> CurrentRoom => _currentRoom;
-        
-        
+
         [ShowInInspector, ReadOnly]
         public string CurrentRoomName { get; private set; }
-        
-        public void SetCurrentRoom(Room room)
-        {
-            _currentRoom.Value = room;
-            CurrentRoomName = room == null ? "Not In Room" : room.name;
-        }
 
         private void Awake()
         {
@@ -36,6 +32,12 @@ namespace Buildings.Rooms.Tracking
                 if(t.previous!=null) OnLeftRoom(t.previous);
                 if(t.next!=null) OnEnteredRoom(t.next);
             });
+        }
+
+        public void SetCurrentRoom(Room room)
+        {
+            _currentRoom.Value = room;
+            CurrentRoomName = room == null ? "Not In Room" : room.name;
         }
 
         private void OnEnteredRoom(Room objNext)

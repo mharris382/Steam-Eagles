@@ -218,7 +218,7 @@ namespace ParadoxNotion.Design
             if ( treeGenerationThread != null && treeGenerationThread.IsAlive ) { treeGenerationThread.Abort(); treeGenerationThread = null; }
             if ( searchGenerationThread != null && searchGenerationThread.IsAlive ) { searchGenerationThread.Abort(); searchGenerationThread = null; }
             current = null;
-            EditorWindow.FocusWindowIfItsOpen(wasFocusedWindowType);
+            if ( wasFocusedWindowType != null ) { EditorWindow.FocusWindowIfItsOpen(wasFocusedWindowType); }
         }
 
         //check flag and repaint?

@@ -50,8 +50,8 @@ namespace CoreLib.GameTime
 
         protected override void Init()
         {
-            PersistenceManager.Instance.GameSaved += SaveGameTime;
-            PersistenceManager.Instance.GameLoaded += LoadGameTime;
+            // PersistenceManager.Instance.GameSaved += SaveGameTime;
+            // PersistenceManager.Instance.GameLoaded += LoadGameTime;
         }
 
         private IEnumerator Start()
@@ -161,10 +161,10 @@ namespace CoreLib.GameTime
             public void UpdateWithSave()
             {
                 Update();
-                MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
+                ///MessageBroker.Default.Publish(new SaveGameRequestedInfo(PersistenceManager.SavePath));
             }
             
-            bool HasValidSavePath => !string.IsNullOrEmpty(PersistenceManager.SavePath);
+            bool HasValidSavePath => false;///!string.IsNullOrEmpty(PersistenceManager.SavePath);
         }
     }
 }

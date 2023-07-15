@@ -217,12 +217,20 @@ namespace ParadoxNotion.Design
 
         private static GUIStyle _toolbarSearchField;
         public static GUIStyle toolbarSearchTextField {
+#if UNITY_2022_3_OR_NEWER
+            get { return _toolbarSearchField ?? ( _toolbarSearchField = new GUIStyle((GUIStyle)"ToolbarSearchTextField") ); }
+#else
             get { return _toolbarSearchField ?? ( _toolbarSearchField = new GUIStyle((GUIStyle)"ToolbarSeachTextField") ); }
+#endif
         }
 
         private static GUIStyle _toolbarSearchButton;
         public static GUIStyle toolbarSearchCancelButton {
+#if UNITY_2022_3_OR_NEWER
+            get { return _toolbarSearchButton ?? ( _toolbarSearchButton = new GUIStyle((GUIStyle)"ToolbarSearchCancelButton") ); }
+#else
             get { return _toolbarSearchButton ?? ( _toolbarSearchButton = new GUIStyle((GUIStyle)"ToolbarSeachCancelButton") ); }
+#endif
         }
 
         private static GUIStyle _shadowedBackground;

@@ -80,6 +80,14 @@ namespace Buildables
             return bMachine.Machine;
         }
 
+        public BuildableMachineBase GetMachine(Vector3Int position) =>
+            GetMachine(new Vector2Int(position.x, position.y));
+
+        public bool TryGetMachine(Vector3Int position, out BuildableMachineBase machineBase)
+        {
+            machineBase = GetMachine(position);
+            return machineBase != null;
+        }
         public IEnumerable<Vector2Int> GetAllValidCells(BuildableMachineBase machine, Vector2Int placement)
         {
             return GetAllValidCells(machine, placement, machine.IsFlipped);

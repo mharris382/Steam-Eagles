@@ -72,6 +72,7 @@ namespace UI.Crafting.Events
             var eventType = GetEventType(oldTile, newTile);
             var eventInfo = new TileEventInfo() {
                 building = building.gameObject,
+                wsPosition = HasBuilding ? _building.Map.CellToWorldCentered(newTile.cell) : default,
                 isPreview = true,
                 layer = (int)oldTile.cell.layers,
                 tilePosition = oldTile.cell.cell2D,
@@ -95,6 +96,7 @@ namespace UI.Crafting.Events
             var eventType = GetEventType(t0, t1);
             var eventInfo = new TileEventInfo() {
                 building = building.gameObject,
+                wsPosition = HasBuilding ? _building.Map.CellToWorldCentered(cell) : default,
                 isPreview = false,
                 layer = (int)cell.layers,
                 tilePosition = cell.cell2D,
@@ -110,6 +112,7 @@ namespace UI.Crafting.Events
             
             var info = new TileEventInfo() {   
                 building = HasBuilding ? _building.gameObject : null,
+                wsPosition = HasBuilding ? _building.Map.CellToWorldCentered(cell) : default,
                 tilePosition = cell.cell2D,
                 layer = (int)cell.layers,
                 tile = tile,
@@ -123,6 +126,7 @@ namespace UI.Crafting.Events
             
             var info = new TileEventInfo() {   
                 building = HasBuilding ? _building.gameObject : null,
+                wsPosition = HasBuilding ? _building.Map.CellToWorldCentered(cell) : default,
                 tilePosition = cell.cell2D,
                 layer = (int)cell.layers,
                 tile = tile,
@@ -154,6 +158,7 @@ namespace UI.Crafting.Events
             var info = new TileEventInfo()
             {   
                 building = HasBuilding ? _building.gameObject : null,
+                wsPosition = HasBuilding ? _building.Map.CellToWorldCentered(cell) : default,
                 tilePosition = cell.cell2D,
                 layer = (int)cell.layers,
                 tile = newTile,

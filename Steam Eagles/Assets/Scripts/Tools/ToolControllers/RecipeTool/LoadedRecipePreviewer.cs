@@ -73,10 +73,10 @@ namespace Tools.RecipeTool
 
             foreach (var pos in cellsToCheck)
             {
-                if (machine.IsPlacementValid(building, pos))
-                {
-                    allValidCells.Add(pos);
-                }
+                // if (machine.IsPlacementValid(building, pos))
+                // {
+                //     allValidCells.Add(pos);
+                // }
             }
             
             if(allValidCells.Count== 0)

@@ -51,6 +51,7 @@ namespace UI.Crafting
         {
             var tile = LoadedObject;
             var oldTile = building.Map.GetTile(gridPosition.cell, gridPosition.layers);
+            if(oldTile == tile) return;
             if (oldTile != null)
             {
                 _eventPublisher.OnTileSwapped(gridPosition, oldTile, tile);

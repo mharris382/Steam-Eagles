@@ -67,8 +67,8 @@ namespace NodeCanvas.Editor
 
         ///----------------------------------------------------------------------------------------------
 
-        public readonly static float MINIMAP_MIN_SIZE = 30;
-        public readonly static float MINIMAP_MAX_SIZE = 300;
+        public const float MINIMAP_MIN_SIZE = 30;
+        public const float MINIMAP_MAX_SIZE = 300;
 
         ///----------------------------------------------------------------------------------------------
 

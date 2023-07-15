@@ -273,11 +273,13 @@ namespace NodeCanvas.Framework
                 EditorUtils.Separator();
                 TaskEditor.TaskFieldSingle(currentViewAction, (a) =>
                 {
+                    var i = actions.IndexOf(currentViewAction);
                     if ( a == null ) {
-                        var i = actions.IndexOf(currentViewAction);
                         actions.RemoveAt(i);
+                    } else {
+                        actions[i] = (ActionTask)a;
                     }
-                    currentViewAction = (ActionTask)a;
+                    currentViewAction = a as ActionTask;
                 });
             }
         }

@@ -36,6 +36,9 @@ namespace Buildings.BuildingTilemaps
         
         public Dictionary<TileBase, List<Vector2Int>> TilePositionDictionary { get; }
         
+        private Vector3Int _lastTileChanged;
+        private TileBase _lastChange;
+        
         public Rect GetWorldBounds()
         {
             var bounds = Tilemap.cellBounds;
@@ -87,6 +90,23 @@ namespace Buildings.BuildingTilemaps
             }
         }
 
-        public void SetTile(Vector2Int position, TileBase tile) => Tilemap.SetTile(new Vector3Int(position.x, position.y, 0), tile);
+        public virtual void SetTile(Vector2Int position, TileBase tile)
+        {
+            Tilemap.SetTile(_lastTileChanged = new Vector3Int(position.x, position.y, 0), _lastChange = tile);
+        }
+        public virtual void SetTile(Vector3Int position, TileBase tileBase) => SetTile((Vector2Int)position, tileBase);
+
+
+        internal virtual void NotifySetTileFinished()
+        {
+            Debug.Log($"{Layer} Tilemap: NotifySetTileFinished:{_lastTileChanged} -> {_lastChange}", this);
+        } 
+    }
+
+
+
+    public interface ITilemapListener2D
+    {
+        void SetTile(Vector2Int position, TileBase tileBase);
     }
 }

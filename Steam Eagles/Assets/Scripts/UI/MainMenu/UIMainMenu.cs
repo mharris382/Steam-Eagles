@@ -277,8 +277,8 @@ public class UIMainMenu : MonoBehaviour
         if ((singlePlayer && GameManager.Instance.CanStartGameInSingleplayer()) || 
             (!singlePlayer && GameManager.Instance.CanStartGameInMultiplayer()))
         {
-            PlayerPrefs.SetString("Last Save Path", PersistenceManager.SavePath);
-            MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
+            // PlayerPrefs.SetString("Last Save Path", PersistenceManager.SavePath);
+            // MessageBroker.Default.Publish(new LoadGameRequestedInfo(PersistenceManager.SavePath));
         }
     }
     
@@ -351,13 +351,13 @@ public class UIMainMenu : MonoBehaviour
         }
         else
         {
-            throw new NotImplementedException();
-            var lastPath = PlayerPrefs.GetString("Last Save Path");
-            if (lastPath != null)
-            {
-                PersistenceManager.Instance.LoadGameRequest(new LoadGameRequestedInfo(lastPath));
-            }
-            Debug.LogError("Save loader not injected",this);
+            // throw new NotImplementedException();
+            // var lastPath = PlayerPrefs.GetString("Last Save Path");
+            // if (lastPath != null)
+            // {
+            //     PersistenceManager.Instance.LoadGameRequest(new LoadGameRequestedInfo(lastPath));
+            // }
+            // Debug.LogError("Save loader not injected",this);
         }
         
     }

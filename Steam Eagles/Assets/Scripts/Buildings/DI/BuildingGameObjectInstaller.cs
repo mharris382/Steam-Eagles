@@ -1,5 +1,7 @@
-﻿using Buildings.CoreData;
+﻿using System;
+using Buildings.CoreData;
 using Buildings.Damage;
+using Buildings.Graph;
 using Buildings.Rooms;
 using JetBrains.Annotations;
 using SaveLoad;
@@ -9,12 +11,14 @@ using Zenject;
 
 namespace Buildings.DI
 {
+  
     public class BuildingGameObjectInstaller : MonoInstaller
     {
         [ToggleGroup(nameof(overrideTileAssets))]
         public bool overrideTileAssets;
         [InlineProperty, ToggleGroup(nameof(overrideTileAssets))]
         public TileAssets tileAssets;
+        public PowerConfig powerConfig;
         public override void InstallBindings()
         {
             BuildingDamageInstaller.Install(Container);
@@ -31,12 +35,20 @@ namespace Buildings.DI
 
             Container.BindInterfacesAndSelfTo<BuildingCoreData>().AsCached().NonLazy();
 
+            Container.Bind<PowerConfig>().FromInstance(powerConfig).AsSingle().NonLazy();
 
             Container.BindFactory<BuildingLayers, IRoomTilemapTextureSaveLoader, TexSaveLoadFactory>().FromFactory<TexSaveLoadFactoryImpl>();
             Container.Bind<TilemapsSaveDataV3>().AsSingle().NonLazy();
             Container.BindFactory<Room, RoomTilemapTextures, RoomTilemapTextures.Factory>().AsSingle().NonLazy();
             Container.BindFactory<Room, BuildingLayers, RoomTilemapTextures.RoomTexture, RoomTilemapTextures.RoomTexture.Factory>().AsSingle().NonLazy();
             ReflectedInstaller<IRoomTilemapTextureSaveLoader>.Install(Container, ContainerLevel.GAMEOBJECT);
+
+
+            Container.BindInterfacesAndSelfTo<PipeTilemapGraph>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<WireTilemapGraph>().AsSingle().NonLazy();
+            
+            Container.Bind<BuildingPowerGrid>()
+                .FromMethod(context => context.Container.Resolve<Building>().Map.PowerGrid).AsSingle().NonLazy();
         }
     }
 

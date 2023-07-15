@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Buildings.BuildingTilemaps;
 using Buildings.Rooms;
 using Buildings.Tiles;
 using QuikGraph.Algorithms;
@@ -71,13 +72,16 @@ namespace Buildings
     {
         bool SetTile(BuildingCell buildingCell, TileBase tile);
     }
-    
+
+
+   
 
     public class BuildingMap : IBuildingRoomLookup, IBGrid, IDisposable
     {
         public class Factory : PlaceholderFactory<Building, BuildingMap> { }
         
         private readonly Building _building;
+        private BuildingPowerGrid _powerGrid = new();
         private class CellToRoomLookup
         {
             private readonly GridLayout _grid;
@@ -200,6 +204,8 @@ namespace Buildings
 
         public BuildingGraphs BuildingGraphs { get; }
 
+        public BuildingPowerGrid PowerGrid => _powerGrid;
+
         public BuildingMap(Building building)
         {
             Room[] rooms = building.GetComponentsInChildren<Room>();
@@ -227,7 +233,7 @@ namespace Buildings
                     _cellToRoomMaps.Add(cellSize, new CellToRoomLookup(buildingTilemap.Tilemap.layoutGrid, rooms));
             }
             //NOTE: must be called at the end of the constructor so the building map is fully initialized
-            BuildingGraphs = new BuildingGraphs(this);
+            //BuildingGraphs = new BuildingGraphs(this);
         }
 
         public Tilemap GetTilemap(BuildingLayers layers)
@@ -251,6 +257,14 @@ namespace Buildings
 
             BoundsInt GetCells(Room _) => GetCellsForRoom(_, buildingLayers);
         }
+        
+        public IObservable<BuildingTile> OnTileChangedInRoom(Room room, BuildingLayers layers)
+        {
+            var events = GetBuildingMapEvents(layers);
+            return events.OnTileSetPerRoom(room, GetCells).Select(t => new BuildingTile(new BuildingCell(t.cell, layers), t.tile));
+
+            BoundsInt GetCells(Room _) => GetCellsForRoom(_, layers);
+        }
 
         CellToRoomLookup GetMapForLayer(BuildingLayers layer)
         {
@@ -266,7 +280,9 @@ namespace Buildings
         public bool CellIsInARoom(Vector3Int cell, BuildingLayers layer) => GetMapForLayer(layer).HasCell(cell);
 
         public Vector2 GetCellSize(BuildingLayers layer) => _layerToCellSize[layer];
-
+        public Vector3 CellToLocalCentered(BuildingCell cell) => CellToWorldCentered(cell.cell, cell.layers);
+        public Vector3 CellToLocalCentered(Vector3Int cell, BuildingLayers buildingLayers) => CellToLocal(cell, buildingLayers) + (Vector3)GetCellSize(buildingLayers)/2f;
+        public Vector3 CellToWorldCentered(BuildingCell cell) => CellToWorldCentered(cell.cell, cell.layers);
         public Vector3 CellToWorldCentered(Vector3Int cell, BuildingLayers buildingLayers) => CellToWorld(cell, buildingLayers) + (Vector3)GetCellSize(buildingLayers)/2f;
         public Vector3Int  WorldToCell(Vector3 wp, BuildingLayers buildingLayers) => _layerToTilemap[buildingLayers].WorldToCell(wp);
         public BuildingCell  WorldToBCell(Vector3 wp, BuildingLayers buildingLayers) => new BuildingCell(_layerToTilemap[buildingLayers].WorldToCell(wp), buildingLayers);
@@ -357,26 +373,35 @@ namespace Buildings
                 return new List<Vector3Int> {(Vector3Int)pathStart};
             }
 
-            var graph = BuildingGraphs.GetGraphForLayer(getLayer);
-            if (!graph.AdjacencyGraph.ContainsVertex(pathStart) ||
-                !graph.AdjacencyGraph.ContainsVertex(pathEnd))
-            {
-                return new List<Vector3Int> { (Vector3Int)pathStart,(Vector3Int) pathEnd };
-            }
+            throw new NotImplementedException();
+           //var graph = BuildingGraphs.GetGraphForLayer(getLayer);
+           //if (!graph.AdjacencyGraph.ContainsVertex(pathStart) ||
+           //    !graph.AdjacencyGraph.ContainsVertex(pathEnd))
+           //{
+           //    return new List<Vector3Int> { (Vector3Int)pathStart,(Vector3Int) pathEnd };
+           //}
 
             // var result = graph.AdjacencyGraph.ShortestPathsDijkstra(e => 1, pathStart);
-            var result = graph.AdjacencyGraph.ShortestPathsAStar(e => 1, v => Vector2Int.Distance(v, pathEnd), pathStart);
-            if (result(pathEnd, out var path))
-            {
-                return path.Select(t => (Vector3Int)t.Target);
-            }
-            return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
+            // var result = graph.AdjacencyGraph.ShortestPathsAStar(e => 1, v => Vector2Int.Distance(v, pathEnd), pathStart);
+            // if (result(pathEnd, out var path))
+            // {
+            //     return path.Select(t => (Vector3Int)t.Target);
+            // }
+            // return new List<Vector3Int> { (Vector3Int)pathStart, (Vector3Int)pathEnd };
         }
 
         public void SetTile(BuildingCell cell, TileBase tile)
         {
             var tm = GetTilemap(cell.layers);
-            tm.SetTile(cell.cell, tile);
+            var buildingTilemap = tm.GetComponent<BuildingTilemap>();
+            if (buildingTilemap != null)
+            {
+                buildingTilemap.SetTile(cell.cell, tile);                
+            }
+            else
+            {
+                tm.SetTile(cell.cell, tile);
+            }
             var room = GetRoom(cell.cell, cell.layers);
             if (room == null) return;
             _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
@@ -387,6 +412,7 @@ namespace Buildings
             Debug.Assert(roomEvents != null, room);
             roomEvents.OnTileSet(cell.cell, cell.layers, tile);
             _onTileSet.OnNext(new BuildingTile(cell, tile));
+            if(buildingTilemap) buildingTilemap.NotifySetTileFinished();
         }
         
         public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);

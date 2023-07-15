@@ -7,19 +7,20 @@ namespace CoreLib.GameTime
     public class GameTimeState
     {
         private ReactiveProperty<TimeMode> _timeMode = new ReactiveProperty<TimeMode>();
-        
-        
+        private ReactiveProperty<GameDateTime> _currentTime = new();
+
+
+
         /// <summary>
         /// certain narrative events may require that time does not progress beyond a certain point until the event is complete
         /// For example: if the next mission is supposed to take place at night, and the current mission is taking place
         /// before night, we can only progress time up until prior to nightfall until the current mission is complete 
         /// </summary>
         private GameDateTime? _currentTimeMaximum;
+
         private Func<bool> _continueCondition;
-        
-        private GameDateTime _currentTime;
-        
-        
+
+
         public TimeMode Mode
         {
             get => _timeMode.Value;
@@ -28,33 +29,44 @@ namespace CoreLib.GameTime
 
         public GameTime GlobalGameTime
         {
-            get => _currentTime.gameTime;
+            get => CurrentTime.gameTime;
             set
             {
-                _currentTime.gameTime = value;
+                var t = CurrentTime;
+                t.gameTime = value;
+                CurrentTime = t;
                 Debug.Log($"Global Game Time set to {value}");
             }
         }
 
         public GameDate GlobalGameDate
         {
-            get => _currentTime.gameDate;
+            get => CurrentTime.gameDate;
             set
             {
-                _currentTime.gameDate = value;
+                var t = CurrentTime;
+                t.gameDate = value;
+                CurrentTime = t;
                 Debug.Log($"Global Game Date set to {value}");
             }
         }
 
         public GameDateTime CurrentTime
         {
-            get => _currentTime;
+            get => _currentTime.Value;
             set
             {
-                _currentTime = value;
+                _currentTime.Value = value;
                 Debug.Log($"Current Time set to {value}");
             }
         }
+        
+        
+        
+        public IObservable<GameTime> OnGameTimeUpdated => _currentTime.Select(t => t.gameTime);
+        public IObservable<GameDate> OnGameDateUpdated => _currentTime.Select(t => t.gameDate);
+        
+        public IObservable<GameDateTime> OnGameDateTimeUpdated => _currentTime;
 
         public bool HasTimeMaximumBeenSet => _currentTimeMaximum.HasValue;
         

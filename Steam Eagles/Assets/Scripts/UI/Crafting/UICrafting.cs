@@ -6,12 +6,14 @@ using Buildings.Rooms.Tracking;
 using Buildings.Tiles;
 using CoreLib;
 using CoreLib.SharedVariables;
+using CoreLib.Structures;
 using Items;
 using Sirenix.OdinInspector;
 using UI;
 using UI.Crafting;
 using UI.Crafting.Destruction;
 using UI.Crafting.Events;
+using UI.Crafting.Sampling;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,7 +30,8 @@ public class UICrafting : UIPlayerSystemBase
     public InputActions inputActions;
     public Shortcuts shortcuts;
     public UICraftingMode craftingMode;
-    public HoverPosition hoverPosition;
+    
+    public HoverPosition hoverPosition { get; set; }
     
     
     
@@ -99,6 +102,7 @@ public class UICrafting : UIPlayerSystemBase
     public bool IsCurrentRecipeLoaded { get; set; }
     
     private Subject<Unit> _onGameStarted = new Subject<Unit>();
+    private CraftingSampler _sampler;
 
     [ShowInInspector, BoxGroup("Debug")] public string CurrentCategory => recipes.CurrentCategoryName?.Value;
     [ShowInInspector, BoxGroup("Debug")] public Recipe CurrentRecipe => recipes.CurrentRecipe?.Value;
@@ -122,8 +126,9 @@ public class UICrafting : UIPlayerSystemBase
 
     [Inject] public void Install(LoadHelper loadHelper, CraftingAimHanding aimHanding, PlacementValidity placementValidity,
         RecipePreviewController previewController, DestructionPreviewController destructionPreviewController, CraftingDirectionHandler directionHandler,
-        CraftingBuildingTarget craftingBuildingTarget)
+        CraftingBuildingTarget craftingBuildingTarget ,CraftingSampler sampler)
     {
+        _sampler = sampler;
         _craftingBuildingTarget = craftingBuildingTarget;
         _directionHandler = directionHandler;
         _recipeLoader = loadHelper;
@@ -188,14 +193,31 @@ public class UICrafting : UIPlayerSystemBase
         }
         else
         {
-            _placementValidity.UpdateValidity(recipe, loadedObject, _character, building, gridPosition);
-            _previewController.UpdatePreview(recipe, loadedObject, _playerInput, building, gridPosition, _placementValidity.IsValid);
-        
-            if (_placementValidity.IsValid)
+            if (_sampler.CheckForRecipeSampled(_playerInput, building, out var sampledRecipe))
             {
-                if (_playerInput.actions["Ability Primary"].IsPressed())
+                recipes.SelectRecipe(sampledRecipe.name);
+                
+                var sampleEventInfo = new SampleEventInfo()
                 {
-                    _previewController.BuildFromPreview( building, gridPosition);
+                    aimPosition = _aimHanding.AimWorldSpace.Value,
+                    loadedObject = _recipeLoader.CurrentRecipeLoadedObject,
+                    targetName = sampledRecipe.name,
+                    aimTransform = hoverPosition == null ? null : hoverPosition.hoverTransform,
+                    targetSize = Vector2.one
+                };
+                MessageBroker.Default.Publish(sampleEventInfo);
+            }
+            else
+            {
+                _placementValidity.UpdateValidity(recipe, loadedObject, _character, building, gridPosition);
+                _previewController.UpdatePreview(recipe, loadedObject, _playerInput, building, gridPosition, _placementValidity.IsValid);
+        
+                if (_placementValidity.IsValid)
+                {
+                    if (_playerInput.actions["Ability Primary"].IsPressed())
+                    {
+                        _previewController.BuildFromPreview( building, gridPosition);
+                    }
                 }
             }
         }

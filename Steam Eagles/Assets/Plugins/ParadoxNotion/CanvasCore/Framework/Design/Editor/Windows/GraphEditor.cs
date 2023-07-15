@@ -164,7 +164,7 @@ namespace NodeCanvas.Editor
 
             willRepaint = true;
             fullDrawPass = true;
-            wantsMouseMove = true;
+            wantsMouseMove = false;
             minSize = new Vector2(700, 300);
 
             EditorApplication.playModeStateChanged -= OnPlayModeChange;
@@ -378,12 +378,11 @@ namespace NodeCanvas.Editor
             }
 
             var targetPan = (Vector2)smoothPan;
-            if ( ( targetPan - pan ).magnitude < 0.1f ) {
+            if ( ( targetPan - pan ).magnitude <= 0.1f ) {
                 smoothPan = null;
                 return false;
             }
 
-            targetPan = new Vector2(Mathf.FloorToInt(targetPan.x), Mathf.FloorToInt(targetPan.y));
             pan = Vector2.SmoothDamp(pan, targetPan, ref _panVelocity, 0.08f, Mathf.Infinity, deltaTime);
             return true;
         }
@@ -396,13 +395,13 @@ namespace NodeCanvas.Editor
             }
 
             var targetZoom = (float)smoothZoomFactor;
-            if ( Mathf.Abs(targetZoom - zoomFactor) < 0.00001f ) {
+            if ( Mathf.Abs(targetZoom - zoomFactor) < 0.0001f ) {
                 smoothZoomFactor = null;
                 return false;
             }
 
             zoomFactor = Mathf.SmoothDamp(zoomFactor, targetZoom, ref _zoomVelocity, 0.08f, Mathf.Infinity, deltaTime);
-            if ( Mathf.Abs(1 - zoomFactor) < 0.00001f ) { zoomFactor = 1; }
+            if ( Mathf.Abs(1 - zoomFactor) < 0.0001f ) { zoomFactor = 1; }
             return true;
         }
 
@@ -917,7 +916,7 @@ namespace NodeCanvas.Editor
 
 
         ///<summary>Canvas groups</summary>
-        static void DoCanvasGroups() {
+        static void DoCanvasGroups() { // TODO: rewrite...
 
             if ( currentGraph.canvasGroups == null ) {
                 return;
@@ -940,12 +939,13 @@ namespace NodeCanvas.Editor
                 GUI.color = Color.white;
                 GUI.Box(new Rect(scaleRectBR.x + 10, scaleRectBR.y + 10, 6, 6), string.Empty, StyleSheet.scaleArrowBR);
 
-                if ( group.editState != CanvasGroup.EditState.Renaming ) {
+
+                if ( group.editState != CanvasGroup.EditState.RenamingTitle ) {
                     var size = StyleSheet.canvasGroupHeader.fontSize / zoomFactor;
                     var name = string.Format("<size={0}><b>{1}</b></size>", size, group.name);
                     GUI.Label(headerRect, name, StyleSheet.canvasGroupHeader);
 
-                    EditorGUIUtility.AddCursorRect(headerRect, group.editState == CanvasGroup.EditState.Renaming ? MouseCursor.Text : MouseCursor.Link);
+                    EditorGUIUtility.AddCursorRect(headerRect, group.editState == CanvasGroup.EditState.RenamingTitle ? MouseCursor.Text : MouseCursor.Link);
                     EditorGUIUtility.AddCursorRect(scaleRectBR, MouseCursor.ResizeUpLeft);
 
                     GUI.color = GUI.color.WithAlpha(0.25f);
@@ -959,7 +959,8 @@ namespace NodeCanvas.Editor
                     GUI.color = Color.white;
                 }
 
-                if ( group.editState == CanvasGroup.EditState.Renaming ) {
+
+                if ( group.editState == CanvasGroup.EditState.RenamingTitle ) {
                     GUI.SetNextControlName("GroupRename" + i);
                     group.name = EditorGUI.TextField(headerRect, group.name, StyleSheet.canvasGroupHeader);
                     GUI.FocusControl("GroupRename" + i);
@@ -982,15 +983,14 @@ namespace NodeCanvas.Editor
 
                         if ( e.button == 1 ) {
                             var menu = new GenericMenu();
-                            menu.AddItem(new GUIContent("Rename"), false, () => { group.editState = CanvasGroup.EditState.Renaming; });
+                            menu.AddItem(new GUIContent("Rename"), false, () => { group.editState = CanvasGroup.EditState.RenamingTitle; });
                             menu.AddItem(new GUIContent("Edit Color"), false, () => { DoPopup(() => { group.color = EditorGUILayout.ColorField(group.color); }); });
-                            menu.AddItem(new GUIContent("Select Nodes"), false, () => { GraphEditorUtility.activeElements = tempCanvasGroupNodes.Cast<IGraphElement>().ToList(); });
-                            menu.AddItem(new GUIContent("Delete Group"), false, () => { currentGraph.canvasGroups.Remove(group); });
+                            menu.AddItem(new GUIContent("Delete"), false, () => { currentGraph.canvasGroups.Remove(group); });
                             GraphEditorUtility.PostGUI += () => { menu.ShowAsContext(); };
                         } else if ( e.button == 0 ) {
                             group.editState = CanvasGroup.EditState.Dragging;
                             if ( e.clickCount == 2 ) {
-                                group.editState = CanvasGroup.EditState.Renaming;
+                                group.editState = CanvasGroup.EditState.RenamingTitle;
                                 GUI.FocusControl("GroupRename" + i);
                             }
                         }
@@ -1030,7 +1030,7 @@ namespace NodeCanvas.Editor
                     }
                 }
 
-                if ( e.rawType == EventType.MouseUp && group.editState != CanvasGroup.EditState.Renaming ) {
+                if ( e.rawType == EventType.MouseUp && group.editState != CanvasGroup.EditState.RenamingTitle ) {
                     if ( group.editState == CanvasGroup.EditState.Dragging ) {
                         foreach ( var node in group.GatherContainedNodes(currentGraph) ) {
                             node.TrySortConnectionsByRelativePosition();
@@ -1047,7 +1047,6 @@ namespace NodeCanvas.Editor
                 }
             }
         }
-
 
         //Snap all nodes either to grid if option enabled
         static void SnapNodesToGrid(Graph graph) {
@@ -1105,7 +1104,7 @@ namespace NodeCanvas.Editor
         }
 
         ///<summary>after nodes, a cool minimap</summary>
-        static void DrawMinimap(Rect container) {
+        public static void DrawMinimap(Rect container) {
 
             GUI.color = Colors.Grey(0.5f).WithAlpha(0.85f);
             Styles.Draw(container, StyleSheet.windowShadow);

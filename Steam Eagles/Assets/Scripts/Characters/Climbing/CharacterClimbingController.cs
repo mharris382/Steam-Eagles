@@ -46,12 +46,14 @@ namespace Characters
             Debug.Assert(climbable != null, "climbable == null");
             _climbState.StartClimbing(climbable);
             _climbHandle = _climbState.CurrentClimbHandle;
+            if (_characterState.resetJumpTimer != null) _characterState.resetJumpTimer();
         }
         public void OnClimbStopped()
         {
             _structureState.Mode = StructureState.JointMode.DISABLED;
             _climbState.StopClimbing();
             _climbHandle.Dispose();
+            if (_characterState.resetJumpTimer != null) _characterState.resetJumpTimer();
         }
 
 
@@ -67,6 +69,7 @@ namespace Characters
             _climbCheck.TimestampClimb();
             if (_characterState.JumpHeld)
             {
+                if(_characterState.resetJumpTimer != null) _characterState.resetJumpTimer();
                 _climbHandle.Dispose();
                 return;
             }

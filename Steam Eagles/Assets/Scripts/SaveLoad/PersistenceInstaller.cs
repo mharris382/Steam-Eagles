@@ -26,9 +26,22 @@ public class PersistenceInstaller : MonoInstaller
              Container.Bind<ISaveLoaderSystem>().To(saveLoadSystem).FromNew().AsSingle();
              config.Log($"Bound {saveLoadSystem.Name}");
          }
+
+         Container.BindInterfacesTo<SpawnDBSetter>().AsSingle().NonLazy();
     }
 }
 
+public class SpawnDBSetter : ITickable
+{
+    [Inject]
+    private GlobalSavePath _savePath;
+
+    public void Tick()
+    {
+        var path = Path.Combine(_savePath.FullSaveDirectoryPath, "SpawnDatabase.json");
+        SpawnDatabase.Instance.filePath = path;
+    }
+}
 
 [InlineProperty]
 [System.Serializable]
