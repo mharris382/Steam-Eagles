@@ -19,6 +19,10 @@ namespace Buildings.DI
         [InlineProperty, ToggleGroup(nameof(overrideTileAssets))]
         public TileAssets tileAssets;
         public PowerConfig powerConfig;
+        
+        [Required]
+        public ElectricityLineHandler electricityLineHandlerPrefab;
+        
         public override void InstallBindings()
         {
             BuildingDamageInstaller.Install(Container);
@@ -49,6 +53,15 @@ namespace Buildings.DI
             
             Container.Bind<BuildingPowerGrid>()
                 .FromMethod(context => context.Container.Resolve<Building>().Map.PowerGrid).AsSingle().NonLazy();
+
+            Container.BindInterfacesAndSelfTo<ElectricityConsumers>().AsSingle().NonLazy();
+            Container
+                .BindFactory<IElectricityConsumer, ElectricityConsumers.ElectricityConsumerWrapper,
+                    ElectricityConsumers.ElectricityConsumerWrapper.Factory>().AsSingle().NonLazy();
+
+            Debug.Assert(electricityLineHandlerPrefab != null, $"Missing electricityLineHandlerPrefab on {name}",this);
+            Container.Bind<ElectricityLineHandler>().FromComponentInNewPrefab(electricityLineHandlerPrefab).UnderTransform(transform).AsSingle()
+                .NonLazy();
         }
     }
 

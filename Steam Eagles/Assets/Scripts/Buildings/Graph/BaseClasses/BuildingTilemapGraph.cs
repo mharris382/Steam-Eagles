@@ -32,7 +32,11 @@ namespace Buildings.Graph
         protected readonly Building _building;
         private readonly Room[] _rooms;
         protected readonly CompositeDisposable _cd = new();
+
+        private Subject<BuildingTile> _tileChanged = new();
         
+        public IObservable<BuildingTile> OnGraphChanged => _tileChanged;
+
         public bool IsDirty => _dirty;
         public bool IsDisposed => _cd.IsDisposed;
 
@@ -113,8 +117,8 @@ namespace Buildings.Graph
 
         public void Dispose()
         {
-            
             _cd.Dispose();
+            _tileChanged.Dispose();
             OnDispose();
         }
 
@@ -125,8 +129,16 @@ namespace Buildings.Graph
             var onTileRemoved = onTileChanged.Where(t => t.IsEmpty);
             var onTileAdded = onTileChanged.Where(t => t.IsEmpty == false);
             
-            onTileAdded.Subscribe(AddNode).AddTo(_cd);
-            onTileRemoved.Subscribe(RemoveNode).AddTo(_cd);
+            onTileAdded.Subscribe(t =>
+            {
+                AddNode(t);
+                _tileChanged.OnNext(t);
+            }).AddTo(_cd);
+            onTileRemoved.Subscribe(t =>
+            {
+                RemoveNode(t);
+                _tileChanged.OnNext(t);
+            }).AddTo(_cd);
             
             _map.OnTileSetStream.Where(t => t.cell.layers == Layers).Subscribe(onTileChanged).AddTo(_cd);
             foreach (var room in _rooms)

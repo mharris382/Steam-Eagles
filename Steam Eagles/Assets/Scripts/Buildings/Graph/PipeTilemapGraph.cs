@@ -68,12 +68,15 @@ namespace Buildings.Graph
             
             float supplyTotal = suppliers.Sum(t => t.GetSupplyRate());
             float demandTotal = consumers.Sum(t => t.GetConsumptionRate());
-            if (supplyTotal < demandTotal) HandleSupplyDeficit(suppliers, consumers, supplyTotal, demandTotal);
+            if (supplyTotal < demandTotal)
+            {
+                HandleSupplyDeficit(suppliers, consumers, supplyTotal, demandTotal);
+            }
 
             int currentConsumer = 0;
 
-            int lastSupplier = suppliers.Count - 1;
-            int lastConsumer = consumers.Count - 1;
+            int lastSupplier = suppliers.Count-1;
+            int lastConsumer = consumers.Count-1;
 
             float currentConsumerDemand = consumers[currentConsumer].GetConsumptionRate();
 
@@ -87,22 +90,34 @@ namespace Buildings.Graph
                 return true;
             }
 
-            for (int s = 0; s < lastSupplier; s++)
+            bool SupplyAll(IPowerSupplier supplier)
             {
-                var supplier = suppliers[s];
                 float amountAvailable = supplier.GetSupplyRate();
-                if(amountAvailable == 0) continue;
-                if (amountAvailable >= currentConsumerDemand)
+                if(amountAvailable <= 0) return false;
+                while(currentConsumerDemand > 0 && amountAvailable > 0)
                 {
-                    consumers[currentConsumer].Consume(supplier.Supply(currentConsumerDemand));
-                    if (!TryGetNextConsumer())
-                        break;
+                    if (amountAvailable >= currentConsumerDemand)
+                    {
+                        consumers[currentConsumer].Consume(supplier.Supply(currentConsumerDemand));
+                        amountAvailable -= currentConsumerDemand;
+                        currentConsumerDemand = 0;
+                        if (!TryGetNextConsumer()) return true;
+                    }
+                    else
+                    {
+                        consumers[currentConsumer].Consume(supplier.Supply(amountAvailable));
+                        currentConsumerDemand -= amountAvailable;
+                        amountAvailable = 0;
+                    }
                 }
-                else
-                {
-                    consumers[currentConsumer].Consume(supplier.Supply(amountAvailable));
-                    currentConsumerDemand -= amountAvailable;
-                }
+                return false;
+            }
+            
+            for (int s = 0; s <= lastSupplier; s++)
+            {
+                
+                if(SupplyAll(suppliers[s]))break;
+                
                 operations++;
             }
             return operations;
@@ -117,7 +132,7 @@ namespace Buildings.Graph
                 this.UpdateConnectedComponents();
             }
             _components.Clear();
-            foreach (var valueTuple in _powerGrid.GetSuppliers())
+            foreach (var valueTuple in _powerGrid.GetSuppliers().Where(t => t.cell.layers == this.Layers))
             {
                 var cell = valueTuple.cell;
                 int c = GetComponent(cell);
@@ -125,11 +140,12 @@ namespace Buildings.Graph
                 if (!_components.TryGetValue(c, out var t))
                 {
                     t = (new List<IPowerSupplier>(), new List<IPowerConsumer>());
+                    _components.Add(c, t);
                 }
                 t.suppliers.Add(valueTuple.supplier);
             }
 
-            foreach (var valueTuple in _powerGrid.GetConsumers())
+            foreach (var valueTuple in _powerGrid.GetConsumers().Where(t => t.cell.layers == this.Layers))
             {
                 var cell = valueTuple.cell;
                 int c = GetComponent(cell);
@@ -165,6 +181,42 @@ namespace Buildings.Graph
         public override void OnEdgeRemoved(SUndirectedEdge<BuildingCell> edge)
         {
             
+        }
+
+
+        public bool IsConnected(BuildingCell cell)
+        {
+            return GetComponent(cell) != -1;
+        }
+
+        public int GetConnection(BuildingCell cell)
+        {
+            return GetComponent(cell);
+        }
+
+        public bool TryGetConnection(BuildingCell cell, out int component)
+        {
+            component = GetComponent(cell);
+            return component != -1;
+        }
+
+        public bool TryGetTotalSupplyDemand( BuildingCell cell, out float supply, out float demand)
+        {
+            supply = demand = 0;
+            return TryGetConnection(cell, out var connection) && TryGetTotalSupplyDemand(connection, out supply, out demand);
+        }
+        public bool TryGetTotalSupplyDemand( int connection, out float supply, out float demand)
+        {
+            UpdateConnectedGrids();
+            UpdateConnectedComponents();
+            if(!_components.TryGetValue(connection, out var t))
+            {
+                supply = demand = 0;
+                return false;
+            }
+            supply = t.suppliers.Sum(t => t.GetSupplyRate());
+            demand = t.consumers.Sum(t => t.GetConsumptionRate());
+            return true;
         }
     }
     public class PipeTilemapGraph : PowerTilemapGraph

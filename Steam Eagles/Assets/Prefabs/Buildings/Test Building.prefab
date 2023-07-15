@@ -418,7 +418,6 @@ MonoBehaviour:
   useBoundaryTexture: 1
   updateRate: 0.5
   updateIoRate: 0.25
-  updateTilemapRate: 2
   sinkMultiplier: 1
   sourceMultiplier: 5
   textureParameter: Gas State
@@ -429,6 +428,7 @@ MonoBehaviour:
   laplacianCenter: -1
   laplacianNeighbor: 0.4
   laplacianDiagnal: 0
+  testDeltaTime: 0.1
 --- !u!114 &3381615032781792032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76467,6 +76467,10 @@ MonoBehaviour:
     pipeTiles:
       damagedTile: {fileID: 0}
       repairedTile: {fileID: 0}
+  powerConfig:
+    updateRate: 0.5
+    maxNodesToProcessPerUpdate: 100
+  electricityLineHandlerPrefab: {fileID: 5125888070838414293, guid: 231f9d8802c9bb74a9dd1ec131ef664b, type: 3}
 --- !u!114 &6429817332606288816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76877,6 +76881,10 @@ MonoBehaviour:
   blockingLayers: 2
   debug: 1
   checkIterations: 10
+  wiresListenerTilemap: {fileID: 0}
+  activeWireTile: {fileID: 0}
+  inactiveWireTile: {fileID: 0}
+  zOffset: 5
 --- !u!1 &8950091405055464956
 GameObject:
   m_ObjectHideFlags: 0

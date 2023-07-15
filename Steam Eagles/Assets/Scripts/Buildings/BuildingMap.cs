@@ -276,6 +276,13 @@ namespace Buildings
 
         public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
         public Room GetRoom(BuildingCell cell) => GetRoom(cell.cell, cell.layers);
+        public bool HasRoom(BuildingCell cell) => GetRoom(cell) != null;
+        public bool TryGetRoom(BuildingCell cell, out Room room)
+        {
+            room = GetRoom(cell);
+            return room != null;
+        }
+        
         public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);
         public bool CellIsInARoom(Vector3Int cell, BuildingLayers layer) => GetMapForLayer(layer).HasCell(cell);
 
@@ -329,6 +336,13 @@ namespace Buildings
         {
             var tile = GetTile(cell);
             return new BuildingTile(cell, tile);
+        }
+
+        public bool TryGetBuildingTile(BuildingCell cell, out BuildingTile tile)
+        {
+            tile = GetBuildingTile(cell);
+            
+            return !tile.IsEmpty;
         }
 
         public TileBase GetTile(Vector3Int cell, BuildingLayers layers)
