@@ -536,6 +536,8 @@ namespace Characters
             for (int i = 0; i < contacts; i++)
             {
                 var contactPoint = _contactPoint2Ds[i];
+                if (contactPoint.collider.GetComponent<PlatformEffector2D>() != null &&
+                    contactPoint.collider.usedByEffector) continue;
                 if (contactPoint.normal.y < -0.1f && contactPoint.point.y > transform.position.y)
                 {
                     return true;
