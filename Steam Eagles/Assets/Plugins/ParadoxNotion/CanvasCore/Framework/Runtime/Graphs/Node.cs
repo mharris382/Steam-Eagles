@@ -452,7 +452,7 @@ namespace NodeCanvas.Framework
         ///----------------------------------------------------------------------------------------------
 
         ///<summary>Returns a warning string or null if none</summary>
-        virtual internal string GetWarningOrError() {
+        virtual protected string GetWarningOrError() {
             var hardError = GetHardError();
             if ( hardError != null ) { return "* " + hardError; }
 

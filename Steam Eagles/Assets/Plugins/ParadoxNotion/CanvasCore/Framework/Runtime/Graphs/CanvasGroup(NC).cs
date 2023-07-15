@@ -23,13 +23,16 @@ namespace NodeCanvas.Framework
             this.name = name;
         }
 
+        ///----------------------------------------------------------------------------------------------
+
 #if UNITY_EDITOR
+        public static readonly Color DEFAULT_NOTES_COLOR = Color.yellow.WithAlpha(0.9f);
         [System.NonSerialized] public EditState editState;
         [System.NonSerialized] private Node[] containedNodes;
 
         public enum EditState
         {
-            None, Dragging, Renaming, Scaling
+            None, Dragging, RenamingTitle, Scaling
         }
 
         public Node[] GatherContainedNodes(Graph graph) {

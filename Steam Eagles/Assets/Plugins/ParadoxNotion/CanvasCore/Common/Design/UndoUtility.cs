@@ -13,7 +13,7 @@ namespace ParadoxNotion.Design
         [Conditional("UNITY_EDITOR")]
         public static void RecordObject(Object target, string name) {
 #if UNITY_EDITOR
-            if ( Application.isPlaying || target == null ) { return; }
+            if ( Application.isPlaying || UnityEditor.EditorApplication.isUpdating || target == null ) { return; }
             lastOperationName = name;
             UnityEditor.Undo.RecordObject(target, name);
 #endif
@@ -23,7 +23,7 @@ namespace ParadoxNotion.Design
         [Conditional("UNITY_EDITOR")]
         public static void RecordObjectComplete(Object target, string name) {
 #if UNITY_EDITOR
-            if ( Application.isPlaying || target == null ) { return; }
+            if ( Application.isPlaying || UnityEditor.EditorApplication.isUpdating || target == null ) { return; }
             lastOperationName = name;
             UnityEditor.Undo.RegisterCompleteObjectUndo(target, name);
 #endif
@@ -33,7 +33,7 @@ namespace ParadoxNotion.Design
         [Conditional("UNITY_EDITOR")]
         public static void SetDirty(Object target) {
 #if UNITY_EDITOR
-            if ( Application.isPlaying || target == null ) { return; }
+            if ( Application.isPlaying || UnityEditor.EditorApplication.isUpdating || target == null ) { return; }
             UnityEditor.EditorUtility.SetDirty(target);
 #endif
         }

@@ -36,6 +36,10 @@ namespace NodeCanvas.Framework
         //used to halt self-serialization when something went wrong in deserialization
         [SerializeField] private bool _haltSerialization;
 
+        [SerializeField, Tooltip("An external text asset file to serialize the graph on top of the internal serialization")]
+        private TextAsset _externalSerializationFile;
+        public TextAsset externalSerializationFile { get { return _externalSerializationFile; } internal set { _externalSerializationFile = value; } }
+
         [System.NonSerialized] private bool haltForUndo;
 
         ///<summary>Invoked after graph serialization.</summary>
@@ -81,6 +85,12 @@ namespace NodeCanvas.Framework
                 _objectReferences = newReferences;
 
 #if UNITY_EDITOR
+
+                if ( _externalSerializationFile != null ) {
+                    var externalSerializationFilePath = ParadoxNotion.Design.EditorUtils.AssetToSystemPath(UnityEditor.AssetDatabase.GetAssetPath(_externalSerializationFile));
+                    System.IO.File.WriteAllText(externalSerializationFilePath, JSONSerializer.PrettifyJson(newSerialization));
+                }
+
                 //notify owner (this is basically used for bound graphs)
                 var owner = agent as GraphOwner;
                 if ( owner != null ) {
@@ -108,15 +118,12 @@ namespace NodeCanvas.Framework
         ///<summary>Deserialize the Graph. Return if that succeed</summary>
         public bool SelfDeserialize() {
             if ( Deserialize(_serializedGraph, _objectReferences, false) ) {
-
                 //raise event
                 if ( onGraphDeserialized != null ) {
                     onGraphDeserialized(this);
                 }
-
                 return true;
             }
-
             return false;
         }
 
@@ -585,9 +592,12 @@ namespace NodeCanvas.Framework
                 allNodes[i].OnPostGraphStarted();
             }
 
-            updateMode = newUpdateMode;
-            if ( updateMode != UpdateMode.Manual ) {
-                MonoManager.current.AddUpdateCall((MonoManager.UpdateMode)updateMode, UpdateGraph);
+            if ( isRunning ) {
+                //check isRunning  before adding the update call for in case the graph immediately ended in the same frame that it started
+                updateMode = newUpdateMode;
+                if ( updateMode != UpdateMode.Manual ) {
+                    MonoManager.current.AddUpdateCall((MonoManager.UpdateMode)updateMode, UpdateGraph);
+                }
             }
         }
 

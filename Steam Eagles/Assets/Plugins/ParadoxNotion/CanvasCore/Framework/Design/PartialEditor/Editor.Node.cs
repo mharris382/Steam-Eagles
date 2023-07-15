@@ -982,7 +982,7 @@ namespace NodeCanvas.Framework
                         if ( e.type == EventType.MouseDown && e.button == 0 ) {
                             if ( portRect.Contains(e.mousePosition) || nodeOutputBox.Contains(e.mousePosition) ) {
                                 dragDropMisses = 0;
-                                clickedPort = new GUIPort(0, this, portRect.center);
+                                clickedPort = new GUIPort(-1, this, portRect.center);
                                 e.Use();
                             }
                         }
