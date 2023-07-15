@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Buildings.BuildingTilemaps;
 using Buildings.Rooms;
 using Buildings.Tiles;
 using QuikGraph.Algorithms;
@@ -392,7 +393,15 @@ namespace Buildings
         public void SetTile(BuildingCell cell, TileBase tile)
         {
             var tm = GetTilemap(cell.layers);
-            tm.SetTile(cell.cell, tile);
+            var buildingTilemap = tm.GetComponent<BuildingTilemap>();
+            if (buildingTilemap != null)
+            {
+                buildingTilemap.SetTile(cell.cell, tile);                
+            }
+            else
+            {
+                tm.SetTile(cell.cell, tile);
+            }
             var room = GetRoom(cell.cell, cell.layers);
             if (room == null) return;
             _building.tilemapChangedSubject.OnNext(new BuildingTilemapChangedInfo(_building, tm, cell.cell, cell.layers));
@@ -403,6 +412,7 @@ namespace Buildings
             Debug.Assert(roomEvents != null, room);
             roomEvents.OnTileSet(cell.cell, cell.layers, tile);
             _onTileSet.OnNext(new BuildingTile(cell, tile));
+            if(buildingTilemap) buildingTilemap.NotifySetTileFinished();
         }
         
         public void SetTile(Vector3Int cell, BuildingLayers layer, TileBase tile) => SetTile(new BuildingCell(cell, layer), tile);

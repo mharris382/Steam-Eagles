@@ -30,7 +30,6 @@ using TextureSet = RoomSimTextures.TextureSet;
 //     }
 // }
 
-
 public class RoomSim : MonoBehaviour
 {
     public RoomTextures roomTextures;
@@ -39,16 +38,23 @@ public class RoomSim : MonoBehaviour
 }
 public class RoomCamera : MonoBehaviour
 {
-    public Camera camera;
+    [Required] public Camera camera;
     public float zOffset = 10;
     public int resolution = 1;
-    
+
+    #region [Private Variables]
+
     private Room _room;
     private Building _building;
     private RoomTextures _roomTextures;
     private RoomSimTextures _simTextures;
     private RenderTexture _renderTexture;
     private BoundsLookup _boundsLookup;
+
+    #endregion
+
+    #region [Properties]
+
     public RoomTextures RoomTextures => _roomTextures ? _roomTextures : _roomTextures = room.GetComponent<RoomTextures>();
     public Building Building => _building ? _building : _building = room.GetComponentInParent<Building>();
     public Room room => _room ? _room : _room = GetComponent<Room>();
@@ -56,43 +62,12 @@ public class RoomCamera : MonoBehaviour
     public TextureSet TextureSet => SimTextures.textureSet;
     public BoundsLookup BoundsLookup => _boundsLookup ??= new BoundsLookup(room);
 
-    public bool IsReady => RoomTextures.SolidTexture != null &&
+    public bool IsReady => camera != null &&
+                           RoomTextures.SolidTexture != null &&
                            RoomTextures.FoundationTexture != null &&
                            RoomTextures.WallTexture != null;
 
-    private RenderTexture GetRenderTexture()
-    {
-        var gridBounds = room.GetBounds(BuildingLayers.SOLID);
-        var imageSize = gridBounds.size * resolution;
-        if (_renderTexture == null || (_renderTexture.width != imageSize.x && _renderTexture.height != imageSize.y))
-        {
-            var rt = new RenderTexture(imageSize.x, imageSize.y, 1);
-            rt.enableRandomWrite = true;
-            rt.Create();
-            _renderTexture = rt;
-        }
-
-        return _renderTexture;
-    }
-
-    [Button]
-    public void Init()
-    {
-        if(camera==null)return;
-        var rt = GetRenderTexture();
-        camera.targetTexture = rt;
-        var bounds = room.WorldSpaceBounds;
-        var size = bounds.size;
-        var orthoSize = Mathf.Min(size.x, size.y) * 0.5f;
-        camera.orthographicSize = orthoSize;
-        camera.transform.position = bounds.center + (Vector3.back * zOffset);
-    }
-
-    public void RunCompute()
-    {
-        
-    }
-
+    #endregion
 
     public void CaptureRoom(RenderTexture target, LayerMask layers)
     {

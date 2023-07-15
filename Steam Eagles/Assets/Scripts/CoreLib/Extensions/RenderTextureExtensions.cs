@@ -4,6 +4,11 @@ namespace CoreLib.Extensions
 {
     public static class RenderTextureExtensions
     {
+        public static bool SizeMatches(this RenderTexture texture, int width , int height)
+        {
+            if (texture == null) return false;
+            return texture.width == width && texture.height == height;
+        }
         public static bool SizeMatches(this RenderTexture renderTexture, params RenderTexture[] others)
         {
             if (others.Length == 1)

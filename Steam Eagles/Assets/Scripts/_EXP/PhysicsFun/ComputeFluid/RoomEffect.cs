@@ -5,46 +5,56 @@ using _EXP.PhysicsFun.ComputeFluid.Computes;
 using Buildings.Rooms;
 using CoreLib.Extensions;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.VFX;
 
 
 public class RoomEffect : MonoBehaviour
 {
+    [FoldoutGroup(VISUAL_EFFECT)]
     public VisualEffect effect;
-    public bool useBoundaryTexture = true;
-    public float updateRate = 0.5f;
-    public float updateIoRate = 0.25f;
-    public float updateTilemapRate = 2;
     
-    public float sinkMultiplier = 1;
-    public float sourceMultiplier = 1;
-    [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameTex))] public string textureParameter = "Texture";
-    [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string sizeParameter = "BoundsSize";
-    [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string centerParameter = "BoundsCenter";
+    
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public bool useBoundaryTexture = true;
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)]public float updateRate = 0.5f;
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]public float updateIoRate = 0.25f;
+    
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]public float sinkMultiplier = 1;
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]public float sourceMultiplier = 1;
+    [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameTex))] public string textureParameter = "Texture";
+    [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string sizeParameter = "BoundsSize";
+    [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string centerParameter = "BoundsCenter";
+    [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameInt))] public string resolutionParameter = "Resolution";
 
-    [BoxGroup("Parameters"), ValidateInput(nameof(ValidateParamNameInt))] public string resolutionParameter = "Resolution";
-
-    public bool disableSim = true;
     private RoomTextures _room;
     private RoomSimTextures _simTextures;
     private VisualEffect _visualEffect;
-    private RoomCamera _roomCamera;
+    
     private RoomSimTextures _roomSimTextures;
     private GasTexture _gasTexture;
-  public  float laplacianCenter = -4.0f;
-  public  float laplacianNeighbor = 1.0f;
-  public float laplacianDiagnal = 0.5f;
+    private CapturedRoomTexture _capturedRoomTexture;
+    
+  
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public bool disableSim = true;
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public  float laplacianCenter = -4.0f;
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public  float laplacianNeighbor = 1.0f;
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public float laplacianDiagnal = 0.5f;
+    
     private ISimIOTextures _ioTexture;
+
+    private IDisposable _currentComputeUpdateLoop;
     private int _textureParamId;
     private int _resolutionParamId;
     private int _useBoundaryParamId;
     private int _boundaryTexParamId;
+    
     const string BOUNDARY_TEX_NAME = "BoundaryTexture";
     const string USE_BOUNDARY_TEX_NAME = "use boundary";
-    public ISimIOTextures IOTexture => _ioTexture!=null ? _ioTexture : _ioTexture = GetComponentInParent<ISimIOTextures>();
     
-    public RoomCamera RoomCamera => _roomCamera ? _roomCamera : _roomCamera = GetComponentInParent<RoomCamera>();
+    public ISimIOTextures IOTexture => _ioTexture!=null ? _ioTexture : _ioTexture = GetComponentInParent<ISimIOTextures>();
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2), PropertyOrder(-1)]
+    public CapturedRoomTexture CapturedRoomTexture => _capturedRoomTexture ? _capturedRoomTexture : _capturedRoomTexture = GetComponentInParent<CapturedRoomTexture>();
     public VisualEffect VisualEffect => _visualEffect ? _visualEffect : _visualEffect = GetComponentInChildren<VisualEffect>();
     public RoomTextures Room => _room ? _room : _room = GetComponentInParent<RoomTextures>();
     public GasTexture GasTexture => _gasTexture ? _gasTexture : _gasTexture = GetComponentInParent<GasTexture>();
@@ -122,6 +132,62 @@ public class RoomEffect : MonoBehaviour
     }
 
     #endregion
+    
+    
+    private void OnEnable()
+    {
+        if (_currentComputeUpdateLoop != null)
+        {
+            _currentComputeUpdateLoop.Dispose();
+            _currentComputeUpdateLoop = null;
+        }
+        
+        //effect setup
+        GasTexture.ResetTexture();
+        SimTextures.Init();
+        
+        var simRoutine = StartCoroutine(UpdateSim());
+        var ioRoutine = StartCoroutine(UpdateIO());
+
+        _currentComputeUpdateLoop = Disposable.Create(() =>
+        {
+            StopCoroutine(simRoutine);
+            StopCoroutine(ioRoutine);
+            GasTexture.ReleaseTextures();
+        });
+    }
+
+    private void OnDisable()
+    {
+        if (_currentComputeUpdateLoop != null)
+        {
+            _currentComputeUpdateLoop.Dispose();
+            _currentComputeUpdateLoop = null;
+        }
+    }
+
+    IEnumerator UpdateSim()
+    {
+        while (enabled)
+        {
+            yield return new WaitForSeconds(updateRate);
+            if (GasTexture.HasTexture == false)
+            {
+                Debug.LogError("No Gas Texture", this);
+                continue;
+            }
+            RunCompute();
+            UpdateVisualEffectTexture();
+        }
+    }
+    IEnumerator UpdateIO()
+    {
+        while (enabled)
+        {
+            yield return new WaitForSeconds(updateIoRate);
+            RunIOCompute();
+        }
+    }
 
     #region [Initialization]
 
@@ -166,7 +232,17 @@ public class RoomEffect : MonoBehaviour
 
     #endregion
 
-    [Button,ButtonGroup()]
+    #region [Experimental]
+
+    private const string VISUAL_EFFECT = "Visual Effect";
+    private const string SIM_COMPUTE = "Sim Compute";
+    private const string ENVIRONMENT_MAPPING = "Environment Mapping";
+    private const string VERSION_1 = "/Version 1";
+    private const string VERSION_2 = "/Version 2";
+    
+    [FoldoutGroup(SIM_COMPUTE)]
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1)]
+    [Button,ButtonGroup(SIM_COMPUTE + VERSION_1 + "/Toolbar")]
     void RunIOCompute()
     {
         if (GasTexture.HasTexture == false)
@@ -187,14 +263,20 @@ public class RoomEffect : MonoBehaviour
         SimCompute.DispatchIO(gasTexture);
     }
 
-    [Button,ButtonGroup()]
+
+
+    [FoldoutGroup(SIM_COMPUTE + VERSION_2)]
+    public float testDeltaTime = 0.1f;
+    [FoldoutGroup(ENVIRONMENT_MAPPING)]
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]
+    [Button,ButtonGroup(SIM_COMPUTE + VERSION_1 + "/Toolbar")]
     void TilemapUpdateCompute()
     {
         GasTexture.ResetTexture();
         SimTextures.Init();
     }
     
-    [Button,ButtonGroup()]
+    [Button,ButtonGroup(SIM_COMPUTE + VERSION_1 + "/Toolbar")]
     void RunCompute()
     {
         if(!disableSim)
@@ -217,64 +299,29 @@ public class RoomEffect : MonoBehaviour
         return;
     }
 
-    [Button(ButtonSizes.Large)]
+    [Button,ButtonGroup(SIM_COMPUTE + VERSION_1 + "/Toolbar")]
     private void FullSimCompute()
     {
-       RunIOCompute();
-       RunCompute();
-    }
-
-    private void OnEnable()
-    {
-        GasTexture.ResetTexture();
-        SimTextures.Init();
-        StartCoroutine(UpdateSim());
-        StartCoroutine(UpdateIO());
-    }
-
-    
-    IEnumerator UpdateSim()
-    {
-        while (enabled)
-        {
-            yield return new WaitForSeconds(updateRate);
-            if (GasTexture.HasTexture == false)
-            {
-                Debug.LogError("No Gas Texture", this);
-                continue;
-            }
-            RunCompute();
-            UpdateVisualEffectTexture();
-        }
-    }
-    IEnumerator UpdateIO()
-    {
-        while (enabled)
-        {
-            yield return new WaitForSeconds(updateIoRate);
-            RunIOCompute();
-        }
+        RunIOCompute();
+        RunCompute();
     }
 
 
-    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
-    public float testDeltaTime = 0.1f;
-
-    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
-    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    [ EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup(SIM_COMPUTE + VERSION_2 + "/Toolbar")]
     private void MergeIOTextures()
     {
         MergeIOTextures(this.SimTextures.SimInputTexture, SimTextures.SimOutputTexture);
     }
 
-    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
-    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    [ EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup(SIM_COMPUTE + VERSION_2 + "/Toolbar")]
     private void TestUpdateVelocityFromHoles()
     {
         if(!CanCompute())return;
         var velTex = GasTexture.Velocity;
         CaptureWallsFromCamera();
-        var holeTex = _wallCaptured;
+        var holeTex = this.capturedTextures.WallTexture;
         GasSimCompute.UpdateVelocityFromHoles(velTex, holeTex);
     }
     private void MergeIOTextures(RenderTexture source, RenderTexture sink)
@@ -292,12 +339,12 @@ public class RoomEffect : MonoBehaviour
     }
 
 
-    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
-    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    [ EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup(SIM_COMPUTE + VERSION_2 + "/Toolbar")]
     private void TestUpdateVelocity() => UpdateVelocity(testDeltaTime);
 
-    [BoxGroup("Sim Version 2"), EnableIf(nameof(EnableButtons))]
-    [Button, ButtonGroup("Sim Version 2/Buttons")]
+    [ EnableIf(nameof(EnableButtons))]
+    [Button, ButtonGroup(SIM_COMPUTE + VERSION_2 + "/Toolbar")]
     private void TestUpdateGas() => UpdateGasState(testDeltaTime);
     
     
@@ -337,27 +384,43 @@ public class RoomEffect : MonoBehaviour
     }
 
 
-    [ShowInInspector, PreviewField]
-    private RenderTexture _wallCaptured;
-    public LayerMask wallLayer;
-    [Button]
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2)]
+    public CapturedTextures capturedTextures
+    {
+        get
+        {
+            if (_capturedRoomTexture == null) _capturedRoomTexture = gameObject.AddComponent<CapturedRoomTexture>();
+            return _capturedRoomTexture.CapturedTextures;
+        }
+    }
+    
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2)]
+    [Button, ButtonGroup(ENVIRONMENT_MAPPING + VERSION_2 + "/Toolbar")]
     void CaptureWallsFromCamera()
     {
-        if (_wallCaptured == null)
-        {
-            _wallCaptured = new RenderTexture(GasTexture.Velocity.width, GasTexture.Velocity.height, 1);
-            _wallCaptured.enableRandomWrite = true;
-            _wallCaptured.Create();
-        }
-        RoomCamera.CaptureRoom(_wallCaptured, wallLayer);
-        GasSimCompute.InvertWalls(_wallCaptured);
+        int width = GasTexture.RenderTexture.width;
+        int height = GasTexture.RenderTexture.height;
+        CapturedRoomTexture.CaptureLayer(CaptureLayers.WALL, width, height);
+
     }
-    // IEnumerator UpdateTilemap()
-    // {
-    //     while (enabled)
-    //     {
-    //         yield return new WaitForSeconds(updateTilemapRate);
-    //         
-    //     }
-    // }
+
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2)]
+    [Button, ButtonGroup(ENVIRONMENT_MAPPING + VERSION_2 + "/Toolbar")]
+    void CaptureIO()
+    {
+        int width = GasTexture.RenderTexture.width;
+        int height = GasTexture.RenderTexture.height;
+        CapturedRoomTexture.CaptureLayer(CaptureLayers.INPUT, width, height);
+    }
+    
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2)]
+    [Button, ButtonGroup(ENVIRONMENT_MAPPING + VERSION_2 + "/Toolbar")]
+    void CaptureBoundary()
+    {
+        int width = GasTexture.RenderTexture.width;
+        int height = GasTexture.RenderTexture.height;
+        CapturedRoomTexture.CaptureLayer(CaptureLayers.BOUNDARY, width, height);
+    }
+
+    #endregion
 }

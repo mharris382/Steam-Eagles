@@ -517,6 +517,9 @@ namespace Buildings
         
         public static bool operator ==(BuildingCell left, BuildingCell right) => left.Equals(right);
         public static bool operator !=(BuildingCell left, BuildingCell right) => !(left == right);
+        
+        public static implicit operator Vector2Int(BuildingCell cell) => cell.cell2D;
+        public static explicit operator Vector3Int(BuildingCell cell) => cell.cell;
 
         public override string ToString()
         {
@@ -567,7 +570,9 @@ namespace Buildings
         public static bool operator !=(BuildingTile left, BuildingTile right) => !(left == right);
 
         public static implicit operator BuildingCell(BuildingTile buildingTile) => buildingTile.cell;
-        public static implicit operator BuildingTile(BuildingCell buildingCell) => new(buildingCell, null);
+        public static explicit operator BuildingTile(BuildingCell buildingCell) => new(buildingCell, null);
+
+        public static implicit operator Vector2Int(BuildingTile cell) => cell.cell.cell2D;
         public override string ToString() => $"{cell.ToString()} {(tile == null ? "EMPTY" : tile.name)}";
     }
 

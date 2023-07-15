@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -8,16 +9,23 @@ public class GasTexture : MonoBehaviour
 {
     [SerializeField, Range(1, 5)] private int resolution = 1;
     [SerializeField, ReadOnly] private Vector2Int sizeRaw;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _pressureTexture;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _dyeTexture;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField] private RenderTexture _velocityTexture;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Gas"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _pressureTexture;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Dye"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _dyeTexture;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("m/s"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _velocityTexture;
     
     public DebugImages debugImages;
     public RawImage image;
+
+
+    private Subject<Unit> _onTextureWillBeReleased = new();
+    private Subject<Unit> _onTexturesReleased = new();
     
     
+    public IObservable<Unit> OnTextureWillBeReleased => _onTextureWillBeReleased;
+    public IObservable<Unit> OnTexturesReleased => _onTexturesReleased;
     
     
+
     [Serializable]
     public class DebugImages
     {
@@ -75,7 +83,19 @@ public class GasTexture : MonoBehaviour
     [Button()]
     public void ResetTexture()
     {
+        ReleaseTextures();
         _pressureTexture = null;
+        _dyeTexture = null;
+        _velocityTexture = null;
+    }
+
+    public void ReleaseTextures()
+    {
+        _onTextureWillBeReleased.OnNext(Unit.Default);
+        if(_pressureTexture!=null) _pressureTexture.Release();
+        if(_velocityTexture !=null)_velocityTexture.Release();
+        if(_dyeTexture != null)_dyeTexture.Release();
+        _onTexturesReleased.OnNext(Unit.Default);
     }
 
     public void SetSize(int w, int h)
