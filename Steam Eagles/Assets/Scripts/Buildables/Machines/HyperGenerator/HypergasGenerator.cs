@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Buildings;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -14,11 +15,14 @@ namespace Buildables
     [RequireComponent(typeof(BuildableMachine))]
     public class HypergasGenerator : Machine<HypergasGenerator>, IMachineCustomSaveData
     {
+        public HyperGenerator hyperGenerator;
+        
+        
         private BuildableMachine _buildableMachine;
         private HypergasEngineController _controller;
 
-        public MachineCell inputCell;
-        public MachineCell[] outputCells;
+        // public MachineCell inputCell;
+        // public MachineCell[] outputCells;
 
         [SerializeField] private Events events;
         
@@ -34,33 +38,37 @@ namespace Buildables
         private HypergasEngineConfig _config;
         private string _json;
 
+        public float Capacity
+        {
+            get => hyperGenerator.Capacity;
+        }
+
+        [ProgressBar(0, nameof(Capacity))]
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public float AmountStored
         {
-            get => _amountStored.Value;
-            set => _amountStored.Value = value;
+            get => hyperGenerator.StoredAmount;
+            set => hyperGenerator.StoredAmount = value;
         }
-        [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
-        public float ProductionRate
-        {
-            get;// => _amountStored.Value;
-            set;// => _amountStored.Value = value;
-        }
-        [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
-        public float ConsumptionRate
-        {
-            get;// => _amountStored.Value;
-            set;// => _amountStored.Value = value;
-        }
-
-
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public bool HasStartedUp
         {
-            get => _isProducing.Value;
-            set => _isProducing.Value = value;
+            get { return hyperGenerator.StoredAmount > 0; }
         }
-        
+        [ShowInInspector, HorizontalGroup("Debugging/h1", LabelWidth = 75), HideInEditorMode]
+        public float ProductionRate
+        {
+            get => hyperGenerator.GetProductionRate();// => _amountStored.Value;
+        }
+        [ShowInInspector, HorizontalGroup("Debugging/h1", LabelWidth = 75), HideInEditorMode]
+        public float ConsumptionRate
+        {
+            get => hyperGenerator.GetConsumptionRate();
+        }
+
+
+     
+
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
         
         
@@ -71,51 +79,80 @@ namespace Buildables
 
         private void Start()
         {
-            _amountStored.Select(t => t / _config.amountStoredBeforeProduction).Subscribe(events.AmountStoredChanged.Invoke);
-            _isProducing.Subscribe(events.ProductionStateChanged.Invoke);
+            // _amountStored.Select(t => t / _config.amountStoredBeforeProduction).Subscribe(events.AmountStoredChanged.Invoke);
+            hyperGenerator.Initialize();
+            //_isProducing.Subscribe(events.ProductionStateChanged.Invoke);
         }
+        
 
         private void Update()
         {
-            if (_controller == null)
-            {
-                Debug.LogError($"Steam network was not injected into {name}",this);
-                return;
-            }
-            _controller.Initialize();
-            _controller.UpdateEngine(Time.deltaTime);
+            hyperGenerator.Tick(Time.deltaTime);
         }
 
         public Vector2Int GetInputCellPosition()
         {
-            return inputCell.BuildingSpacePosition;
+            return default;
         }
 
         public Vector2Int[] GetOutputCellPositions()
         {
-            return outputCells.Select(t => t.BuildingSpacePosition).ToArray();
+            return null;
         }
 
         private void OnDestroy()
         {
             _controller?.Dispose();
+            
         }
+
+        #region [Save/Loading]
 
         public void LoadDataFromJson(string json)
         {
-            if (_controller == null)
+            _json = json;
+            LoadFromJson(json);
+            events.AmountStoredChanged.Invoke(_amountStored.Value);
+            events.ProductionStateChanged.Invoke(_isProducing.Value);
+        }
+        
+        [Serializable]
+        class SaveData
+        {
+            public bool isJumpstarted;
+            public float amountStored;
+        }
+        public void LoadFromJson(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            try
             {
-                _json = json;
+                var saveData = JsonUtility.FromJson<SaveData>(json);
+                if (saveData.isJumpstarted)
+                {
+                    this.AmountStored = Mathf.Max(saveData.amountStored, _config.amountStoredBeforeProduction+0.1f);
+                }
+                else
+                {
+                    this.AmountStored = saveData.amountStored;
+                }
+                Debug.Log("Loaded hypergas engine from json");
             }
-            else
+            catch (Exception e)
             {
-                _controller.LoadFromJson(json);
-                events.AmountStoredChanged.Invoke(_amountStored.Value);
-                events.ProductionStateChanged.Invoke(_isProducing.Value);
+                Debug.LogError("Failed to load from json: " + e);
             }
         }
+        public string SaveDataToJson()
+        {
+            var saveData = new SaveData();
+            saveData.isJumpstarted = this.HasStartedUp;
+            saveData.amountStored = this.AmountStored;
+            return JsonUtility.ToJson(saveData);
+        }
 
-        public string SaveDataToJson() => _controller.SaveToJson();
+        #endregion
+
     }
 
     public class HypergasInstaller : Installer<HypergasInstaller>
