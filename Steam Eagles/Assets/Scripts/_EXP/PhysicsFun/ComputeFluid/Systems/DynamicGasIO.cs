@@ -134,7 +134,9 @@ namespace _EXP.PhysicsFun.ComputeFluid
         private void DynamicIO()
         {
             ObjectToData();
-            DynamicGasIOCompute.ExecuteDynamicIO(_gasTexture.RenderTexture, ref _dynamicIOData);
+            if (_gasTexture.Velocity != null)
+                DynamicGasIOCompute.ExecuteDynamicIO(_gasTexture.RenderTexture, _gasTexture.Velocity,
+                    ref _dynamicIOData);
             DataToObjects();
             
             void ObjectToData()

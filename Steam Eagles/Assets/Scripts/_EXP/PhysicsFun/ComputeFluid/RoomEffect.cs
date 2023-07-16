@@ -22,6 +22,7 @@ public class RoomEffect : MonoBehaviour
     
     [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]public float sinkMultiplier = 1;
     [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_1)]public float sourceMultiplier = 1;
+    [FoldoutGroup(ENVIRONMENT_MAPPING + VERSION_2)] public bool useCameraBoundary = false;
     [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameTex))] public string textureParameter = "Texture";
     [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string sizeParameter = "BoundsSize";
     [FoldoutGroup(VISUAL_EFFECT + "/Parameters"), ValidateInput(nameof(ValidateParamNameV3))] public string centerParameter = "BoundsCenter";
@@ -293,10 +294,21 @@ public class RoomEffect : MonoBehaviour
     {
         
         var gasTexture = GasTexture.RenderTexture;
-        SimCompute.AssignDiffuse(gasTexture, (RenderTexture)SimTextures.textureSet.compositeBoundariesTexture.texture,
-            laplacianCenter, laplacianNeighbor, laplacianDiagnal);
-        SimCompute.DispatchDiffuse();
-        return;
+        var previousGasTexture = GasTexture.PressurePrevious;
+        var velocityTexture = GasTexture.Velocity;
+        var boundaryTexture = GetBoundaryTexture();
+        SimCompute.DispatchDiffuse(
+            gasTexture, previousGasTexture,
+            boundaryTexture,velocityTexture,
+            laplacianCenter, laplacianNeighbor, laplacianDiagnal
+            );
+        //swap the pressure textures so that the previous texture is now the current texture
+        
+    }
+
+    private RenderTexture GetBoundaryTexture()
+    {
+        return (RenderTexture)SimTextures.textureSet.compositeBoundariesTexture.texture;
     }
 
     [Button,ButtonGroup(SIM_COMPUTE + VERSION_1 + "/Toolbar")]

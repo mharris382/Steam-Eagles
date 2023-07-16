@@ -73,7 +73,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
         public void DispatchDynamicIO()
         {
             ObjectsToData();
-            DynamicGasIOCompute.ExecuteDynamicIO(GasTexture.RenderTexture, ref _data);
+            DynamicGasIOCompute.ExecuteDynamicIO(GasTexture.RenderTexture, GasTexture.Velocity, ref _data);
             DataToObjects();
         }
         

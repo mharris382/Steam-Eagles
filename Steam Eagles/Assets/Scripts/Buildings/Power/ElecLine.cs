@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
+using Zenject;
 
 namespace Buildings
 {
@@ -9,6 +11,8 @@ namespace Buildings
         
         private LineRenderer _lineRenderer;
         public LineRenderer LineRenderer => _lineRenderer ? _lineRenderer : _lineRenderer = GetComponent<LineRenderer>();
+        
+        
         public void SetPoints(Vector2 pointsStart, Vector2 pointsEnd)
         {
             int cnt = subdivisions + 1;
@@ -18,6 +22,17 @@ namespace Buildings
                 points[i] = Vector3.Lerp(pointsStart, pointsEnd, i / (float)cnt);
             }
             this.LineRenderer.positionCount = 2;
+        }
+
+
+        void SetLineVisibility(bool visible)
+        {
+            LineRenderer.enabled = visible;
+        }
+
+        [Inject] void Install(LineVisibilityState visibilityState)
+        {
+            visibilityState.lineVisibility.Subscribe(SetLineVisibility).AddTo(this);
         }
     }
 }

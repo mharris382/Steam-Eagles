@@ -29,8 +29,6 @@ namespace Buildings.Graph
             Debug.Log($"Wire Supply Deficit: {supplyTotal} < {demandTotal}");
         }
 
-
-        
         public IEnumerable<BuildingCell> GetSourceCells()
         {
             IEnumerable<(BuildingCell, IPowerSupplier)> allSuppliers = _powerGrid.GetSuppliers();

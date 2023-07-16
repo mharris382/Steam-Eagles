@@ -7,7 +7,7 @@ using Zenject;
 
 namespace _EXP.PhysicsFun.ComputeFluid
 {
-    public class SamplePoint : MonoBehaviour
+    public class SamplePoint : SerializedMonoBehaviour
     {
         private SamplePoints _samplePoints;
 

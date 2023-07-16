@@ -85,11 +85,28 @@ namespace _EXP.PhysicsFun.ComputeFluid
             Container.Bind<FluidSimulater>().FromInstance(fluidSimulater).AsSingle().NonLazy();
             Container.Bind<FluidGPUResources>().AsSingle().NonLazy();
 
+            Container.BindInterfacesAndSelfTo<ComputeRandomInitializer>().AsSingle().NonLazy();
+
         }
 
         private void OnDrawGizmos()
         {
             fluidSimulater.simulation_dimension = fluidSimulater.canvas_dimension = GasTexture.ImageSize;
+        }
+    }
+
+
+    public class ComputeRandomInitializer : IInitializable, IDisposable
+    {
+        public void Initialize()
+        {
+            
+        }
+
+        public void Dispose()
+        {
+            
+            
         }
     }
 }

@@ -31,6 +31,7 @@ public class BuildingGlobalsInstaller : MonoInstaller
         Container.BindInterfacesTo<EntityRoomTrackerV2>().AsSingle().NonLazy();
         
         Container.Bind<ElectricityConfig>().FromInstance(electricityConfig).AsSingle().NonLazy();
+        Container.Bind<LineVisibilityState>().AsSingle();
     }
 }
 

@@ -1,15 +1,20 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel SimIO
 #pragma kernel SimDiffuse
+#pragma kernel SimDiffuse2
+
 #pragma kernel SampleSimPoints
+
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
 RWTexture2D<float> Result;
-
+float maximumPressure = 1;
+float2 sinkFlowRange = float2(1,1);
 float sinkMultiplier;
 int sinkTexSize;
 Texture2D<float4> sinks;
 
+float2 sourceFlowRange = float2(0.1,1);
 float sourceMultiplier;
 int sourceTexSize;
 Texture2D<float4> sources;
@@ -19,113 +24,209 @@ uint2 GetSinkCord(uint2 texCoord)
 {
     return uint2(texCoord.x / sinkTexSize, texCoord.y / sinkTexSize);
 }
+
 uint2 GetSourceCord(uint2 texCoord)
 {
     return uint2(texCoord.x / sourceTexSize, texCoord.y / sourceTexSize);
 }
 
-[numthreads(8,8,1)]
-void SimIO (uint3 id : SV_DispatchThreadID)
+// Constants for the random number generation
+const uint a = 1664525u;
+const uint c = 1013904223u;
+const uint m = 4294967296u;
+uint random_seed(uint2 texCoord)
 {
+    uint seed = texCoord.x + texCoord.y;
+    seed = (a * seed + c) % m;
+    return seed;
+}
+float random(uint seed)
+{
+    seed = (a * seed + c) % m;
+    return seed / (float)m;
+}
+
+float GetSourceValue(int2 texCoord, float baseValue)
+{
+    const float src = lerp(sourceFlowRange.x, sourceFlowRange.y, random(texCoord.x * texCoord.y));
+    return src * baseValue;
+}
+
+uint4 randomOffset(int2 texCoord)
+{
+    float n = random_seed(texCoord);
+    int4 randomOrder ;
+    randomOrder.x = (int)(n % 4);
+    randomOrder.y = (int)((n / 4) % 4);
+    randomOrder.z = (int) ((n / 16) % 4);
+    randomOrder.w = (int) ((n / 64) % 4);
+    return randomOrder;
+}
+
+int2 direction(uint number)
+{
+    uint x = number +2;
+    int x1 = (x%2);
+    int x2 = ((x%3)-1);
+    int x4 = (x%4)-2;
+    int y = x4 * x2;
+    x = (1 - x1) * ( x4 == 0 ? -1 : 1);
+    return int2(x,y);
+}
+
+[numthreads(8,8,1)]
+void SimIO(uint3 id : SV_DispatchThreadID)
+{
+    int2 right = int2(1, 0);
+    int2 up = int2(0, 1);
+    int2 left = int2(-1, 0);
+    int2 down = int2(0, -1);
+    
     // TODO: insert actual code here!
     uint2 texCoord = uint2(id.x, id.y);
     uint2 sinkCoord = GetSinkCord(texCoord);
     uint2 sourceCoord = GetSourceCord(texCoord);
     float sink = sinks[sinkCoord].x * sinkMultiplier;
     float source = sources[sourceCoord].x * sourceMultiplier;
+    source = GetSourceValue(sourceCoord, source);
     float delta = source - sink;
-    Result[texCoord] = clamp(Result[texCoord] + delta, 0, 1);
-    
+    float result = Result[texCoord] + delta;
+    float clampedResult = clamp(result, 0, maximumPressure);
+    if(clampedResult != result)
+    {
+        float overflow = result - clampedResult;
+        uint4 randomOrder = randomOffset(texCoord);
+        int2 dir1 = direction(randomOrder.x);
+    }
 }
+
+
 Texture2D<float> boundaryTexture;
+Texture2D<float> gasPrevious;
+RWTexture2D<float2> velocity;
 RWTexture2D<float> gas;
+
 uint2 boundaryTextureScale = uint2(1, 1);
 float laplacianCenter = -4.0f;
 float laplacianNeighbor = 1.0f;
 float laplacianDiagnal = 0.5f;
-[numthreads(8,8,1)]
-void SimDiffuse (uint3 id : SV_DispatchThreadID)
+
+
+float2 boundaryPressure = float2(2,3);
+float biasUp = 0.5;
+float biasRight = 0.5;
+float biasLeft = 0.5;
+float biasDown = 0.5;
+
+float RandomBoundaryPressure(int2 texCoord)
 {
-    int2 texCoord = int2(id.x, id.y);
-    int2 boundaryTexCoord = texCoord / boundaryTextureScale;
-// Sample the boundary texture
-float boundaryValue = boundaryTexture[boundaryTexCoord];
-
-// Modify the Laplacian matrix based on the boundary value
-if (boundaryValue > 0.5f)
-    {
-    laplacianCenter = -2.0f;
-    laplacianNeighbor = 0.5f;
-    laplacianDiagnal = 0.25f;
+    float randomNumber = random(texCoord.x * texCoord.y);
+    return lerp(boundaryPressure.x, boundaryPressure.y, randomNumber);
+}
+int2 texToBoundary(int2 texCoord)
+{
+    return texCoord / boundaryTextureScale;
+}
+float GetPressure(int2 texCoord)
+{
+    const float current = gasPrevious[texCoord];
+    const int2 boundaryCoord = texToBoundary(texCoord);
+    const float boundaryValue = boundaryTexture[boundaryCoord];
+    return boundaryValue > 0.5 ? RandomBoundaryPressure(texCoord) : current;
 }
 
+[numthreads(8,8,1)]
+void SimDiffuse(uint3 id : SV_DispatchThreadID)
+{
+    const int2 texCoord = int2(id.x, id.y);
+    const int2 boundaryTexCoord = texToBoundary(texCoord);
+    // Sample the boundary texture
+    const float boundaryValue = boundaryTexture[boundaryTexCoord];
+    if (boundaryValue > 0.5f)
+    {
+        velocity[texCoord] = float2(0.0, 0.0);
+        gas[texCoord] = 0.0f;
+        return;
+    }
     // Perform multiple iterations of the diffusion process
-float gasValue = gas[texCoord];
-float updatedGasValue = gasValue;
-
-float leftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 0)];
-float rightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 0)];
-float upBoundary = boundaryTexture[boundaryTexCoord - int2(0, 1)];
-float downBoundary = boundaryTexture[boundaryTexCoord + int2(0, 1)];
-float topLeftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 1)];
-float topRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, -1)];
-float bottomLeftBoundary = boundaryTexture[boundaryTexCoord + int2(-1, 1)];
-float bottomRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 1)];
-// Perform multiple iterations of the diffusion process
-const int numIterations = 5;
-for (int i = 0; i < numIterations; i++)
+    const float gasValue = gas[texCoord];
+    if(gasValue == 0.0f)
     {
-    // Calculate the diffusion using the modified Laplacian matrix
-    float left = gas[texCoord - int2(1, 0)];
-    float right = gas[texCoord + int2(1, 0)];
-    float up = gas[texCoord - int2(0, 1)];
-    float down = gas[texCoord + int2(0, 1)];
-    float topLeft = gas[texCoord - int2(1, 1)];
-    float topRight = gas[texCoord + int2(1, -1)];
-    float bottomLeft = gas[texCoord + int2(-1, 1)];
-    float bottomRight = gas[texCoord + int2(1, 1)];
-    float delta = (left + right + up + down + topLeft + topRight + bottomLeft + bottomRight) / 8 - gasValue;
+        velocity[texCoord] = float2(0.0, 0.0);
+        return;
+    }
+    float updatedGasValue = gasValue;
+    int2 upCoord =texCoord - int2(0, 1);
+    int2 downCoord = texCoord + int2(0, 1);
+    int2 leftCoord = texCoord - int2(1, 0);
+    int2 rightCoord = texCoord + int2(1, 0);
 
-    float3x3 laplacian = float3x3(laplacianDiagnal, laplacianNeighbor, laplacianDiagnal,
-                                   laplacianNeighbor, laplacianCenter, laplacianNeighbor,
-                                   laplacianDiagnal, laplacianNeighbor, laplacianDiagnal);
-    float3x3 gradient = float3x3(left, up, right, topLeft, gasValue, topRight, bottomLeft, bottomRight, down);
-    float3x3 result = gradient + laplacian * delta;
-
-    // Update the gas value for the current iteration
-    updatedGasValue = (boundaryValue > 0.5f) ? 0.0f : result[1][1];
-
-    // Synchronize to ensure correct data access between iterations
-    gasValue = updatedGasValue;
-
-
-    // Update the gas texture with the updated value for the current iteration
-    if(boundaryValue < 0.5f) gas[texCoord] = updatedGasValue;
-    if(upBoundary < 0.5f) gas[texCoord - int2(0, 1)] = result[1][0];
-    if(downBoundary < 0.5f) gas[texCoord + int2(0, 1)] = result[1][2];
-    if(leftBoundary < 0.5f) gas[texCoord - int2(1, 0)] = result[0][1];
-    // if(rightBoundary < 0.5f)
-    //     gas[texCoord + int2(1, 0)] = result[2][1];
-    // if(topLeftBoundary < 0.5f)
-    //     gas[texCoord - int2(1, 1)] = result[0][0];
-    // if(topRightBoundary < 0.5f)
-    //     gas[texCoord + int2(1, -1)] = result[2][0];
-    // if(bottomLeftBoundary < 0.5f)
-    //     gas[texCoord + int2(-1, 1)] = result[0][2];
-    // if(bottomRightBoundary < 0.5f)
-    //     gas[texCoord + int2(1, 1)] = result[2][2];
-    //as[texCoord + int2(1, 0)] = result[2][1];
-    //as[texCoord - int2(1, 0)] = result[0][1];
-    //as[texCoord + int2(0, 1)] = result[1][2];
-    //as[texCoord - int2(0, 1)] = result[1][0];
-    // gas[texCoord + int2(1, 1)] = result[2][2];
-    // gas[texCoord - int2(1, 1)] = result[0][0];
-    // gas[texCoord + int2(1, -1)] = result[2][0];
-    // gas[texCoord - int2(1, -1)] = result[0][2];
+    float cur = GetPressure(texCoord);
+    float up = GetPressure(upCoord);
+    float left = GetPressure(leftCoord);
+    float right = GetPressure(rightCoord);
+    float down = GetPressure(downCoord);
+    const float pressurePushingUp = (cur - up) * biasUp;
+    const float pressurePushingDown = (cur - down) * biasDown;
+    const float pressurePushingLeft = (cur - left) * biasLeft;
+    const float pressurePushingRight = (cur - right) * biasRight;
+    float2 vel = float2(pressurePushingLeft + pressurePushingRight, pressurePushingUp + pressurePushingDown);
+    velocity[texCoord] = vel;
+   //int2 dir = int2(sign(vel.x), sign(vel.y));
+   //int2 nextPos = texCoord + dir;
+   //int2 nextBoundaryCoord =texToBoundary(nextPos);
+   //float nextBoundary = boundaryTexture[nextBoundaryCoord].x;
+   //if(nextBoundary > 0.5f)
+   //{
+   //    if(abs(dir.x) > 0)dir.x = 0;
+   //    else if(abs(dir.y) > 0)
+   //    {
+   //        dir.x = dir.y;
+   //        dir.y = 0;
+   //    }
+   //    vel = dir * length(vel);
+   //}
+   // velocity[texCoord] = vel;
+    return;
 }
-    //requirement: conservation of pressure, any pressure lost here must be gained elsewhere
+
+
+[numthreads(8,8,1)]
+void SimDiffuse2(uint3 id : SV_DispatchThreadID)
+{
+    int2 texCoordNew = int2(id.x, id.y);
+    float gasValueNew = gasPrevious[texCoordNew];
+    float2 vel = velocity[texCoordNew];
     
+    if(gasValueNew == 0.0f)
+    {
+        velocity[texCoordNew] = float2(0.0, 0.0);
+        return;
+    }
+    
+    int2 targetCoord = texCoordNew + int2(sign(vel.x), sign(vel.y));
+    gas[targetCoord] = gasValueNew;
+    
+    // const int2 boundaryTexCoord = texToBoundary(texCoord);
+    // // Sample the boundary texture
+    // const float boundaryValue = boundaryTexture[boundaryTexCoord];
+    // if (boundaryValue > 0.5f)
+    // {
+    //     gas[texCoord] = 0.0f;
+    //     velocity[texCoord] = float2(0.0, 0.0);
+    //     return;
+    // }
+    
+    // Perform multiple iterations of the diffusion process
+    float gasValue = gas[texCoordNew];
+    float2 velocityValue = velocity[texCoordNew];
+    
+    
+    //requirement: conservation of pressure, any pressure lost here must be gained elsewhere
 }
+
+//--------------------------------------------------------------------------------------
+//SAMPLE COMPUTE
 
 struct SamplePoint
 {
@@ -147,7 +248,7 @@ void SampleSimPoints(uint3 id : SV_DispatchThreadID)
     uint2 downCoord = texelCoord - uint2(0, 1);
     uint2 leftCoord = texelCoord - uint2(1, 0);
     uint2 rightCoord = texelCoord + uint2(1, 0);
-    
+
     float up = sampleTarget[upCoord].x;
     float down = sampleTarget[downCoord].x;
     float left = sampleTarget[leftCoord].x;
@@ -157,13 +258,94 @@ void SampleSimPoints(uint3 id : SV_DispatchThreadID)
     float upRight = sampleTarget[upCoord + uint2(1, 0)].x;
     float downLeft = sampleTarget[downCoord - uint2(1, 0)].x;
     float downRight = sampleTarget[downCoord + uint2(1, 0)].x;
-  
+
     float sum = up + down + left + right + center + upLeft + upRight + downLeft + downRight;
     float average = sum / 9.0;
 
     float3x3 gradient = float3x3(left, up, right, upLeft, center, upRight, downLeft, down, downRight);
     sample_point.gradient = gradient;
-    
+
     sample_point.value = average;
     samplePoints[id.x] = sample_point;
 }
+
+
+
+
+    // up = clamp(up, 0, maximumPressure);
+    // const float upBoundary = boundaryTexture[boundaryTexCoord - int2(0, 1)];
+    // up = (upBoundary > 0.5f) ? gasValue : boundaryPressure;
+    //
+    // float left = gas[texCoord - int2(1, 0)];
+    // const float leftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 0)];
+    // left = (leftBoundary > 0.5f) ? gasValue : boundaryPressure;
+    //
+    // float right = gas[texCoord + int2(1, 0)];
+    // float down = gas[texCoord + int2(0, 1)];
+    // float rightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 0)];
+    //
+    // float downBoundary = boundaryTexture[boundaryTexCoord + int2(0, 1)];
+    // float topLeft = gas[texCoord - int2(1, 1)];
+    // float topRight = gas[texCoord + int2(1, -1)];
+    // float bottomLeft = gas[texCoord + int2(-1, 1)];
+    // float bottomRight = gas[texCoord + int2(1, 1)];
+    //
+    //
+    //
+    //
+    // float topLeftBoundary = boundaryTexture[boundaryTexCoord - int2(1, 1)];
+    // float topRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, -1)];
+    // float bottomLeftBoundary = boundaryTexture[boundaryTexCoord + int2(-1, 1)];
+    // float bottomRightBoundary = boundaryTexture[boundaryTexCoord + int2(1, 1)];
+    //
+    // float3x3 neighborGasValues = float3x3(gas[texCoord - int2(1, 0)], gas[texCoord - int2(0, 1)], gas[texCoord + int2(1, 0)],
+    //                                       gas[texCoord - int2(1, 1)], gasValue, gas[texCoord + int2(1, -1)],
+    //                                       gas[texCoord - int2(1, 1)], gas[texCoord + int2(-1, 1)], gas[texCoord + int2(1, 1)]);
+    
+
+    // // Perform multiple iterations of the diffusion process
+    // const int numIterations = 5;
+    // for (int i = 0; i < numIterations; i++)
+    // {
+    //     // Calculate the diffusion using the modified Laplacian matrix
+    //
+    //     float delta = (left + right + up + down + topLeft + topRight + bottomLeft + bottomRight) / 8 - gasValue;
+    //
+    //     float3x3 laplacian = float3x3(laplacianDiagnal, laplacianNeighbor, laplacianDiagnal,
+    //                                   laplacianNeighbor, laplacianCenter, laplacianNeighbor,
+    //                                   laplacianDiagnal, laplacianNeighbor, laplacianDiagnal);
+    //     float3x3 gradient = float3x3(left, up, right, topLeft, gasValue, topRight, bottomLeft, bottomRight, down);
+    //     float3x3 result = gradient + laplacian * delta;
+    //
+    //     // Update the gas value for the current iteration
+    //     updatedGasValue = (boundaryValue > 0.5f) ? 0.0f : result[1][1];
+    //
+    //     // Synchronize to ensure correct data access between iterations
+    //     gasValue = updatedGasValue;
+    //
+    //
+    //     // Update the gas texture with the updated value for the current iteration
+    //     if (boundaryValue < 0.5f) gas[texCoord] = updatedGasValue;
+    //     if (upBoundary < 0.5f) gas[texCoord - int2(0, 1)] = result[1][0];
+    //     if (downBoundary < 0.5f) gas[texCoord + int2(0, 1)] = result[1][2];
+    //     if (leftBoundary < 0.5f) gas[texCoord - int2(1, 0)] = result[0][1];
+    //     // if(rightBoundary < 0.5f)
+    //     //     gas[texCoord + int2(1, 0)] = result[2][1];
+    //     // if(topLeftBoundary < 0.5f)
+    //     //     gas[texCoord - int2(1, 1)] = result[0][0];
+    //     // if(topRightBoundary < 0.5f)
+    //     //     gas[texCoord + int2(1, -1)] = result[2][0];
+    //     // if(bottomLeftBoundary < 0.5f)
+    //     //     gas[texCoord + int2(-1, 1)] = result[0][2];
+    //     // if(bottomRightBoundary < 0.5f)
+    //     //     gas[texCoord + int2(1, 1)] = result[2][2];
+    //     //as[texCoord + int2(1, 0)] = result[2][1];
+    //     //as[texCoord - int2(1, 0)] = result[0][1];
+    //     //as[texCoord + int2(0, 1)] = result[1][2];
+    //     //as[texCoord - int2(0, 1)] = result[1][0];
+    //     // gas[texCoord + int2(1, 1)] = result[2][2];
+    //     // gas[texCoord - int2(1, 1)] = result[0][0];
+    //     // gas[texCoord + int2(1, -1)] = result[2][0];
+    //     // gas[texCoord - int2(1, -1)] = result[0][2];
+    // }
+    //requirement: conservation of pressure, any pressure lost here must be gained elsewhere

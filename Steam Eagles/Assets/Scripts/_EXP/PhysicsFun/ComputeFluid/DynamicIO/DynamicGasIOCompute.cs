@@ -22,14 +22,21 @@ namespace _EXP.PhysicsFun.ComputeFluid
 
         
 
-        public static void ExecuteDynamicIO(RenderTexture gasState, ref DynamicIOData[] dynamicIO)
+        public static void ExecuteDynamicIO(RenderTexture gasState, RenderTexture velocity, ref DynamicIOData[] dynamicIO, 
+            float maxPressure = 1, 
+            float inputRandomMin = 0.9f, 
+            float inputRandomMax = 1.1f)
         {
             if(dynamicIO ==null || dynamicIO.Length == 0) return;
+            
             ComputeShader.SetTexture(_dynamicGasIOKernel, "gas", gasState);
+            ComputeShader.SetTexture(_dynamicGasIOKernel, "gasVelocity",velocity);
+            
             var buffer = new ComputeBuffer(dynamicIO.Length, DynamicIOData.Stride());
             buffer.SetCounterValue(0);
             buffer.SetData(dynamicIO);
             ComputeShader.SetBuffer(_dynamicGasIOKernel, "ioBuffer", buffer);
+            ComputeShader.SetFloat("maxPressure", maxPressure);
             ComputeShader.SetInt("ioCount", dynamicIO.Length);
             int xThreads = dynamicIO.Length / 8;
             if(xThreads == 0) xThreads = 1;

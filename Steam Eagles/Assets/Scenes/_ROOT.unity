@@ -10456,8 +10456,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Property:
-    m_Name: P3
-  Target: {fileID: 2121531684}
+    m_Name: Position
+  Target: {fileID: 0}
 --- !u!114 &1373380452
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -10471,8 +10471,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Property:
-    m_Name: P2
-  Target: {fileID: 115272969}
+    m_Name: Position
+  Target: {fileID: 0}
 --- !u!114 &1373380453
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -10486,8 +10486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Property:
-    m_Name: P1
-  Target: {fileID: 2115536803}
+    m_Name: Position
+  Target: {fileID: 0}
 --- !u!114 &1373380454
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -10501,8 +10501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Property:
-    m_Name: P0
-  Target: {fileID: 922776402}
+    m_Name: Position
+  Target: {fileID: 0}
 --- !u!114 &1373380455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10922,7 +10922,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 14.2
+  orthographic size: 18.15
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -17135,6 +17135,7 @@ MonoBehaviour:
     - Tiles
     - Machines
     - Decor
+    - Lights
     - Security
   inputActions:
     nextCategory: {fileID: 5795832633043247119, guid: 7294d1b285081344daf35e3be9d637ee, type: 3}
@@ -17147,6 +17148,7 @@ MonoBehaviour:
     - Category 2
     - Category 3
     - Category 4
+    - Category 5
   craftingMode:
     destructModeAction: Crafting Destroy Mode
     isDestructMode:
@@ -20903,7 +20905,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5225263883224164372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -611.0234, y: 88.241615, z: -44.36476}
+  m_LocalPosition: {x: -611.39246, y: 87.89534, z: -301.88004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21024,10 +21026,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 5000
+  far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 14.2
+  orthographic size: 18.15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

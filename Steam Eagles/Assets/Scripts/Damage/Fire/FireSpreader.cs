@@ -2,18 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Dest.Math;
+
 using Sirenix.OdinInspector;
 using UnityEngine.VFX;
 
 public class FireSpreader  : MonoBehaviour
 {
 	public VisualEffect visualEffect;
-	
+	private Bounds? _current;
 	public FireSpreadConfig spreadConfig;
 	
 	private Coroutine _runningFire;
  
+	
+	[ShowInInspector, BoxGroup("Debug")]
+	public Vector2 min
+	{
+		get => _current.HasValue ? _current.Value.min  : Vector2.zero;
+	}
+	
+	[ShowInInspector, BoxGroup("Debug")]
+	public Vector2 max
+	{
+		get => _current.HasValue ? _current.Value.max  : Vector2.zero;
+	}
+	
 	[Serializable]
 	public class FireSpreadConfig
 	{
@@ -22,7 +35,7 @@ public class FireSpreader  : MonoBehaviour
 		public float spreadHorizontalRate = 0.1f;
 	}
 	
-	public void StartFire(Vector3 startPoint, AAB2 maxBounds)
+	public void StartFire(Vector3 startPoint, Bounds maxBounds)
 	{
 		if(_runningFire != null)
 		{
@@ -38,11 +51,11 @@ public class FireSpreader  : MonoBehaviour
 		var min = center - size / 2f;
 		var max = center + size / 2f;
 		visualEffect.transform.SetParent(sr.transform, false);
-		StartFire(point, new AAB2(min, max));
+		StartFire(point, new Bounds(min, max));
 	}
-	private IEnumerator RunFire(Vector3 startPoint, AAB2 endBox)
+	private IEnumerator RunFire(Vector3 startPoint, Bounds endBox)
 	{
-		AAB2 currentBox = AAB2.CreateFromPoint(startPoint);
+		Bounds currentBox = new Bounds(startPoint, Vector3.zero);
 		float xStart = startPoint.x;
 		float yStart = startPoint.y;
 		float xMax, yMax, xMin, yMin;
@@ -54,10 +67,10 @@ public class FireSpreader  : MonoBehaviour
 		{
 			yield return null;
 			
-			if(MoveTowardsMin(ref xMin, endBox.Min.x, spreadConfig.spreadHorizontalRate) &&
-				MoveTowardsMax(ref xMax, endBox.Max.x, spreadConfig.spreadHorizontalRate) &&
-				MoveTowardsMin(ref yMin, endBox.Min.y, spreadConfig.spreadUpRate) &&
-				MoveTowardsMax(ref yMax, endBox.Max.y, spreadConfig.spreadDownRate))
+			if(MoveTowardsMin(ref xMin, endBox.max.x, spreadConfig.spreadHorizontalRate) &&
+				MoveTowardsMax(ref xMax, endBox.max.x, spreadConfig.spreadHorizontalRate) &&
+				MoveTowardsMin(ref yMin, endBox.min.y, spreadConfig.spreadUpRate) &&
+				MoveTowardsMax(ref yMax, endBox.max.y, spreadConfig.spreadDownRate))
 			{
 				break;
 			}
@@ -67,8 +80,8 @@ public class FireSpreader  : MonoBehaviour
 		
 		void UpdateBox()
 		{
-			currentBox.Include(new Vector2(xMin, yMin));
-			currentBox.Include(new Vector2(xMax, yMax));	
+			currentBox.Encapsulate(new Vector3(xMin, yMin, 0));
+			currentBox.Encapsulate(new Vector3(xMax, yMax, 1));	
 			UpdateEffect(currentBox);
 		}
 		
@@ -85,23 +98,14 @@ public class FireSpreader  : MonoBehaviour
 	
 	}
 
-	private AAB2? _current;
 	
-	[ShowInInspector, BoxGroup("Debug")]
-	public Vector2 min
-	{
-		get => _current.HasValue ? _current.Value.Min  : Vector2.zero;
-	}
-	[ShowInInspector, BoxGroup("Debug")]
-	public Vector2 max
-	{
-		get => _current.HasValue ? _current.Value.Max  : Vector2.zero;
-	}
-	void UpdateEffect(AAB2 box)
+	
+
+	void UpdateEffect(Bounds box)
 	{
 		_current = box;
-		Vector3 center = (box.Min + box.Max) / 2f;
-		Vector3 size = box.Max - box.Min;
+		Vector3 center = (box.min + box.max) / 2f;
+		Vector3 size = box.max - box.min;
 		center.z = 0;
 		size.z = 1;
 		visualEffect.SetVector3("boxCenter", center);

@@ -3,60 +3,122 @@
 public static class SimCompute
 {
     static ComputeShader _simCompute;
+    private static readonly int _simIoKernel;
+    private static readonly int _simDiffuse2Kernel;
+    private static readonly int _simDiffuseKernel;
     public static ComputeShader SimComputeShader => _simCompute ? _simCompute : _simCompute = Resources.Load<ComputeShader>("Computes/SimCompute");
 
 
     static SimCompute()
     {
-        
+        _simIoKernel = SimComputeShader.FindKernel("SimIO");
+        _simDiffuseKernel = SimComputeShader.FindKernel("SimDiffuse");
+        _simDiffuse2Kernel = SimComputeShader.FindKernel("SimDiffuse2");
     }
     
-    public static void AssignIO(RenderTexture result, RenderTexture sinkTexture, RenderTexture sourceTexture, int sourceSize=1, int sinkSize=1, float srcMultiplier = 1, float sinkMultiplier = 1)
+    public static void InitRandom(ComputeBuffer randomNumbers)
     {
-        var kernel = SimComputeShader.FindKernel("SimIO");
-        SimComputeShader.SetTexture(kernel, "Result", result);
-        SimComputeShader.SetTexture(kernel, "sinks", sinkTexture);
-        SimComputeShader.SetTexture(kernel, "sources", sourceTexture);
+        
+    }
+    public static void AssignIO(RenderTexture result,
+        RenderTexture sinkTexture, 
+        RenderTexture sourceTexture,
+        
+        int sourceSize=1, 
+        int sinkSize=1,
+        float srcMultiplier = 1, float sourceMin = 0.1f, float sourceMax = 0.5f, 
+        float sinkMultiplier = 1 , float sinkMin = 1, float sinkMax = 1, 
+        float maximumPressure = 1)
+    {
+        SimComputeShader.SetTexture(_simIoKernel, "Result", result);
+        SimComputeShader.SetTexture(_simIoKernel, "sinks", sinkTexture);
+        SimComputeShader.SetTexture(_simIoKernel, "sources", sourceTexture);
+        
         SimComputeShader.SetFloat("sinkMultiplier", sinkMultiplier);
         SimComputeShader.SetFloat("sourceMultiplier", srcMultiplier);
         SimComputeShader.SetInt("sourceTexSize", sourceSize);
         SimComputeShader.SetInt("sinkTexSize", sinkSize);
-    }
-
-    public static void DispatchIO(RenderTexture result)
-    {
-        var kernel = SimComputeShader.FindKernel("SimIO");
+        SimComputeShader.SetFloat("maximumPressure", maximumPressure);
+        
+        SimComputeShader.SetFloats("sourceFlowRange", sourceMin, sourceMax);
+        SimComputeShader.SetFloats("sinkFlowRange", sinkMin, sinkMax);
+        
         var threadsX = result.width / 8;
         var threadsY = result.height / 8;
         Debug.Assert(threadsX > 0);
         Debug.Assert(threadsY > 0);
-        SimComputeShader.Dispatch(kernel, threadsX, threadsY, 1);
+        SimComputeShader.Dispatch(_simIoKernel, threadsX, threadsY, 1);
     }
 
-    public static void AssignDiffuse(RenderTexture gasTexture, RenderTexture boundaryTexture, float laplacianCenter = -4.0f,    float laplacianNeighbor = 1.0f, float laplacianDiagnal = 0.5f)
+    public static void DispatchIO(RenderTexture result)
     {
-        var kernel = SimComputeShader.FindKernel("SimDiffuse");
-        SimComputeShader.SetTexture(kernel, "gas", gasTexture);
-        SimComputeShader.SetTexture(kernel, "boundaryTexture", boundaryTexture);
+        return;
+        var threadsX = result.width / 8;
+        var threadsY = result.height / 8;
+        Debug.Assert(threadsX > 0);
+        Debug.Assert(threadsY > 0);
+        SimComputeShader.Dispatch(_simIoKernel, threadsX, threadsY, 1);
+    }
+
+    public static void DispatchDiffuse(
+        RenderTexture gasTexture,
+        RenderTexture gasTexture2,
+        RenderTexture velocityTexture,
+        RenderTexture boundaryTexture,
+        float laplacianCenter = -4.0f,   
+        float laplacianNeighbor = 1.0f, 
+        float laplacianDiagnal = 0.5f, 
+        float maximumPressure = 1,float boundaryPressureMin = 2,float boundaryPressureMax = 3,
+        float biasUp = 0.5f, float biasDown = 0.5f, float biasLeft = 0.5f, float biasRight = 0.5f)
+    {
+        
+        SimComputeShader.SetTexture(_simDiffuseKernel, "gas", gasTexture);
+        SimComputeShader.SetTexture(_simDiffuseKernel, "gasPrevious", gasTexture2);
+        SimComputeShader.SetTexture(_simDiffuseKernel, "boundaryTexture", boundaryTexture);
+        SimComputeShader.SetTexture(_simDiffuseKernel, "velocity", velocityTexture);
+        
         SimComputeShader.SetInts("boundaryTextureScale", boundaryTexture.width/gasTexture.width, boundaryTexture.height/gasTexture.height);
+        
         SimComputeShader.SetFloat("laplacianCenter", laplacianCenter);
         SimComputeShader.SetFloat("laplacianNeighbor", laplacianNeighbor);
         SimComputeShader.SetFloat("laplacianDiagnal", laplacianDiagnal);
+        
+        SimComputeShader.SetFloat("biasUp", biasUp);
+        SimComputeShader.SetFloat("biasDown", biasDown);
+        SimComputeShader.SetFloat("biasLeft", biasLeft);
+        SimComputeShader.SetFloat("biasRight", biasRight);
+        
+        SimComputeShader.SetFloat("maximumPressure", maximumPressure);
+        SimComputeShader.SetFloats("boundaryPressure", boundaryPressureMin, boundaryPressureMax);
+        
         int threadsX = gasTexture.width / 8;
         int threadsY = gasTexture.height / 8;
-        Debug.Assert(threadsX > 0);
-        Debug.Assert(threadsY > 0);
-        SimComputeShader.Dispatch(kernel, threadsX, threadsY, 1);
+        
+        if(threadsX < 1) threadsX = 1;
+        if(threadsY < 1) threadsY = 1;
+        
+        SimComputeShader.Dispatch(_simDiffuseKernel, threadsX, threadsY, 1);
+        
+        SimComputeShader.SetTexture(_simDiffuse2Kernel, "gas", gasTexture);
+        SimComputeShader.SetTexture(_simDiffuse2Kernel, "gasPrevious", gasTexture2);
+        SimComputeShader.SetTexture(_simDiffuse2Kernel, "boundaryTexture", boundaryTexture);
+        SimComputeShader.SetTexture(_simDiffuse2Kernel, "velocity", velocityTexture);
+        
+        SimComputeShader.Dispatch(_simDiffuse2Kernel, threadsX, threadsY, 1);
+        
+        Graphics.CopyTexture(gasTexture, gasTexture2);
     }
 
-    public static void DispatchDiffuse()
+
+    private static void Copy(RenderTexture copyFrom, RenderTexture copyTo)
     {
-        
+        Graphics.CopyTexture(copyFrom, copyTo);
     }
+
 
     public static void AssignGasSampler(RenderTexture gasTexture, ref GasSampleData[] sampleData)
     {
-            var kernel = SimComputeShader.FindKernel("SampleSimPoints");
+        var kernel = SimComputeShader.FindKernel("SampleSimPoints");
         SimComputeShader.SetTexture(kernel, "sampleTarget", gasTexture);
         var buffer = new ComputeBuffer(sampleData.Length, GasSampleData.Stride());
         buffer.SetData(sampleData);

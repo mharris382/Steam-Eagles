@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Dest.Math;
+
 using UnityEngine;
 
 public class FireStarter : MonoBehaviour
@@ -25,10 +25,9 @@ public class FireStarter : MonoBehaviour
             }
             else
             {
-                var box = AAB2.CreateFromTwoPoints(ref min, ref max);
+                var box = new Bounds((min + max) / 2f, max - min);
                 var randomX = Random.Range(min.x, max.x);
                 var randomY = Random.Range(min.y, max.y);
-                
                 fireSpreader.StartFire(new Vector3(randomX, randomY), box);
             }
         }

@@ -20,6 +20,7 @@ namespace Buildings
         private Transform _inactiveLineParent;
         
         private Dictionary<BuildingCell, CellLine> _sourceToLine = new();
+        private DiContainer _container;
 
         private struct CellLine : IDisposable
         {
@@ -90,7 +91,7 @@ namespace Buildings
         {
             if (_inactiveLineParent.childCount == 0)
             {
-               var inst = Instantiate(lineHandlerPrefab, _activeLineParent);
+               var inst = _container.InstantiatePrefabForComponent<ElecLine>(lineHandlerPrefab, _activeLineParent);
                inst.transform.localPosition = Vector3.zero;
                 return inst;
             }
@@ -103,8 +104,9 @@ namespace Buildings
             }
         }
 
-        [Inject] void Install(Building building)
+        [Inject] void Install(Building building, DiContainer container)
         {
+            _container = container;
             _building = building;
         }
 
