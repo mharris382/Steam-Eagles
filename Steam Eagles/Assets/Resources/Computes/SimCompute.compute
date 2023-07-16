@@ -48,8 +48,8 @@ float random(uint seed)
 
 float GetSourceValue(int2 texCoord, float baseValue)
 {
-    const float src = lerp(sourceFlowRange.x, sourceFlowRange.y, random(texCoord.x * texCoord.y));
-    return src * baseValue;
+    //const float src = lerp(sourceFlowRange.x, sourceFlowRange.y, random(texCoord.x * texCoord.y));
+    return baseValue;
 }
 
 uint4 randomOffset(int2 texCoord)
@@ -88,6 +88,10 @@ void SimIO(uint3 id : SV_DispatchThreadID)
     uint2 sourceCoord = GetSourceCord(texCoord);
     float sink = sinks[sinkCoord].x * sinkMultiplier;
     float source = sources[sourceCoord].x * sourceMultiplier;
+    if(!(sink + source))
+    {
+        return;
+    }
     source = GetSourceValue(sourceCoord, source);
     float delta = source - sink;
     float result = Result[texCoord] + delta;
@@ -98,6 +102,7 @@ void SimIO(uint3 id : SV_DispatchThreadID)
         uint4 randomOrder = randomOffset(texCoord);
         int2 dir1 = direction(randomOrder.x);
     }
+    Result[texCoord] = clampedResult;
 }
 
 
@@ -117,6 +122,8 @@ float biasUp = 0.5;
 float biasRight = 0.5;
 float biasLeft = 0.5;
 float biasDown = 0.5;
+float diffuseRate = 0.01;
+float deltaTime = 1;
 
 float RandomBoundaryPressure(int2 texCoord)
 {
@@ -138,6 +145,7 @@ float GetPressure(int2 texCoord)
 [numthreads(8,8,1)]
 void SimDiffuse(uint3 id : SV_DispatchThreadID)
 {
+    
     const int2 texCoord = int2(id.x, id.y);
     const int2 boundaryTexCoord = texToBoundary(texCoord);
     // Sample the boundary texture
@@ -150,28 +158,37 @@ void SimDiffuse(uint3 id : SV_DispatchThreadID)
     }
     // Perform multiple iterations of the diffusion process
     const float gasValue = gas[texCoord];
-    if(gasValue == 0.0f)
-    {
-        velocity[texCoord] = float2(0.0, 0.0);
-        return;
-    }
+   
     float updatedGasValue = gasValue;
     int2 upCoord =texCoord - int2(0, 1);
     int2 downCoord = texCoord + int2(0, 1);
     int2 leftCoord = texCoord - int2(1, 0);
     int2 rightCoord = texCoord + int2(1, 0);
 
-    float cur = GetPressure(texCoord);
+    
     float up = GetPressure(upCoord);
     float left = GetPressure(leftCoord);
     float right = GetPressure(rightCoord);
     float down = GetPressure(downCoord);
-    const float pressurePushingUp = (cur - up) * biasUp;
-    const float pressurePushingDown = (cur - down) * biasDown;
-    const float pressurePushingLeft = (cur - left) * biasLeft;
-    const float pressurePushingRight = (cur - right) * biasRight;
-    float2 vel = float2(pressurePushingLeft + pressurePushingRight, pressurePushingUp + pressurePushingDown);
-    velocity[texCoord] = vel;
+    
+    float upBoundary = sign(boundaryTexture[texToBoundary(upCoord)]);
+    float leftBoundary = sign(boundaryTexture[texToBoundary(leftCoord)]);
+    float rightBoundary = sign(boundaryTexture[texToBoundary(rightCoord)]);
+    float downBoundary = sign(boundaryTexture[texToBoundary(downCoord)]);
+    int totalFreeNeighbors = upBoundary + leftBoundary + rightBoundary + downBoundary;
+    if(totalFreeNeighbors == 0)
+        return;
+
+    
+    float curDiffuse = (up * upBoundary) + (left * leftBoundary) + (right * rightBoundary) + (down * downBoundary) / (float)totalFreeNeighbors;
+    float cur = lerp(gasValue, curDiffuse, diffuseRate * deltaTime);
+    gas[texCoord] = cur;
+    //const float pressurePushingUp = (cur - up) * biasUp;
+    //const float pressurePushingDown = (cur - down) * biasDown;
+    //const float pressurePushingLeft = (cur - left) * biasLeft;
+    //const float pressurePushingRight = (cur - right) * biasRight;
+    //float2 vel = float2(pressurePushingLeft + pressurePushingRight, pressurePushingUp + pressurePushingDown);
+    //velocity[texCoord] = vel;
    //int2 dir = int2(sign(vel.x), sign(vel.y));
    //int2 nextPos = texCoord + dir;
    //int2 nextBoundaryCoord =texToBoundary(nextPos);
@@ -194,6 +211,7 @@ void SimDiffuse(uint3 id : SV_DispatchThreadID)
 [numthreads(8,8,1)]
 void SimDiffuse2(uint3 id : SV_DispatchThreadID)
 {
+    return;
     int2 texCoordNew = int2(id.x, id.y);
     float gasValueNew = gasPrevious[texCoordNew];
     float2 vel = velocity[texCoordNew];
@@ -204,8 +222,8 @@ void SimDiffuse2(uint3 id : SV_DispatchThreadID)
         return;
     }
     
-    int2 targetCoord = texCoordNew + int2(sign(vel.x), sign(vel.y));
-    gas[targetCoord] = gasValueNew;
+    ///int2 targetCoord = texCoordNew + int2(sign(vel.x), sign(vel.y));
+    ///gas[targetCoord] = gasValueNew;
     
     // const int2 boundaryTexCoord = texToBoundary(texCoord);
     // // Sample the boundary texture

@@ -21,7 +21,7 @@ public class FMODSamplePlayer : FMODOneShotEventListener<SampleEventInfo>
 
     protected override Vector2 GetWorldPosition(SampleEventInfo value)
     {
-        return value.aimTransform.position;
+        return value.aimPosition;
     }
 }
 public abstract class FMODOneShotEventListener<T> : FMODOneShotEventBase, IInitializable, IDisposable

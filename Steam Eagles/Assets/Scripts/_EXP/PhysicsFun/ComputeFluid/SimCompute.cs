@@ -26,9 +26,9 @@ public static class SimCompute
         
         int sourceSize=1, 
         int sinkSize=1,
-        float srcMultiplier = 1, float sourceMin = 0.1f, float sourceMax = 0.5f, 
+        float srcMultiplier = 1, float sourceMin = 1, float sourceMax = 1, 
         float sinkMultiplier = 1 , float sinkMin = 1, float sinkMax = 1, 
-        float maximumPressure = 1)
+        float maximumPressure = 1, float diffuseRate = 1)
     {
         SimComputeShader.SetTexture(_simIoKernel, "Result", result);
         SimComputeShader.SetTexture(_simIoKernel, "sinks", sinkTexture);
@@ -42,9 +42,12 @@ public static class SimCompute
         
         SimComputeShader.SetFloats("sourceFlowRange", sourceMin, sourceMax);
         SimComputeShader.SetFloats("sinkFlowRange", sinkMin, sinkMax);
+        SimComputeShader.SetFloat("diffuseRate", diffuseRate);
         
         var threadsX = result.width / 8;
         var threadsY = result.height / 8;
+        if(threadsX == 0) threadsX = 1;
+        if(threadsY == 0) threadsY = 1;
         Debug.Assert(threadsX > 0);
         Debug.Assert(threadsY > 0);
         SimComputeShader.Dispatch(_simIoKernel, threadsX, threadsY, 1);
@@ -65,11 +68,12 @@ public static class SimCompute
         RenderTexture gasTexture2,
         RenderTexture velocityTexture,
         RenderTexture boundaryTexture,
-        float laplacianCenter = -4.0f,   
-        float laplacianNeighbor = 1.0f, 
-        float laplacianDiagnal = 0.5f, 
-        float maximumPressure = 1,float boundaryPressureMin = 2,float boundaryPressureMax = 3,
-        float biasUp = 0.5f, float biasDown = 0.5f, float biasLeft = 0.5f, float biasRight = 0.5f)
+        float laplacianCenter = -4.0f,
+        float laplacianNeighbor = 1.0f,
+        float laplacianDiagnal = 0.5f,
+        float maximumPressure = 1, float boundaryPressureMin = 2, float boundaryPressureMax = 3,
+        float biasUp = 0.5f, float biasDown = 0.5f, float biasLeft = 0.5f, float biasRight = 0.5f,
+        float diffuseRate = 0.1f ,float deltaTime = 1)
     {
         
         SimComputeShader.SetTexture(_simDiffuseKernel, "gas", gasTexture);
@@ -87,7 +91,9 @@ public static class SimCompute
         SimComputeShader.SetFloat("biasDown", biasDown);
         SimComputeShader.SetFloat("biasLeft", biasLeft);
         SimComputeShader.SetFloat("biasRight", biasRight);
-        
+        SimComputeShader.SetFloat("diffuseRate", diffuseRate);
+        SimComputeShader.SetFloat("deltaTime", deltaTime);
+
         SimComputeShader.SetFloat("maximumPressure", maximumPressure);
         SimComputeShader.SetFloats("boundaryPressure", boundaryPressureMin, boundaryPressureMax);
         
@@ -99,12 +105,12 @@ public static class SimCompute
         
         SimComputeShader.Dispatch(_simDiffuseKernel, threadsX, threadsY, 1);
         
-        SimComputeShader.SetTexture(_simDiffuse2Kernel, "gas", gasTexture);
-        SimComputeShader.SetTexture(_simDiffuse2Kernel, "gasPrevious", gasTexture2);
-        SimComputeShader.SetTexture(_simDiffuse2Kernel, "boundaryTexture", boundaryTexture);
-        SimComputeShader.SetTexture(_simDiffuse2Kernel, "velocity", velocityTexture);
+       // SimComputeShader.SetTexture(_simDiffuse2Kernel, "gas", gasTexture);
+       // SimComputeShader.SetTexture(_simDiffuse2Kernel, "gasPrevious", gasTexture2);
+       // SimComputeShader.SetTexture(_simDiffuse2Kernel, "boundaryTexture", boundaryTexture);
+       // SimComputeShader.SetTexture(_simDiffuse2Kernel, "velocity", velocityTexture);
         
-        SimComputeShader.Dispatch(_simDiffuse2Kernel, threadsX, threadsY, 1);
+       //SimComputeShader.Dispatch(_simDiffuse2Kernel, threadsX, threadsY, 1);
         
         Graphics.CopyTexture(gasTexture, gasTexture2);
     }

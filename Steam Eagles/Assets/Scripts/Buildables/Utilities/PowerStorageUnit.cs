@@ -15,7 +15,7 @@ namespace Buildings
         public float inflowRate = 5;
         public float outflowRate = 5;
 
-        [ProgressBar(0, nameof(capacity))] [SerializeField]
+        [SerializeField]
         private FloatReactiveProperty currStored = new();
         [FoldoutGroup("Events")] public UnityEvent<float> onStoredAmountChanged;
         [FoldoutGroup("Events")] public UnityEvent<float> onStoredAmountChangedNormalized;

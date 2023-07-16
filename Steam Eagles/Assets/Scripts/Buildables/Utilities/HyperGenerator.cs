@@ -49,5 +49,10 @@ namespace Buildings
         {
             
         }
+
+        public void Dispose()
+        {
+            internalPowerStorageUnit.Dispose();
+        }
     }
 }

@@ -84,6 +84,7 @@ namespace _EXP.PhysicsFun.ComputeFluid
 
         public GasSampleData GetSampleData()
         {
+            if (transform == null) return default;
             var pos = transform.position;
             
             return new GasSampleData

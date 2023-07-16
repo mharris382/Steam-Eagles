@@ -10,8 +10,6 @@ using Zenject;
 
 namespace Buildables
 {
-    
-   
     [RequireComponent(typeof(BuildableMachine))]
     public class HypergasGenerator : Machine<HypergasGenerator>, IMachineCustomSaveData
     {
@@ -19,7 +17,6 @@ namespace Buildables
         
         
         private BuildableMachine _buildableMachine;
-        private HypergasEngineController _controller;
 
         // public MachineCell inputCell;
         // public MachineCell[] outputCells;
@@ -102,8 +99,7 @@ namespace Buildables
 
         private void OnDestroy()
         {
-            _controller?.Dispose();
-            
+            hyperGenerator.Dispose();
         }
 
         #region [Save/Loading]
@@ -159,13 +155,12 @@ namespace Buildables
     {
         public override void InstallBindings()
         {
-            Container.BindFactory<HypergasGenerator, HypergasEngineController, HypergasEngineController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<HyperPump, HyperPumpController, HyperPumpController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<SteamTurbine, SteamTurbineController, SteamTurbineController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<ExhaustVent, ExhaustVentController, ExhaustVentController.Factory>().AsSingle().NonLazy();
+            //Container.BindFactory<HyperPump, HyperPumpController, HyperPumpController.Factory>().AsSingle().NonLazy();
+            // Container.BindFactory<SteamTurbine, SteamTurbineController, SteamTurbineController.Factory>().AsSingle().NonLazy();
+            //Container.BindFactory<ExhaustVent, ExhaustVentController, ExhaustVentController.Factory>().AsSingle().NonLazy();
         }
     }
-    
+
 
     [Serializable]
     public class HypergasEngineConfig
@@ -186,5 +181,88 @@ namespace Buildables
         [FoldoutGroup("Steam Turbine")]  public float generatorStorageCapacity = 10;
         
         [FoldoutGroup("Exhaust Vent")] public float exhaustVentMaxConsumerRate = 5;
+    }
+
+    [Serializable]
+    public class SteamTurbineV2
+    {
+        private const string ELECTRICAL = "Electrical";
+        private const string STEAM = "Steam";
+        private const string TAB_IO = "IO";
+        private const string TAB_STORAGE = "Storage";
+        private const string TAB_INFO = "Info";
+        private const string TABS = "/Tabs";
+        private const string DEBUG = "Debugging/";
+        [SerializeField] private float steamToElectricityRatio = 2f;
+        
+        [TabGroup(ELECTRICAL+TABS, TAB_STORAGE)]
+        [BoxGroup(ELECTRICAL)] [SerializeField] private PowerStorageUnit internalElectricalStorage;
+        [TabGroup(ELECTRICAL+TABS, TAB_IO)]
+        [BoxGroup(ELECTRICAL)] [Required] public OverridablePowerSupplier electricalOutput;
+        
+        [TabGroup(STEAM+TABS, TAB_STORAGE)]
+        [BoxGroup(STEAM)] [SerializeField] private PowerStorageUnit internalSteamStorage;
+        [TabGroup(STEAM+TABS, TAB_IO)]
+        [BoxGroup(STEAM)] public OverridablePowerSupplier outputPipe;
+        [TabGroup(STEAM+TABS, TAB_IO)]
+        [BoxGroup(STEAM)] public OverridablePowerConsumer inputPipe;
+        
+        [TabGroup(ELECTRICAL + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup(ELECTRICAL), ProgressBar(0, nameof(CurrentElectricalCapacity))] public float CurrentElectricityStored
+        {
+            get => internalElectricalStorage.currentStored;
+            set => internalElectricalStorage.currentStored = Mathf.Clamp(value, 0, CurrentElectricalCapacity);
+        }
+        
+        [TabGroup(STEAM + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup(  STEAM), ProgressBar(0, nameof(CurrentSteamCapacity))] public float CurrentSteamStored
+        {
+            get => internalSteamStorage.currentStored;
+            set => internalSteamStorage.currentStored = Mathf.Clamp(value, 0, CurrentSteamCapacity);
+        }
+
+        [TabGroup(ELECTRICAL + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup( ELECTRICAL)] public float CurrentElectricalCapacity => internalElectricalStorage.capacity;
+        
+        [TabGroup(STEAM + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup( STEAM)] public float CurrentSteamCapacity => internalSteamStorage.capacity;
+
+        public float CurrentElectricityStoredNormalized => CurrentElectricityStored/ CurrentElectricalCapacity;
+        public float CurrentSteamStoredNormalized => CurrentSteamStored/ CurrentSteamCapacity;
+        public void Initialize()
+        {
+            inputPipe.SetOverride(GetConsumptionRate, ConsumeSteam);
+            outputPipe.SetOverride(GetProductionRate, ReleaseSteam);
+            electricalOutput.SetOverride(GetElectricalProductionRate, SupplyElectricity);
+
+            
+        }
+        void ConsumeSteam(float amountOfSteamEnteringTurbine)
+        {
+            float amountOfElectricalProduced = amountOfSteamEnteringTurbine * steamToElectricityRatio;
+            internalElectricalStorage.currentStored += amountOfElectricalProduced;
+            internalSteamStorage.currentStored -= amountOfSteamEnteringTurbine;
+        }
+            
+        float ReleaseSteam(float amountOfSteamToRelease)
+        {
+            return amountOfSteamToRelease;
+        }
+            
+            
+        float SupplyElectricity(float amountOfElectricityRequested)
+        {
+            internalElectricalStorage.currentStored -= amountOfElectricityRequested;
+            return amountOfElectricityRequested;
+        }
+
+        public void Dispose()
+        {
+            internalSteamStorage.Dispose();
+        }
+
+        public float GetElectricalProductionRate() => internalElectricalStorage.MaxCanRemoveRaw;
+        public float GetConsumptionRate() => internalSteamStorage.MaxCanAddRaw;
+        public float GetProductionRate() => internalSteamStorage.MaxCanRemoveRaw;
     }
 }

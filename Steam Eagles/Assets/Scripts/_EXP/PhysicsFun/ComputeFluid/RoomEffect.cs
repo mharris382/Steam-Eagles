@@ -35,8 +35,9 @@ public class RoomEffect : MonoBehaviour
     private RoomSimTextures _roomSimTextures;
     private GasTexture _gasTexture;
     private CapturedRoomTexture _capturedRoomTexture;
-    
-  
+
+    [FoldoutGroup(SIM_COMPUTE + VERSION_1),Range(0,1)]
+    public float diffuseRate = 0.2f;
     [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public bool disableSim = true;
     [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public  float laplacianCenter = -4.0f;
     [FoldoutGroup(SIM_COMPUTE + VERSION_1)] public  float laplacianNeighbor = 1.0f;
@@ -300,8 +301,8 @@ public class RoomEffect : MonoBehaviour
         SimCompute.DispatchDiffuse(
             gasTexture, previousGasTexture,
             boundaryTexture,velocityTexture,
-            laplacianCenter, laplacianNeighbor, laplacianDiagnal
-            );
+            laplacianCenter, laplacianNeighbor, laplacianDiagnal,diffuseRate:diffuseRate, deltaTime: updateRate);
+        GasTexture.SwapTextures();
         //swap the pressure textures so that the previous texture is now the current texture
         
     }

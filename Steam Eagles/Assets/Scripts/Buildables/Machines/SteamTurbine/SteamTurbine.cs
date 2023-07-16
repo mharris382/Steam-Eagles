@@ -8,96 +8,63 @@ namespace Buildables
 {
     public class SteamTurbine : Machine<SteamTurbine>, IMachineCustomSaveData
     {
-        [Required,ChildGameObjectsOnly] public MachineCell inputCell;
-        [Required,ChildGameObjectsOnly] public MachineCell outputCell;
-        private SteamTurbineController _controller;
-
-        [SerializeField] private Events events;
-        private HypergasEngineConfig _config;
+        public SteamTurbineV2 steamTurbineV2;
         private string _json;
-
-        [Serializable]
-        private class Events
-        {
-            public UnityEvent<bool> producerActive;
-            public UnityEvent<float> amountFilled;
-        }
-           
-        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
-        public float ConsumeRate
-        {
-            get;
-            set;
-        }
-        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
-        public float ProduceRate
-        {
-            get;
-            set;
-        }
-        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
-        public bool IsConsuming
-        {
-            get;
-            set;
-        }
-        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging")]
-        public bool IsProducing
+// _controller?.Dispose();
+        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging"), ProgressBar(0, nameof(StorageCapacitySteam))]
+        public float AmountStoredSteam
         {
             get;
             set;
         }
 
-        [ShowInInspector, ReadOnly, HideInEditorMode ,BoxGroup("Debugging"), ProgressBar(0, nameof(StorageCapacity))]
-        public float AmountStored
-        {
-            get;
-            set;
-        }
+        private float StorageCapacitySteam => steamTurbineV2.CurrentSteamCapacity;
 
-        private float StorageCapacity => _config?.generatorStorageCapacity ?? 1000;
-        
-        
-        
-        void InjectMe(SteamTurbineController.Factory controllerFactory, HypergasEngineConfig config)
+
+        public void Awake()
         {
-            _controller = controllerFactory.Create(this);
-            _config = config;
-            if (!string.IsNullOrEmpty(_json))
-            {
-                _controller.LoadFromJson(_json);
-                _json = null;
-            }
+            steamTurbineV2.Initialize();
         }
 
         public void Feedback(float filled, bool producerIsActive)
         {
-            events.amountFilled.Invoke(filled);
-            events.producerActive.Invoke(producerIsActive);
+            //events.amountFilled.Invoke(filled);
+            //events.producerActive.Invoke(producerIsActive);
         }
 
         private void OnDestroy()
         {
-            _controller?.Dispose();
+            steamTurbineV2.Dispose();
         }
 
         public void LoadDataFromJson(string json)
         {
-            if (_controller == null)
+            try
             {
-                _json = json;
+                SteamTurbineSaveData saveData = JsonUtility.FromJson<SteamTurbineSaveData>(json);
+                steamTurbineV2.CurrentElectricityStored = saveData.amountStored;
             }
-            else
+            catch (Exception e)
             {
-                _controller.LoadFromJson(json);
+                Debug.LogError("failed to load steam turbine from json");
             }
         }
 
         public string SaveDataToJson()
         {
-            return _controller.SaveToJson();
+            var saveData = new SteamTurbineSaveData();
+            saveData.amountStored = AmountStoredSteam;
+            return JsonUtility.ToJson(saveData);
         }
-
-       
+        public void LoadFromJson(string json)
+        {
+         
+        }
+  
+        [System.Serializable]
+        class SteamTurbineSaveData
+        {
+            public float amountStored;
+        }
     }
 }
