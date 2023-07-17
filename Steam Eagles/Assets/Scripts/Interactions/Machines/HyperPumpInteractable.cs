@@ -19,8 +19,10 @@ namespace Interactions.Machines
         public override async UniTask<bool> Interact(InteractionAgent agent)
         {
             hyperPump.Interact();
-            animator.Play(animationName);
-            Debug.Assert(animator.GetCurrentAnimatorStateInfo(0).IsName(animationName));
+            if(animator.enabled)
+            {
+                animator.Play(animationName);
+            }
             float t = Time.time;
             await UniTask.WaitUntil(() => Time.time - t > waitTime);
             return true;

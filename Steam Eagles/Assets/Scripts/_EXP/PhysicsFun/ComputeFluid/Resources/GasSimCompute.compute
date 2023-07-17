@@ -2,7 +2,7 @@
 #pragma kernel UpdateGasState
 #pragma kernel MergeSourceSink
 #pragma kernel VelocityFromHoles
-#pragma kernel InvertWalls
+
 
 
 //-----------------------------------------------------------------------------------------------
@@ -192,12 +192,3 @@ void VelocityFromHoles(uint3 id : SV_DispatchThreadID)
     velocityState[texCoord] = float4(velocity, velocityState[texCoord].z, clamp(0, 1, velocity.x + velocity.y));
 }
 
-RWTexture2D<float4> wallsTexture;
-[numthreads(16,16,1)]
-void InvertWalls(uint3 id : SV_DispatchThreadID)
-{
-    uint2 texCoord = id.xy;
-    float wall = wallsTexture[texCoord].x;
-    if(wall) wallsTexture[texCoord] = float4(0, 0, 0,0);
-    else wallsTexture[texCoord] = float4(1, 1, 1,1);
-}
