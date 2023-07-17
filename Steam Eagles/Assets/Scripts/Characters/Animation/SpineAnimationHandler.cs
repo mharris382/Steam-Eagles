@@ -14,9 +14,9 @@ namespace Characters.Animations
     public class SpineAnimationHandler : MonoBehaviour
     {
         private SkeletonAnimation skeletonAnimation;
-        [TableList]
+        
 		public List<StateNameToAnimationReference> statesAndAnimations = new List<StateNameToAnimationReference>();
-		[TableList]
+		
 		public List<AnimationTransition> transitions = new List<AnimationTransition>(); // Alternately, an AnimationPair-Animation Dictionary (commented out) can be used for more efficient lookups.
 		private Dictionary<string, StateNameToAnimationReference> _stateNameToAnimationReferenceDictionary;
 		[System.Serializable]
