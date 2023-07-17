@@ -4,7 +4,10 @@ using Sirenix.OdinInspector;
 using Spine;
 using Spine.Unity;
 using UnityEngine;
-
+#if UNITY_EDITOR
+                
+using UnityEditor;
+#endif
 namespace Characters.Animations
 {
     public class SkinController : MonoBehaviour
@@ -13,14 +16,15 @@ namespace Characters.Animations
         [Serializable]
         public class StateNameToSkin
         {
+            [InlineButton(nameof(ApplySkinInEditor))]
             public string stateName;
 
             [SpineSkin()]public string[] handSkin;
             
             public bool overrideBodySkin = false;
             
-            [ShowIf(nameof(overrideBodySkin)),SpineSkin()]
             
+            [ShowIf(nameof(overrideBodySkin)),SpineSkin()]
             public string bodySkin;
 
             public string GetBodySkinName(SkinController controller) => overrideBodySkin ? bodySkin : controller.bodySkinName;
@@ -29,7 +33,7 @@ namespace Characters.Animations
 
             public void InitSkin(SkinController controller)
             {
-                var bodySkin = controller._skeletonData.FindSkin(GetBodySkinName(controller));
+                var bodySkin = controller.SkeletonData.FindSkin(GetBodySkinName(controller));
                 
                 Debug.Assert(bodySkin != null, $"Missing Body skin named {bodySkin} for Skin Controller {controller.name}", controller);
                 Debug.Assert(handSkin != null, $"Missing Hand skin named {handSkin} for Skin Controller {controller.name}", controller);
@@ -38,11 +42,22 @@ namespace Characters.Animations
                 skin.AddSkin(bodySkin);
                 foreach (var skinName in this.handSkin)
                 {
-                    skin.AddSkin(controller._skeletonData.FindSkin(skinName));
+                    skin.AddSkin(controller.SkeletonData.FindSkin(skinName));
                 }
                 this.Skin = skin;
             }
-            
+
+            [Button]
+            public void ApplySkinInEditor()
+            {
+#if UNITY_EDITOR
+                var selectedGO = Selection.activeGameObject;
+                if (selectedGO == null) return;
+                var controller = selectedGO.GetComponent<SkinController>();
+                InitSkin(controller);
+                controller.UpdateState(this.stateName);
+#endif
+            }
         }
         public void UpdateState(string stateName)
         {
@@ -72,13 +87,35 @@ namespace Characters.Animations
 
         private Dictionary<string, StateNameToSkin> _stateNameToSkins;
 
-        private void Awake()
+        public SkeletonData SkeletonData
+        {
+            get
+            {
+                if(_skeletonData == null) Init();
+                return _skeletonData;
+            }
+        }
+        
+        public Skeleton Skeleton
+        {
+            get
+            {
+                if(_skeleton == null) Init();
+                return _skeleton;
+            }
+        }
+
+        private void Init()
         {
             _skeletonAnimation = GetComponent<SkeletonAnimation>();
             _skeleton = _skeletonAnimation.Skeleton;
             _skeletonData = _skeleton.Data;
             _stateNameToSkins = new Dictionary<string, StateNameToSkin>();
             CreateSkins();
+        }
+        private void Awake()
+        {
+           Init();
             _skeleton.SetSkin(closedHands);
         }
 

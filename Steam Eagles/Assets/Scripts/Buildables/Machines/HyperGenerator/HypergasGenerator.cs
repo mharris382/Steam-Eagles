@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Buildings;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -27,12 +28,19 @@ namespace Buildables
         private class Events
         {
             public UnityEvent<float> AmountStoredChanged;
+            public UnityEvent<float> AmountStoredChangedNormalized;
             public UnityEvent<bool> ProductionStateChanged;
-            
+
+            public void SubscribeTo(MonoBehaviour owner, HyperGenerator generator)
+            {
+                generator.StartUpShutdownStream().Subscribe(t => ProductionStateChanged.Invoke(t)).AddTo(owner);
+                generator.PowerStorageUnit.StoredAmountChangedNormalized.Subscribe(t => AmountStoredChangedNormalized.Invoke(t)).AddTo(owner);
+                generator.PowerStorageUnit.StoredAmountChanged.Subscribe(t => AmountStoredChanged.Invoke(t)).AddTo(owner);
+
+            }
         }
-        ReactiveProperty<float>_amountStored = new ReactiveProperty<float>();
-        ReactiveProperty<bool> _isProducing = new ReactiveProperty<bool>();
-        private HypergasEngineConfig _config;
+        
+        
         private string _json;
 
         public float Capacity
@@ -50,8 +58,10 @@ namespace Buildables
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public bool HasStartedUp
         {
-            get { return hyperGenerator.StoredAmount > 0; }
+            get => hyperGenerator.IsStartedUp;
+            set => hyperGenerator.IsStartedUp = value;
         }
+
         [ShowInInspector, HorizontalGroup("Debugging/h1", LabelWidth = 75), HideInEditorMode]
         public float ProductionRate
         {
@@ -62,23 +72,17 @@ namespace Buildables
         {
             get => hyperGenerator.GetConsumptionRate();
         }
+        
 
 
      
 
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
-        
-        
-       [Inject] public void InjectSteamNetwork(HypergasEngineConfig config)
-        {
-           _config = config;
-        }
 
         private void Start()
         {
-            // _amountStored.Select(t => t / _config.amountStoredBeforeProduction).Subscribe(events.AmountStoredChanged.Invoke);
+            events.SubscribeTo(this, hyperGenerator);
             hyperGenerator.Initialize();
-            //_isProducing.Subscribe(events.ProductionStateChanged.Invoke);
         }
         
 
@@ -108,8 +112,8 @@ namespace Buildables
         {
             _json = json;
             LoadFromJson(json);
-            events.AmountStoredChanged.Invoke(_amountStored.Value);
-            events.ProductionStateChanged.Invoke(_isProducing.Value);
+            events.AmountStoredChanged.Invoke(AmountStored);
+            events.ProductionStateChanged.Invoke(HasStartedUp);
         }
         
         [Serializable]
@@ -124,11 +128,9 @@ namespace Buildables
             try
             {
                 var saveData = JsonUtility.FromJson<SaveData>(json);
+                this.AmountStored = saveData.amountStored;
+                this.HasStartedUp = saveData.isJumpstarted;
                 if (saveData.isJumpstarted)
-                {
-                    this.AmountStored = Mathf.Max(saveData.amountStored, _config.amountStoredBeforeProduction+0.1f);
-                }
-                else
                 {
                     this.AmountStored = saveData.amountStored;
                 }
@@ -241,11 +243,12 @@ namespace Buildables
         {
             float amountOfElectricalProduced = amountOfSteamEnteringTurbine * steamToElectricityRatio;
             internalElectricalStorage.currentStored += amountOfElectricalProduced;
-            internalSteamStorage.currentStored -= amountOfSteamEnteringTurbine;
+            internalSteamStorage.currentStored += amountOfSteamEnteringTurbine;
         }
             
         float ReleaseSteam(float amountOfSteamToRelease)
         {
+            internalSteamStorage.currentStored -= amountOfSteamToRelease;
             return amountOfSteamToRelease;
         }
             

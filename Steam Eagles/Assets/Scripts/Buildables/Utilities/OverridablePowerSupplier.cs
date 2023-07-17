@@ -4,7 +4,7 @@ namespace Buildings
 {
     public class OverridablePowerSupplier : CustomPowerSupplier
     {
-        public float supplyRate = 1;
+        public float defaultRate = 1;
 
 
         private bool _assigned;
@@ -20,7 +20,7 @@ namespace Buildings
         
         protected override float GetSupplyRate()
         {
-            return _assigned ? _supplyRate() : supplyRate;
+            return _assigned ? _supplyRate() : defaultRate;
         }
 
         protected override float RemoveSupply(float amount)

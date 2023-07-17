@@ -1960,8 +1960,8 @@ MonoBehaviour:
     steamToElectricityRatio: 2
     internalElectricalStorage:
       capacity: 50
-      inflowRate: 5
-      outflowRate: 5
+      inflowRate: 50
+      outflowRate: 50
       currStored:
         value: 0
       onStoredAmountChanged:
@@ -1983,8 +1983,8 @@ MonoBehaviour:
       onStoredAmountChangedNormalized:
         m_PersistentCalls:
           m_Calls: []
-    outputPipe: {fileID: 1276814861399791514}
-    inputPipe: {fileID: 2421396511057456616}
+    outputPipe: {fileID: 4090051294075257463}
+    inputPipe: {fileID: 211101992471138042}
 --- !u!4 &8271404747134982330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6269788507110102710, guid: 0fa706ff9ce484a4b9ef8ffa591a5a17, type: 3}
@@ -2243,7 +2243,7 @@ MonoBehaviour:
   onActiveChanged:
     m_PersistentCalls:
       m_Calls: []
-  supplyRate: 50
+  defaultRate: 1
 --- !u!4 &1290369989890277897 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6483217350824897885, guid: e7717553b3f03414799f21c29dd5f662, type: 3}
@@ -2366,15 +2366,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
---- !u!114 &2421396511057456616 stripped
+--- !u!114 &4090051294075257463 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8863243745359888174, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7086644418302202033, guid: dfb3bea198a0d1f44a685f2c572eac9c, type: 3}
   m_PrefabInstance: {fileID: 6528555306460631750}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3f5744b519f4ad18a1fdbe2a14be3a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 0fb6586913b14065a001fca0cde8846c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &5372681485401283074 stripped
@@ -2392,7 +2392,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2146801421662828071, guid: b64e42ab55581d34d876743c0671fa3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.496
+      value: 0.43
       objectReference: {fileID: 0}
     - target: {fileID: 7136242161487415563, guid: b64e42ab55581d34d876743c0671fa3f, type: 3}
       propertyPath: m_RootOrder
@@ -2447,6 +2447,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b64e42ab55581d34d876743c0671fa3f, type: 3}
+--- !u!114 &211101992471138042 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9021974675266894058, guid: b64e42ab55581d34d876743c0671fa3f, type: 3}
+  m_PrefabInstance: {fileID: 9212537511069677072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f5744b519f4ad18a1fdbe2a14be3a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2076304984019533595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7136242161487415563, guid: b64e42ab55581d34d876743c0671fa3f, type: 3}

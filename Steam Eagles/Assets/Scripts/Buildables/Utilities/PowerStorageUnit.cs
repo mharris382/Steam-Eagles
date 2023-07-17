@@ -7,8 +7,14 @@ using UnityEngine.Events;
 
 namespace Buildings
 {
+    public interface IReadOnlyPowerStorageUnit
+    {
+        
+        IObservable<float> StoredAmountChanged { get; }
+        IObservable<float> StoredAmountChangedNormalized { get; }
+    }
     [Serializable]
-    public class PowerStorageUnit : IDisposable
+    public class PowerStorageUnit : IDisposable, IReadOnlyPowerStorageUnit
     {
         public float capacity = 50;
         
@@ -30,6 +36,9 @@ namespace Buildings
         
         public float MaxCanAddRaw => capacity - currentStored;
         public float MaxCanRemoveRaw => currentStored;
+        
+        public IObservable<float> StoredAmountChanged => currStored;
+        public IObservable<float> StoredAmountChangedNormalized => currStored.Select(t => t / capacity);
 
 
         private CompositeDisposable _cd;

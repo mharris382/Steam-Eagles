@@ -6,73 +6,65 @@ using Zenject;
 
 namespace Buildables
 {
+   
     public class HyperPump : Machine<HyperPump>
     {
-        private HyperPumpController _pumpController;
+        [Range(1, 5)] [SerializeField] private int pressesToFillStorage = 1;
+        [Range(0.5f, 3)] [SerializeField] private float productionModifier = 1;
+        [SerializeField] private PowerStorageUnit internalPumpStorage  = new PowerStorageUnit() {
+            capacity = 2,
+            outflowRate = 100,
+            inflowRate = 100,
+        };
+        public OverridablePowerSupplier steamOutputPipe;
+        
+        
         private BuildableMachine _buildableMachine;
-        [Required] public MachineCell producerCell;
-        
-        private HypergasEngineConfig _config;
-        
-
 
         public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
         public Building Building => BuildableMachine.Building;
-        
-        public void Inject(HyperPumpController.Factory pumpControllerFactory, HypergasEngineConfig config)
-        {
-            _pumpController = pumpControllerFactory.Create(this);
-            _config = config;
-        }
-       
-        public void Interact()
-        {
-            if(_pumpController != null) _pumpController.OnInteraction();
-        }
         public Vector2Int GetOutputCell()
         {
-            return producerCell.BuildingSpacePosition;
+            return default;
         }
 
         [ShowInInspector, BoxGroup("Debugging"), ReadOnly,HideInEditorMode]
         public bool IsProducing
         {
-            get;
-            set;
+            get => AmountStored > 0;
         }
+        
         [ShowInInspector, BoxGroup("Debugging"), ReadOnly,HideInEditorMode]
         public float ProductionRate
         {
-            get;
-            set;
+            get => internalPumpStorage.MaxCanRemoveRaw * productionModifier;
         }
 
-        [ShowInInspector, BoxGroup("Debugging"), ReadOnly, ProgressBar(0, "StorageCapacity"),HideInEditorMode]
+        [ShowInInspector, BoxGroup("Debugging"), ReadOnly, ProgressBar(0, nameof(StorageCapacity)),HideInEditorMode]
         public float AmountStored
         {
-            get;
-            set;
-        }
-        
-        
-        float StorageCapacity => _config==null ? 0: _config.pumpStorageCapacity;
-
-        private void OnDestroy()
-        {
-            _pumpController?.Dispose();
+            get => internalPumpStorage.currentStored;
+            set => internalPumpStorage.currentStored = value;
         }
 
-        private void OnDrawGizmos()
+
+        private float StorageCapacity => internalPumpStorage.capacity;
+
+        private void Start()
         {
-            if (_pumpController == null)
+            float GetProductionRate() => ProductionRate;
+            float TakeAmount(float amount)
             {
-                return;
+                internalPumpStorage.currentStored -= (amount/productionModifier);
+                return amount;
             }
-            Gizmos.color = Color.red;
-            var position = Building.Map.CellToWorld((Vector3Int)producerCell.BuildingSpacePosition, BuildingLayers.PIPE);
-            var cellSize = Building.Map.GetCellSize(BuildingLayers.PIPE);
-            var offset = cellSize / 2f;
-            Gizmos.DrawCube(position + (Vector3)offset, cellSize);
+            steamOutputPipe.SetOverride(GetProductionRate, TakeAmount);
+        }
+        
+        public void Interact()
+        {
+            float amount = StorageCapacity / pressesToFillStorage;
+            internalPumpStorage.currentStored += amount;
         }
     }
 }
