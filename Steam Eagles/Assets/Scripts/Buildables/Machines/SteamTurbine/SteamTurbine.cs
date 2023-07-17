@@ -21,6 +21,23 @@ namespace Buildables
         private float StorageCapacitySteam => steamTurbineV2.CurrentSteamCapacity;
 
 
+        public float ElectricityStored => steamTurbineV2.CurrentElectricityStored;
+        public float ElectricityStoredNormalized => steamTurbineV2.CurrentElectricityStoredNormalized;
+        public float SteamStored => steamTurbineV2.CurrentSteamStored;
+        public float SteamStoredNormalized => steamTurbineV2.CurrentSteamStoredNormalized;
+
+        public float SteamConsumptionRate => steamTurbineV2.GetConsumptionRate();
+        public float SteamProductionRate => steamTurbineV2.GetProductionRate();
+        public float ElectricalProductionRate => steamTurbineV2.GetElectricalProductionRate();
+
+        public bool CanProduceElectrical => ElectricalProductionRate > 0;
+        public bool CanConsumeSteam => SteamConsumptionRate > 0;
+        public bool CanProduceSteam => SteamProductionRate > 0;
+        
+        public bool HasSteam => SteamStored > 0;
+        public bool HasElectricity => ElectricityStored > 0;
+
+
         public void Awake()
         {
             steamTurbineV2.Initialize();

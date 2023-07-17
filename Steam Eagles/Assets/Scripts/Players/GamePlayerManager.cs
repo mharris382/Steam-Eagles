@@ -116,7 +116,11 @@ namespace Players
         {
             var building = request.Building == null ? GameObject.FindGameObjectWithTag("Building") : request.Building;
             Debug.Assert(building != null, "No building found in scene", this);
-
+            if (request.characterPrefab == null)
+            {
+                Debug.LogWarning($"Null character prefab requested, ignoring spawn request: {request.playerCharacterIndex}", this);
+                return;
+            }
            var characterInstance = SetupPlayer(request.characterPrefab, request.playerCharacterIndex, building, request.spawnPositionLocal, out var camera);
            var inputGO = GameManager.Instance.GetPlayerDevice(request.playerCharacterIndex);
            var cameraGO = camera.gameObject;
