@@ -39,21 +39,23 @@ namespace Items
         private const string TYPE_INFO = "/Recipe Type";
         private const string HORIZONTAL_SPLIT_1 = "/h1";
         private const string VERTICAL_SPLIT_1 = "/v1";
+        private const int LABEL_WIDTH = 100;
         
         [BoxGroup(BASIC_INFO)]
-        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:3.3f)]
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:150, PaddingLeft = 5)]
         [HideLabel,PreviewField(150, ObjectFieldAlignment.Left)] public Sprite icon;
         
-        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:.66f, LabelWidth = 55)]
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:.66f, LabelWidth = LABEL_WIDTH)]
         
         [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Display Name")]
         public string friendlyName;
         
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Category")]
+        
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1),LabelWidth(LABEL_WIDTH), LabelText("Category")]
         public RecipeCategory recipeCategory = RecipeCategory.Tiles;
         
         [ShowIf("@recipeCategory == RecipeCategory.CUSTOM")]
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Custom Category")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1),LabelWidth(LABEL_WIDTH), LabelText("Custom Category")]
         [SerializeField] string customCategory = "Misc";
         
         
@@ -71,15 +73,15 @@ namespace Items
 
 
         [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO, "Recipe Type")]
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type"),LabelWidth(LABEL_WIDTH)]
         [SerializeField, EnumPaging] private RecipeType recipeType;
 
         [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO)]
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Prefab"),LabelWidth(LABEL_WIDTH)]
         [ShowIf(nameof(UseInstanceReference)),SerializeField] private RecipeInstanceReference instanceReference;
 
         [TitleGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1 + TYPE_INFO)]
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Type")]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Tile"),LabelWidth(LABEL_WIDTH)]
         [ShowIf(nameof(UseTileReference)),SerializeField] private TileReference tileReference;
 
 

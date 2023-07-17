@@ -19,8 +19,8 @@ using Utilities.AddressablesUtils;
 public class BuildingGlobalsInstaller : MonoInstaller
 {
     public GlobalBuildingConfig config;
-    [HideLabel]
-    public TileAssets tileAssets;
+    [HideLabel] public TileAssets tileAssets;
+    public ElectricityConfig electricityConfig;
     public override void InstallBindings()
     {
         Container.Bind<GlobalBuildingConfig>().FromInstance(config).AsSingle().NonLazy();
@@ -29,6 +29,9 @@ public class BuildingGlobalsInstaller : MonoInstaller
         Container.Bind<TileAssets>().FromInstance(tileAssets).AsSingle().NonLazy();
         ReflectedInstaller<ILayerSpecificRoomTexSaveLoader>.Install(Container, ContainerLevel.PROJECT);
         Container.BindInterfacesTo<EntityRoomTrackerV2>().AsSingle().NonLazy();
+        
+        Container.Bind<ElectricityConfig>().FromInstance(electricityConfig).AsSingle().NonLazy();
+        Container.Bind<LineVisibilityState>().AsSingle();
     }
 }
 

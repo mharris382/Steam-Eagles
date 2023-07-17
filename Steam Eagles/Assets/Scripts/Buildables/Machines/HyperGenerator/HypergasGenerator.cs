@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Buildings;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
@@ -9,16 +11,16 @@ using Zenject;
 
 namespace Buildables
 {
-    
-   
     [RequireComponent(typeof(BuildableMachine))]
     public class HypergasGenerator : Machine<HypergasGenerator>, IMachineCustomSaveData
     {
+        public HyperGenerator hyperGenerator;
+        
+        
         private BuildableMachine _buildableMachine;
-        private HypergasEngineController _controller;
 
-        public MachineCell inputCell;
-        public MachineCell[] outputCells;
+        // public MachineCell inputCell;
+        // public MachineCell[] outputCells;
 
         [SerializeField] private Events events;
         
@@ -26,109 +28,141 @@ namespace Buildables
         private class Events
         {
             public UnityEvent<float> AmountStoredChanged;
+            public UnityEvent<float> AmountStoredChangedNormalized;
             public UnityEvent<bool> ProductionStateChanged;
-            
+
+            public void SubscribeTo(MonoBehaviour owner, HyperGenerator generator)
+            {
+                generator.StartUpShutdownStream().Subscribe(t => ProductionStateChanged.Invoke(t)).AddTo(owner);
+                generator.PowerStorageUnit.StoredAmountChangedNormalized.Subscribe(t => AmountStoredChangedNormalized.Invoke(t)).AddTo(owner);
+                generator.PowerStorageUnit.StoredAmountChanged.Subscribe(t => AmountStoredChanged.Invoke(t)).AddTo(owner);
+
+            }
         }
-        ReactiveProperty<float>_amountStored = new ReactiveProperty<float>();
-        ReactiveProperty<bool> _isProducing = new ReactiveProperty<bool>();
-        private HypergasEngineConfig _config;
+        
+        
         private string _json;
 
+        public float Capacity
+        {
+            get => hyperGenerator.Capacity;
+        }
+
+        [ProgressBar(0, nameof(Capacity))]
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public float AmountStored
         {
-            get => _amountStored.Value;
-            set => _amountStored.Value = value;
+            get => hyperGenerator.StoredAmount;
+            set => hyperGenerator.StoredAmount = value;
         }
-        [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
-        public float ProductionRate
-        {
-            get;// => _amountStored.Value;
-            set;// => _amountStored.Value = value;
-        }
-        [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
-        public float ConsumptionRate
-        {
-            get;// => _amountStored.Value;
-            set;// => _amountStored.Value = value;
-        }
-
-
         [ShowInInspector, BoxGroup("Debugging"), HideInEditorMode]
         public bool HasStartedUp
         {
-            get => _isProducing.Value;
-            set => _isProducing.Value = value;
+            get => hyperGenerator.IsStartedUp;
+            set => hyperGenerator.IsStartedUp = value;
         }
-        
-        public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
-        
-        
-       [Inject] public void InjectSteamNetwork(HypergasEngineConfig config)
+
+        [ShowInInspector, HorizontalGroup("Debugging/h1", LabelWidth = 75), HideInEditorMode]
+        public float ProductionRate
         {
-           _config = config;
+            get => hyperGenerator.GetProductionRate();// => _amountStored.Value;
         }
+        [ShowInInspector, HorizontalGroup("Debugging/h1", LabelWidth = 75), HideInEditorMode]
+        public float ConsumptionRate
+        {
+            get => hyperGenerator.GetConsumptionRate();
+        }
+        
+
+
+     
+
+        public BuildableMachine BuildableMachine => _buildableMachine ? _buildableMachine : _buildableMachine = GetComponent<BuildableMachine>();
 
         private void Start()
         {
-            _amountStored.Select(t => t / _config.amountStoredBeforeProduction).Subscribe(events.AmountStoredChanged.Invoke);
-            _isProducing.Subscribe(events.ProductionStateChanged.Invoke);
+            events.SubscribeTo(this, hyperGenerator);
+            hyperGenerator.Initialize();
         }
+        
 
         private void Update()
         {
-            if (_controller == null)
-            {
-                Debug.LogError($"Steam network was not injected into {name}",this);
-                return;
-            }
-            _controller.Initialize();
-            _controller.UpdateEngine(Time.deltaTime);
+            hyperGenerator.Tick(Time.deltaTime);
         }
 
         public Vector2Int GetInputCellPosition()
         {
-            return inputCell.BuildingSpacePosition;
+            return default;
         }
 
         public Vector2Int[] GetOutputCellPositions()
         {
-            return outputCells.Select(t => t.BuildingSpacePosition).ToArray();
+            return null;
         }
 
         private void OnDestroy()
         {
-            _controller?.Dispose();
+            hyperGenerator.Dispose();
         }
+
+        #region [Save/Loading]
 
         public void LoadDataFromJson(string json)
         {
-            if (_controller == null)
+            _json = json;
+            LoadFromJson(json);
+            events.AmountStoredChanged.Invoke(AmountStored);
+            events.ProductionStateChanged.Invoke(HasStartedUp);
+        }
+        
+        [Serializable]
+        class SaveData
+        {
+            public bool isJumpstarted;
+            public float amountStored;
+        }
+        public void LoadFromJson(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            try
             {
-                _json = json;
+                var saveData = JsonUtility.FromJson<SaveData>(json);
+                this.AmountStored = saveData.amountStored;
+                this.HasStartedUp = saveData.isJumpstarted;
+                if (saveData.isJumpstarted)
+                {
+                    this.AmountStored = saveData.amountStored;
+                }
+                Debug.Log("Loaded hypergas engine from json");
             }
-            else
+            catch (Exception e)
             {
-                _controller.LoadFromJson(json);
-                events.AmountStoredChanged.Invoke(_amountStored.Value);
-                events.ProductionStateChanged.Invoke(_isProducing.Value);
+                Debug.LogError("Failed to load from json: " + e);
             }
         }
+        public string SaveDataToJson()
+        {
+            var saveData = new SaveData();
+            saveData.isJumpstarted = this.HasStartedUp;
+            saveData.amountStored = this.AmountStored;
+            return JsonUtility.ToJson(saveData);
+        }
 
-        public string SaveDataToJson() => _controller.SaveToJson();
+        #endregion
+
     }
 
     public class HypergasInstaller : Installer<HypergasInstaller>
     {
         public override void InstallBindings()
         {
-            Container.BindFactory<HypergasGenerator, HypergasEngineController, HypergasEngineController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<HyperPump, HyperPumpController, HyperPumpController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<SteamTurbine, SteamTurbineController, SteamTurbineController.Factory>().AsSingle().NonLazy();
-            Container.BindFactory<ExhaustVent, ExhaustVentController, ExhaustVentController.Factory>().AsSingle().NonLazy();
+            //Container.BindFactory<HyperPump, HyperPumpController, HyperPumpController.Factory>().AsSingle().NonLazy();
+            // Container.BindFactory<SteamTurbine, SteamTurbineController, SteamTurbineController.Factory>().AsSingle().NonLazy();
+            //Container.BindFactory<ExhaustVent, ExhaustVentController, ExhaustVentController.Factory>().AsSingle().NonLazy();
         }
     }
-    
+
 
     [Serializable]
     public class HypergasEngineConfig
@@ -149,5 +183,89 @@ namespace Buildables
         [FoldoutGroup("Steam Turbine")]  public float generatorStorageCapacity = 10;
         
         [FoldoutGroup("Exhaust Vent")] public float exhaustVentMaxConsumerRate = 5;
+    }
+
+    [Serializable]
+    public class SteamTurbineV2
+    {
+        private const string ELECTRICAL = "Electrical";
+        private const string STEAM = "Steam";
+        private const string TAB_IO = "IO";
+        private const string TAB_STORAGE = "Storage";
+        private const string TAB_INFO = "Info";
+        private const string TABS = "/Tabs";
+        private const string DEBUG = "Debugging/";
+        [SerializeField] private float steamToElectricityRatio = 2f;
+        
+        [TabGroup(ELECTRICAL+TABS, TAB_STORAGE)]
+        [BoxGroup(ELECTRICAL)] [SerializeField] private PowerStorageUnit internalElectricalStorage;
+        [TabGroup(ELECTRICAL+TABS, TAB_IO)]
+        [BoxGroup(ELECTRICAL)] [Required] public OverridablePowerSupplier electricalOutput;
+        
+        [TabGroup(STEAM+TABS, TAB_STORAGE)]
+        [BoxGroup(STEAM)] [SerializeField] private PowerStorageUnit internalSteamStorage;
+        [TabGroup(STEAM+TABS, TAB_IO)]
+        [BoxGroup(STEAM)] public OverridablePowerSupplier outputPipe;
+        [TabGroup(STEAM+TABS, TAB_IO)]
+        [BoxGroup(STEAM)] public OverridablePowerConsumer inputPipe;
+        
+        [TabGroup(ELECTRICAL + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup(ELECTRICAL), ProgressBar(0, nameof(CurrentElectricalCapacity))] public float CurrentElectricityStored
+        {
+            get => internalElectricalStorage.currentStored;
+            set => internalElectricalStorage.currentStored = Mathf.Clamp(value, 0, CurrentElectricalCapacity);
+        }
+        
+        [TabGroup(STEAM + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup(  STEAM), ProgressBar(0, nameof(CurrentSteamCapacity))] public float CurrentSteamStored
+        {
+            get => internalSteamStorage.currentStored;
+            set => internalSteamStorage.currentStored = Mathf.Clamp(value, 0, CurrentSteamCapacity);
+        }
+
+        [TabGroup(ELECTRICAL + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup( ELECTRICAL)] public float CurrentElectricalCapacity => internalElectricalStorage.capacity;
+        
+        [TabGroup(STEAM + TABS, TAB_STORAGE)]
+        [ShowInInspector, BoxGroup( STEAM)] public float CurrentSteamCapacity => internalSteamStorage.capacity;
+
+        public float CurrentElectricityStoredNormalized => CurrentElectricityStored/ CurrentElectricalCapacity;
+        public float CurrentSteamStoredNormalized => CurrentSteamStored/ CurrentSteamCapacity;
+        public void Initialize()
+        {
+            inputPipe.SetOverride(GetConsumptionRate, ConsumeSteam);
+            outputPipe.SetOverride(GetProductionRate, ReleaseSteam);
+            electricalOutput.SetOverride(GetElectricalProductionRate, SupplyElectricity);
+
+            
+        }
+        void ConsumeSteam(float amountOfSteamEnteringTurbine)
+        {
+            float amountOfElectricalProduced = amountOfSteamEnteringTurbine * steamToElectricityRatio;
+            internalElectricalStorage.currentStored += amountOfElectricalProduced;
+            internalSteamStorage.currentStored += amountOfSteamEnteringTurbine;
+        }
+            
+        float ReleaseSteam(float amountOfSteamToRelease)
+        {
+            internalSteamStorage.currentStored -= amountOfSteamToRelease;
+            return amountOfSteamToRelease;
+        }
+            
+            
+        float SupplyElectricity(float amountOfElectricityRequested)
+        {
+            internalElectricalStorage.currentStored -= amountOfElectricityRequested;
+            return amountOfElectricityRequested;
+        }
+
+        public void Dispose()
+        {
+            internalSteamStorage.Dispose();
+        }
+
+        public float GetElectricalProductionRate() => internalElectricalStorage.MaxCanRemoveRaw;
+        public float GetConsumptionRate() => internalSteamStorage.MaxCanAddRaw;
+        public float GetProductionRate() => internalSteamStorage.MaxCanRemoveRaw;
     }
 }

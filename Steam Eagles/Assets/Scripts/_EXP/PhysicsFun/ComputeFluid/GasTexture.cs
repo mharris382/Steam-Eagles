@@ -9,9 +9,11 @@ public class GasTexture : MonoBehaviour
 {
     [SerializeField, Range(1, 5)] private int resolution = 1;
     [SerializeField, ReadOnly] private Vector2Int sizeRaw;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Gas"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _pressureTexture;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Dye"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _dyeTexture;
-    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("m/s"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.3f)] private RenderTexture _velocityTexture;
+
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Gas t"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.25f)] private RenderTexture _pressureTexture;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Gas t-1"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.25f)] private RenderTexture _pressureTexture2;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("Dye"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.25f)] private RenderTexture _dyeTexture;
+    [FoldoutGroup("Debugging"), ShowInInspector, PreviewField(150, ObjectFieldAlignment.Center), LabelText("m/s"), LabelWidth(42),HorizontalGroup("Debugging/h1",  width:0.25f)] private RenderTexture _velocityTexture;
     
     public DebugImages debugImages;
     public RawImage image;
@@ -70,7 +72,6 @@ public class GasTexture : MonoBehaviour
             return _velocityTexture;
         }
     }
-
     public RenderTexture Dye
     {
         get
@@ -79,6 +80,8 @@ public class GasTexture : MonoBehaviour
             return _dyeTexture;// ? _dyeTexture : _dyeTexture = GetGasTexture(sizeRaw.x, sizeRaw.y);
         }
     }
+    
+    public RenderTexture PressurePrevious => _pressureTexture2 ? _pressureTexture2 : _pressureTexture2 = GetGasTexture(sizeRaw.x, sizeRaw.y);
 
     [Button()]
     public void ResetTexture()
@@ -102,6 +105,12 @@ public class GasTexture : MonoBehaviour
     {
         sizeRaw = new Vector2Int(w, h);
     }
+
+    public void SwapTextures()
+    {
+        (_pressureTexture2, _pressureTexture) = (_pressureTexture, _pressureTexture2);
+    }
+    
     public RenderTexture GetGasTexture(int w, int h)
     {
         if (w <= 0 || h <= 0)
@@ -135,16 +144,18 @@ public class GasTexture : MonoBehaviour
 
     void CreateTexture(int w, int h)
     {
-        if (HasTexture)
-        {
-            _pressureTexture?.Release();
-            _dyeTexture?.Release();
-            _velocityTexture?.Release();
-        }
+        if(_pressureTexture)_pressureTexture.Release();
+        if(_pressureTexture2)_pressureTexture2.Release();
+        if(_dyeTexture)_dyeTexture.Release();
+        if(_velocityTexture)_velocityTexture.Release();
         
         _pressureTexture = new RenderTexture(w, h, 0);
         _pressureTexture.enableRandomWrite = true;
         _pressureTexture.Create();
+        
+        _pressureTexture2 = new RenderTexture(w, h, 0);
+        _pressureTexture2.enableRandomWrite = true;
+        _pressureTexture2.Create();
         
         _dyeTexture = new RenderTexture(w, h, 0);
         _dyeTexture.enableRandomWrite = true;

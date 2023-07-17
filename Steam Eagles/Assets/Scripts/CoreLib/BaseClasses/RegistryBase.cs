@@ -94,7 +94,10 @@ namespace CoreLib
         public void Dispose()
         {
             cd?.Dispose();
+            OnDispose();
         }
+        
+        protected virtual void OnDispose(){}
     }
     
     

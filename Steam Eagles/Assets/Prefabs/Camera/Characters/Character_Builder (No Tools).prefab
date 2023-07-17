@@ -1072,6 +1072,8 @@ GameObject:
   - component: {fileID: 7527658672694296535}
   - component: {fileID: 8842447251057606262}
   - component: {fileID: 3152545880472533974}
+  - component: {fileID: 6709918195522163154}
+  - component: {fileID: 3597192161583758562}
   m_Layer: 0
   m_Name: Spine GameObject (Builder)
   m_TagString: Untagged
@@ -1341,6 +1343,51 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     listeners: []
+--- !u!114 &6709918195522163154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8875810250456541792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b5c3ebb24c97464da319951cafe5a47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _serializedExposedParameters: []
+  _boundGraphSerialization: '{"type":"FlowCanvas.FlowScript","nodes":[{"eventName":{"_value":"EventName"},"target":{},"targets":{},"_position":{"x":-265.0,"y":298.8571},"$type":"FlowCanvas.Nodes.CustomEvent"},{"updateInterval":{},"_position":{"x":-168.9515,"y":463.8667},"$type":"FlowCanvas.Nodes.UpdateEvent"}],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
+  _boundGraphObjectReferences: []
+  _boundGraphSource:
+    _version: 3.28
+    _category: 
+    _comments: 
+    _translation: {x: 425, y: -68}
+    _zoomFactor: 1
+  _firstActivation: 0
+  _enableAction: 0
+  _disableAction: 0
+  _lockBoundGraphPrefabOverrides: 1
+  _preInitializeSubGraphs: 0
+  _updateMode: 0
+  _graph: {fileID: 0}
+  _blackboard: {fileID: 3597192161583758562}
+--- !u!114 &3597192161583758562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8875810250456541792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98a6db0b653f764eac834f85857a9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _parentBlackboard: {fileID: 0}
+  _serializedBlackboard: '{"_variables":{}}'
+  _objectReferences: []
+  _serializedVariables: []
 --- !u!1001 &4528259117313465035
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1392,6 +1439,10 @@ PrefabInstance:
     - target: {fileID: 927174135669236134, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1380520933487908615, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2023073604413840128, guid: f9da20a56b218324b8338a7245b07ab2, type: 3}
       propertyPath: maxHealth.value

@@ -10,17 +10,35 @@ struct IO
     float valueToAdd;
     float valueAdded;
 };
+
+const uint a = 1664525u;
+const uint c = 1013904223u;
+const uint m = 4294967296u;
+uint random_seed(uint2 texCoord)
+{
+    uint seed = texCoord.x + texCoord.y;
+    seed = (a * seed + c) % m;
+    return seed;
+}
+float random(uint seed)
+{
+    seed = (a * seed + c) % m;
+    return seed / (float)m;
+}
 int ioCount;
+float maxPressure  = 1;
+
 RWStructuredBuffer<IO> ioBuffer;
 RWTexture2D<float4> gas;
 RWTexture2D<float4> gasVelocity;
+
 float AddToCell(uint2 cell, float delta)
 {
     float gasCurrent = gas[cell].x;
-    float gasNew = clamp(gasCurrent + delta, 0, 1);
+    float gasNew = clamp(gasCurrent + delta, 0, maxPressure);
     gas[cell] = float4(gasNew,  gasNew,  gasNew, gasNew);
+    gasVelocity[cell] = float4(random(cell.x), random(cell.y), 0, 1);
     return gasNew - gasCurrent;
-    
 }
 [numthreads(8,1,1)]
 void DynamicGasIO (uint3 id : SV_DispatchThreadID)

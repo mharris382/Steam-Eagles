@@ -48,19 +48,37 @@ float4 TextureBilinearLoad(Texture2D<float4> texture, float2 coordinate)
                 lerp(left_up,   right_up,   lerp_factors.x),             // Bilinear interpolation in x direction on the upper part
                 lerp_factors.y);                                         // Same but in y direction
 }
+float4 TextureBufferBilinearLoad(Texture2D<float4> buffer, float2 coord) 
+{
+    float4 closest_grid_coords;
 
+    closest_grid_coords.xy = max(0.,round(coord - 0.5));                // Get the left and lower closest grid centers
+    closest_grid_coords.zw = closest_grid_coords.xy + float2(1., 1.);   // Right, upper closest grid centers
+
+    float2 lerp_factors    = coord - closest_grid_coords.xy;            // Get the fractional part of the actual sample position to the closest left-down sided grid center
+    
+
+    float4 left_down  = buffer[closest_grid_coords.xy];
+    float4 right_down = buffer[closest_grid_coords.zy];
+    float4 left_up    = buffer[closest_grid_coords.xw];
+    float4 right_up   = buffer[closest_grid_coords.zw];
+
+
+    return lerp(lerp(left_down, right_down, lerp_factors.x),             // Bilinear interpolation in x direction on the lower part
+                lerp(left_up,   right_up,   lerp_factors.x),             // Bilinear interpolation in x direction on the upper part
+                lerp_factors.y);                                         // Same but in y direction
+}
 //____________________________________________________________________________________
 // MAIN FUNCTIONS
 
 // ADVECTION DECLERNATIONS
 
 float                      _dissipationFactor;                              // This factor determines how fast the quantities dissapate over time. 
-
-StructuredBuffer<float4>   _velocity_field_buffer;                          // The velocity field which does the carrying
-StructuredBuffer<float4>   _field_to_advect_buffer;                         // this is the field which is being carried off by the vector field, it can be temperature, dye, or the velocity itself
-
-RWStructuredBuffer<float4> _new_advected_field;                             // The results of advection is written on this field
-
+uint2 _tex_size;
+float2 _grid_scale;
+Texture2D<float4>   _velocity_field_buffer;                          // The velocity field which does the carrying
+Texture2D<float4>   _field_to_advect_buffer;                         // this is the field which is being carried off by the vector field, it can be temperature, dye, or the velocity itself
+RWTexture2D<float4> _new_advected_field;
 //----------------------------------------------------------------------------
 // Function         : Advection
 // Description      : Advection is the part of the equation that is responsible for carrying
@@ -75,21 +93,12 @@ RWStructuredBuffer<float4> _new_advected_field;                             // T
 
 [numthreads(16,16,1)]                                                        // Runs once per simulation grid
 void advection(uint3 id : SV_DispatchThreadID)                              
-{                                                                           
-    float2  coord = id.xy;                                                   // One to one mapping between the dispatch ids and the coordinate
-    
-    float2 advection_source_coord = coord -                                  // Trace backwards along trajectory
-                                  (i_timeStep *                              // distance = velocity * time, this is the time part 
-                                  _velocity_field_buffer[id2Dto1D(coord)] *  // This is the velocity part
-                                  (1. / i_grid_scale)) ;                     // The speed is in the unite of grids, but since the grid might not be unit-scale, we need to also scale by the grid cell size.
-    
-    
-    advection_source_coord = clamp(advection_source_coord,                   // Handling the case where the velocity traces back to outside the bounds of the buffer
-                                   0.0, i_Resolution - 1.0);                 // left hand side ensures the smallest element to read is element , and the biggest n-1
-    
-    _new_advected_field[id2Dto1D(coord)] = _dissipationFactor *              // Disspation factor 1 = lasts forever, 0 = instantly dissipates, dunno how physcilly accurate this is. 
-                                           StructuredBufferBilinearLoad(_field_to_advect_buffer, advection_source_coord);
-   // _new_advected_field[id2Dto1D(coord)] = _dissipationFactor * _field_to_advect_buffer[id2Dto1D(advection_source_coord)];
+{
+    const uint2 coord = id.xy;                                                   // One to one mapping between the dispatch ids and the coordinate
+    float2 advection_source_coord = coord -(i_timeStep * _velocity_field_buffer[coord]);
+    advection_source_coord/= _grid_scale;
+    advection_source_coord = clamp(advection_source_coord, 0, _tex_size - 1);
+    _new_advected_field[coord] = _dissipationFactor * TextureBufferBilinearLoad(_field_to_advect_buffer, advection_source_coord);
 }
 
 

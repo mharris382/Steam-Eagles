@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Buildings.BuildingTilemaps;
+using Buildings.Graph;
 using Buildings.Rooms;
 using Buildings.Tiles;
 using Buildings.Tiles.Skin;
 using CoreLib;
+using CoreLib.Extensions;
 using CoreLib.SaveLoad;
 using Cysharp.Threading.Tasks;
 using PhysicsFun.Buildings;
@@ -506,7 +509,34 @@ namespace Buildings
             yield return this + Vector2Int.down;
         }
 
-        public void ClearZ()
+        public IEnumerable<BuildingCell> GetCellsInRadius(int radius, bool includeSelf = true)
+        {
+            if (includeSelf) yield return this;
+            foreach (var position in cell2D.GetPositionsInRadius(radius))
+                yield return new BuildingCell(position, layers);
+        }
+
+
+        public IEnumerable<BuildingTile> GetTilesInRadius(int radius, BuildingMap buildingTarget)
+        {
+            if (buildingTarget == null)
+            {
+                Debug.LogError("Null Building");
+                yield break;
+            }
+
+            foreach (var buildingCell in GetCellsInRadius(radius).Where(buildingTarget.HasRoom))
+            {
+                if(buildingTarget.TryGetBuildingTile(buildingCell, out var tile))
+                {
+                    yield return tile;
+                }
+            }
+        }
+
+     
+
+    public void ClearZ()
         {
             this.cell.z = 0;
         }
@@ -605,5 +635,8 @@ namespace Buildings
             return $"Position:\t {(Vector2Int)bounds.position} {(Vector2Int)bounds.size}\n" +
                    $"Layer:\t {layers}";
         }
+
+
+        
     }
 }

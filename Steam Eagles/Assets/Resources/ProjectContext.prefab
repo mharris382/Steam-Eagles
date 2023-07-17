@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: -3642807196600091264}
   - component: {fileID: 7968420409602446561}
   - component: {fileID: -6510387608377647584}
+  - component: {fileID: 6143315339965527452}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -163,6 +164,10 @@ MonoBehaviour:
     pipeTiles:
       damagedTile: {fileID: 11400000, guid: a59c1bb4d450b5348b1b02445b23e935, type: 2}
       repairedTile: {fileID: 11400000, guid: 0f1c203de45d978439421525a6f7d8cb, type: 2}
+  electricityConfig:
+    connectionRate: 5
+    connectRadius: 5
+    alwaysConnectConsumers: 1
 --- !u!114 &3739961169467093338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,3 +312,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a016359873e14b05ae6166388f8ffc77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6143315339965527452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8083542159830508101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b1f5813ebdc410b90256036a88de45c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeShaders:
+    StokeNavierShader: {fileID: 7200000, guid: f01775cde76bc7e4c8f563eb1b67301c, type: 3}
+    SolverShader: {fileID: 7200000, guid: 2998f29faf7c42418bc3ef52bf35b400, type: 3}
+    BorderShader: {fileID: 7200000, guid: 4143dd9a63014e9baa01da8ede6656a4, type: 3}
+    ioFromTextureShader: {fileID: 7200000, guid: 0a042b3643f4419ebf933ae6327a348c, type: 3}
+    ioFromBufferShader: {fileID: 7200000, guid: 0a042b3643f4419ebf933ae6327a348c, type: 3}

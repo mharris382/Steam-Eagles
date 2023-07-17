@@ -5,6 +5,8 @@ namespace CoreLib
 {
     public class TransformProxy : MonoBehaviour
     {
+        public float lookAtAngleOffset = 0;
+        
         private Transform _target;
         public Transform Target
         {
@@ -14,6 +16,13 @@ namespace CoreLib
                 _target = value;
                 enabled = _target != null;
             }
+        }
+
+        private Transform _lookAtTarget;
+        public Transform LookAtTarget
+        {
+            get => _lookAtTarget;
+            set => _lookAtTarget = value;
         }
 
         private Rigidbody2D _rigidbody;
@@ -29,6 +38,14 @@ namespace CoreLib
                 transform.position = Target.position;
             else
                 _rigidbody.MovePosition(Target.position);
+
+            if (_lookAtTarget != null)
+            {
+                var position = transform.position;
+                var position1 = _lookAtTarget.position;
+                var angle = Mathf.Atan2(position1.y - position.y, position1.x - position.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0, 0, angle + lookAtAngleOffset);
+            }
         }
     }
 }

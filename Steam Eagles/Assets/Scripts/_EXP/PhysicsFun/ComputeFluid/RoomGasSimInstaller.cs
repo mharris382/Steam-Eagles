@@ -1,10 +1,12 @@
 ﻿using System;
 using _EXP.PhysicsFun.ComputeFluid.Engine;
+using _EXP.PhysicsFun.ComputeFluid.Engine2;
 using _EXP.PhysicsFun.ComputeFluid.Utilities;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.VFX;
 using Zenject;
 using TilemapData = Buildings.Rooms.RoomTextureCreator.TilemapData;
 namespace _EXP.PhysicsFun.ComputeFluid
@@ -14,6 +16,13 @@ namespace _EXP.PhysicsFun.ComputeFluid
     {
         public RoomGasSimConfig config;
         public FluidSimulater fluidSimulater;
+        
+        [ValidateInput(nameof(ValidateEffect))]
+        public SimEffect effect;
+        public SimState simState = new SimState(){IsRunning = true};
+        bool ValidateEffect(SimEffect e, ref string msg) => e.IsEffectValid(ref msg);
+        
+
         private RoomState _roomState;
         public RoomState RoomState => _roomState ? _roomState : _roomState = GetOrAdd<RoomState>();
         
@@ -47,8 +56,10 @@ namespace _EXP.PhysicsFun.ComputeFluid
         public override void InstallBindings()
         {
             Container.Bind<RoomGasSimConfig>().FromInstance(config).AsSingle().NonLazy();
-            
-            
+            Container.BindInterfacesAndSelfTo<SimEffect>().FromInstance(effect).AsSingle().NonLazy();
+            Container.Bind<VisualEffect>().FromMethod(t => t.Container.Resolve<RoomEffect>().VisualEffect).AsCached();
+            Container.BindInterfacesAndSelfTo<SimState>().FromInstance(simState).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<SimDriver>().AsSingle().NonLazy();
             Container.Bind<Room>().FromInstance(Room).AsSingle().IfNotBound();
             Container.Bind<RoomState>().FromInstance(RoomState).AsSingle().IfNotBound();
             Container.Bind<RoomTextureCreator>().FromInstance(RoomTextureCreator).AsSingle().IfNotBound();
@@ -59,8 +70,9 @@ namespace _EXP.PhysicsFun.ComputeFluid
             Container.Bind<RoomSimTextures>().FromInstance(SimTextures).AsSingle().IfNotBound();
             Container.Bind<RoomEffect>().FromInstance(RoomEffect).AsSingle().IfNotBound();
             Container.Bind<RoomCamera>().FromInstance(RoomCamera).AsSingle().IfNotBound();
-            
-            
+
+
+            Container.Bind<Simulator>().AsSingle().NonLazy();
             // listens for changes in tilemaps and periodically dispatches a compute shader to update the boundary texture for the room 
             Container.BindInterfacesTo<TilemapTextureSync>().AsSingle().NonLazy();
             // ensures that gas pressure that is inside a boundary cell is deleted
@@ -85,11 +97,28 @@ namespace _EXP.PhysicsFun.ComputeFluid
             Container.Bind<FluidSimulater>().FromInstance(fluidSimulater).AsSingle().NonLazy();
             Container.Bind<FluidGPUResources>().AsSingle().NonLazy();
 
+            Container.BindInterfacesAndSelfTo<ComputeRandomInitializer>().AsSingle().NonLazy();
+
         }
 
         private void OnDrawGizmos()
         {
             fluidSimulater.simulation_dimension = fluidSimulater.canvas_dimension = GasTexture.ImageSize;
+        }
+    }
+
+
+    public class ComputeRandomInitializer : IInitializable, IDisposable
+    {
+        public void Initialize()
+        {
+            
+        }
+
+        public void Dispose()
+        {
+            
+            
         }
     }
 }
