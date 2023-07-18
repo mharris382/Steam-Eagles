@@ -37,6 +37,23 @@ namespace Buildables
         public bool HasSteam => SteamStored > 0;
         public bool HasElectricity => ElectricityStored > 0;
 
+        public string SteamDebugInfo
+        {
+            get
+            {
+                return $"<u>Steam</u>\n{SteamStoredNormalized * 100}% <size=12>full</size>\n<color=blue>{SteamConsumptionRate} <size=12>u/s</size> <i>in</i></color>\n<color=red>{SteamProductionRate} <size=12>u/s</size><i> out</i></color>";
+
+            }
+        }
+        public string ElectricityDebugInfo
+        {
+            get
+            {
+                return $"<u>Steam</u>\n{ElectricityStoredNormalized * 100}% <size=12>full</size>\n<color=red>{ElectricalProductionRate} <size=12>u/s</size><i> out</i></color>";
+
+            }
+        }
+
 
         public void Awake()
         {

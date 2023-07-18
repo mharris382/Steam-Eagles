@@ -31,6 +31,7 @@ public class SpineFootstepEventListener : SpineEventListenerBase
     {
         _footstepLayerMask = castLayerMask;
     }
+    
 
     public override void OnSpineEvent(TrackEntry trackEntry, Event e)
     {
@@ -47,6 +48,7 @@ public class SpineFootstepEventListener : SpineEventListenerBase
         var backFootPosition = backFoot.position;
         switch (e.Int)
         {
+            case 0:
             case 1:
                 onFrontFootstep?.Invoke();
                 CheckPositionForSurface(frontFootPosition, FRONT_FOOT);
