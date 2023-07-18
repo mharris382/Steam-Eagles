@@ -1,4 +1,4 @@
-﻿using CoreLib.Entities;
+﻿using CoreLib.MyEntities;
 using Zenject;
 
 namespace Characters.Narrative.Installers

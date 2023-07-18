@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     [Flags]
     public enum EntityType

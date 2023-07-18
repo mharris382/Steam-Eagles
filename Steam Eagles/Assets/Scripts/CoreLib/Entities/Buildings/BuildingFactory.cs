@@ -1,9 +1,9 @@
 ﻿using Buildings;
 using Buildings.SaveLoad;
-using CoreLib.Entities.Factory;
+using CoreLib.MyEntities.Factory;
 using UnityEngine;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     [System.Obsolete("Use BuildingSaveLoader instead")]
     public class BuildingFactory : EntityFactoryBase<BuildingSaveData>

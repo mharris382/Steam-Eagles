@@ -2,7 +2,7 @@
 using SaveLoad;
 using UnityEngine;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     [UsedImplicitly]
     [LoadOrder(-10)]

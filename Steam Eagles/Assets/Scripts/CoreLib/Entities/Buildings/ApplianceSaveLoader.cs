@@ -1,9 +1,9 @@
 ﻿using Buildings.Appliances;
-using CoreLib.Entities.Factory;
+using CoreLib.MyEntities.Factory;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     [UsedImplicitly]
     public class ApplianceSaveLoader : EntityJsonSaveLoaderBase<ApplianceSaveData>

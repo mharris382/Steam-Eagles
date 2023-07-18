@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Characters;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UnityEngine;
 using FSM;
 using Sirenix.OdinInspector;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UniRx;
 using UnityEngine;
 

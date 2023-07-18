@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     /// <summary>
     /// currently this class automatically triggers entity loading when entity is added to the registry <see cref="EntityLinkRegistry"/>

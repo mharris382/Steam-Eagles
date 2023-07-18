@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     public class EntityTrackingInfo
     {

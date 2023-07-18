@@ -1,7 +1,7 @@
 ﻿using Buildings;
 using UnityEngine;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     [RequireComponent(typeof(Building))]
     public class BuildingInitializer : EntityInitializer

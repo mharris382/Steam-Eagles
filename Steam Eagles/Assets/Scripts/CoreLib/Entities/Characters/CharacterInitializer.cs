@@ -4,7 +4,7 @@ using SteamEagles.Characters;
 using UniRx;
 using UnityEngine;
 
-namespace CoreLib.Entities.Characters
+namespace CoreLib.MyEntities.Characters
 {
     [RequireComponent(typeof(CharacterState))]
     public class CharacterInitializer : EntityInitializer

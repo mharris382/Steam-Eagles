@@ -4,7 +4,7 @@ using SaveLoad;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     public class EntitySaveLoadInstaller : Installer<EntitySaveLoadInstaller>
     {

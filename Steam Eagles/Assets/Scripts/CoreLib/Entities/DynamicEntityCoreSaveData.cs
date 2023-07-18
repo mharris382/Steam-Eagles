@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     [Serializable]
     public class DynamicEntityCoreSaveData

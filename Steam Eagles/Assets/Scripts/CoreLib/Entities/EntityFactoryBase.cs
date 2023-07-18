@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     public abstract class EntityFactoryBase
     {

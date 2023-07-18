@@ -100,7 +100,7 @@ public class GlobalInstaller : MonoInstaller
     
     [Required, AssetsOnly] public GameObject pauseMenuPrefab;
     [Required, AssetsOnly] public GameObject playerGUIPrefab;
-    
+    public GlobalElectricitySettings electricitySettings;
     [ToggleGroup(nameof(enableDayNightCycle))]public bool enableDayNightCycle = true;
     [ToggleGroup(nameof(enableDayNightCycle))][Required, AssetsOnly] public GameObject dayNightCycle;
     
@@ -120,6 +120,7 @@ public class GlobalInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
+        Container.Bind<GlobalElectricitySettings>().AsSingle().NonLazy();
         Container.Bind<SlowTickConfig>().FromInstance(slowTickConfig).AsSingle();
         Container.BindInterfacesAndSelfTo<SlowTickUpdater>().AsSingle().NonLazy();
         Container.BindInterfacesTo<TestSlowTickables>().AsSingle().NonLazy();

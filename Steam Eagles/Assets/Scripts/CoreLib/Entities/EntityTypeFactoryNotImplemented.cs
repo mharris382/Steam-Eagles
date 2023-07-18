@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     public class EntityTypeFactoryNotImplemented : NotImplementedException
     {

@@ -48,16 +48,16 @@ public class SpineFootstepEventListener : SpineEventListenerBase
         var backFootPosition = backFoot.position;
         switch (e.Int)
         {
-            case 0:
+            
             case 1:
                 onFrontFootstep?.Invoke();
                 CheckPositionForSurface(frontFootPosition, FRONT_FOOT);
                 break;
-            case 2:
+            case -1:
                 onBackFootstep?.Invoke();
                CheckPositionForSurface(backFootPosition, BACK_FOOT);
                 break;
-            case 3:
+            case 0:
                 onFrontFootstep?.Invoke();
                 onBackFootstep?.Invoke();
                 CheckPositionForSurface((frontFootPosition + backFootPosition)/2f, BOTH_FEET);

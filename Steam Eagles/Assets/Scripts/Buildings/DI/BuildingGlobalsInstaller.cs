@@ -9,7 +9,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using SaveLoad;
 using Sirenix.Utilities;
 using UniRx;

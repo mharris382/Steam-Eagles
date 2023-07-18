@@ -3,7 +3,7 @@ using Buildings;
 using Buildings.Rooms;
 using Buildings.Rooms.Tracking;
 using Characters;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using Items;
 using Sirenix.OdinInspector;
 using SteamEagles.Characters;

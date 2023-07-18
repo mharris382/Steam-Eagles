@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     [System.Obsolete("Use EntityJsonSaveLoaderBase instead")]
     public abstract class EntityFactoryBase<T> : EntityFactoryBase

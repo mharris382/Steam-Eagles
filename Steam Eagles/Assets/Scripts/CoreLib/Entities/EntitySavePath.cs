@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     public class EntitySavePath
     {

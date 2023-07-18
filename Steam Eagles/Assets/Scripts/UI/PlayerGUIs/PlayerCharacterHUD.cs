@@ -1,5 +1,5 @@
 ﻿using System;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UnityEngine;
 
 namespace UI.PlayerGUIs

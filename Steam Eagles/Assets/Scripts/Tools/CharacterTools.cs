@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using Cysharp.Threading.Tasks;
 using Items;
 using Sirenix.OdinInspector;

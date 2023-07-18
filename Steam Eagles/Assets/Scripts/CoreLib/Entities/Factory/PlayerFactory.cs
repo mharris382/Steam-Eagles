@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     
 }

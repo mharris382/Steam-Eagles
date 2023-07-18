@@ -1,11 +1,11 @@
 ﻿using Buildings;
 using Buildings.SaveLoad;
-using CoreLib.Entities.Factory;
+using CoreLib.MyEntities.Factory;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     [UsedImplicitly]
     public class BuildingSaveLoader : EntityJsonSaveLoaderBase<BuildingSaveData>

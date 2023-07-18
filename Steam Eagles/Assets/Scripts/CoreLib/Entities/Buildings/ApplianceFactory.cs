@@ -1,9 +1,9 @@
 ﻿using System;
 using Buildings.Appliances;
-using CoreLib.Entities.Factory;
+using CoreLib.MyEntities.Factory;
 using JetBrains.Annotations;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     [System.Obsolete("Use ApplianceSaveLoader instead")]
     [UsedImplicitly]

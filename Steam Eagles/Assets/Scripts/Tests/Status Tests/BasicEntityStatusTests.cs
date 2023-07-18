@@ -3,7 +3,7 @@ using System.Linq;
 using Characters;
 using Characters.Narrative;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using NUnit.Framework;
 using Statuses;
 

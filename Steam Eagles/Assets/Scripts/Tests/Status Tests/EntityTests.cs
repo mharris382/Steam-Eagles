@@ -1,4 +1,4 @@
-﻿using CoreLib.Entities;
+﻿using CoreLib.MyEntities;
 using CoreLib.EntityTag;
 using NUnit.Framework;
 using UnityEngine;

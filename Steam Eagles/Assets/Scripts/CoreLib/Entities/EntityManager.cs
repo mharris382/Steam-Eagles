@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using CoreLib.Entities.Factory;
+using CoreLib.MyEntities.Factory;
 using Cysharp.Threading.Tasks;
 using SaveLoad;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     
     public class EntityManager : Singleton<EntityManager>

@@ -2,7 +2,7 @@
 using Buildings.Appliances;
 using UnityEngine;
 
-namespace CoreLib.Entities.Buildings
+namespace CoreLib.MyEntities.Buildings
 {
     public class TestToggleAppliance : MonoBehaviour
     {

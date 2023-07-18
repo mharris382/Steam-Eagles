@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     public class EntityLinkRegistry : Registry<EntityInitializer>
     {

@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     [System.Obsolete("Use EntityHandle + EntityLinkRegistry instead")]
     [DisallowMultipleComponent]

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UnityEngine;
 
 namespace CoreLib.EntityTag

@@ -1,4 +1,4 @@
-﻿namespace CoreLib.Entities.EntityCorePersistentData
+﻿namespace CoreLib.MyEntities.EntityCorePersistentData
 {
     public class EntityCoreDataLoader
     {

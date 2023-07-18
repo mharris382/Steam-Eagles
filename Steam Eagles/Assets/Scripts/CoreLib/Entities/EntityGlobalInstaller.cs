@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     [InfoBox("Bound at Project Context")]
     public class EntityGlobalInstaller : MonoInstaller

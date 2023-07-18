@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     public interface IEntitySaveLoader
     {

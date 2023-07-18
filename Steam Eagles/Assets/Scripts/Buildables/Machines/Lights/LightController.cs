@@ -1,5 +1,6 @@
 ﻿using System;
 using Buildings;
+using CoreLib;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UniRx;
@@ -15,6 +16,8 @@ namespace Buildables.Lights
         [SerializeField] FloatReactiveProperty consumptionRate = new FloatReactiveProperty(5);
         [Required] public GameObject light;
 
+        public bool alwaysOn = true;
+
         private ElectricityConsumers _consumers;
         private BuildableMachineBase _machineBase;
         public BuildableMachineBase MachineBase => _machineBase ? _machineBase : _machineBase = GetComponent<BuildableMachineBase>();
@@ -24,14 +27,18 @@ namespace Buildables.Lights
         
         public bool Powered
         {
-            get => powered.Value;
-            set => powered.Value = value;
+            get => powered.Value || alwaysOn;
+            set
+            {
+                powered.Value = value || alwaysOn;
+                if(alwaysOn) light.SetActive(true);
+            }
         }
-        
+
         public IReadOnlyReactiveProperty<float> ConsumptionRateProperty => consumptionRate;
 
 
-       [Inject] void Install(ElectricityConsumers consumers)
+       [Inject] void Install(ElectricityConsumers consumers, GlobalElectricitySettings globalElectricitySettings)
        {
            _consumers = consumers;
            if (enabled) _consumers.Register(this);

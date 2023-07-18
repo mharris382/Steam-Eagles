@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CoreLib.Entities.PersistentData
+namespace CoreLib.MyEntities.PersistentData
 {
     [System.Serializable]
     public class InventoryData

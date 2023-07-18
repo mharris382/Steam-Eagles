@@ -1,6 +1,6 @@
 ﻿using System;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UnityEngine;
 using Zenject;
 

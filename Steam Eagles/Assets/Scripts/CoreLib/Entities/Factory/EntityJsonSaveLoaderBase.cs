@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     public abstract class EntityJsonSaveLoaderBase<T> : IEntityTypeSaveLoader 
     {

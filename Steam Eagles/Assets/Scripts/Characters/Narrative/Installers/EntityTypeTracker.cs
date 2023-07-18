@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UniRx;
 
 namespace Characters.Narrative.Installers

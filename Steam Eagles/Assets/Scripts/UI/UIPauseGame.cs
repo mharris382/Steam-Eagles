@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Diagnostics;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using CoreLib.Signals;
 using Cysharp.Threading.Tasks;
 using SaveLoad;

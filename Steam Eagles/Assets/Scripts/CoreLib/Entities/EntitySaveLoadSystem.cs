@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using SaveLoad;
 
-namespace CoreLib.Entities
+namespace CoreLib.MyEntities
 {
     /// <summary>
     /// this class hooks up the entity save system into the global save system as a save loader system

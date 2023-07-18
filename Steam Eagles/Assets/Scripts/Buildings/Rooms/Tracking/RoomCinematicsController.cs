@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using Buildings.Messages;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;

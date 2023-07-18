@@ -1,4 +1,4 @@
-﻿namespace CoreLib.Entities
+﻿namespace CoreLib.MyEntities
 {
     /// <summary>
     /// any class implementing this interface will implicitly be

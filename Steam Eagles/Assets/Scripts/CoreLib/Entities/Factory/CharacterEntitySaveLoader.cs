@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     [UsedImplicitly]
     public class CharacterEntitySaveLoader : EntityJsonSaveLoaderBase<CharacterSaveData>

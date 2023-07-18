@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Buildings.Messages;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using UniRx;
 using UnityEngine;
 using Zenject;

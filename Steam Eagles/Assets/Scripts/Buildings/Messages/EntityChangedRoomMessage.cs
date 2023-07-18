@@ -1,5 +1,5 @@
 ﻿using Buildings.Rooms;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 
 namespace Buildings.Messages
 {

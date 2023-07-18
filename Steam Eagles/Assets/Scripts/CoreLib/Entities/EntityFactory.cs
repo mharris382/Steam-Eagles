@@ -4,7 +4,7 @@ using System.IO;
 using SaveLoad;
 using UnityEngine;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     public class EntityFactory
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     public class TerrainFactory : EntityFactoryBase
     {

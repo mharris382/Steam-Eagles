@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;

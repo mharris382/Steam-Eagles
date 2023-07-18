@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using Characters;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using Cysharp.Threading.Tasks;
 using Game;
 using SteamEagles.Characters;

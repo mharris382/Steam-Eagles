@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using CoreLib;
-using CoreLib.Entities;
+using CoreLib.MyEntities;
 using CoreLib.Signals;
 using Cysharp.Threading.Tasks;
 using Game;

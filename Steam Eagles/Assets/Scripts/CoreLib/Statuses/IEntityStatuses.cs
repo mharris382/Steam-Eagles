@@ -1,4 +1,4 @@
-﻿using CoreLib.Entities;
+﻿using CoreLib.MyEntities;
 
 namespace Statuses
 {

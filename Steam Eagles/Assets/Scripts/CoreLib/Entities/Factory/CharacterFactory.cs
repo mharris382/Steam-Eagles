@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreLib.Entities.PersistentData;
+using CoreLib.MyEntities.PersistentData;
 using DG.Tweening.Plugins.Core.PathCore;
 using Items;
 using Items.SaveLoad;
@@ -10,7 +10,7 @@ using SaveLoad;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace CoreLib.Entities.Factory
+namespace CoreLib.MyEntities.Factory
 {
     [System.Obsolete("Use CharacterEntitySaveLoader instead")]
     public class CharacterFactory : EntityFactoryBase<CharacterSaveData>

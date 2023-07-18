@@ -1,4 +1,4 @@
-﻿using CoreLib.Entities;
+﻿using CoreLib.MyEntities;
 using UnityEngine;
 
 namespace Weather.Storms
