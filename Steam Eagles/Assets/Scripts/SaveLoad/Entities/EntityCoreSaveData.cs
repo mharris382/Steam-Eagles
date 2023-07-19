@@ -26,7 +26,6 @@ namespace SaveLoad.Entities
             {
                 if (!ed.IsValid()) return;
                 if (_entityDataDict.ContainsKey(ed.entityGUID)) return;
-                entityDataValues.Add(ed);
                 _entityDataDict.Add(ed.entityGUID, ed);
             }
             

@@ -30,7 +30,7 @@ namespace Buildings.Rooms.Tracking
                 .AddTo(this);
         }
         
-        private void Awake()
+        private void Start()
         {
             _building = GetComponent<Building>();
             
@@ -74,30 +74,7 @@ namespace Buildings.Rooms.Tracking
                 .AddTo(this);
         }
 
-        private void Update()
-        {
-            return;
-            foreach (var trackedEntity in _trackedEntities)
-            {
-                if (!_entityRoomMap.ContainsKey(trackedEntity))
-                {
-                    var room = SearchForEntityInBuilding(trackedEntity);
-                    if (room == null)
-                    {
-                        Debug.LogWarning($"Couldn't Find Entity {trackedEntity.name.Bolded()} in building {Building.name.Bolded()}");
-                        continue;
-                    }
-                    UpdateEntityRoom(trackedEntity, room);
-                }
-
-                if (trackedEntity == null)
-                {
-                    Debug.LogWarning("Cannot track entity without a linked game object", trackedEntity);
-                    continue;
-                }
-                CheckForDynamicEntityChangedRooms(trackedEntity);
-            }
-        }
+      
 
         private void CheckForDynamicEntityChangedRooms(EntityInitializer trackedEntity)
         {
@@ -129,15 +106,8 @@ namespace Buildings.Rooms.Tracking
             //Entity has moved to a room that is not adjacent to the last seen room, need to perform a full search to re-locate the entity
             
             var room = SearchForEntityInBuilding(trackedEntity);
-            // if (room == null)
-            // {
-            //     throw new NotImplementedException(
-            //         $"Entity {trackedEntity.name} that was previously inside a room has moved to " +
-            //         $"a room that is not adjacent to the last seen room, and could not be found in the building");
-            // }
-            if(room != lastSeenRoom)
-                UpdateEntityRoom(trackedEntity, room);
-        
+            if(room != lastSeenRoom) UpdateEntityRoom(trackedEntity, room);
+            
     }
 
         private void UpdateEntityRoom(EntityInitializer trackedEntity, Room room)

@@ -16,11 +16,11 @@ namespace a
         
         private void OnEnable()
         {
-            _whitelist?.Whitelist(transform);
+            //_whitelist?.Whitelist(transform);
         }
         void OnDisable()
         {
-            _whitelist.UnWhitelist(transform);
+            //_whitelist.UnWhitelist(transform);
         }
     }
 }

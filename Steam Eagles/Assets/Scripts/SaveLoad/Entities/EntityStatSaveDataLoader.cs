@@ -57,6 +57,7 @@ namespace SaveLoad.Entities
         {
             if(entityInitializer == null) return;
             var entityGuid = entityInitializer.GetEntityGUID();
+            if(_statValues == null) _statValues = new Dictionary<string, EntityCoreSaveData.EntityData>();
             if (!_statValues.ContainsKey(entityGuid))
             {
                 _statValues.Add(entityGuid,entityInitializer);

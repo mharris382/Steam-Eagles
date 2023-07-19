@@ -30,42 +30,7 @@ namespace Buildings.SaveLoad
             public TilemapSaveData(Building building)
             {
                 tilemapSaveDataV2 = new TilemapSaveDataV2(building);
-                // Dictionary<TileBase, TileSaveData> saveDataFound = new Dictionary<TileBase, TileSaveData>();
-                // var emptySaveData = new Dictionary<BuildingLayers, TileSaveData>();
-                //
-                // SaveTilesOnLayer(BuildingLayers.SOLID);
-                // SaveTilesOnLayer(BuildingLayers.WALL);
-                // SaveTilesOnLayer(BuildingLayers.WIRES);
-                // SaveTilesOnLayer(BuildingLayers.PIPE);
-                //
-                // _saveData = saveDataFound.Values.ToArray();
-                // _emptyTileData = emptySaveData.Values.ToArray();
-                // Debug.Log($"Found {_saveData.Length} tiles to save.");
-                //
-                // void SaveTilesOnLayer(BuildingLayers layer)
-                // {
-                //     var allSolidCells = building.Map.GetAllCells(layer);
-                //     foreach (var cell in allSolidCells)
-                //     {
-                //         var tile = building.Map.GetTile(cell, layer);
-                //         if (tile == null)
-                //         {
-                //             if (!emptySaveData.ContainsKey(layer))
-                //                 emptySaveData.Add(layer, new TileSaveData(layer, null));
-                //             var data = emptySaveData[layer];
-                //             data.cells.Add((Vector2Int)cell);
-                //         }
-                //         else
-                //         {
-                //             if (!saveDataFound.TryGetValue(tile, out var saveData))
-                //             {
-                //                 saveData = new TileSaveData(layer, tile);
-                //                 saveDataFound.Add(tile, saveData);
-                //             }
-                //             saveData.cells.Add((Vector2Int)cell);
-                //         }
-                //     }
-                // }
+              
             }
             
             [Serializable]

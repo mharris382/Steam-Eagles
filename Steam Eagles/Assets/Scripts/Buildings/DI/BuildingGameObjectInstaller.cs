@@ -3,6 +3,7 @@ using Buildings.CoreData;
 using Buildings.Damage;
 using Buildings.Graph;
 using Buildings.Rooms;
+using Buildings.SaveLoad;
 using JetBrains.Annotations;
 using SaveLoad;
 using Sirenix.OdinInspector;
@@ -62,6 +63,16 @@ namespace Buildings.DI
             Debug.Assert(electricityLineHandlerPrefab != null, $"Missing electricityLineHandlerPrefab on {name}",this);
             Container.Bind<ElectricityLineHandler>().FromComponentInNewPrefab(electricityLineHandlerPrefab).UnderTransform(transform).AsSingle()
                 .NonLazy();
+
+            Container.Bind<BuildingSaveDataWrapper>().FromMethod(context => {
+                var building = context.Container.Resolve<Building>();
+                var wrapper = building.GetComponent<BuildingSaveDataWrapper>();
+                if (wrapper == null)
+                {
+                    wrapper = building.gameObject.AddComponent<BuildingSaveDataWrapper>();
+                }
+                return wrapper;
+            }).AsSingle().NonLazy();
         }
     }
 

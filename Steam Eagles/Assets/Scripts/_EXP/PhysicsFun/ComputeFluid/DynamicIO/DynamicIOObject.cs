@@ -84,9 +84,12 @@ namespace _EXP.PhysicsFun.ComputeFluid
         {
             if(_dynamicIO != null) _dynamicIO.Unregister(this);
         }
+        
 
         public DynamicIOData GetDynamicIOData()
         {
+            if (_textureMap == null) return default;
+            if (transform == null) return default;
             this.Position = _textureMap.GetTextureCoord(transform.position);
             this.DeltaIn = GetTargetGasIOValue();
             this.Size = new Vector2Int(Mathf.Max(1, this.size.x), Mathf.Max(1, this.size.y));

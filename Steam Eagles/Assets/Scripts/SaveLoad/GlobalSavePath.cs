@@ -22,12 +22,13 @@ public class GlobalSavePath : IInitializable
         get => _lastSavePath;
         private set
         {
-            _lastSavePath = GetValidDirectoryPath(value);
+            _lastSavePath = AllowSavingOutsidePersistentDataPath ? value : GetValidDirectoryPath(value);
             PlayerPrefs.SetString(PLAYER_PREFS_KEY, _lastSavePath);
             _config.Log($"Save Path: {_lastSavePath.Bolded()}");
         }
     }
 
+    public bool AllowSavingOutsidePersistentDataPath { get; set; } = false;
   
     public bool HasSavePath => !string.IsNullOrEmpty(_lastSavePath) 
                                && Directory.Exists(_lastSavePath);
@@ -92,9 +93,9 @@ public class GlobalSavePath : IInitializable
         // }
     }
 
-    private static string GetValidDirectoryPath(string path)
+    private string GetValidDirectoryPath(string path)
     {
-        if (!path.Contains(Application.persistentDataPath))
+        if (!AllowSavingOutsidePersistentDataPath && !path.Contains(Application.persistentDataPath))
         {
             path = Path.Combine(Application.persistentDataPath, path);
         }

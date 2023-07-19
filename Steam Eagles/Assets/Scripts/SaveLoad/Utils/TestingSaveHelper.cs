@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Zenject;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace SaveLoad
 {
     public class TestingSaveHelper : MonoBehaviour
@@ -12,7 +15,17 @@ namespace SaveLoad
         private GlobalSaveLoader _saveLoader;
         private Coroutine _currentOp;
         public const string TEST_SAVE_PATH_NAME_PERSISTENT_DATA_PATh = "Editor Test Save";
+        public const string TEST_SAVE_PATH_NAME_REPOSITORY = "Editor Test Save";
 
+
+        [EnumPaging] public SaveMode saveMode = SaveMode.SHARED_REPOSITORY;
+        
+        public enum SaveMode
+        {
+            PERSISTENT_DATA_PATH,
+            SHARED_REPOSITORY
+        }
+        
         [Inject] void Install(GlobalSavePath savePath, GlobalSaveLoader saveLoader)
        {
            _savePath = savePath;
@@ -23,8 +36,8 @@ namespace SaveLoad
         [ButtonGroup()]
         void LoadTestGame()
         {
-            var path = SetPath();
             StopOperation();
+            var path = SetSavePathFromMode();
             _currentOp = StartCoroutine(UniTask.ToCoroutine(async () =>
             {
                 var success = await _saveLoader.LoadGameAsync();
@@ -35,8 +48,8 @@ namespace SaveLoad
         [ButtonGroup()]
         void SaveTestGame()
         {
-            var path = SetPath();
             StopOperation();
+            var path = SetSavePathFromMode();
             _currentOp = StartCoroutine(UniTask.ToCoroutine(async () =>
             {
                 var success = await _saveLoader.SaveGameAsync();
@@ -44,7 +57,25 @@ namespace SaveLoad
             }));
         }
 
-        string GetValidPath()
+        private string SetSavePathFromMode()
+        {
+            string path;
+            switch (saveMode)
+            {
+                case SaveMode.PERSISTENT_DATA_PATH:
+                    path = SetPath_PersistentDataPath();
+                    break;
+                case SaveMode.SHARED_REPOSITORY:
+                    path = SetPath_SharedSaveFiles();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return path;
+        }
+
+        static string GetValidPath_PersistentDataPath()
         {
             string fullPath = Path.Combine(Application.persistentDataPath, TEST_SAVE_PATH_NAME_PERSISTENT_DATA_PATh);
             if (!Directory.Exists(fullPath))
@@ -54,15 +85,44 @@ namespace SaveLoad
             return fullPath;
         }
 
-        private string SetPath()
+        static string GetValidPath_SharedDataPath()
         {
-            string path = GetValidPath();
-            var result = _savePath.TrySetSavePath(ref path);
-            Debug.Assert(result, $"Test Saver Failed to set save path: {path}");
+            if (!Application.isEditor)
+            {
+                throw new InvalidOperationException("only use this in editor");
+            }
+            string dataPath = Application.dataPath;
+            string parent = Path.GetDirectoryName(Path.GetDirectoryName(dataPath));
+            string path = Path.Combine(parent, "_SHARED_SAVE_FILES", TEST_SAVE_PATH_NAME_REPOSITORY);
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            Debug.Log($"Shared Save Path is: {path}");
+            if (parent != null) return dataPath.Replace(parent, "");
+            return dataPath;
+        }
+        
+        private string SetPath_PersistentDataPath()
+        {
+            string path = GetValidPath_PersistentDataPath();
+            SetPath(path, false);
             return path;
         }
+        
+        private string SetPath_SharedSaveFiles()
+        {
+            string path = GetValidPath_SharedDataPath();
+            SetPath(path, true);
+            return path;
+        }
+        
+        private bool SetPath(string path, bool allowSavingOutsidePersistentDataPath)
+        {
+            _savePath.AllowSavingOutsidePersistentDataPath = allowSavingOutsidePersistentDataPath;
+            var result = _savePath.TrySetSavePath(ref path);
+            Debug.Assert(result, $"Test Saver Failed to set save path: {path}");
+            return result;
+        }
 
-        void StopOperation()
+        private void StopOperation()
         {
             if (_currentOp != null)
             {
