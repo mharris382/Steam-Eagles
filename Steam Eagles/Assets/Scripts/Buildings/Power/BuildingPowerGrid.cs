@@ -7,8 +7,13 @@ using Zenject;
 
 namespace Buildings
 {
-    public class BuildingPowerGrid : IInitializable, IDisposable
+    internal interface ITickPower
     {
+        void Update(float deltaTime);
+    }
+    public class BuildingPowerGrid : IInitializable, ILateTickable, IDisposable
+    {
+        private List<ITickPower> _changesCheck = new();
         private Dictionary<BuildingCell, IPowerSupplier> _suppliers = new();
         private Dictionary<BuildingCell, IPowerConsumer> _consumers = new();
         
@@ -100,34 +105,62 @@ namespace Buildings
             _onConsumerRemoved.OnNext((cell, consumer));
         }
 
-        
-        private struct DelegateConsumer : IPowerConsumer
+      
+        private struct DelegateConsumer : IPowerConsumer, ITickPower, IDisposable
         {
+            internal ReactiveProperty<float> _consumptionRate;
             private readonly Func<float> _consumptionRateGetter;
             private readonly Action<float> _consume;
             
+
             public DelegateConsumer(Func<float> consumptionRateGetter, Action<float> consume)
             {
+                _consumptionRate = new();
                 _consumptionRateGetter = consumptionRateGetter;
                 _consume = consume;
             }
+            public IObservable<float> GetConsumptionRateChanges() => _consumptionRate;
 
             public float GetConsumptionRate() => _consumptionRateGetter();
             public void Consume(float amount) => _consume(amount);
+
+            public void Update(float deltaTime)
+            {
+                _consumptionRate.Value = _consumptionRateGetter();
+            }
+
+            public void Dispose()
+            {
+                _consumptionRate.Dispose();
+            }
         }
-        private struct DelegateProducer : IPowerSupplier
+        private struct DelegateProducer : IPowerSupplier, ITickPower, IDisposable
         {
+            internal ReactiveProperty<float> _productionRate;
             private readonly Func<float> _supplyRateGetter;
             private readonly Func<float, float> _supply;
             
             public DelegateProducer(Func<float> supplyRateGetter, Func<float, float> supply)
             {
+                _productionRate = new();
                 _supplyRateGetter = supplyRateGetter;
                 _supply = supply;
             }
 
+            public IObservable<float> GetSupplyRateChanges() => _productionRate;
+
             public float GetSupplyRate() => _supplyRateGetter();
             public float Supply(float supply) => _supply(supply);
+
+            public void Update(float deltaTime)
+            {
+                _productionRate.Value = _supplyRateGetter();
+            }
+
+            public void Dispose()
+            {
+                _productionRate.Dispose();
+            }
         }
 
         public void Initialize()
@@ -142,6 +175,14 @@ namespace Buildings
             _onSupplierAdded.Dispose();
             _onSupplierRemoved.Dispose();
             Debug.Log("Disposed BuildingPowerGrid");   
+        }
+
+        public void LateTick()
+        {
+            foreach (var tickPower in _changesCheck)
+            {
+                tickPower.Update(Time.deltaTime);
+            }
         }
     }
 }

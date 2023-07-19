@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Buildings.Messages;
@@ -30,7 +31,7 @@ namespace Buildings.Rooms.Tracking
                 .AddTo(this);
         }
         
-        private void Start()
+        private IEnumerator Start()
         {
             _building = GetComponent<Building>();
             
@@ -52,6 +53,11 @@ namespace Buildings.Rooms.Tracking
             //                 t.entity.entityType == EntityType.NPC)
             //     .Subscribe(t => TrackEntity(t.entity)).AddTo(this);
 
+            while (linkRegistry == null)
+            {
+                Debug.LogWarning("Waiting for EntityLinkRegistry to be injected", this);
+                yield return null;
+            }
             foreach (var entity in linkRegistry.Values.Where(t => t != null && t.GetEntityType() != EntityType.STRUCTURE || t.GetEntityType() != EntityType.BUILDING))
             {
                 var room = SearchForEntityInBuilding(entity);

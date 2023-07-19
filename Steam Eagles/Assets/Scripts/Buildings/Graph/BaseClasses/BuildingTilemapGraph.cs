@@ -18,7 +18,11 @@ namespace Buildings.Graph
         public abstract BuildingLayers Layers { get; }
         
         private UndirectedGraph<BuildingCell, SUndirectedEdge<BuildingCell>> _undirectedGraph = new();
+        
         private Dictionary<BuildingCell, int> _connectedComponents = new();
+        private Dictionary<int, List<BuildingCell>> _components = new();
+        
+        private UnityEngine.Pool.ListPool<BuildingCell> _listPool = new();
 
         public UndirectedGraph<BuildingCell, SUndirectedEdge<BuildingCell>> UndirectedGraph => _undirectedGraph;
         private int _connectedComponentsCount;
@@ -37,6 +41,15 @@ namespace Buildings.Graph
         
         public IObservable<BuildingTile> OnGraphChanged => _tileChanged;
 
+        public bool IsComponentDirty(int component)
+        {
+            if(component > _connectedComponentsCount)
+                throw new ArgumentOutOfRangeException(nameof(component));
+            if (!_dirty) return false;
+            if(_components.TryGetValue(component, out var list))
+                return list.Any(t => _dirtyCells.Contains(t));
+            return false;
+        }
         public bool IsDirty => _dirty;
         public bool IsDisposed => _cd.IsDisposed;
 
@@ -126,8 +139,8 @@ namespace Buildings.Graph
         {
             Subject<BuildingTile> onTileChanged = new();
             
-            var onTileRemoved = onTileChanged.Where(t => t.IsEmpty);
-            var onTileAdded = onTileChanged.Where(t => t.IsEmpty == false);
+            var onTileRemoved = onTileChanged.Where(t => t.Layer == this.Layers && t.IsEmpty);
+            var onTileAdded = onTileChanged.Where(t => t.Layer == this.Layers && !t.IsEmpty);
             
             onTileAdded.Subscribe(t =>
             {

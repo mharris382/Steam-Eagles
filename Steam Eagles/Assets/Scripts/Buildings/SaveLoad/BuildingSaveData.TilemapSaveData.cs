@@ -67,28 +67,6 @@ namespace Buildings.SaveLoad
             public void LoadTilemapData(Building building)
             {
                 tilemapSaveDataV2.Load(building);
-                //Debug.Log($"Loading tilemap data for building {building.ID}...",building);
-                //
-                //foreach (var emptyTiles in _emptyTileData)
-                //{
-                //    Debug.Log($"Loading {emptyTiles.cells.Count} empty tiles for {emptyTiles.layer} on building {building.ID}.", building);
-                //    foreach (var cell in emptyTiles.cells)
-                //    {
-                //        building.Map.SetTile((Vector3Int)cell, emptyTiles.layer, null);
-                //    }
-                //}
-                //foreach (var saveData in _saveData)
-                //{
-                //    Debug.Assert(saveData.tile != null, "saved tile is null");
-                //    Debug.Assert(saveData.tile is EditableTile);
-                //    Debug.Log($"Loading {saveData.cells.Count} {saveData.tile.name} tiles for {saveData.layer} on building {building.ID}.", building);
-                //    foreach (var saveDataCell in saveData.cells)
-                //    {
-                //        building.Map.SetTile((Vector3Int)saveDataCell, saveData.layer, saveData.tile as EditableTile);
-                //    }
-                //}
-                //
-                //Debug.Log($"Finished Loading tilemap data onto building {building.ID}.", building);
             }
         }
 
@@ -249,7 +227,7 @@ public class TilemapsSaveDataV3
         var rooms = building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE).ToList();
     }
 
-    IEnumerable<Room> GetAllSavedRooms() => _building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE);
+    IEnumerable<Room> GetAllSavedRooms() => _building.Rooms.AllRooms;
     IEnumerable<RoomTilemapTextures> GetAllSavedRoomTextures() => GetAllSavedRooms().Select(t => _factory.Create(t));
     public async UniTask<bool> LoadGame()
     {
@@ -298,7 +276,8 @@ public class TilemapsSaveDataV3
 
     public async UniTask<bool> SaveGame()
     {
-        var textures =  _building.Rooms.AllRooms.Where(t => t.buildLevel != BuildLevel.NONE).Select(t => _factory.Create(t))
+        var textures =  _building.Rooms.AllRooms.Where(t => t.IsDirty
+            ).Select(t => _factory.Create(t))
             .ToList();
         var results = await UniTask.WhenAll(textures.Select(t => t.SaveRoom(t._room)));
         return results.All(t => t);
@@ -351,9 +330,8 @@ public class RoomTilemapTextures
 
     public async UniTask<bool> SaveRoom(Room room)
     {
-        var saveTasks = from roomTex in RoomTextures() 
-                                           select roomTex.SaveRoom(room, _savePath.FullSaveDirectoryPath);
-        var results = await UniTask.WhenAll(saveTasks);
+        var results = await UniTask.WhenAll(from roomTex in RoomTextures() 
+            select roomTex.SaveRoom(room, _savePath.FullSaveDirectoryPath));
         return results.All(t => t);
     }
 
@@ -434,6 +412,10 @@ public class RoomTilemapTextures
             var result = LoadData(room, texture, filePath);
             sw.Stop();
             Debug.Log($"{room.name} LoadData took {sw.ElapsedMilliseconds}ms");
+            if (!result)
+            {
+                LogFailureReason(room, true, "Failed to load data from IMP");
+            }
             return result;
         }
 

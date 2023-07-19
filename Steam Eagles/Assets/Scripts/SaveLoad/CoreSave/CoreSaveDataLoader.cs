@@ -47,9 +47,16 @@ namespace SaveLoad.CoreSave
         }
         public override async UniTask<bool> LoadData(string savePath, CoreSaveData data)
         {
-            var loadSceneOp = SceneManager.LoadSceneAsync(data.Scene);
+            var scene = SceneManager.GetActiveScene();
+            
             LoadedCharacterPrefabs.LoadPrefabs();
-            await loadSceneOp;
+            
+            if (scene.buildIndex != data.Scene)
+            {
+                await SceneManager.UnloadSceneAsync(scene);
+                var loadSceneOp = SceneManager.LoadSceneAsync(data.Scene);
+                await loadSceneOp;
+            }
             await LoadedCharacterPrefabs.BuilderPrefabLoadOp;
             await LoadedCharacterPrefabs.TransporterPrefabLoadOp;
             
@@ -62,11 +69,23 @@ namespace SaveLoad.CoreSave
             {
                
                 var playerCharacter = data.PlayerCharacterNames[i];
-                var spawnPoint = SpawnDatabase.Instance.GetSpawnPointForScene(playerCharacter, savePath);
-                var prefab = playerCharacter == "Builder"
-                    ? LoadedCharacterPrefabs.LoadedBuilderPrefab
-                    : LoadedCharacterPrefabs.LoadedTransporterPrefab;
-                MessageBroker.Default.Publish(new RequestPlayerCharacterSpawn(playerCharacter, prefab, i, spawnPoint));
+                SpawnDatabase.Instance.filePath = savePath;
+                var spawnPoint = await SpawnDatabase.Instance.GetSpawnPoint(playerCharacter);
+                var instance = GameObject.FindGameObjectWithTag(playerCharacter);
+                if (instance != null)
+                {
+                    var rb = instance.GetComponent<Rigidbody2D>();
+                    rb.position = spawnPoint;
+                    rb.velocity = Vector2.zero;
+                }
+                else
+                {
+                    var prefab = playerCharacter == "Builder"
+                        ? LoadedCharacterPrefabs.LoadedBuilderPrefab
+                        : LoadedCharacterPrefabs.LoadedTransporterPrefab;
+                    MessageBroker.Default.Publish(new RequestPlayerCharacterSpawn(playerCharacter, prefab, i,
+                        spawnPoint));
+                }
             }
             
             var loadedSceneSuccess = SceneManager.GetActiveScene().buildIndex == data.Scene;

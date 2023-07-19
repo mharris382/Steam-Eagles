@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QuikGraph;
@@ -12,7 +13,17 @@ namespace Buildings.Graph
         private readonly BuildingPowerGrid _powerGrid;
         private readonly CoroutineCaller _caller;
         private readonly PowerConfig _config;
+        
+        
+        
+        [Obsolete("use _componentsRx")]
         Dictionary<int, (List<IPowerSupplier> suppliers , List<IPowerConsumer> consumers)> _components = new();
+        ReactiveDictionary<int, (List<IPowerSupplier> suppliers , List<IPowerConsumer> consumers)> _componentsRx = new();
+        
+        
+        
+
+        
         protected PowerTilemapGraph(Building building,  BuildingPowerGrid  powerGrid, CoroutineCaller caller, PowerConfig config) : base(building)
         {
             _powerGrid = powerGrid;

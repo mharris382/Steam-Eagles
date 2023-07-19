@@ -4,10 +4,6 @@ using System.Linq;
  using Buildings.Damage;
  using CoreLib;
 using Sirenix.OdinInspector;
-#if UNITY_EDITOR
- using Sirenix.OdinInspector.Editor;
- using UnityEditor;
- #endif
  using UnityEngine;
  using UnityEngine.Events;
  using UnityEngine.Tilemaps;
@@ -24,7 +20,7 @@ using Sirenix.OdinInspector;
     [Serializable]
     public class Room : MonoBehaviour
     {
-        public interface IDamageProviderFactory : IFactory<Room,IDamageOptionProvider>{ }
+        [Obsolete] public interface IDamageProviderFactory : IFactory<Room,IDamageOptionProvider>{ }
         
         [Serializable] public class Events
         {
@@ -45,10 +41,10 @@ using Sirenix.OdinInspector;
         [SerializeField] private Events events = new Events();
         public GameObject roomCamera;
         public  RoomCameraConfig roomCameraConfig;
-        [EnumToggleButtons]
-        public AccessLevel accessLevel = AccessLevel.EVERYONE;
-        [EnumPaging]
-        public BuildLevel buildLevel = BuildLevel.FULL;
+        
+        
+        [EnumToggleButtons] public AccessLevel accessLevel = AccessLevel.EVERYONE;
+        [EnumPaging] public BuildLevel buildLevel = BuildLevel.FULL;
         
         public Color roomColor = Color.red;
         public Bounds roomBounds = new Bounds(Vector3.zero, Vector3.one);
@@ -56,19 +52,41 @@ using Sirenix.OdinInspector;
         [ToggleGroup(nameof(isDynamic))] public bool isDynamic;
         [ToggleGroup(nameof(isDynamic))] public Rigidbody2D dynamicBody;
 
+        public List<Room> connectedRooms = new List<Room>();
+        
+        public bool debugGetCells;
+
+        public GridLayout targetGrid;
+
+
+        private IDamageOptionProvider _damageProvider;
+        private Building _building;
+
+        //TODO implement dirty flag to avoid unnecessary writes for save games
+        public bool IsDirty => true;
+
+        private Dictionary<BuildingLayers, bool> _dirtyLayers = new Dictionary<BuildingLayers, bool>();
+
+        public bool IsLayerDirty(BuildingLayers layers)
+        {
+            if (!IsDirty) return false;
+            if (!_dirtyLayers.ContainsKey(layers))
+                _dirtyLayers.Add(layers, true);
+            return _dirtyLayers[layers];
+        }
+
+        public void ClearDirty()
+        {
+            
+        }
+        
         public bool IsDamageable => (((int)accessLevel & (int)AccessLevel.ENGINEERS) != 0) && 
                                     ((int)accessLevel & (int)AccessLevel.OFFICERS) == 0 && 
                                     ((int)accessLevel & (int)AccessLevel.PILOTS) == 0 && 
                                     ((int)accessLevel & (int)AccessLevel.PASSENGERS) == 0;
 
-        public bool debugGetCells;
-        public GridLayout targetGrid;
-        private IDamageOptionProvider _damageProvider;
         public IDamageOptionProvider DamageOption => _damageProvider;
 
-        public List<Room> connectedRooms = new List<Room>();
-
-        private Building _building;
         public Building Building => _building ? _building : _building = GetComponentInParent<Building>();
 
 
@@ -173,17 +191,6 @@ using Sirenix.OdinInspector;
         public Vector3 WorldCenter => BuildingTransform.TransformPoint(RoomBounds.center);
 
 
-        #region [Injection Methods]
-        //
-        // [Inject]
-        // public void InjectDamageProvider(IDamageProviderFactory factory)
-        // {
-        //     _damageProvider = factory.Create(this);
-        // }
-
-        #endregion
-
-
         public void AddConnectedRoom(Room room)
         {
             if (connectedRooms.Contains(room)) return;
@@ -222,15 +229,6 @@ using Sirenix.OdinInspector;
         {
             if(roomCamera != null)
                 roomCamera.SetActive(active);
-        }
-
-
-        [Button]
-        void OpenTester()
-        {
-#if UNITY_EDITOR
-            OdinEditorWindow.InspectObject(new RoomTester(this));
-#endif
         }
 
         public void Fill(TileBase tileBase, Tilemap target)
@@ -354,41 +352,5 @@ using Sirenix.OdinInspector;
         }
     }
 
-    public class RoomTester
-    {
-        private readonly Room _room;
-        private readonly Building _b;
-
-        [ShowInInspector]
-        public Bounds RoomBounds
-        {
-            get => _room.Bounds;
-        }
-
-        public Building Building
-        {
-            get => _b;
-        }
-
-        
-        public TileBase tile;
-
-        private bool hasTile => tile != null;
-
-        [Button, ShowIf(nameof(hasTile))]
-        void Fill()
-        {
-            var tm = Building.GetTilemap(BuildingLayers.WALL).Tilemap;
-#if UNITY_EDITOR
-            Undo.RecordObject(tm, "Fill room");
-#endif
-            _room.Fill(tile, tm);
-        }
-
-        public RoomTester(Room room)
-        {
-            _room = room;
-            _b =  _room.BuildingTransform.GetComponent<Building>();
-        }
-    }
+    
 }

@@ -1,4 +1,6 @@
-﻿namespace CoreLib.Signals
+﻿using UnityEngine;
+
+namespace CoreLib.Signals
 {
     public class PCInfo
     {
@@ -6,6 +8,12 @@
         public PCInstance PC { get; private set; }
         public IPCTracker PCTracker { get; private set; }
 
+        public GameObject Camera => PC.camera;
+        
+        public GameObject Input => PC.input;
+        
+        public GameObject Character => PC.character;
+        
         public PCInfo(int playerNumber, PCInstance pc, IPCTracker pcTracker)
         {
             PlayerNumber = playerNumber;

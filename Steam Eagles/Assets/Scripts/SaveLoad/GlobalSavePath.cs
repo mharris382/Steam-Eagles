@@ -52,6 +52,7 @@ public class GlobalSavePath : IInitializable
             return false;
         }
         FullSaveDirectoryPath = path;
+        _lastSavePath = path;
         return true;
     }
 

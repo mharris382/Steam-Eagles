@@ -2,6 +2,7 @@
 using UnityEngine;
 using Zenject;
 using System.IO;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 #if UNITY_EDITOR
@@ -92,12 +93,15 @@ namespace SaveLoad
                 throw new InvalidOperationException("only use this in editor");
             }
             string dataPath = Application.dataPath;
-            string parent = Path.GetDirectoryName(Path.GetDirectoryName(dataPath));
-            string path = Path.Combine(parent, "_SHARED_SAVE_FILES", TEST_SAVE_PATH_NAME_REPOSITORY);
+            dataPath = dataPath.Replace('\\','/');
+            var pathList = dataPath.Split('/').ToList();
+            pathList.Remove(pathList.Last());
+            pathList.Remove(pathList.Last());
+            dataPath = string.Join("/", pathList);
+            string path = Path.Combine(dataPath, "_SHARED_SAVE_FILES", TEST_SAVE_PATH_NAME_REPOSITORY);
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             Debug.Log($"Shared Save Path is: {path}");
-            if (parent != null) return dataPath.Replace(parent, "");
-            return dataPath;
+            return path;
         }
         
         private string SetPath_PersistentDataPath()

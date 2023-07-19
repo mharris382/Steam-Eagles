@@ -177,10 +177,7 @@ namespace SaveLoad
     private bool TryLoadSpawnPoint(string characterName, string persistentSaveDataPath, out Vector3 spawnPoint)
     {
         spawnPoint = Vector3.zero;
-        string dirPath = persistentSaveDataPath.StartsWith(Application.persistentDataPath) ? persistentSaveDataPath : $"{Application.persistentDataPath}/{persistentSaveDataPath}";
-
-        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-        
+        string dirPath = persistentSaveDataPath;
         string filepath =  dirPath + (dirPath.EndsWith("/") ? "SpawnPoints.json" : "/SpawnPoints.json");
         if (!File.Exists(filepath))
         {

@@ -534,9 +534,13 @@ namespace Buildings
             }
         }
 
+
+        public bool CompareLayer(BuildingCell other) => layers == other.layers;
+        
+        public bool CompareLayer(BuildingLayers layer) => (layer & this.layers) != 0;
      
 
-    public void ClearZ()
+        public void ClearZ()
         {
             this.cell.z = 0;
         }

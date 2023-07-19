@@ -37,7 +37,7 @@ namespace Buildings
         {
             public class Factory : PlaceholderFactory<IElectricityConsumer, ElectricityConsumerWrapper> { }
 
-            
+            private readonly ReactiveProperty<float> _consumptionRateChangeStream = new();
             private readonly IElectricityConsumer _consumer;
             private readonly Building _building;
             private readonly ElectricityConfig _config;
@@ -161,6 +161,8 @@ namespace Buildings
                     }
                 }
             }
+
+            public IObservable<float> GetConsumptionRateChanges() => Observable.EveryUpdate().Select(_ => GetConsumptionRate()).DistinctUntilChanged();
 
             public float GetConsumptionRate()
             {

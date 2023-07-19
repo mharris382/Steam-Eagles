@@ -194,7 +194,7 @@ public class GlobalSaveLoader : IInitializable
         if (_persistenceState.CurrentAction != PersistenceState.Action.NONE)
         {
             Debug.LogWarning($"Cannot load because already {_persistenceState.ToString()}");
-            return false;
+            //return false;
         }
 
         _persistenceState.CurrentAction = PersistenceState.Action.LOADING;
