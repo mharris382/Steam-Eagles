@@ -23,6 +23,13 @@ namespace AI.Enemies
             }
             return hit;
         }
+
+        public void DrawGizmos(Transform _)
+        {
+            Gizmos.color = Color.red;
+            if(groundCheck == null) return;
+            Gizmos.DrawLine(groundCheck.position, groundCheck.position + -groundCheck.up * groundCheckDistance);
+        }
     }
     [Serializable]
     public class LedgeCheckConfig : GroundCheckConfig

@@ -29,10 +29,20 @@ namespace AI.Enemies
         private static readonly int Jump = Animator.StringToHash("Jump");
         private static readonly int VelocityY = Animator.StringToHash("Velocity Y");
         private static readonly int Grounded = Animator.StringToHash("Grounded");
+        private static readonly int IsFacingRightHash = Animator.StringToHash("Is Facing Right");
+        private static readonly int MovementLockedHash = Animator.StringToHash("Movement Locked");
 
         public bool invertDirection;
         private BoolReactiveProperty _isFacingRight = new();
-        public UnityEvent<bool> setIsFacingRight;
+
+
+        public bool MovementLocked => _anim.GetBool(MovementLockedHash);
+
+        public bool IsFacingRight
+        {
+            get => _isFacingRight.Value;
+            set => SetFacingRight(value);
+        }
         
         public void Set(IEnemyController controller)
         {
@@ -40,7 +50,6 @@ namespace AI.Enemies
             _anim = GetComponent<Animator>();
             _controller.OnAttack().Subscribe(_ => _anim.SetTrigger(Attack)).AddTo(this);
             _controller.OnJump().Subscribe(_ => _anim.SetTrigger(Jump)).AddTo(this);
-            _isFacingRight.Subscribe(t => setIsFacingRight?.Invoke(invertDirection ? !t : t)).AddTo(this);
         }
 
         bool HasResources() => _controller != null;
@@ -55,7 +64,6 @@ namespace AI.Enemies
             if (!HasResources()) return;
             _anim.SetFloat(VelocityY, _controller.VelocityY);
             _anim.SetBool(Grounded, _controller.IsGrounded);
-            _isFacingRight.Value = _controller.IsFacingRight;
         }
 
         public void DoJumpTakeoff()
@@ -68,6 +76,12 @@ namespace AI.Enemies
         {
             if (!HasResources()) return;
             _controller.DoAttack();
+        }
+        
+        public void SetFacingRight(bool facingRight)
+        {
+            _isFacingRight.Value = facingRight;
+            _anim.SetBool(IsFacingRightHash, facingRight);
         }
     }
 }

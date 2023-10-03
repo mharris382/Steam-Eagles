@@ -32,6 +32,7 @@ namespace AI.Enemies
         private Subject<Unit> _attackStart = new();
         private Subject<Unit> _jumpStart = new();
         private Subject<Unit> _damaged = new();
+        private Subject<bool> _testFacingRight = new();
 
         private Rigidbody2D _rb;
         private Health _health;
@@ -52,10 +53,12 @@ namespace AI.Enemies
 
         public bool IsFacingRight
         {
-            get;
-            set;
+            get => _animHelper.IsFacingRight;
+            set => _animHelper.IsFacingRight = value;
         }
 
+      
+        
         public IObservable<Unit> OnAttack() => _attackStart;
 
         public IObservable<Unit> OnJump() => _jumpStart.Where(t => !IsGrounded);
@@ -63,13 +66,15 @@ namespace AI.Enemies
         public IObservable<Unit> OnDamaged() =>
             Health.OnValueChanged.Where(t => t.prevValue < t.newValue).AsUnitObservable();
 
+        
+
 
         private void Awake()
         {
-
             
             _animHelper = GetComponentInChildren<EnemyAnimationHelper>();
             _animHelper.Set(this);
+            
         }
 
         private void Update()
@@ -95,7 +100,7 @@ namespace AI.Enemies
         {
             var velocity = Rb.velocity;
             velocity.x = Mathf.Sign(direction) * moveConfig.moveSpeed * (IsGrounded ? 1 : moveConfig.airControl);
-            Rb.velocity = velocity;
+            Rb.velocity = _animHelper.MovementLocked ? Vector2.zero : velocity;
             IsFacingRight = direction > 0;
         }
 
@@ -117,6 +122,10 @@ namespace AI.Enemies
         }
 
 
+        void OnDrawGizmos()
+        {
+            groundCheckConfig.DrawGizmos(transform);
+        }
        
     }
 }
