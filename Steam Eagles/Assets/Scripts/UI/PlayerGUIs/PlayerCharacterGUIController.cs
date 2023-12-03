@@ -75,6 +75,7 @@ namespace UI.PlayerGUIs
 
         public IReadOnlyReactiveProperty<UIInputMode> InputModeProperty => _uiInputMode;
 
+        [ShowInInspector, ReadOnly, BoxGroup("Debugging")]
         public PCGUIState GUIState
         {
             get => IsWaitingForCharacter() ? PCGUIState.WAITING_FOR_CHARACTER : _guiState;

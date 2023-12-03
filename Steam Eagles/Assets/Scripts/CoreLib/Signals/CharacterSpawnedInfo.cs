@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace CoreLib
 {
@@ -23,7 +24,7 @@ namespace CoreLib
         public readonly GameObject characterPrefab;
         public readonly int playerCharacterIndex;
         public readonly Vector2 spawnPositionLocal;
-        
+        public Action callback;
         public GameObject Building { get; set; }
 
         public RequestPlayerCharacterSpawn(string characterName, GameObject characterPrefab, int playerCharacterIndex, Vector2 spawnPositionLocal)
@@ -33,6 +34,7 @@ namespace CoreLib
             this.playerCharacterIndex = playerCharacterIndex;
             this.spawnPositionLocal = spawnPositionLocal;
             Building = null;
+            callback = null;
         }
     }
 

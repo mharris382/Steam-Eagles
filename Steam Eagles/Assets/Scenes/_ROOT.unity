@@ -206,7 +206,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &130446271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1765,7 +1765,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &520421797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13437,7 +13437,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -959.9999, y: 440.00006}
+  m_AnchoredPosition: {x: -959.9999, y: 0}
   m_SizeDelta: {x: 1920, y: -1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1855818561
@@ -17069,9 +17069,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _serializedExposedParameters: []
-  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"method":{"_baseInfo":"UICrafting|UpdateCrafting|System.Void","_paramsInfo":""},"parameters":[],"returnValue":{},"$type":"NodeCanvas.Tasks.Actions.ExecuteFunction_Multiplatform"}]},"_repeatStateActions":true,"_name":"IDLE","_position":{"x":121.0,"y":603.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_nestedFSM":{"_value":1},"_position":{"x":446.0,"y":821.8571},"$type":"NodeCanvas.StateMachines.NestedFSMState","$id":"1"},{"_position":{"x":-290.0012,"y":319.9603},"$type":"NodeCanvas.StateMachines.AnyState","$id":"2"},{"_onEnterList":{"executionMode":1,"actions":[{"setTo":1,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"LoadingScreen","_targetVariableID":"de610386-38c7-4428-998d-d2317216c46d"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_onUpdateList":{"executionMode":1,"actions":[]},"_onExitList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"LoadingScreen","_targetVariableID":"de610386-38c7-4428-998d-d2317216c46d"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"foldEnter":true,"foldExit":true,"_name":"Loading","_position":{"x":-282.0,"y":456.8571},"_comment":"toggles
-    loading screen","$type":"NodeCanvas.StateMachines.SuperActionState","$id":"3"},{"_onEnterList":{"executionMode":1,"actions":[{"setTo":1,"overrideAgent":{"_type":"UnityEngine.Transform","_value":2},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_onUpdateList":{"executionMode":1,"actions":[]},"_onExitList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_value":2},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"foldEnter":true,"foldExit":true,"_name":"Saving","_position":{"x":-100.9969,"y":355.8141},"_comment":"toggles
-    saving screen","$type":"NodeCanvas.StateMachines.SuperActionState","$id":"4"},{"_position":{"x":-263.0,"y":729.8572},"$type":"NodeCanvas.StateMachines.AnyState","$id":"5"},{"_conditionList":{"conditions":[]},"_actionList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"CharacterWindow","_targetVariableID":"89a317f4-f7ab-449f-8239-64c3ae699574"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"},{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"CharacterHUD","_targetVariableID":"d9eb9bbe-dc4b-4c28-a725-95ee0633d679"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_position":{"x":-641.0,"y":581.8572},"$type":"NodeCanvas.StateMachines.OnFSMEnter"}],"connections":[{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":4,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":4,"$type":"UI.PlayerGUIs.PCGUIState"}},"_invert":true,"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"1"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":1,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"2"},"_targetNode":{"$ref":"3"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":2,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"2"},"_targetNode":{"$ref":"4"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"3"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"4"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":0,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"5"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
+  _boundGraphSerialization: '{"type":"NodeCanvas.StateMachines.FSM","nodes":[{"_actionList":{"executionMode":1,"actions":[{"method":{"_baseInfo":"UICrafting|UpdateCrafting|System.Void","_paramsInfo":""},"parameters":[],"returnValue":{},"$type":"NodeCanvas.Tasks.Actions.ExecuteFunction_Multiplatform"}]},"_repeatStateActions":true,"_name":"IDLE","_position":{"x":121.0,"y":603.0},"$type":"NodeCanvas.StateMachines.ActionState","$id":"0"},{"_nestedFSM":{"_value":1},"_position":{"x":446.0,"y":821.8571},"$type":"NodeCanvas.StateMachines.NestedFSMState","$id":"1"},{"_onEnterList":{"executionMode":1,"actions":[{"setTo":1,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"LoadingScreen","_targetVariableID":"de610386-38c7-4428-998d-d2317216c46d"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_onUpdateList":{"executionMode":1,"actions":[]},"_onExitList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"LoadingScreen","_targetVariableID":"de610386-38c7-4428-998d-d2317216c46d"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"foldEnter":true,"foldExit":true,"_name":"Loading","_position":{"x":-282.0,"y":456.8571},"_comment":"toggles
+    loading screen","$type":"NodeCanvas.StateMachines.SuperActionState","$id":"2"},{"_onEnterList":{"executionMode":1,"actions":[{"setTo":1,"overrideAgent":{"_type":"UnityEngine.Transform","_value":2},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_onUpdateList":{"executionMode":1,"actions":[]},"_onExitList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_value":2},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"foldEnter":true,"foldExit":true,"_name":"Saving","_position":{"x":-100.9969,"y":355.8141},"_comment":"toggles
+    saving screen","$type":"NodeCanvas.StateMachines.SuperActionState","$id":"3"},{"_position":{"x":-263.0,"y":729.8572},"$type":"NodeCanvas.StateMachines.AnyState","$id":"4"},{"_conditionList":{"conditions":[]},"_actionList":{"executionMode":1,"actions":[{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"CharacterWindow","_targetVariableID":"89a317f4-f7ab-449f-8239-64c3ae699574"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"},{"setTo":0,"overrideAgent":{"_type":"UnityEngine.Transform","_name":"CharacterHUD","_targetVariableID":"d9eb9bbe-dc4b-4c28-a725-95ee0633d679"},"$type":"NodeCanvas.Tasks.Actions.SetObjectActive"}]},"_position":{"x":-641.0,"y":581.8572},"$type":"NodeCanvas.StateMachines.OnFSMEnter"}],"connections":[{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":4,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"0"},"_targetNode":{"$ref":"1"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":4,"$type":"UI.PlayerGUIs.PCGUIState"}},"_invert":true,"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"1"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"2"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_sourceNode":{"$ref":"3"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"},{"_condition":{"valueA":{"_type":"System.Enum","_name":"GUIState","_targetVariableID":"45ec4abe-42dc-4c75-9f25-82ff543330cf"},"valueB":{"_type":"UI.PlayerGUIs.PCGUIState","_value":{"$content":0,"$type":"UI.PlayerGUIs.PCGUIState"}},"$type":"NodeCanvas.Tasks.Conditions.CheckEnum"},"_sourceNode":{"$ref":"4"},"_targetNode":{"$ref":"0"},"$type":"NodeCanvas.StateMachines.FSMConnection"}],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
   _boundGraphObjectReferences:
   - {fileID: 0}
   - {fileID: 11400000, guid: 17bcb351949239446bd8c8c59f12912e, type: 2}
@@ -17080,8 +17080,8 @@ MonoBehaviour:
     _version: 3.28
     _category: 
     _comments: 
-    _translation: {x: 458, y: 62}
-    _zoomFactor: 0.7532171
+    _translation: {x: 729, y: -124}
+    _zoomFactor: 1
   _firstActivation: 0
   _enableAction: 0
   _disableAction: 0

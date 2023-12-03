@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreLib;
+using CoreLib.Entities;
 using Cysharp.Threading.Tasks;
 using Game;
 using Players.Shared;
@@ -10,14 +11,95 @@ using SaveLoad;
 using SaveLoad.CoreSave;
 using UniRx;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
 namespace UI.MainMenu
 {
+    public class NewGameCharacterSpawner
+    {
+        GameObject _builderPrefab;
+        GameObject _transporterPrefab;
+        
+        private const string BuilderSpawnPointTag = "Builder Spawn";
+        private const string TransporterSpawnPointTag = "Transporter Spawn";
+
+        private Transform _builderDefaultSpawn;
+        private Transform _transporterDefaultSpawn;
+        
+
+        public NewGameCharacterSpawner()
+        {
+            var tSpawnGo = GameObject.FindGameObjectWithTag(TransporterSpawnPointTag);
+            var bSpawnGo = GameObject.FindGameObjectWithTag(BuilderSpawnPointTag);
+            
+            if (tSpawnGo != null)
+                _transporterDefaultSpawn = tSpawnGo.transform;
+            else 
+                Debug.LogError("No Default Transporter Spawn Point Found");
+            
+            if (bSpawnGo != null)
+                _builderDefaultSpawn = bSpawnGo.transform;
+            else
+                Debug.LogError("No Default Builder Spawn Point Found");
+        }
+        public async UniTask LoadCharacterPrefabs(bool loadBuilder, bool loadTransporter)
+        {
+            if (loadBuilder && loadTransporter)
+            {
+                SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadPrefabs();
+                await UniTask.WhenAll(
+                    SaveLoad.CoreSave.LoadedCharacterPrefabs.BuilderPrefabLoadOp.ToUniTask(),
+                    SaveLoad.CoreSave.LoadedCharacterPrefabs.TransporterPrefabLoadOp.ToUniTask());
+                _builderPrefab = SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadedBuilderPrefab;
+                _transporterPrefab = SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadedTransporterPrefab;
+            }
+            else if (loadBuilder)
+            {
+                SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadBuilder();
+                await SaveLoad.CoreSave.LoadedCharacterPrefabs.BuilderPrefabLoadOp.ToUniTask();
+                _builderPrefab = SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadedBuilderPrefab;
+            }
+            else if (loadTransporter)
+            {
+                SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadTransporter();
+                await SaveLoad.CoreSave.LoadedCharacterPrefabs.TransporterPrefabLoadOp.ToUniTask();
+                _transporterPrefab = SaveLoad.CoreSave.LoadedCharacterPrefabs.LoadedTransporterPrefab;
+            }
+        }
+
+
+        public async UniTask SpawnFromAssignment(string assignment, int index)
+        {
+            bool completedRequest = false;
+            var request = new RequestPlayerCharacterSpawn(assignment, assignment == "Builder" ?  _builderPrefab : _transporterPrefab, index,
+                _builderDefaultSpawn.localPosition)
+            {
+                callback = () => completedRequest = true
+            };
+            MessageBroker.Default.Publish(request);
+            await UniTask.WaitUntil(() => completedRequest);
+        }
+
+        public GameObject SpawnBuilder()
+        {
+            var builderGo = GameObject.Instantiate(_builderPrefab, _builderDefaultSpawn.position, Quaternion.identity);
+            builderGo.transform.parent = _builderDefaultSpawn;
+            return builderGo;
+        }
+        public GameObject SpawnTransporter()
+        {
+            var transporterGo = GameObject.Instantiate(_transporterPrefab, _transporterDefaultSpawn.position, Quaternion.identity);
+            transporterGo.transform.parent = _transporterDefaultSpawn;
+            return transporterGo;
+        }
+     
+    }
     public class UICharacterSelection : MonoBehaviour
     {
         public string newGameSaveName = "NewGame";
@@ -66,24 +148,42 @@ namespace UI.MainMenu
                     var loadOp = SceneManager.LoadSceneAsync("AirshipScene");
                     await loadOp;
                     
-                    
-                    saveLoader.SaveGame("My New Game", b =>
+                    var newGameCharacterSpawner = new NewGameCharacterSpawner();
+                    await newGameCharacterSpawner.LoadCharacterPrefabs(true, true);
+                    var assignments = GameManager.Instance.GetCharacterAssignments();
+
+                    for (int i = 0; i < 2; i++)
                     {
-                        if (b)
+                        if(GameManager.Instance.PlayerHasCharacterAssigned(i))
                         {
-                            Debug.Log($"New Game Saved: {savePath.FullSaveDirectoryPath}");
-                            CoreSaveData coreSaveData = new CoreSaveData(SceneManager.GetSceneByName("AirshipScene").buildIndex,
-                                GameManager.Instance.GetCharacterAssignments());
-                            var path = savePath.FullSaveDirectoryPath;
-                            var coreDataSavePath = Path.Combine(path, "CoreSaveData.json");
-                            var json = JsonUtility.ToJson(coreSaveData);
-                            File.WriteAllText(coreDataSavePath, json);
+                             var assignment = assignments[i];
+                             await newGameCharacterSpawner.SpawnFromAssignment(assignment, i);
                         }
-                        else
-                        {
-                            Debug.Log($"New Game failed to save: {savePath.FullSaveDirectoryPath}");
-                        }
-                    });
+                    }
+                    var entities = FindObjectsOfType<EntityInitializer>();
+                    foreach (var e in entities) e.Initialize();
+                    foreach (var inputGo in GameManager.Instance.GetInputs())
+                    {
+                        var input = inputGo.GetComponent<PlayerInput>();
+                        input.SwitchCurrentActionMap("Gameplay");
+                    }
+                    var b = await saveLoader.SaveGameAsync("New Game");
+                    if (b)
+                    {
+                        Debug.Log($"New Game Saved: {savePath.FullSaveDirectoryPath}");
+                        CoreSaveData coreSaveData = new CoreSaveData(SceneManager.GetSceneByName("AirshipScene").buildIndex,
+                            GameManager.Instance.GetCharacterAssignments());
+                        var path = savePath.FullSaveDirectoryPath;
+                        var coreDataSavePath = Path.Combine(path, "CoreSaveData.json");
+                        var json = JsonUtility.ToJson(coreSaveData);
+                        File.WriteAllText(coreDataSavePath, json);
+                    }
+                    else
+                    {
+                        Debug.LogError($"New Game failed to save: {savePath.FullSaveDirectoryPath}");
+                    }
+                    
+                    
                 }));
                 // var newGameSave = new NewGameSaveCreator(false);
                 // newGameSave.CreateNewGameSave(newGameSaveName);

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using FMODUnity;
 using UnityEngine;
 
@@ -32,7 +33,14 @@ public abstract class FMODOneShotEventBase
 
     public void PlayEventAtPosition(Vector3 position)
     {
-        PlayEvent();
+        try
+        {
+            PlayEvent();
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogError(e);
+        }
        // FMODUnity.RuntimeManager.PlayOneShot(_eventReference, position);
     }
 

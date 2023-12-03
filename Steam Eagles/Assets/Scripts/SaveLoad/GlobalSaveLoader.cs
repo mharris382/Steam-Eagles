@@ -136,11 +136,36 @@ public class GlobalSaveLoader : IInitializable
             return false;
         return await SaveGameAsync();
     }
+
     public async UniTask<bool> SaveGameAsync()
     {
         if (_persistenceState.CurrentAction != PersistenceState.Action.NONE)
             return false;
         _persistenceState.CurrentAction = PersistenceState.Action.SAVING;
+        const float timeOutSeconds = 10f;
+        
+        UniTask<bool> saveGame = _SaveGameAsync();
+        var results = await UniTask.WhenAny(SaveTimeout(timeOutSeconds), saveGame);
+         
+        _persistenceState.CurrentAction = PersistenceState.Action.NONE;
+        if (results.winArgumentIndex == 0)
+        {
+            Debug.LogError($"Save Timed Out after {timeOutSeconds} seconds");
+            return false;
+        }
+
+        return results.result2;
+    }
+
+    private async UniTask<bool> SaveTimeout(float timeoutTime)
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(timeoutTime));
+        Debug.Log("Timeout Reached");
+        return false;
+    }
+    private async UniTask<bool> _SaveGameAsync()
+    {
+        
         List<bool> results = new List<bool>();
         string savePathRoot = _savePath.FullSaveDirectoryPath;
         foreach (var loadGroup in _loadOrderAttributes)
@@ -167,12 +192,17 @@ public class GlobalSaveLoader : IInitializable
                 //add load task to this load group
                 groupLoadTasks.Add(saveLoaderSystem.SaveGameAsync(savePath));
             }
-            
+            Debug.Log($"Saving Group: {loadGroup.Order} Count: {groupLoadTasks.Count} Systems: {loaders.Count}");
+            foreach (var l in loaders)
+            {
+                Debug.Log($"Group{loadGroup.Order} - Loader Type: {l.GetType().Name}");
+            }
             //wait for group to finish
             var groupResult = await UniTask.WhenAll(groupLoadTasks);
+            Debug.Log($"Saving Group: {loadGroup.Order} Completed");
             results.Add(groupResult.All(t => t));
         }
-        _persistenceState.CurrentAction = PersistenceState.Action.NONE;
+        
         return results.All(t => t);
     }
 

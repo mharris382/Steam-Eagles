@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using CoreLib;
 using Players.Shared;
@@ -13,6 +14,8 @@ namespace Game
         public override bool DestroyOnLoad => false;
         private PCInstance[] _playerCharacters;
         private Dictionary<int, GameObject> _playerDevices = new Dictionary<int, GameObject>();
+        private Dictionary<int, GameObject> _playerCameras = new Dictionary<int, GameObject>();
+
         private Dictionary<int, string> _playerCharacterNames = new Dictionary<int, string>();
         private GameInputBase _gameInput;
 
@@ -21,11 +24,21 @@ namespace Game
         /// </summary>
         public event System.Action<int> PlayerLostDevice;
 
-        
-        public event Action<string[]> CharacterAssignmentsChanged; 
+
+        public event Action<string[]> CharacterAssignmentsChanged;
         public event Action<int> NumberOfPlayerDevicesChanged;
-        
-        protected override void Init()
+
+
+        public IEnumerable<GameObject> GetInputs()
+        {
+            foreach (var playerDevice in _playerDevices)
+            {
+                if (playerDevice.Value != null)
+                    yield return playerDevice.Value;
+            }
+        }
+
+    protected override void Init()
         {
             _gameInput = GetComponent<GameInputBase>();
             _playerCharacters = new PCInstance[2];
@@ -45,11 +58,27 @@ namespace Game
         {
             AssignCharacterToPlayer(playerCharacterBound.playerNumber, playerCharacterBound.character);
             Debug.Assert(GetPlayerDevice(playerCharacterBound.playerNumber)!=null, " Player device is null but player has been assigned to a character");
-            MessageBroker.Default.Publish(new CharacterAssignedPlayerInputInfo()
+            StartCoroutine(WaitUntilFullAssignment(playerCharacterBound.character, playerCharacterBound.playerNumber));
+        }
+
+        IEnumerator WaitUntilFullAssignment(string character, int playerNum)
+        {
+            bool HasCamera() => _playerCameras.ContainsKey(playerNum) && _playerCameras[playerNum] != null;
+            bool HasInput() => _playerDevices.ContainsKey(playerNum) && _playerDevices[playerNum] != null;
+            bool HasCharacter() => _playerCharacters[playerNum] != null;
+            while(!HasCamera() || !HasInput() || !HasCharacter())
             {
-                characterName = playerCharacterBound.character,
-                inputGo = GetPlayerDevice(playerCharacterBound.playerNumber)
-            });
+                Debug.LogWarning("Waiting for full assignment");
+                yield return null;
+            }
+            string cstate = "CharacterState";
+           // MessageBroker.Default.Publish(new CharacterAssignedPlayerInputInfo()
+           // {
+           //     characterName = character,
+           //     inputGo = GetPlayerDevice(playerNum),
+           //     camera = _playerCameras[playerNum],
+           //     characterState = _playerCharacters[playerNum].character.GetComponent(cstate)
+           // });    
         }
         
         private void OnPlayerCharacterUnbound(PlayerCharacterUnboundInfo playerCharacterBound)
@@ -249,6 +278,8 @@ namespace Game
             if (p != player)
                 throw new IndexOutOfRangeException();
             _playerCharacters[p] = pc;
+            _playerCameras[p] = pc.camera;
+            _playerDevices[p] = pc.input;
             MessageBroker.Default.Publish(new PCInstanceChangedInfo(player, pc));
         }
     }

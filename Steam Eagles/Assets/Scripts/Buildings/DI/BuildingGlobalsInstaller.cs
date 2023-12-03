@@ -191,6 +191,11 @@ public class EntityRoomTrackerV2 : IInitializable, ITickable, IDisposable
     {
         var pos = entityInitializer.transform.position;
         var sizeWs = building.sizeWorldSpace;
+        var mz = building.WorldSpaceBounds.min.z;
+        var mz2 = building.WorldSpaceBounds.max.z;
+        var middle = (mz + mz2) / 2;
+        pos.z = middle;
+        return building.WorldSpaceBounds.Contains(pos);
         var inside = sizeWs.Contains(pos);
         return inside;
         return building.WorldSpaceBounds.Contains(pos);

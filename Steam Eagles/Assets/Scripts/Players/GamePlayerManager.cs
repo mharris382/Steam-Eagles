@@ -129,7 +129,8 @@ namespace Players
            };
            var pcInstance = new PCInstance(request.playerCharacterIndex, characterInstance.gameObject, cameraGO, inputGO);
            GameManager.Instance.SetPC(request.playerCharacterIndex, pcInstance);
-            MessageBroker.Default.Publish(assignmentNotification);
+           request.callback?.Invoke();
+           MessageBroker.Default.Publish(assignmentNotification);
         }
 
         IEnumerator StopCameraFromBeingDeactivated(Camera target, float duration = 5)

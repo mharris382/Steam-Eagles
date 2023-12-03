@@ -62,11 +62,14 @@ namespace SaveLoad.CoreSave
             {
                
                 var playerCharacter = data.PlayerCharacterNames[i];
+                var defaultSpawnPointTag = playerCharacter == "Builder" ? "Builder Spawn" : "Transporter Spawn";
+                var defaultSpawnGo = GameObject.FindGameObjectWithTag(defaultSpawnPointTag);
+                var defaultSpawnPoint = defaultSpawnGo != null ? defaultSpawnGo.transform.localPosition : Vector3.zero;
                 var spawnPoint = SpawnDatabase.Instance.GetSpawnPointForScene(playerCharacter, savePath);
                 var prefab = playerCharacter == "Builder"
                     ? LoadedCharacterPrefabs.LoadedBuilderPrefab
                     : LoadedCharacterPrefabs.LoadedTransporterPrefab;
-                MessageBroker.Default.Publish(new RequestPlayerCharacterSpawn(playerCharacter, prefab, i, spawnPoint));
+                MessageBroker.Default.Publish(new RequestPlayerCharacterSpawn(playerCharacter, prefab, i, defaultSpawnPoint));
             }
             
             var loadedSceneSuccess = SceneManager.GetActiveScene().buildIndex == data.Scene;
@@ -146,8 +149,8 @@ namespace SaveLoad.CoreSave
         public static GameObject LoadedTransporterPrefab;
         public static GameObject LoadedBuilderPrefab;
 
-        internal static AsyncOperationHandle<GameObject> TransporterPrefabLoadOp;
-        internal static AsyncOperationHandle<GameObject> BuilderPrefabLoadOp;
+        public static AsyncOperationHandle<GameObject> TransporterPrefabLoadOp;
+        public static AsyncOperationHandle<GameObject> BuilderPrefabLoadOp;
 
         public static void LoadPrefabs()
         {
@@ -157,6 +160,22 @@ namespace SaveLoad.CoreSave
                 BuilderPrefabLoadOp.Completed += res => LoadedBuilderPrefab = res.Result;
             }
 
+            if (LoadedTransporterPrefab == null)
+            {
+                TransporterPrefabLoadOp = Addressables.LoadAssetAsync<GameObject>("Transporter_Prefab");
+                TransporterPrefabLoadOp.Completed += res => LoadedTransporterPrefab = res.Result;
+            }
+        }
+        public static void LoadBuilder()
+        {
+            if (LoadedBuilderPrefab == null)
+            {
+                BuilderPrefabLoadOp = Addressables.LoadAssetAsync<GameObject>("Builder_Prefab");
+                BuilderPrefabLoadOp.Completed += res => LoadedBuilderPrefab = res.Result;
+            }
+        }
+        public static void LoadTransporter()
+        {
             if (LoadedTransporterPrefab == null)
             {
                 TransporterPrefabLoadOp = Addressables.LoadAssetAsync<GameObject>("Transporter_Prefab");
