@@ -118,10 +118,30 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
         private int _damageEventId;
 
         private BoundsLookup _boundsLookup;
-        [Inject] void Install(Room room, BoundsLookup boundsLookup)
+        void Install(Room room, BoundsLookup boundsLookup)
         {
             this._boundsLookup = boundsLookup;
             _room = room;
+        }
+
+        private Dictionary<Room, BoundsLookup> _bounds = new();
+        void ChangeRooms(Room room)
+        {
+            if (room == null)
+            {
+                _room = null;
+                _boundsLookup = null;
+                return;
+            }
+
+            if (room == _room) return;
+            if (!_bounds.ContainsKey(room))
+            {   
+                _bounds.Add(room, new BoundsLookup(room));
+            }
+            _boundsLookup = _bounds[room];
+            _room = room;
+            UpdateRoomRuntime();
         }
 
         private void Awake()
@@ -142,8 +162,8 @@ namespace _EXP.PhysicsFun.ComputeFluid.Extras
 
         private void OnEnable()
         {
-            var eventInRoom = MessageBroker.Default.Receive<TileEventInfo>()
-                .Where(t => _room.Building.Map.GetRoom(t.GetBuildingCell()) == _room);
+            var eventInRoom = MessageBroker.Default.Receive<TileEventInfo>();
+                
             var previewEventInRoom = eventInRoom.Where(t => t.isPreview&& t.type != CraftingEventInfoType.NO_ACTION);
             var actionEventInRoom = eventInRoom.Where(t => !t.isPreview && t.type != CraftingEventInfoType.NO_ACTION);
             

@@ -274,6 +274,7 @@ namespace Buildings
             return _cellToRoomMaps[_layerToCellSize[layer]];
         }
 
+        public Room GetRoomWS(Vector2 ws) => GetRoom(WorldToCell(ws, BuildingLayers.SOLID), BuildingLayers.SOLID);
         public Room GetRoom(Vector3Int cell, BuildingLayers layers) => GetMapForLayer(layers).GetRoom(cell);
         public Room GetRoom(BuildingCell cell) => GetRoom(cell.cell, cell.layers);
         public BoundsInt GetCellsForRoom(Room room, BuildingLayers layers) => GetMapForLayer(layers).GetCells(room);

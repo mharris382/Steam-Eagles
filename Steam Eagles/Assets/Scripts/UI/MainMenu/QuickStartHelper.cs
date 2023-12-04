@@ -50,7 +50,7 @@ namespace UI.MainMenu
         async UniTask Quickstart()
         {
             var loadOp = SceneManager.LoadSceneAsync("AirshipScene");
-            
+            await loadOp;
             var newGameCharacterSpawner = new NewGameCharacterSpawner();
             var prefabLoadOp = newGameCharacterSpawner.LoadCharacterPrefabs(true, false);
 
