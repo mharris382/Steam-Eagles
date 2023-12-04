@@ -65,6 +65,16 @@ namespace UI
             Close();
         }
 
+        public void OpenSaveMenu()
+        {
+            windowPanel.OpenPanel("Save Game");
+        }
+
+        public void OpenLoadMenu()
+        {
+            windowPanel.OpenPanel("Load Game");
+        }
+
         private void OnPlayerPressedPause(PlayerPressedPausedSignal pressedPausedSignal)
         {
             var pressedInput = pressedPausedSignal.PlayerInput as PlayerInput;

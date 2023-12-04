@@ -13,6 +13,7 @@ namespace UI
         [Serializable]
         private class WindowPanel
         {
+            public string panelName;
             public Window window;
             public Button button;
 
@@ -63,6 +64,14 @@ namespace UI
             }
         }
 
+        public void OpenPanel(string name)
+        {
+            foreach (var windowPanel in panels)
+            {
+                if(windowPanel.panelName==name)
+                    SwitchTo(windowPanel);
+            }
+        }
 
         public void OnSelected(GameObject go)
         {
@@ -90,8 +99,18 @@ namespace UI
         {
             foreach (var windowPanel in panels)
             {
-                windowPanel.window.IsVisible = windowPanel == panel;
-                windowPanel.button.interactable = windowPanel != panel;
+                if (windowPanel == panel)
+                {
+                    windowPanel.window.gameObject.SetActive(true);
+                    windowPanel.window.IsVisible = true;
+                    windowPanel.button.interactable = false;
+                }
+                else
+                {
+                    windowPanel.window.gameObject.SetActive(false);
+                    windowPanel.window.IsVisible = false;
+                    windowPanel.button.interactable = true;
+                }
             }
         }
     }

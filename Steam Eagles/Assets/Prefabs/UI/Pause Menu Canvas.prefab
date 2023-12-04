@@ -1020,11 +1020,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panels:
-  - window: {fileID: 4161366385561783153}
+  - panelName: Save Game
+    window: {fileID: 4161366385561783153}
     button: {fileID: 44173072674035129}
-  - window: {fileID: 9123984984774073704}
+  - panelName: Load Game
+    window: {fileID: 9123984984774073704}
     button: {fileID: 4499674107123211342}
-  - window: {fileID: 3403291145607844966}
+  - panelName: Settings
+    window: {fileID: 3403291145607844966}
     button: {fileID: 1365820068299750163}
   autoWindow:
     buttonParent: {fileID: 6395537877813855689}
@@ -8042,7 +8045,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7672233718794801530}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenLoadMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI.UIPauseGame, SteamEagles.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8066,8 +8097,8 @@ CanvasGroup:
   m_GameObject: {fileID: 2758719585957843784}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &4499674107123211342 stripped
 MonoBehaviour:
@@ -9838,7 +9869,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7672233718794801530}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenSaveMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI.UIPauseGame, SteamEagles.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185673109031497288, guid: c9828ec54d26e5f4c8d218eaf446d16d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9896,8 +9955,8 @@ CanvasGroup:
   m_GameObject: {fileID: 1776127129179364031}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!224 &7775664368131404058 stripped
 RectTransform:
