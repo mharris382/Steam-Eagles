@@ -10,6 +10,7 @@ namespace UI.Crafting.Destruction
     public class MachineDestructionHandler : DestructionHandler
     {
         private readonly CraftingEventPublisher _eventPublisher;
+        private BuildableMachineBase _destructTarget;
 
         public class Factory : PlaceholderFactory<Recipe, MachineDestructionHandler> { }
         public MachineDestructionHandler(Recipe recipe, DestructionPreview destructionPreview, CraftingEventPublisher eventPublisher) : base(recipe, destructionPreview)
@@ -20,7 +21,8 @@ namespace UI.Crafting.Destruction
         public override bool HasDestructionTarget(Building building, BuildingCell cell)
         {
             var bMachines = building.GetComponent<BMachines>();
-            return bMachines.Map.GetMachine(cell.cell2D) != null;
+            _destructTarget = bMachines.Map.GetMachine(cell.cell2D);
+            return _destructTarget != null;
         }
 
         public override Vector2 GetDestructionTargetSize(Building building, BuildingCell cell)

@@ -6,6 +6,7 @@ namespace CoreLib.Pickups
     [RequireComponent(typeof(PickupBody))]
     public class PickupInstance : MonoBehaviour
     {
+        [SerializeField]
         private Pickup _pickup;
         private PickupBody _pickupBody;
         public PickupBody PickupBody => _pickupBody ? _pickupBody : _pickupBody = GetComponent<PickupBody>();

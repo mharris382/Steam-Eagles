@@ -88,7 +88,7 @@ namespace CoreLib.Pickups
 
         public void OnPickupDetected(PickupInstance pickup)
         {
-            if(PickupFilter != null && PickupFilter(pickup.Pickup) == false)
+            if(PickupFilter != null && pickup != null && PickupFilter(pickup.Pickup) == false)
                 return;
             TriggerPickup(pickup);
         }

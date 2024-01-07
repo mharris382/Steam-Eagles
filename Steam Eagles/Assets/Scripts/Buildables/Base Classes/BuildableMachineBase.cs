@@ -152,6 +152,20 @@ namespace Buildables
         public SpriteRenderer sr => _sr ? _sr : _sr = GetComponent<SpriteRenderer>();
         bool HasBuilding => buildingTarget != null;
 
+        public Vector3Int BottomLeftCell => !IsFlipped ? (Vector3Int)CellPosition : (Vector3Int)CellPosition + new Vector3Int(-MachineGridSize.x, 0, 0);
+        public Vector3Int TopRightCell => !IsFlipped ? (Vector3Int)CellPosition + new Vector3Int(MachineGridSize.x, MachineGridSize.y, 0) : (Vector3Int)CellPosition + new Vector3Int(0, MachineGridSize.y, 0);
+        public Vector3Int TopLeftCell => !IsFlipped ? (Vector3Int)CellPosition + new Vector3Int(0, MachineGridSize.y, 0) : (Vector3Int)CellPosition + new Vector3Int(-MachineGridSize.x, MachineGridSize.y, 0);
+        public Vector3Int BottomRightCell => !IsFlipped ? (Vector3Int)CellPosition + new Vector3Int(MachineGridSize.x, 0, 0) : (Vector3Int)CellPosition;
+
+        public Rect WsRect
+        {
+            get
+            {
+                var bl = Building.Map.CellToWorld(BottomLeftCell, BuildingLayers.SOLID);
+                var tr = Building.Map.CellToWorld(TopRightCell, BuildingLayers.SOLID);
+                return new Rect(bl, tr - bl);
+            }
+        }
         
         public int MachineID
         {
@@ -272,6 +286,8 @@ namespace Buildables
                 yield return cellPos + offset;
             }
         }
+        
+        
 
         public IEnumerable<Vector3Int> GetBottomCells(Vector2Int position, bool IsFlipped)
         {

@@ -5,6 +5,7 @@ using Buildings.Tiles;
 using Items;
 using UI.Crafting.Events;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Zenject;
 
 namespace UI.Crafting.Destruction
@@ -16,6 +17,8 @@ namespace UI.Crafting.Destruction
         public class Factory : PlaceholderFactory<Recipe, TileDestructionHandler> { }
         BuildingCell lastCell;
         float timeLastDestruction = 0;
+        private TileBase _destructTarget;
+
         public TileDestructionHandler(Recipe recipe, DestructionPreview destructionPreview, CraftingEventPublisher tileEventPublisher) : base(recipe, destructionPreview)
         {
             _tileEventPublisher = tileEventPublisher;
@@ -28,6 +31,7 @@ namespace UI.Crafting.Destruction
             var hasTile = building.Map.GetTile(cell) != null;
             if (!hasTile)
                 return false;
+            _destructTarget = building.Map.GetTile(cell); 
             var bmachines = building.GetComponent<BMachines>();
             var bmachine = bmachines.Map.GetMachine(cell.cell2D + Vector2Int.up);
             if (bmachine != null && bmachine.snapsToGround)
@@ -57,7 +61,7 @@ namespace UI.Crafting.Destruction
             else
             {
                 building.Map.SetTile(cell, null);
-                _tileEventPublisher.OnTileRemoved(cell, tile);
+                _tileEventPublisher.OnTileRemoved(cell,  _destructTarget);
             }
         }
     }

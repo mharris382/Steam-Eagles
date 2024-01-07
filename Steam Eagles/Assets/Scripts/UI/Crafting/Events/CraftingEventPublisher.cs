@@ -194,7 +194,7 @@ namespace UI.Crafting.Events
                 layer = (int)cell.layers,
                 prefab = prefab,
                 isFlipped = isFlipped,
-                type = CraftingEventInfoType.BUILD
+                type = CraftingEventInfoType.DECONSTRUCT
             };
             MessageBroker.Default.Publish(info);
         }

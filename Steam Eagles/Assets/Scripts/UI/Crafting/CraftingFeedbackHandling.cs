@@ -27,6 +27,7 @@ namespace UI.Crafting
             var aimWS = _aimHanding.AimWorldSpace;
             if(_buildingTarget.BuildingTarget == null)return;
             var room = _buildingTarget.BuildingTarget.Map.GetRoomWS(aimWS.Value);
+            if(room == null)return;
             craftingEffect.transform.SetParent(room.transform);
             craftingEffect.transform.localPosition = Vector3.zero;
             craftingEffect.SendMessage("ChangeRooms", room);
