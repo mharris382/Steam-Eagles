@@ -176,9 +176,17 @@ namespace UI.PlayerGUIs
         }
         
         #endregion
-        
-        
-        
+
+        private void Update()
+        {
+            if(_pInput.Value ==null)return;
+            var input = _pInput.Value;
+            if (input.actions["Inventory"].IsPressed())
+            {
+                
+            }
+        }
+
         public void CharacterWindowOpened()
         {
             GUIState = PCGUIState.CHARACTER_MENU;
@@ -189,6 +197,8 @@ namespace UI.PlayerGUIs
         {
             GUIState = PCGUIState.DEFAULT;
         }
+
+      
     }
 
 

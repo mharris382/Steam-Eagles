@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Characters;
 using CoreLib.Entities;
@@ -9,6 +10,7 @@ using UniRx;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.PlayerGUIs.CharacterWindows
 {
@@ -33,7 +35,9 @@ namespace UI.PlayerGUIs.CharacterWindows
             public UnityEvent<UICharacterWindowBase> onLogic;
             public UnityEvent<UICharacterWindowBase> onExit;
         }
-        
+
+        [Inject]
+        private CoroutineCaller _coroutineCaller;
         [TableList,SerializeField] private CharacterWindowPanel[] windowPanels;
 
         public bool debug;
@@ -44,6 +48,7 @@ namespace UI.PlayerGUIs.CharacterWindows
         private GameObject _characterGameObject;
         private StateMachine _stateMachineRoot;
         private StateMachine _characterStateMachine;
+        private CanvasGroup _canvasGroup;
 
         public CharacterWindowState WindowState
         {
@@ -90,6 +95,25 @@ namespace UI.PlayerGUIs.CharacterWindows
             _characterGameObject = characterGameObject;
             if (WindowState != CharacterWindowState.CLOSED && !HasRequirements())
                 WindowState = CharacterWindowState.CLOSED;
+            _coroutineCaller.StartCoroutine(DelayOpen(true));
+        }
+
+        IEnumerator DelayOpen(bool hide)
+        {
+            yield return new WaitForSeconds(1); 
+            gameObject.SetActive(true);
+            if (hide)
+            {
+                _canvasGroup.alpha = 0;
+                _canvasGroup.interactable = false;
+                _canvasGroup.blocksRaycasts = false;
+            }
+            else
+            {
+                _canvasGroup.alpha = 1;
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
+            }
         }
 
         private void Awake()
@@ -99,7 +123,7 @@ namespace UI.PlayerGUIs.CharacterWindows
                 _windowPanels.Add(windowPanel.window.GetWindowState(), windowPanel.window);
                 windowPanel.guiButton.onClick.AsObservable().Subscribe(_ => ChangeToWindowState(windowPanel.window.GetWindowState())).AddTo(this);
             }
-
+            _canvasGroup = GetComponent<CanvasGroup>();
             _characterStateMachine = CreateWindowStateMachine();
             var fsm = new StateMachine();
             fsm.AddState("Character Window", OnCharacterWindowEnter, OnCharacterWindowLogic, OnCharacterWindowExit);
@@ -120,6 +144,7 @@ namespace UI.PlayerGUIs.CharacterWindows
         {
             _characterStateMachine.OnEnter();
             onCharacterWindowEnter.Invoke();
+            _coroutineCaller.StartCoroutine(DelayOpen(false));
         }
         public void OnCharacterWindowLogic(State<string, string> t)
         {
@@ -130,6 +155,7 @@ namespace UI.PlayerGUIs.CharacterWindows
         {
             _characterStateMachine.OnExit();
             onCharacterWindowExit.Invoke();
+            _coroutineCaller.StartCoroutine(DelayOpen(true));
         }
 
         private void Update()
