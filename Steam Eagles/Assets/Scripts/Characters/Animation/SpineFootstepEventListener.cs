@@ -75,6 +75,13 @@ public class SpineFootstepEventListener : SpineEventListenerBase
         if (!hit)
             return false;
 
+        var surfaceLabel = hit.collider.GetComponent<SurfaceLabel>()  ??  hit.collider.GetComponentInParent<SurfaceLabel>();;
+        if (surfaceLabel != null && !string.IsNullOrEmpty(surfaceLabel.label))
+        {
+            label = surfaceLabel.label;
+            return true;
+        }
+        
         if (hit.collider.TryGetLabel(surfaceParameterName, out label))
             return true;
         

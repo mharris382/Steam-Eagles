@@ -40,7 +40,7 @@ namespace SteamEagles.Characters
 
     public float moveSpeed => config.moveSpeed;
         public float jumpForce => config.jumpForce;
-        public float jumpTime => config.jumpTime;
+        public float jumpTime => config.jumpTime + ExtraJumpTime;
         
         public float balloonJumpMultiplier => config.balloonJumpMultiplier;
         public float sprintMultiplier => config.sprintMultiplier;

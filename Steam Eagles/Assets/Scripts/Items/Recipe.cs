@@ -41,12 +41,12 @@ namespace Items
         private const string VERTICAL_SPLIT_1 = "/v1";
         
         [BoxGroup(BASIC_INFO)]
-        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:3.3f)]
-        [HideLabel,PreviewField(150, ObjectFieldAlignment.Left)] public Sprite icon;
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:150)]
+        [HideLabel,PreviewField(150, ObjectFieldAlignment.Left)] 
+        public Sprite icon;
         
-        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, width:.66f, LabelWidth = 55)]
-        
-        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Display Name")]
+        [HorizontalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1, LabelWidth = 100, PaddingLeft = 25)]
+        [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelWidth(150), LabelText("Display Name")]
         public string friendlyName;
         
         [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Category")]
@@ -55,7 +55,6 @@ namespace Items
         [ShowIf("@recipeCategory == RecipeCategory.CUSTOM")]
         [VerticalGroup(BASIC_INFO + HORIZONTAL_SPLIT_1 + VERTICAL_SPLIT_1), LabelText("Custom Category")]
         [SerializeField] string customCategory = "Misc";
-        
         
         
 
